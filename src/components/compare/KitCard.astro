@@ -26,10 +26,12 @@ const builtText = formatLondonDateTime(builtAt);
 const shortfall = waterShortfall(kit);
 const needed = waterNeeded(kit.people);
 const rows = comparison?.offers ?? [];
-const best = comparison?.best_price_offer_id ? rows.find((o) => o.offer_id === comparison.best_price_offer_id) : undefined;
+// Render only what the API marks as best; never derive one. Defensive: a flagged row is never shown as best.
+const bestCandidate = comparison?.best_price_offer_id ? rows.find((o) => o.offer_id === comparison.best_price_offer_id) : undefined;
+const best = bestCandidate && bestCandidate.is_best_price && bestCandidate.model_match_confirmed && bestCandidate.labels.length === 0 ? bestCandidate : undefined;
 const others = rows.filter((o) => o !== best);
 const excluded = comparison?.excluded ?? [];
-const savings = comparison?.savings ?? null;
+const savings = best ? comparison?.savings ?? null : null;
 const dearer = savings ? rows.find((o) => o.offer_id === savings.dearer_offer_id) : undefined;
 const headingId = `kit-${kit.id}`;
 const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
@@ -88,7 +90,11 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
               ? 'Prices could not be loaded for this version of the page.'
               : rows.length > 0
                 ? 'We only name a best price when at least two verified, current prices with known delivery were captured on the same UK day for this exact model. That is not the case yet.'
-                : 'We have not captured a price for this exact model yet.'}{' '}
+                : excluded.some((e) => e.reason === 'duplicate_variant_id')
+                  ? 'Our price data for this model has a data error, so no prices are compared until it is fixed.'
+                  : excluded.length > 0
+                    ? 'The only prices we hold could not be confirmed as this exact model.'
+                    : 'We have not captured a price for this exact model yet.'}{' '}
             Check the current price and delivery with the seller.
           </p>
           <a class="btn btn--ghost" href={kit.sourceUrl} rel="noopener noreferrer">
@@ -146,35 +152,39 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
   {
     (others.length > 0 || excluded.length > 0) && (
       <details class="kit-card__offers">
-        <summary>Other prices we hold ({others.length})</summary>
+        <summary>{others.length > 0 ? `Other prices we hold (${others.length})` : `Prices left out (${excluded.length})`}</summary>
+        {
+          others.length > 0 && (
         <ul>
-          {others.map((row) => (
-            <li>
-              <p class="kit-card__offer-line">
-                <strong>{row.retailer}</strong>
-                {row.labels.length === 0 ? <OfferStateBadge label="verified" /> : row.labels.map((l) => <OfferStateBadge label={l} />)}
-              </p>
-              <p class="kit-card__offer-line">
-                {row.price_gbp_inc_vat === null ? 'Price not available' : `${formatGbp(row.price_gbp_inc_vat)} inc VAT + ${deliveryText(row.delivery_cost_gbp)}`}
-                {row.delivered_total_gbp !== null && ` (total ${formatGbp(row.delivered_total_gbp)})`}
-              </p>
-              {row.delivery_text_verbatim && row.delivery_cost_gbp === null && (
-                <p class="kit-card__stamp">Retailer says: “{row.delivery_text_verbatim}” (not confirmed at checkout).</p>
-              )}
-              <p class="kit-card__stamp">{row.price_disclaimer}</p>
-              <p class="kit-card__stamp kit-card__checked">
-                Last checked {formatLondonDateTime(row.last_checked)} UK time; prices may have changed since this page was
-                built ({builtText} UK time).{' '}
-                {row.labels.length > 0
-                  ? 'Not used as a best price.'
-                  : comparison?.best_price_offer_id
-                    ? 'Verified, but not the lowest verified total.'
-                    : 'Verified, but not named best: no second verified price from the same UK day.'}
-              </p>
-              <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" />
-            </li>
-          ))}
-        </ul>
+            {others.map((row) => (
+              <li>
+                <p class="kit-card__offer-line">
+                  <strong>{row.retailer}</strong>
+                  {row.labels.length === 0 ? <OfferStateBadge label="verified" /> : row.labels.map((l) => <OfferStateBadge label={l} />)}
+                </p>
+                <p class="kit-card__offer-line">
+                  {row.price_gbp_inc_vat === null ? 'Price not available' : `${formatGbp(row.price_gbp_inc_vat)} inc VAT + ${deliveryText(row.delivery_cost_gbp)}`}
+                  {row.delivered_total_gbp !== null && ` (total ${formatGbp(row.delivered_total_gbp)})`}
+                </p>
+                {row.delivery_text_verbatim && row.delivery_cost_gbp === null && (
+                  <p class="kit-card__stamp">Retailer says: “{row.delivery_text_verbatim}” (not confirmed at checkout).</p>
+                )}
+                <p class="kit-card__stamp">{row.price_disclaimer}</p>
+                <p class="kit-card__stamp kit-card__checked">
+                  Last checked {formatLondonDateTime(row.last_checked)} UK time; prices may have changed since this page was
+                  built ({builtText} UK time).{' '}
+                  {row.labels.length > 0
+                    ? 'Not used as a best price.'
+                    : comparison?.best_price_offer_id
+                      ? 'Verified, but not the lowest verified total.'
+                      : 'Verified, but not named best: no second verified price from the same UK day.'}
+                </p>
+                <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" />
+              </li>
+            ))}
+          </ul>
+          )
+        }
         {
           excluded.length > 0 && (
             <p class="kit-card__stamp kit-card__excluded">

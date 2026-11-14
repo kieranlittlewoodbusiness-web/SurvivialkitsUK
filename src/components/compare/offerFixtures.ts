@@ -7,10 +7,11 @@
  * EXAMPLE round number. The affiliate programme/URL is example.com. Backend's real E182P seed is
  * added by loadOffers and is not repeated here.
  *
- * States exercised:
- *   evaq8-e184  two verified, fresh, same-day offers -> best price + savings (one affiliate link)
- *   evaq8-e180  one verified offer + one unverified  -> no best (needs two verified same-day rows)
- *   evaq8-e194  two verified offers on different UK days + one stale -> no best (capture window)
+ * States exercised (PR #8 @ 3bdac22 rules):
+ *   evaq8-e184  two verified, fresh, same-day offers, strictly cheaper -> best price + savings
+ *               (one affiliate link); plus a model-unconfirmed row -> excluded 'model_match_unconfirmed'
+ *   evaq8-e180  verified rows on different UK days + unverified + stale -> best_price_offer_id null
+ *   evaq8-e194  variant_id deliberately duplicated -> every offer excluded 'duplicate_variant_id'
  *   evaq8-e182p Backend seed: unverified, delivery unknown; Amazon row excluded (model unconfirmed)
  *   tminus-t3-4p no variant record/offers -> "no price captured"
  */
@@ -43,8 +44,9 @@ function variant(v: {
 }
 
 function offer(o: {
-  id: string; variant: string; kit: string; retailer: string; mpn: string; price: number; delivery: number | null;
+  id: string; variant: string; kit: string; retailer: string; mpn: string | null; price: number; delivery: number | null;
   priceVerified: boolean; deliveryVerified: boolean; checked: string; url: string; affiliate?: boolean;
+  modelConfirmed?: boolean;
 }): Offer {
   return parseOffer({
     schema_version: 1,
@@ -58,8 +60,8 @@ function offer(o: {
     asin: null,
     mpn: o.mpn,
     gtin: null,
-    model_match_confirmed: true,
-    model_match_note: 'TEST FIXTURE: exact model code shown.',
+    model_match_confirmed: o.modelConfirmed ?? true,
+    model_match_note: o.modelConfirmed === false ? 'TEST FIXTURE: listing code does not confirm this model.' : 'TEST FIXTURE: exact model code shown.',
     currency: 'GBP',
     price_gbp_inc_vat: o.price,
     price_gbp_ex_vat: null,
@@ -101,15 +103,22 @@ export function fixtureData(now: Date = new Date()): { variants: KitVariant[]; o
     variant({ id: 'evaq8-e180', kit: 'evaq8-gobag-1-person', name: 'GoBag Emergency Kit 72hr Survival Supplies', code: 'E180', people: 1, weight: 2.5, water: 0.5, format: 'rucksack', url: e180Url, captured: fresh1 }),
     variant({ id: 'evaq8-e184', kit: 'evaq8-gobag-4-person', name: 'GoBag Emergency Kit 4 Person Family Survival Kit', code: 'E184', people: 4, weight: 9, water: 2, format: 'rucksack', url: e184Url, captured: fresh1 }),
     variant({ id: 'evaq8-e194', kit: 'evaq8-gobag-4-person', name: '72 Hour Emergency 4 Person Family Kit in Holdall', code: 'E194', people: 4, weight: 8.5, water: 2, format: 'holdall', url: e194Url, captured: fresh1 }),
+    // Deliberate data-entry error: a different model keyed with the same variant_id.
+    variant({ id: 'evaq8-e194', kit: 'evaq8-gobag-4-person', name: 'GoBag 4 Person Emergency Kit in Plain Rucksack', code: 'E184P', people: 4, weight: 6, water: 2, format: 'rucksack', url: 'https://evaq8.co.uk/emergency-go-bag-4-person-plain.html', captured: fresh1 }),
   ];
   const offers = [
+    // E180: no best price (verified rows from different UK days), plus unverified and stale rows.
     offer({ id: 'fx-e180-evaq8', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'EVAQ8', mpn: 'E180', price: 50, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e180Url }),
-    offer({ id: 'fx-e180-example', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Example Retailer', mpn: 'E180', price: 48, delivery: 0, priceVerified: false, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e180' }),
+    offer({ id: 'fx-e180-example', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Example Retailer', mpn: 'E180', price: 52, delivery: 0, priceVerified: true, deliveryVerified: true, checked: yesterday, url: 'https://example.com/product/e180' }),
+    offer({ id: 'fx-e180-unverified', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Second Example Shop', mpn: 'E180', price: 48, delivery: 0, priceVerified: false, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e180-b' }),
+    offer({ id: 'fx-e180-stale', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Old Example Shop', mpn: 'E180', price: 45, delivery: 0, priceVerified: true, deliveryVerified: true, checked: old, url: 'https://example.com/product/e180-old' }),
+    // E184: best + savings; model-unconfirmed row is excluded by the API.
     offer({ id: 'fx-e184-evaq8', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E184', price: 200, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e184Url, affiliate: true }),
     offer({ id: 'fx-e184-example', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Example Retailer', mpn: 'E184', price: 205, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh2, url: 'https://example.com/product/e184' }),
+    offer({ id: 'fx-e184-unconfirmed', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Marketplace Example', mpn: null, price: 150, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e184-maybe', modelConfirmed: false }),
+    // E194: duplicate variant_id -> all excluded.
     offer({ id: 'fx-e194-evaq8', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E194', price: 190, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e194Url }),
-    offer({ id: 'fx-e194-example', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'Example Retailer', mpn: 'E194', price: 185, delivery: 6, priceVerified: true, deliveryVerified: true, checked: yesterday, url: 'https://example.com/product/e194' }),
-    offer({ id: 'fx-e194-other-old', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'Other Example Shop', mpn: 'E194', price: 180, delivery: 0, priceVerified: true, deliveryVerified: true, checked: old, url: 'https://example.com/product/e194-old' }),
   ];
+
   return { variants, offers };
 }

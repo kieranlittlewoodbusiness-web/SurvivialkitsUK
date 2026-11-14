@@ -35,4 +35,5 @@ export const exclusionText: Record<ExclusionReason, string> = {
   model_match_unconfirmed: 'listing not confirmed as this exact model',
   identifier_mismatch: 'product code does not match this model',
   unknown_variant: 'not matched to a model we compare',
+  duplicate_variant_id: 'our data lists two models under the same product key, so nothing is compared until it is fixed',
 };
