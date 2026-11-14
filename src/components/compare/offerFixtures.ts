@@ -47,7 +47,7 @@ function offer(o: {
   id: string; variant: string; kit: string; retailer: string; mpn: string | null; price: number; delivery: number | null;
   priceVerified: boolean; deliveryVerified: boolean; checked: string; url: string; affiliate?: boolean;
   modelConfirmed?: boolean;
-}): Offer {
+}, now: Date): Offer {
   return parseOffer({
     schema_version: 1,
     offer_id: o.id,
@@ -86,13 +86,14 @@ function offer(o: {
     captured_by: 'fixture',
     screenshot_path: null,
     internal: { commission_rate: null, commission_rate_source: null },
-  });
+  }, { now });
 }
 
 export function fixtureData(now: Date = new Date()): { variants: KitVariant[]; offers: Offer[] } {
   const t = now.getTime();
   const fresh1 = toLondonIso(t - 60_000);
-  const fresh2 = toLondonIso(t - 120_000);
+  // Same instant as fresh1 so a build just after UK midnight cannot split the capture window.
+  const fresh2 = fresh1;
   const yesterday = toLondonIso(t - 26 * 3600_000);
   const old = toLondonIso(t - 10 * 86_400_000);
   const e180Url = 'https://evaq8.co.uk/go-bag-emergency-kit-72-hour-survival-supplies.html';
@@ -108,16 +109,16 @@ export function fixtureData(now: Date = new Date()): { variants: KitVariant[]; o
   ];
   const offers = [
     // E180: no best price (verified rows from different UK days), plus unverified and stale rows.
-    offer({ id: 'fx-e180-evaq8', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'EVAQ8', mpn: 'E180', price: 50, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e180Url }),
-    offer({ id: 'fx-e180-example', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Example Retailer', mpn: 'E180', price: 52, delivery: 0, priceVerified: true, deliveryVerified: true, checked: yesterday, url: 'https://example.com/product/e180' }),
-    offer({ id: 'fx-e180-unverified', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Second Example Shop', mpn: 'E180', price: 48, delivery: 0, priceVerified: false, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e180-b' }),
-    offer({ id: 'fx-e180-stale', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Old Example Shop', mpn: 'E180', price: 45, delivery: 0, priceVerified: true, deliveryVerified: true, checked: old, url: 'https://example.com/product/e180-old' }),
+    offer({ id: 'fx-e180-evaq8', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'EVAQ8', mpn: 'E180', price: 50, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e180Url }, now),
+    offer({ id: 'fx-e180-example', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Example Retailer', mpn: 'E180', price: 52, delivery: 0, priceVerified: true, deliveryVerified: true, checked: yesterday, url: 'https://example.com/product/e180' }, now),
+    offer({ id: 'fx-e180-unverified', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Second Example Shop', mpn: 'E180', price: 48, delivery: 0, priceVerified: false, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e180-b' }, now),
+    offer({ id: 'fx-e180-stale', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Old Example Shop', mpn: 'E180', price: 45, delivery: 0, priceVerified: true, deliveryVerified: true, checked: old, url: 'https://example.com/product/e180-old' }, now),
     // E184: best + savings; model-unconfirmed row is excluded by the API.
-    offer({ id: 'fx-e184-evaq8', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E184', price: 200, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e184Url, affiliate: true }),
-    offer({ id: 'fx-e184-example', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Example Retailer', mpn: 'E184', price: 205, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh2, url: 'https://example.com/product/e184' }),
-    offer({ id: 'fx-e184-unconfirmed', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Marketplace Example', mpn: null, price: 150, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e184-maybe', modelConfirmed: false }),
+    offer({ id: 'fx-e184-evaq8', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E184', price: 200, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e184Url, affiliate: true }, now),
+    offer({ id: 'fx-e184-example', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Example Retailer', mpn: 'E184', price: 205, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh2, url: 'https://example.com/product/e184' }, now),
+    offer({ id: 'fx-e184-unconfirmed', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Marketplace Example', mpn: null, price: 150, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e184-maybe', modelConfirmed: false }, now),
     // E194: duplicate variant_id -> all excluded.
-    offer({ id: 'fx-e194-evaq8', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E194', price: 190, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e194Url }),
+    offer({ id: 'fx-e194-evaq8', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E194', price: 190, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e194Url }, now),
   ];
 
   return { variants, offers };
