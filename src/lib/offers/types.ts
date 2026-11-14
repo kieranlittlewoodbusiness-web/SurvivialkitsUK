@@ -169,6 +169,7 @@ export interface VariantsFile {
 /* ---------- Derived output the UI consumes ---------- */
 
 export type OfferLabel =
+  | 'model_unconfirmed'
   | 'price_unverified'
   | 'price_missing'
   | 'delivery_unverified'
@@ -176,6 +177,7 @@ export type OfferLabel =
   | 'stale';
 
 export const OFFER_LABEL_TEXT: Record<OfferLabel, string> = {
+  model_unconfirmed: 'Exact model not confirmed',
   price_unverified: 'Price not verified',
   price_missing: 'Price not available',
   delivery_unverified: 'Delivery cost not verified',
@@ -186,7 +188,8 @@ export const OFFER_LABEL_TEXT: Record<OfferLabel, string> = {
 export type ExclusionReason =
   | 'model_match_unconfirmed'
   | 'identifier_mismatch'
-  | 'unknown_variant';
+  | 'unknown_variant'
+  | 'duplicate_variant_id';
 
 export interface ExcludedOffer {
   offer_id: string;
@@ -213,10 +216,13 @@ export interface DisplayOffer {
   /** delivered_total / (people x days). null when total unknown. */
   total_per_person_day_gbp: number | null;
   delivery_known: boolean;
+  /** true only when the offer is model-confirmed AND its MPN/GTIN match the variant.
+   *  false => never eligible for best price/savings, labelled model_unconfirmed. */
+  model_match_confirmed: boolean;
   price_verified: boolean;
   delivery_verified: boolean;
   is_stale: boolean;
-  /** price & delivery verified, delivery known, not stale. */
+  /** Model confirmed, price & delivery verified and finite, delivery known, not stale. */
   eligible_for_best_price: boolean;
   is_best_price: boolean;
   labels: OfferLabel[];
@@ -248,11 +254,15 @@ export interface VariantComparison {
   days: number;
   water_litres_included: number;
   /** Sorted: verified known totals asc, then unverified known totals asc,
-   *  then unknown delivery (by price), then stale, then missing price. */
+   *  then unknown delivery (by price), then stale known totals, then stale
+   *  unknown delivery, then missing price. */
   offers: DisplayOffer[];
   excluded: ExcludedOffer[];
+  /** Set only when same_capture_window is true, >= 2 rows are eligible and the
+   *  cheapest eligible row is strictly cheaper than the next (no ties). */
   best_price_offer_id: string | null;
   /** True only when every included row was captured on the same London day. */
   same_capture_window: boolean;
+  /** Non-null exactly when best_price_offer_id is non-null. */
   savings: Savings | null;
 }

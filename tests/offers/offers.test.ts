@@ -101,13 +101,9 @@ describe('stale offers', () => {
     expect(isStale(o, { now: NOW })).toBe(true);
   });
 
-  it('shows stale offers labelled and excludes them from best price', () => {
-    const staleCheap = offer({
-      price_gbp_inc_vat: 10,
-      captured_at: '2026-11-01T10:00:00+00:00',
-      last_checked: '2026-11-01T10:00:00+00:00',
-      next_check_due: '2026-11-08T10:00:00+00:00',
-    });
+  it('shows stale offers labelled and excludes them from best price (same capture day)', () => {
+    // Captured today but next_check_due already passed -> stale.
+    const staleCheap = offer({ price_gbp_inc_vat: 10, next_check_due: '2026-11-14T11:00:00+00:00' });
     const fresh1 = offer({ price_gbp_inc_vat: 100 });
     const fresh2 = offer({ price_gbp_inc_vat: 110 });
     const cmp = compareVariant(e184, [staleCheap, fresh1, fresh2], opts);
@@ -116,9 +112,23 @@ describe('stale offers', () => {
     expect(stale.labels).toContain('stale');
     expect(stale.eligible_for_best_price).toBe(false);
     expect(stale.is_best_price).toBe(false);
+    expect(cmp.same_capture_window).toBe(true);
     expect(cmp.best_price_offer_id).toBe(fresh1.offer_id);
     expect(cmp.offers.at(-1)!.offer_id).toBe(staleCheap.offer_id);
+  });
+
+  it('a stale row from an older capture window blocks best price entirely (M4)', () => {
+    const staleOld = offer({
+      price_gbp_inc_vat: 10,
+      captured_at: '2026-11-01T10:00:00+00:00',
+      last_checked: '2026-11-01T10:00:00+00:00',
+      next_check_due: '2026-11-08T10:00:00+00:00',
+    });
+    const cmp = compareVariant(e184, [staleOld, offer({ price_gbp_inc_vat: 100 }), offer({ price_gbp_inc_vat: 110 })], opts);
+    expect(cmp.offers.find((o) => o.offer_id === staleOld.offer_id)!.is_stale).toBe(true);
     expect(cmp.same_capture_window).toBe(false);
+    expect(cmp.best_price_offer_id).toBeNull();
+    expect(cmp.savings).toBeNull();
   });
 });
 
