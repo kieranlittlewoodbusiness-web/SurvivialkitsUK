@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "updated": "2026-11-14",
+  "notes": "Paste exact programme-generated tracking URLs into each offer.url. Do not rewrite or shorten them. Set enabled true only after programme approval. Preserve affiliate query parameters exactly.",
+  "offers": [
+    {
+      "id": "torch-example-amazon",
+      "title": "Example LED torch (placeholder)",
+      "merchant": "Amazon UK",
+      "network": "amazon-associates",
+      "category": "torches",
+      "url": "",
+      "enabled": false,
+      "priceBand": "£10–£25",
+      "summary": "Placeholder row. Replace url with the exact Associates Special Link once approved.",
+      "evidence": "desk-research"
+    },
+    {
+      "id": "powerbank-example-amazon",
+      "title": "Example USB-C power bank (placeholder)",
+      "merchant": "Amazon UK",
+      "network": "amazon-associates",
+      "category": "power-banks",
+      "url": "",
+      "enabled": false,
+      "priceBand": "£20–£50",
+      "summary": "Placeholder row for a mid-capacity USB-C power bank.",
+      "evidence": "desk-research"
+    },
+    {
+      "id": "radio-example-decathlon",
+      "title": "Example battery/wind-up radio (placeholder)",
+      "merchant": "Decathlon UK",
+      "network": "awin",
+      "category": "radios",
+      "url": "",
+      "enabled": false,
+      "priceBand": "£15–£40",
+      "summary": "Placeholder for an Awin deeplink once Decathlon approves the publisher.",
+      "evidence": "desk-research"
+    },
+    {
+      "id": "water-carrier-example",
+      "title": "Example food-grade water carrier (placeholder)",
+      "merchant": "Go Outdoors",
+      "network": "awin",
+      "category": "water-storage",
+      "url": "",
+      "enabled": false,
+      "priceBand": "£10–£30",
+      "summary": "Placeholder for a stackable food-grade water carrier.",
+      "evidence": "desk-research"
+    },
+    {
+      "id": "first-aid-example-argos",
+      "title": "Example home first-aid kit (placeholder)",
+      "merchant": "Argos",
+      "network": "cj",
+      "category": "first-aid",
+      "url": "",
+      "enabled": false,
+      "priceBand": "£8–£25",
+      "summary": "Placeholder for a compact household first-aid kit.",
+      "evidence": "desk-research"
+    },
+    {
+      "id": "winter-car-example-millets",
+      "title": "Example winter car essentials pack (placeholder)",
+      "merchant": "Millets",
+      "network": "awin",
+      "category": "winter-travel",
+      "url": "",
+      "enabled": false,
+      "priceBand": "£20–£60",
+      "summary": "Placeholder for hi-vis, blanket or compact shovel style items.",
+      "evidence": "desk-research"
+    }
+  ]
+}

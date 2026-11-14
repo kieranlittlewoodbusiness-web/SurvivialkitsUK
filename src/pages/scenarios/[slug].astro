@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EvidenceBadge from '../../components/EvidenceBadge.astro';
+import AdBlock from '../../components/AdBlock.astro';
+import { getPublishedScenarios } from '../../lib/content';
+import { getLiveOffers, getPendingOffers } from '../../lib/retailerOffers';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const scenarios = await getPublishedScenarios();
+  return scenarios.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const offerCategories = entry.data.gearCategories;
+const offers = offerCategories.flatMap((cat) => getLiveOffers(cat));
+const pending = offerCategories.flatMap((cat) => getPendingOffers(cat));
+const showAd = entry.data.affiliate && (offers.length > 0 || pending.length > 0);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  canonicalPath={`/scenarios/${entry.id}`}
+  ogType="article"
+  showAmazonNotice={offers.some((o) => o.network === 'amazon-associates')}
+>
+  <article class="section">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Scenario</p>
+      <h1>{entry.data.title}</h1>
+      <p class="lede">{entry.data.scenario}</p>
+      <p class="meta">
+        {entry.data.evidence.map((kind) => <EvidenceBadge kind={kind} />)}
+        <span>
+          Updated {entry.data.updated?.toLocaleDateString('en-GB') ?? entry.data.pubDate.toLocaleDateString('en-GB')}
+        </span>
+      </p>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        entry.data.sources.length > 0 && (
+          <section class="sources-block">
+            <h2>Sources</h2>
+            <ul class="source-list">
+              {entry.data.sources.map((source) => (
+                <li>
+                  <a href={source.url} rel="noopener noreferrer">
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        showAd && (
+          <AdBlock
+            offers={offers.length ? offers : []}
+            heading="Related retailer examples"
+            pendingNote="No live affiliate links on this article yet. Criteria pages explain what to look for without a purchase prompt."
+          />
+        )
+      }
+
+      {
+        entry.data.gearCategories.length > 0 && (
+          <p class="related">
+            Gear criteria:{' '}
+            {entry.data.gearCategories.map((cat, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={`/gear/${cat}`}>{cat.replaceAll('-', ' ')}</a>
+              </>
+            ))}
+          </p>
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
+    color: var(--ink-muted);
+    font-size: 0.92rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .sources-block {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .related {
+    margin-top: 1.5rem;
+    color: var(--ink-muted);
+  }
+</style>

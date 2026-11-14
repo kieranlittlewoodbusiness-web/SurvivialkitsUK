@@ -1,0 +1,49 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import AmazonAssociatesNotice from '../components/AmazonAssociatesNotice.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalPath?: string;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+  showAmazonNotice?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  canonicalPath,
+  noindex = false,
+  ogType = 'website',
+  showAmazonNotice = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      noindex={noindex}
+      ogType={ogType}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-shell">
+      <Header />
+      <main id="main">
+        {showAmazonNotice && <div class="wrap"><AmazonAssociatesNotice /></div>}
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

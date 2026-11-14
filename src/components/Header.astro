@@ -1,0 +1,193 @@
+---
+import { site } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const links = [
+  { href: '/checklist', label: 'Checklist' },
+  { href: '/scenarios', label: 'Scenarios' },
+  { href: '/gear', label: 'Gear criteria' },
+  { href: '/method', label: 'Method' },
+  { href: '/about', label: 'About' },
+];
+
+function isActive(href: string) {
+  if (href === '/') return path === '/';
+  return path === href || path.startsWith(`${href}/`);
+}
+---
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="/">
+      <span class="brand-mark">{site.name}</span>
+      <span class="brand-tag">{site.tagline}</span>
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      id="nav-toggle"
+    >
+      Menu
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(244, 247, 248, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: var(--header-h);
+    padding-block: 0.65rem;
+  }
+
+  .brand {
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+    max-width: calc(100% - 5.5rem);
+  }
+
+  .brand-mark {
+    display: block;
+    font-size: 1.15rem;
+    line-height: 1.2;
+  }
+
+  .brand-tag {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .nav-toggle {
+    min-height: 2.5rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--field);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .site-nav {
+    flex-basis: 100%;
+    display: none;
+  }
+
+  .site-nav.is-open {
+    display: block;
+  }
+
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.25rem 0 0.5rem;
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .site-nav a {
+    display: block;
+    padding: 0.7rem 0.35rem;
+    text-decoration: none;
+    color: var(--ink);
+    font-weight: 600;
+    min-height: 2.75rem;
+  }
+
+  .site-nav a[aria-current='page'] {
+    color: var(--signal-deep);
+    box-shadow: inset 3px 0 0 var(--signal);
+    padding-left: 0.65rem;
+  }
+
+  @media (min-width: 56rem) {
+    .nav-toggle {
+      display: none;
+    }
+
+    .site-nav {
+      display: block;
+      flex-basis: auto;
+    }
+
+    .site-nav ul {
+      display: flex;
+      gap: 0.25rem 1rem;
+      padding: 0;
+      align-items: center;
+    }
+
+    .site-nav a {
+      padding: 0.45rem 0.2rem;
+      min-height: auto;
+    }
+
+    .site-nav a[aria-current='page'] {
+      box-shadow: inset 0 -2px 0 var(--signal);
+      padding-left: 0.2rem;
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      nav.classList.toggle('is-open', !open);
+    });
+
+    const closeNav = () => {
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('is-open');
+      toggle.focus();
+    };
+
+    nav.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeNav();
+    });
+
+    toggle.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        closeNav();
+      }
+    });
+  }
+</script>

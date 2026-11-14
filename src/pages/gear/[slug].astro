@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EvidenceBadge from '../../components/EvidenceBadge.astro';
+import AdBlock from '../../components/AdBlock.astro';
+import { getPublishedGear } from '../../lib/content';
+import { getLiveOffers } from '../../lib/retailerOffers';
+import { render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const gear = await getPublishedGear();
+  return gear.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const offers = getLiveOffers(entry.data.category);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  canonicalPath={`/gear/${entry.id}`}
+  showAmazonNotice={offers.some((o) => o.network === 'amazon-associates')}
+>
+  <article class="section">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Gear criteria</p>
+      <h1>{entry.data.title}</h1>
+      <p class="lede">{entry.data.description}</p>
+      <p class="meta">
+        <EvidenceBadge kind="desk-research" />
+        <EvidenceBadge kind="official-guidance" />
+      </p>
+
+      <h2>What we compare</h2>
+      <ul>
+        {entry.data.criteria.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        entry.data.sources.length > 0 && (
+          <section class="sources-block">
+            <h2>Sources</h2>
+            <ul class="source-list">
+              {entry.data.sources.map((source) => (
+                <li>
+                  <a href={source.url} rel="noopener noreferrer">
+                    {source.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      {
+        entry.data.affiliate && (
+          <AdBlock offers={offers} heading={`Where to buy · ${entry.data.title}`} />
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .sources-block {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+  }
+</style>

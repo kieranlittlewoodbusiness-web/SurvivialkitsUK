@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const sources = [
+  {
+    label: 'Prepare – Get prepared for emergencies',
+    url: 'https://prepare.campaign.gov.uk/get-prepared-for-emergencies/',
+  },
+  {
+    label: 'Prepare – Power cuts',
+    url: 'https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/',
+  },
+  {
+    label: 'Prepare – Campaign toolkit',
+    url: 'https://prepare.campaign.gov.uk/campaign-resources/',
+  },
+  {
+    label: 'GOV.UK – Households encouraged to prepare',
+    url: 'https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency',
+  },
+  {
+    label: 'National Resilience / Be Ready checklist (PDF)',
+    url: 'https://beready.campaign.gov.uk/wp-content/uploads/sites/252/2026/10/Be-Ready-Checklist_English.pdf',
+  },
+  {
+    label: 'Ready Scotland – Emergency kit',
+    url: 'https://ready.campaign.gov.scot/emergency-kit',
+  },
+  {
+    label: 'Ready Scotland – Emergency plan',
+    url: 'https://ready.campaign.gov.scot/emergency-plan',
+  },
+  {
+    label: 'Ready Scotland – Flooding',
+    url: 'https://ready.campaign.gov.scot/flooding',
+  },
+  {
+    label: 'SEPA flooding',
+    url: 'https://beta.sepa.scot/flooding/',
+  },
+  {
+    label: 'Floodline signup (Scotland)',
+    url: 'https://myfloodline.sepa.scot/register',
+  },
+  {
+    label: 'GOV.UK – Flood alerts and warnings',
+    url: 'https://www.gov.uk/guidance/flood-alerts-and-warnings-what-they-are-and-what-to-do',
+  },
+  {
+    label: 'GOV.UK – Help during a flood',
+    url: 'https://www.gov.uk/help-during-flood',
+  },
+  {
+    label: 'Met Office – UK warnings',
+    url: 'https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings',
+  },
+  {
+    label: 'Met Office – Heavy rain safety',
+    url: 'https://weather.metoffice.gov.uk/warnings-and-advice/seasonal-advice/stay-safe-in-heavy-rain',
+  },
+  {
+    label: 'British Red Cross – 72 hours context',
+    url: 'https://www.redcross.org.uk/stories/disasters-and-emergencies/uk/why-are-we-being-asked-to-prepare-for-72-hours',
+  },
+  {
+    label: 'Priority Services Register',
+    url: 'https://www.thepsr.co.uk/',
+  },
+  {
+    label: 'ASA – Affiliate marketing',
+    url: 'https://www.asa.org.uk/advice-online/affiliate-marketing.html',
+  },
+];
+---
+
+<BaseLayout
+  title="Sources"
+  description="Primary UK and Scottish official sources cited by The Household Brief."
+  canonicalPath="/sources"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Sources</p>
+      <h1>Sources we cite</h1>
+      <p class="lede">
+        Re-verify campaign URLs before major updates—government hosts and PDF paths can change.
+        Retrieved for this build: 14 November 2026.
+      </p>
+      <ul class="source-list">
+        {
+          sources.map((source) => (
+            <li>
+              <a href={source.url} rel="noopener noreferrer">
+                {source.label}
+              </a>
+              <div class="url">{source.url}</div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .url {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    word-break: break-all;
+  }
+</style>

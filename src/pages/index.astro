@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EvidenceBadge from '../components/EvidenceBadge.astro';
+import { site } from '../data/site';
+import { getPublishedScenarios, getPublishedGear } from '../lib/content';
+
+const scenarios = await getPublishedScenarios();
+const featured = scenarios.filter((s) => s.data.featured).slice(0, 4);
+const gear = await getPublishedGear();
+---
+
+<BaseLayout title={site.name} description={site.description} canonicalPath="/">
+  <section class="hero" aria-label="Introduction">
+    <div class="hero__visual" aria-hidden="true">
+      <img
+        src="/images/hero-hall.svg"
+        alt=""
+        width="1600"
+        height="900"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <div class="hero__rain"></div>
+    </div>
+    <div class="wrap hero__content">
+      <p class="brand-hero">{site.name}</p>
+      <h1>Know what you already own. Fill the gaps calmly.</h1>
+      <p class="lede">
+        Practical household planning for UK outages, severe weather, supply disruption and temporary
+        evacuation—grounded in official guidance.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="/checklist">Start with what you own</a>
+        <a class="btn btn--ghost" href="/scenarios">Browse scenarios</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split-2">
+      <div>
+        <p class="eyebrow">Why this exists</p>
+        <h2>Ordinary shocks, ordinary competence</h2>
+        <p>
+          UK government resilience campaigns ask households to prepare for up to a few days of
+          disruption so responders can prioritise people who need help most. Climate-driven severe
+          weather and occasional supply interruptions make those household logistics more relevant—not
+          as a prediction, but as context for planning.
+        </p>
+        <p>
+          <EvidenceBadge kind="official-guidance" />
+          See <a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer">Prepare</a>,
+          <a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a>
+          and our <a href="/sources">sources list</a>.
+        </p>
+      </div>
+      <div>
+        <p class="eyebrow">Method</p>
+        <h2>Guidance first, then criteria, then labelled ads</h2>
+        <p>
+          We separate official advice, desk research, firsthand tests and advertising. Affiliate
+          links use clear <strong>Ad</strong> labels before you engage.
+        </p>
+        <p><a href="/method">How we label evidence →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Household scenarios</p>
+      <h2>Four places to start</h2>
+      <ul class="link-list">
+        {
+          featured.map((entry) => (
+            <li>
+              <a href={`/scenarios/${entry.id}`}>
+                {entry.data.title}
+                <span>{entry.data.scenario}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p><a href="/scenarios">All scenarios</a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split-2">
+      <div>
+        <p class="eyebrow">72-hour checklist</p>
+        <h2>Three steps</h2>
+        <ol class="home-steps">
+          <li>Check cupboards, drawers and the car for what you already own.</li>
+          <li>Write contacts, meeting points and medical notes on paper.</li>
+          <li>Fill genuine gaps gradually on normal shops.</li>
+        </ol>
+        <div class="btn-row">
+          <a class="btn" href="/checklist">Open the checklist</a>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow">Gear criteria</p>
+        <h2>Compare before you buy</h2>
+        <ul class="link-list">
+          {
+            gear.map((entry) => (
+              <li>
+                <a href={`/gear/${entry.id}`}>
+                  {entry.data.title}
+                  <span>{entry.data.description}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(92vh, 52rem);
+    display: grid;
+    align-items: end;
+    color: #f4f7f8;
+    overflow: hidden;
+  }
+
+  .hero__visual {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: drift 28s ease-in-out infinite alternate;
+  }
+
+  .hero__rain {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -15deg,
+      transparent,
+      transparent 8px,
+      rgba(244, 247, 248, 0.04) 8px,
+      rgba(244, 247, 248, 0.04) 10px
+    );
+    animation: rain 12s linear infinite;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 0 3rem;
+    background: linear-gradient(180deg, transparent 0%, rgba(28, 36, 41, 0.55) 35%, rgba(28, 36, 41, 0.78) 100%);
+    width: 100%;
+    max-width: none;
+    padding-inline: max(1rem, calc((100% - var(--max)) / 2));
+  }
+
+  .brand-hero {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
+    font-weight: 700;
+    margin: 0 0 0.75rem;
+    color: #f4f7f8;
+    max-width: 20ch;
+  }
+
+  .hero h1 {
+    color: #f4f7f8;
+    max-width: 16ch;
+  }
+
+  .hero .lede {
+    color: rgba(244, 247, 248, 0.9);
+  }
+
+  .home-steps {
+    margin: 0;
+    padding-left: 1.2rem;
+    max-width: 34rem;
+  }
+
+  .home-steps li {
+    margin-bottom: 0.65rem;
+  }
+
+  @keyframes drift {
+    from {
+      transform: scale(1.04) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.1) translate3d(-1.5%, -1%, 0);
+    }
+  }
+
+  @keyframes rain {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: 120px 220px;
+    }
+  }
+</style>

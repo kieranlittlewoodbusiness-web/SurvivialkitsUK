@@ -1,0 +1,122 @@
+---
+import { site } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div>
+      <p class="brand-mark">{site.name}</p>
+      <p class="footer-copy">
+        Independent UK household readiness guides. Start with what you already own; fill gaps
+        gradually.
+      </p>
+      <p class="footer-copy">
+        <a href="/affiliate-disclosure">Affiliate disclosure</a>
+        {' · '}
+        <a href="/editorial-policy">Editorial policy</a>
+        {' · '}
+        <a href="/privacy">Privacy</a>
+      </p>
+    </div>
+
+    <div>
+      <h2 class="footer-heading">Useful numbers</h2>
+      <ul class="footer-list">
+        <li>Emergency services: <strong>999</strong></li>
+        <li>NHS / NHS 24: <strong>111</strong></li>
+        <li>Power cut (England, Scotland, Wales): <strong>105</strong></li>
+        <li>Floodline: <strong>0345 988 1188</strong></li>
+        <li>
+          Priority Services Register:
+          <a href="https://www.thepsr.co.uk/" rel="noopener noreferrer">thepsr.co.uk</a>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer-heading">Official guidance</h2>
+      <ul class="footer-list">
+        <li>
+          <a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer"
+            >Prepare (UK)</a
+          >
+        </li>
+        <li>
+          <a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a>
+        </li>
+        <li>
+          <a href="/sources">All sources we cite</a>
+        </li>
+        <li>
+          <a href="/contact">Contact</a>
+        </li>
+        <li>
+          <a href="/sitemap-index.xml">Sitemap</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap site-footer__legal">
+    <p>
+      Some pages may contain advertising. Where we use affiliate links, they are labelled
+      {' '}<strong>Ad</strong> before you engage with them. See our
+      {' '}<a href="/affiliate-disclosure">affiliate disclosure</a>.
+    </p>
+    <p>© {new Date().getFullYear()} {site.name}. No third-party tracking scripts on this launch build.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 3rem;
+    padding: 2.5rem 0 2rem;
+    border-top: 1px solid var(--line);
+    background: rgba(28, 36, 41, 0.04);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .footer-heading {
+    font-size: 1rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .footer-copy,
+  .footer-list {
+    font-size: 0.95rem;
+    color: var(--ink-muted);
+    max-width: none;
+  }
+
+  .footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-list li {
+    margin-bottom: 0.4rem;
+  }
+
+  .site-footer__legal {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+  }
+
+  .site-footer__legal p {
+    max-width: none;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__grid {
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

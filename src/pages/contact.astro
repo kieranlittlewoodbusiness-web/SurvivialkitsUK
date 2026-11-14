@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Contact"
+  description={`Contact ${site.name} about corrections, sources or editorial questions.`}
+  canonicalPath="/contact"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow prose">
+      <p class="eyebrow">Contact</p>
+      <h1>Contact</h1>
+      <p class="lede">
+        For corrections, source updates or editorial questions, email the editors. We do not provide
+        emergency advice by email—call 999 if you are in danger.
+      </p>
+      <p>
+        Email:
+        <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+      </p>
+      <p>
+        Please include page URLs for corrections. We aim to update factual errors promptly and note
+        significant revisions on the page.
+      </p>
+      <p>
+        This static launch build has no contact form backend and no third-party tracking scripts.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

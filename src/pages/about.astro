@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="About"
+  description={`${site.name}: independent guides to household readiness in the UK.`}
+  canonicalPath="/about"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow prose">
+      <p class="eyebrow">About</p>
+      <h1>{site.name}</h1>
+      <p class="lede">{site.description}</p>
+      <p>
+        We write for UK householders who want calm, sourced planning for power cuts, severe weather,
+        water interruption, supply disruption and temporary evacuation. We avoid threat predictions,
+        panic-buying language and weapons content.
+      </p>
+      <p>
+        Product mentions, when present, follow practical criteria and UK advertising rules for
+        affiliate marketing. Read our <a href="/editorial-policy">editorial policy</a> and
+        <a href="/affiliate-disclosure">affiliate disclosure</a>.
+      </p>
+      <p>
+        Questions: <a href="/contact">contact the editors</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
