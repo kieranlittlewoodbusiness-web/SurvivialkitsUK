@@ -1,0 +1,343 @@
+---
+/**
+ * One kit variant on the comparison page. Mobile-first: stacked card, no wide table.
+ * Shows the best *verified* delivered price for this exact variant, or a labelled empty state.
+ */
+import OfferStateBadge from './OfferStateBadge.astro';
+import RetailerLink from './RetailerLink.astro';
+import { formatGbp, formatUkDateTime, stateLabels, type VariantOffers } from './offerModel';
+import { waterNeeded, waterShortfall, type KitVariant } from './kits';
+
+interface Props {
+  kit: KitVariant;
+  offers: VariantOffers;
+  /** True when the page-level offer load failed. */
+  offersError?: boolean;
+}
+
+const { kit, offers, offersError = false } = Astro.props;
+const shortfall = waterShortfall(kit);
+const needed = waterNeeded(kit.people);
+const others = offers.rows.filter((r) => r !== offers.best);
+const headingId = `kit-${kit.id}`;
+const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
+---
+
+<article class="kit-card" id={kit.id} aria-labelledby={headingId}>
+  <header class="kit-card__head">
+    <p class="kit-card__for">{kit.kitLabel}</p>
+    <h3 id={headingId}>
+      {kit.brand} {kit.name}
+      <span class="kit-card__code">Model {kit.modelCode}</span>
+    </h3>
+    <ul class="kit-card__chips" aria-label="Key facts">
+      <li>{kit.people} {kit.people === 1 ? 'person' : 'people'}</li>
+      <li>{kit.format === 'grab-bag' ? 'Grab bag' : 'Stay-at-home box'}</li>
+      <li>{kit.listedWeightKg !== null ? `Listed ${kit.listedWeightKg} kg` : 'Weight not published'}</li>
+    </ul>
+  </header>
+
+  <section class="kit-card__price" aria-label={`Price for ${kit.modelCode}`}>
+    {
+      offers.best ? (
+        <>
+          <p class="kit-card__price-label">
+            Best verified delivered price <OfferStateBadge state="verified" />
+          </p>
+          <p class="kit-card__price-value">
+            {formatGbp(offers.best.totalGbp)}
+            <span class="kit-card__price-split">
+              {formatGbp(offers.best.priceGbpIncVat)} inc VAT +{' '}
+              {offers.best.deliveryGbp === 0 ? 'free delivery' : `${formatGbp(offers.best.deliveryGbp as number)} delivery`}
+            </span>
+          </p>
+          <p class="kit-card__stamp">
+            Price at {offers.best.retailer} on {formatUkDateTime(offers.best.lastChecked)} UK time. Prices
+            change. Availability: “{offers.best.availabilityText}”.
+          </p>
+          <RetailerLink affiliateUrl={offers.best.affiliateUrl} productUrl={offers.best.productUrl} retailer={offers.best.retailer} />
+        </>
+      ) : (
+        <>
+          <p class="kit-card__price-label">No verified delivered price</p>
+          <p class="kit-card__stamp">
+            {offersError
+              ? 'Prices could not be loaded for this version of the page.'
+              : offers.rows.length > 0
+                ? 'None of the prices we hold for this exact model are verified, current and with a known delivery cost, so we do not show a best price.'
+                : 'We have not captured a price for this exact model yet.'}{' '}
+            Check the current price and delivery with the seller.
+          </p>
+          <a class="btn btn--ghost" href={kit.sourceUrl} rel="noopener noreferrer">
+            Check at {kit.seller}<span class="visually-hidden"> (seller listing)</span>
+          </a>
+        </>
+      )
+    }
+  </section>
+
+  <p class="kit-card__water">
+    <strong>Water: {fmtL(kit.waterLitresIncluded)} listed, {fmtL(needed)} needed. {fmtL(shortfall)} short.</strong>
+    <span>Guidance is 3 L per person per day for 3 days.</span>
+  </p>
+
+  <div class="kit-card__add">
+    <h4>You’d still need to add</h4>
+    <ul>
+      {kit.stillToAdd.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <dl class="kit-card__specs">
+    <div><dt>Format</dt><dd>{kit.formatNote}</dd></div>
+    {kit.peopleNote && <div><dt>People</dt><dd>{kit.peopleNote}</dd></div>}
+    <div><dt>FM radio</dt><dd>{kit.radio.text}</dd></div>
+    <div><dt>Light</dt><dd>{kit.torches}</dd></div>
+    <div><dt>Power bank</dt><dd>{kit.powerBank}</dd></div>
+    <div><dt>First aid</dt><dd>{kit.firstAid}</dd></div>
+    {kit.weightNote && <div><dt>Weight</dt><dd>{kit.weightNote}</dd></div>}
+  </dl>
+
+  {
+    kit.conflicts && kit.conflicts.length > 0 && (
+      <div class="kit-card__conflicts" role="note">
+        <strong>Check before you buy</strong>
+        <ul>
+          {kit.conflicts.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    )
+  }
+
+  {
+    others.length > 0 && (
+      <details class="kit-card__offers">
+        <summary>Other prices we hold ({others.length})</summary>
+        <ul>
+          {others.map((row) => (
+            <li>
+              <p class="kit-card__offer-line">
+                <strong>{row.retailer}</strong> <OfferStateBadge state={row.state} />
+              </p>
+              <p class="kit-card__offer-line">
+                {formatGbp(row.priceGbpIncVat)} inc VAT
+                {row.deliveryGbp === null ? ' + delivery unknown' : row.deliveryGbp === 0 ? ' + free delivery' : ` + ${formatGbp(row.deliveryGbp)} delivery`}
+              </p>
+              <p class="kit-card__stamp">
+                {stateLabels[row.state].detail} Price at {row.retailer} on {formatUkDateTime(row.lastChecked)} UK time.
+                Prices change.
+              </p>
+              <RetailerLink affiliateUrl={row.affiliateUrl} productUrl={row.productUrl} retailer={row.retailer} variant="text" />
+            </li>
+          ))}
+        </ul>
+      </details>
+    )
+  }
+
+  <p class="kit-card__source">
+    Specs from the seller listing, read 14 Nov 2026. Not tested.
+    <a href={kit.sourceUrl} rel="noopener noreferrer">Source: {kit.seller} listing<span class="visually-hidden"> for {kit.modelCode}</span></a>
+  </p>
+</article>
+
+<style>
+  .kit-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 1rem;
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  .kit-card h3 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .kit-card h4 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    margin: 0 0 0.35rem;
+  }
+
+  .kit-card p {
+    margin: 0;
+  }
+
+  .kit-card__for {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 0.25rem !important;
+  }
+
+  .kit-card__code {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin-top: 0.2rem;
+  }
+
+  .kit-card__chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0;
+    margin: 0.6rem 0 0;
+  }
+
+  .kit-card__chips li {
+    font-size: 0.85rem;
+    padding: 0.15rem 0.55rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+  }
+
+  .kit-card__price {
+    padding: 0.85rem;
+    background: var(--field);
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+  }
+
+  .kit-card__price-label {
+    font-weight: 700;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .kit-card__price-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .kit-card__price-split {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    margin-top: 0.2rem;
+  }
+
+  .kit-card__stamp {
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__water strong {
+    display: block;
+    color: #8f2424;
+  }
+
+  .kit-card__water span {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__add {
+    padding: 0.75rem 0.85rem;
+    border-left: 4px solid var(--signal);
+    background: rgba(15, 92, 76, 0.05);
+  }
+
+  .kit-card__add ul,
+  .kit-card__conflicts ul {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .kit-card__specs {
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .kit-card__specs div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 0.5rem;
+  }
+
+  .kit-card__specs dt {
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__specs dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .kit-card__conflicts {
+    font-size: 0.92rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--warn);
+    background: #f7f0e4;
+  }
+
+  .kit-card__conflicts strong {
+    color: var(--warn);
+  }
+
+  .kit-card__offers summary {
+    cursor: pointer;
+    font-weight: 600;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .kit-card__offers ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .kit-card__offers li {
+    border-top: 1px solid var(--line);
+    padding-top: 0.6rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .kit-card__offer-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .kit-card__source {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__source a {
+    display: inline-block;
+    padding-block: 0.6rem;
+  }
+
+  @media (min-width: 30rem) {
+    .kit-card {
+      padding: 1.25rem;
+    }
+  }
+</style>

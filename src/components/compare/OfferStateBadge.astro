@@ -1,0 +1,42 @@
+---
+import { stateLabels, type OfferState } from './offerModel';
+
+interface Props {
+  state: OfferState;
+}
+
+const { state } = Astro.props;
+const { label } = stateLabels[state];
+---
+
+<span class:list={['offer-state', `offer-state--${state}`]}>{label}</span>
+
+<style>
+  .offer-state {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+  }
+
+  .offer-state--verified {
+    color: var(--signal-deep);
+    background: rgba(15, 92, 76, 0.08);
+  }
+
+  .offer-state--unverified-price,
+  .offer-state--unverified-delivery,
+  .offer-state--unknown-delivery {
+    color: var(--warn);
+    background: #f7f0e4;
+  }
+
+  .offer-state--stale {
+    color: #8f2424;
+    background: #fbecec;
+  }
+</style>

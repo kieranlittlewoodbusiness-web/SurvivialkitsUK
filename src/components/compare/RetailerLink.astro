@@ -1,0 +1,51 @@
+---
+/**
+ * Outbound retailer link for an offer.
+ * - With an approved affiliate URL: exact URL, rel="sponsored nofollow", labelled Ad.
+ * - Without one: the plain (non-affiliate) product URL.
+ */
+import AffiliateLink from '../AffiliateLink.astro';
+
+interface Props {
+  affiliateUrl: string;
+  productUrl: string;
+  retailer: string;
+  /** Visible text after "View at". */
+  variant?: 'button' | 'text';
+}
+
+const { affiliateUrl, productUrl, retailer, variant = 'button' } = Astro.props;
+const isAffiliate = affiliateUrl.trim().length > 0;
+const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer-link--text';
+---
+
+{
+  isAffiliate ? (
+    <span class="retailer-link-wrap">
+      <span class="badge badge--ad">Ad</span>
+      <AffiliateLink href={affiliateUrl} merchant={retailer} class={cls}>
+        View at {retailer}<span class="visually-hidden"> (affiliate link, opens retailer site)</span>
+      </AffiliateLink>
+    </span>
+  ) : (
+    <a class={cls} href={productUrl} rel="noopener noreferrer" data-merchant={retailer}>
+      View at {retailer}<span class="visually-hidden"> (retailer site)</span>
+    </a>
+  )
+}
+
+<style>
+  .retailer-link-wrap {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .retailer-link--text {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-weight: 600;
+  }
+</style>
