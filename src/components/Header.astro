@@ -1,18 +1,20 @@
 ---
-import { site } from '../data/site';
+import { site, comparePath } from '../data/site';
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const links = [
   { href: '/start-here', label: 'Start Here' },
   { href: '/checklist', label: 'Checklist' },
+  { href: comparePath, label: 'Compare kits' },
   { href: '/scenarios', label: 'Scenarios' },
   { href: '/gear', label: 'Gear criteria' },
   { href: '/method', label: 'Method' },
   { href: '/about', label: 'About' },
 ];
 
-function isActive(href: string) {
+function isActive(rawHref: string) {
+  const href = rawHref.replace(/\/$/, '') || '/';
   if (href === '/') return path === '/';
   return path === href || path.startsWith(`${href}/`);
 }
@@ -94,7 +96,8 @@ function isActive(href: string) {
   }
 
   .nav-toggle {
-    min-height: 2.5rem;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
     padding: 0.4rem 0.85rem;
     border: 1px solid var(--line);
     background: var(--field);
