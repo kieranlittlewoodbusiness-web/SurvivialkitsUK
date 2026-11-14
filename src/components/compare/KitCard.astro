@@ -76,11 +76,14 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
             {best.price_disclaimer}
             {best.availability_text && <> Availability: “{best.availability_text}”.</>}
           </p>
+          <p class="kit-card__stamp">
+            Price source: <a class="kit-card__offer-source" href={best.source.url} rel="noopener noreferrer">{best.source.name}<span class="visually-hidden"> for {kit.modelCode}</span></a>
+          </p>
           <p class="kit-card__stamp kit-card__checked">
             Last checked {formatLondonDateTime(best.last_checked)} UK time. This page was built on {builtText} UK time, so the
             price may have changed since.
           </p>
-          <RetailerLink linkUrl={best.link_url} isAffiliate={best.is_affiliate_link} retailer={best.retailer} />
+          <RetailerLink linkUrl={best.link_url} isAffiliate={best.is_affiliate_link} retailer={best.retailer} context={kit.modelCode} />
         </>
       ) : (
         <>
@@ -98,7 +101,7 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
             Check the current price and delivery with the seller.
           </p>
           <a class="btn btn--ghost" href={kit.sourceUrl} rel="noopener noreferrer">
-            Check at {kit.seller}<span class="visually-hidden"> (seller listing)</span>
+            Check at {kit.seller}<span class="visually-hidden"> (seller listing for {kit.modelCode})</span>
           </a>
         </>
       )
@@ -170,6 +173,9 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
                   <p class="kit-card__stamp">Retailer says: “{row.delivery_text_verbatim}” (not confirmed at checkout).</p>
                 )}
                 <p class="kit-card__stamp">{row.price_disclaimer}</p>
+                <p class="kit-card__stamp">
+                  Price source: <a class="kit-card__offer-source" href={row.source.url} rel="noopener noreferrer">{row.source.name}<span class="visually-hidden"> ({row.retailer}, {kit.modelCode})</span></a>
+                </p>
                 <p class="kit-card__stamp kit-card__checked">
                   Last checked {formatLondonDateTime(row.last_checked)} UK time; prices may have changed since this page was
                   built ({builtText} UK time).{' '}
@@ -179,7 +185,7 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
                       ? 'Verified, but not the lowest verified total.'
                       : 'Verified, but not named best: no second verified price from the same UK day.'}
                 </p>
-                <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" />
+                <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" context={kit.modelCode} />
               </li>
             ))}
           </ul>
@@ -364,6 +370,12 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
 
   .kit-card__conflicts strong {
     color: var(--warn);
+  }
+
+  .kit-card__offer-source {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
   }
 
   .kit-card__checked {

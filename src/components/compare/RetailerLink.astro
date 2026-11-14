@@ -11,9 +11,11 @@ interface Props {
   isAffiliate: boolean;
   retailer: string;
   variant?: 'button' | 'text';
+  /** Model code, appended to the visually hidden text so repeated links get distinct names (WCAG 2.4.4). */
+  context: string;
 }
 
-const { linkUrl, isAffiliate, retailer, variant = 'button' } = Astro.props;
+const { linkUrl, isAffiliate, retailer, variant = 'button', context } = Astro.props;
 const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer-link--text';
 ---
 
@@ -22,12 +24,12 @@ const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer
     <span class="retailer-link-wrap">
       <span class="badge badge--ad">Ad</span>
       <AffiliateLink href={linkUrl} merchant={retailer} class={cls}>
-        View at {retailer}<span class="visually-hidden"> (affiliate link, opens retailer site)</span>
+        View at {retailer}<span class="visually-hidden"> (affiliate link, retailer site for {context})</span>
       </AffiliateLink>
     </span>
   ) : (
     <a class={cls} href={linkUrl} rel="noopener noreferrer" data-merchant={retailer}>
-      View at {retailer}<span class="visually-hidden"> (retailer site)</span>
+      View at {retailer}<span class="visually-hidden"> (retailer site for {context})</span>
     </a>
   )
 }
