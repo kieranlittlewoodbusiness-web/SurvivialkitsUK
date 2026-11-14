@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "variants": [
+    {
+      "schema_version": 1,
+      "variant_id": "evaq8-e182p",
+      "kit_id": "evaq8-gobag-2-person",
+      "brand": "EVAQ8",
+      "manufacturer": "Go-Bag",
+      "product_name": "GoBag 2 Person Emergency Kit in Plain Rucksack",
+      "model_code": "E182P",
+      "mpn": "E182P",
+      "gtin": "5060176883963",
+      "people_covered": 2,
+      "days": 3,
+      "format": "rucksack",
+      "weight_kg": 4,
+      "contents": [
+        { "quantity": 1, "item": "rucksack" },
+        { "quantity": 1, "item": "wind-up LED torch" },
+        { "quantity": 2, "item": "emergency food rations" },
+        { "quantity": 2, "item": "emergency water rations (500 ml each)" },
+        { "quantity": 20, "item": "water purification tablets" },
+        { "quantity": 1, "item": "drinking bottle" },
+        { "quantity": 2, "item": "foil blankets" },
+        { "quantity": 2, "item": "emergency sleeping bags" },
+        { "quantity": 2, "item": "light sticks" },
+        { "quantity": 1, "item": "whistle" },
+        { "quantity": 1, "item": "universal first aid kit" },
+        { "quantity": 1, "item": "multi-function pocket tool" },
+        { "quantity": 2, "item": "disposable masks" },
+        { "quantity": 8, "item": "sanitising wipes" },
+        { "quantity": 1, "item": "pair of work gloves" },
+        { "quantity": 1, "item": "emergency powerbank" },
+        { "quantity": 4, "item": "AA batteries" }
+      ],
+      "contents_captured_at": "2026-11-14T23:17:00+00:00",
+      "water_litres_included": 1,
+      "source": {
+        "name": "EVAQ8 product page",
+        "url": "https://evaq8.co.uk/gobag-emergency-kit-2-person-e141-plain.html"
+      },
+      "notes": [
+        "Dimensions UNVERIFIED (not published).",
+        "Shelf life UNVERIFIED on kit page.",
+        "No radio listed.",
+        "Red-bag variant E182 is a separate variant; contents not confirmed identical."
+      ]
+    }
+  ]
+}
