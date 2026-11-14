@@ -2,6 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import AdBlock from '../../components/AdBlock.astro';
+import ReviewFlags from '../../components/ReviewFlags.astro';
+import ProductComparison from '../../components/ProductComparison.astro';
 import { getPublishedScenarios } from '../../lib/content';
 import { getLiveOffers, getPendingOffers } from '../../lib/retailerOffers';
 import { render } from 'astro:content';
@@ -21,6 +23,11 @@ const offerCategories = entry.data.gearCategories;
 const offers = offerCategories.flatMap((cat) => getLiveOffers(cat));
 const pending = offerCategories.flatMap((cat) => getPendingOffers(cat));
 const showAd = entry.data.affiliate && (offers.length > 0 || pending.length > 0);
+const reviewed = entry.data.lastReviewed.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
 ---
 
 <BaseLayout
@@ -37,10 +44,10 @@ const showAd = entry.data.affiliate && (offers.length > 0 || pending.length > 0)
       <p class="lede">{entry.data.scenario}</p>
       <p class="meta">
         {entry.data.evidence.map((kind) => <EvidenceBadge kind={kind} />)}
-        <span>
-          Updated {entry.data.updated?.toLocaleDateString('en-GB') ?? entry.data.pubDate.toLocaleDateString('en-GB')}
-        </span>
+        <span>Last reviewed {reviewed}</span>
       </p>
+
+      <ReviewFlags flags={entry.data.reviewFlags} />
 
       <div class="prose">
         <Content />
@@ -59,31 +66,28 @@ const showAd = entry.data.affiliate && (offers.length > 0 || pending.length > 0)
                 </li>
               ))}
             </ul>
+            <p class="reviewed-note">Last reviewed {reviewed}. Re-check campaign URLs before major updates.</p>
           </section>
         )
       }
 
       {
-        showAd && (
-          <AdBlock
-            offers={offers.length ? offers : []}
-            heading="Related retailer examples"
-            pendingNote="No live affiliate links on this article yet. Criteria pages explain what to look for without a purchase prompt."
-          />
-        )
+        entry.data.gearCategories.map((cat) => (
+          <div class="compare-embed">
+            <ProductComparison category={cat} heading={`Related comparisons · ${cat.replaceAll('-', ' ')}`} />
+          </div>
+        ))
       }
 
       {
-        entry.data.gearCategories.length > 0 && (
-          <p class="related">
-            Gear criteria:{' '}
-            {entry.data.gearCategories.map((cat, i) => (
-              <>
-                {i > 0 && ', '}
-                <a href={`/gear/${cat}`}>{cat.replaceAll('-', ' ')}</a>
-              </>
-            ))}
-          </p>
+        showAd && (
+          <div class="no-print">
+            <AdBlock
+              offers={offers.length ? offers : []}
+              heading="Related retailer examples"
+              pendingNote="No live affiliate links on this article yet. Comparison cards above explain what to look for without a purchase prompt."
+            />
+          </div>
         )
       }
     </div>
@@ -98,7 +102,7 @@ const showAd = entry.data.affiliate && (offers.length > 0 || pending.length > 0)
     align-items: center;
     color: var(--ink-muted);
     font-size: 0.92rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
   }
 
   .sources-block {
@@ -107,8 +111,20 @@ const showAd = entry.data.affiliate && (offers.length > 0 || pending.length > 0)
     border-top: 1px solid var(--line);
   }
 
-  .related {
-    margin-top: 1.5rem;
+  .reviewed-note {
+    font-size: 0.9rem;
     color: var(--ink-muted);
+  }
+
+  .compare-embed {
+    margin-top: 1.5rem;
+  }
+
+  @media print {
+    .no-print,
+    .product-card__buy,
+    .ad-block {
+      display: none !important;
+    }
   }
 </style>

@@ -3,6 +3,7 @@ title: "Checking the cupboard first: three days of food without a speciality sho
 description: "Build a calm three-day food buffer from what you already eat—no panic bulk buying."
 scenario: Stay-home disruption when shops or cooking are limited
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: false
 featured: true

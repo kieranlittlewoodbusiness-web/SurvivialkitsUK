@@ -3,6 +3,7 @@ title: Radios
 description: "Battery and wind-up radio criteria for UK power cuts—FM reception, power source and paper station frequencies."
 category: radios
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 order: 3

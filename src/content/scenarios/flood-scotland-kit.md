@@ -3,6 +3,7 @@ title: "Floodline and the Scottish kit bag: preparing north of the border"
 description: "Ready Scotland and SEPA Floodline steps for Scottish households—plan, kit, and waterproof grab items."
 scenario: SEPA flood messaging and Ready Scotland planning
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 featured: false

@@ -3,6 +3,7 @@ title: Water storage
 description: "Food-grade water storage criteria for UK households—quantity, seals, stackability and hygiene."
 category: water-storage
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 order: 4

@@ -1,0 +1,54 @@
+---
+import { getProductsForCategory, type ComparedProduct } from '../lib/productComparisons';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  category: ComparedProduct['category'];
+  heading?: string;
+}
+
+const { category, heading = 'Product comparisons' } = Astro.props;
+const products = getProductsForCategory(category);
+---
+
+{
+  products.length > 0 && (
+    <section class="product-comparison" aria-labelledby={`compare-${category}`}>
+      <h2 id={`compare-${category}`}>{heading}</h2>
+      <p class="compare-lede">
+        Each card states who the item suits, key specifications and limitations. Buying links sit
+        after the guidance and are labelled Ad. Evidence badges show whether an item was personally
+        tested or researched.
+      </p>
+      <div class="product-stack">
+        {products.map((product) => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .product-comparison {
+    margin-top: 2.25rem;
+  }
+
+  .compare-lede {
+    color: var(--ink-muted);
+    max-width: 40rem;
+  }
+
+  .product-stack {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  @media (min-width: 48rem) {
+    .product-stack {
+      grid-template-columns: 1fr;
+      gap: 1.15rem;
+    }
+  }
+</style>

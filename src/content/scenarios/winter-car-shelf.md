@@ -3,6 +3,7 @@ title: "Winter car shelf: stuck on a UK road in snow or ice"
 description: "A modest UK winter car kit for delays—not expedition motoring. Check warnings and avoid non-essential travel."
 scenario: Short winter delay or immobilisation on a UK road
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 featured: false
@@ -16,6 +17,7 @@ sources:
     url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
   - label: Met Office – UK warnings
     url: https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings
+startHere: false
 ---
 
 Plan ahead and avoid travel unless essential when severe weather is forecast. Check national traffic services and Met Office warnings before you set off.

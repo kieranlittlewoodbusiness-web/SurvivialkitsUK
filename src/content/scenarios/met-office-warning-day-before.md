@@ -3,9 +3,10 @@ title: "Amber on the map: what to do the day before a Met Office warning"
 description: "Calm steps when a Yellow or Amber Met Office warning covers your area—read the impact text, charge devices, review your kit."
 scenario: Yellow or Amber weather warning for your area
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: false
-featured: true
+featured: false
 order: 4
 gearCategories: [power-banks]
 evidence: [official-guidance]
@@ -16,6 +17,7 @@ sources:
     url: https://weather.metoffice.gov.uk/warnings-and-advice/seasonal-advice/stay-safe-in-heavy-rain
   - label: Prepare – Campaign toolkit
     url: https://prepare.campaign.gov.uk/campaign-resources/
+startHere: false
 ---
 
 A weather warning is information, not a cue to empty the shops. Read the **impact text** for your area, not only the colour.

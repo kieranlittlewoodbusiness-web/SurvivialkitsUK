@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EvidenceBadge from '../components/EvidenceBadge.astro';
+import { getPublishedScenarios } from '../lib/content';
+
+const scenarios = await getPublishedScenarios();
+const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
+---
+
+<BaseLayout
+  title="Start Here"
+  description="Begin UK household preparedness: check what you own, complete the 72-hour checklist, then read calm scenario guides."
+  canonicalPath="/start-here"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">Start Here</p>
+      <h1>Start with what you already own</h1>
+      <p class="lede">
+        Practical readiness for UK homes: outages, severe weather, temporary evacuation and winter
+        travel—without panic buying.
+      </p>
+      <p>
+        <EvidenceBadge kind="official-guidance" />
+        UK guidance asks households to prepare for a few days of disruption so responders can
+        prioritise people who need help most.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <ol class="start-steps">
+        <li>
+          <h2>1. Inventory the house</h2>
+          <p>
+            Open cupboards and drawers. Note torches, water, food, medication, radio and blankets you
+            already have.
+          </p>
+        </li>
+        <li>
+          <h2>2. Complete the 72-hour checklist</h2>
+          <p>
+            Work through water and food, light and warmth, communications, hygiene, documents and
+            household-specific needs. Ticks save on this device only.
+          </p>
+          <div class="btn-row">
+            <a class="btn" href="/checklist">Open the checklist</a>
+          </div>
+        </li>
+        <li>
+          <h2>3. Read the scenario that matches your risk</h2>
+          <ul class="link-list">
+            {
+              core.map((entry) => (
+                <li>
+                  <a href={`/scenarios/${entry.id}`}>
+                    {entry.data.title}
+                    <span>{entry.data.scenario}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </li>
+        <li>
+          <h2>4. Compare kit only for real gaps</h2>
+          <p>
+            Use gear criteria and product comparison cards after the guidance. Buying links are
+            labelled Ad and sit below the criteria they support.
+          </p>
+          <p><a href="/gear">Browse gear criteria →</a></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .start-steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1.75rem;
+    max-width: 42rem;
+  }
+
+  .start-steps h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .start-steps p {
+    max-width: none;
+  }
+</style>

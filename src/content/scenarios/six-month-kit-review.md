@@ -3,6 +3,7 @@ title: "Six-month kit review: expiry dates, batteries and changing households"
 description: "A routine UK household kit review—rotate food and water, test torches, update contacts after life changes."
 scenario: Routine maintenance after moving, new baby, new pet or season change
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: false
 featured: false

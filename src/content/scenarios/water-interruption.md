@@ -3,6 +3,7 @@ title: "When the tap runs cloudy: water interruption and boil notices"
 description: "Practical steps for a UK household water outage or boil-water advice—storage, hygiene and official alerts."
 scenario: Burst main, treatment issue, or boil-water advice
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 featured: true

@@ -3,6 +3,7 @@ title: Winter travel supplies
 description: "Criteria for a modest UK winter car kit—hi-vis, warmth, shovel and charge leads for delays."
 category: winter-travel
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 order: 6

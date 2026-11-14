@@ -413,14 +413,24 @@ p {
     background: #fff;
   }
 
-  .site-header,
-  .site-footer,
-  .btn-row,
-  .skip-link {
+  body::before {
     display: none !important;
   }
 
-  .checklist details {
+  .site-header,
+  .site-footer,
+  .btn-row,
+  .skip-link,
+  .no-print,
+  .ad-block,
+  .product-card__buy,
+  .amazon-notice {
+    display: none !important;
+  }
+
+  .checklist details,
+  .checklist-group,
+  .product-card {
     break-inside: avoid;
   }
 

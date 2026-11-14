@@ -3,6 +3,7 @@ title: Power banks
 description: "Criteria for household power banks used in UK outages—capacity, USB-C, self-discharge and medical-device cautions."
 category: power-banks
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 order: 2

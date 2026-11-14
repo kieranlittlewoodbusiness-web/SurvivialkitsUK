@@ -3,6 +3,7 @@ title: "DRAFT: example unpublished scenario"
 description: "This draft must not appear in production listings or the sitemap."
 scenario: Draft exclusion test
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: true
 affiliate: false
 featured: false

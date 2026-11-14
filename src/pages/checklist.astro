@@ -1,130 +1,200 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EvidenceBadge from '../components/EvidenceBadge.astro';
-
-const inventory = [
-  'Working torch (not only phone light) + spare batteries or wind-up',
-  'Warm blankets / sleeping bags / spare layers',
-  'Battery or wind-up FM radio (or a noted car-radio plan if safe)',
-  'Charged power bank + leads',
-  'Bottled water or clean sealed containers you can fill',
-  'Ready-to-eat food you already buy + tin opener',
-  'Essential medication for several days + written doses',
-  'Basic first-aid items',
-  'Hand sanitiser / wet wipes',
-  'Cash (coins and notes) as well as cards',
-  'Paper list of phone numbers (105, household, insurance, radio freqs)',
-  'ID / insurance / prescription copies or known locations',
-  'Baby supplies / ready-to-feed formula if needed',
-  'Pet food and water if needed',
-  'Spare glasses, hearing-aid batteries or mobility aids if needed',
-];
-
-const plan = [
-  'Escape routes (fire) and flood actions if relevant',
-  'Household meeting point if you cannot return home',
-  'ICE / Medical ID on phones; tell the nominated contact',
-  'School or childcare numbers checked',
-  'Priority Services Register / Customer Care Register checked if eligible',
-  'Flood warnings signed up (Environment Agency or SEPA Floodline)',
-  'Met Office weather warnings method chosen',
-];
-
-const gaps = [
-  'Drinking water: about 3 litres per person per day for three days (more for hygiene, cooking, pets, formula)',
-  'Three days of non-perishable food that needs no cooking or fridge',
-  'Waterproof grab-bag subset if flood leave is plausible',
-];
+import { checklistGroups, CHECKLIST_STORAGE_KEY } from '../data/checklist';
 ---
 
 <BaseLayout
-  title="72-hour checklist"
-  description="Inventory-first 72-hour household readiness checklist for UK homes, aligned with official guidance."
+  title="72-hour household checklist"
+  description="Printable UK 72-hour household checklist grouped by water, light, communications, hygiene, documents and household needs—starting with what you already own."
   canonicalPath="/checklist"
 >
-  <section class="section">
+  <section class="section no-print-actions">
     <div class="wrap wrap--narrow">
       <p class="eyebrow">Checklist</p>
       <h1>72-hour household checklist</h1>
       <p class="lede">
-        Start with what you already own. UK guidance frames a few days of readiness so help can
-        reach people who need it most.
+        Start by checking what you already have. Build gaps gradually on ordinary shops. Designed to
+        stay readable if JavaScript is off, and to print without adverts.
       </p>
       <p>
         <EvidenceBadge kind="official-guidance" />
         Based on Prepare, Ready Scotland and the National Resilience / Be Ready checklist. Re-verify
-        quantities on those pages when you review.
+        water quantities on those pages when you review.
       </p>
-      <div class="btn-row">
-        <button class="btn btn--ghost" type="button" onclick="window.print()">Print checklist</button>
+      <div class="btn-row checklist-toolbar no-print">
+        <button class="btn btn--ghost" type="button" data-checklist-print>Print checklist</button>
+        <button class="btn btn--ghost" type="button" data-checklist-reset>
+          Reset saved ticks
+        </button>
       </div>
+      <p class="persist-note no-print" data-checklist-status hidden></p>
+      <p class="persist-note no-print">
+        Ticks save on this device only (browser storage). Nothing is sent to our servers. Use Reset
+        to clear.
+      </p>
     </div>
   </section>
 
-  <section class="section checklist">
-    <div class="wrap wrap--narrow reveal">
-      <details open>
-        <summary>Step A — Inventory (buy nothing yet)</summary>
-        {
-          inventory.map((item) => (
-            <label>
-              <input type="checkbox" name="inventory" />
-              <span>{item}</span>
-            </label>
-          ))
-        }
-      </details>
+  <section class="section checklist" id="checklist-root" data-storage-key={CHECKLIST_STORAGE_KEY}>
+    <div class="wrap wrap--narrow">
+      {
+        checklistGroups.map((group) => (
+          <section class="checklist-group" aria-labelledby={`group-${group.id}`}>
+            <h2 id={`group-${group.id}`}>{group.title}</h2>
+            {group.intro && <p class="group-intro">{group.intro}</p>}
+            <ul class="checklist-items">
+              {group.items.map((item) => (
+                <li>
+                  <label>
+                    <input type="checkbox" name={group.id} value={item.id} data-checklist-item={item.id} />
+                    <span>{item.label}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
 
-      <details open>
-        <summary>Step B — Plan on paper</summary>
-        {
-          plan.map((item) => (
-            <label>
-              <input type="checkbox" name="plan" />
-              <span>{item}</span>
-            </label>
-          ))
-        }
-      </details>
-
-      <details open>
-        <summary>Step C — Fill gaps gradually</summary>
-        <p>
-          Only after A and B: add missing items on normal shops. Prefer food and water you already
-          use.
-        </p>
-        {
-          gaps.map((item) => (
-            <label>
-              <input type="checkbox" name="gaps" />
-              <span>{item}</span>
-            </label>
-          ))
-        }
-      </details>
-
-      <details open>
-        <summary>Step D — Review</summary>
-        <label>
-          <input type="checkbox" name="review" />
-          <span>Calendar reminder in six months</span>
-        </label>
-        <label>
-          <input type="checkbox" name="review" />
-          <span>Neighbour contact swap if appropriate</span>
-        </label>
-      </details>
-
-      <p class="next-links">
-        Next: <a href="/scenarios">scenario guides</a> · <a href="/gear">gear criteria</a>
+      <p class="next-links no-print">
+        Next: <a href="/start-here">Start Here</a> · <a href="/scenarios">scenario guides</a> ·
+        <a href="/gear">gear criteria</a>
       </p>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  .persist-note {
+    font-size: 0.92rem;
+    color: var(--ink-muted);
+    max-width: none;
+  }
+
+  .group-intro {
+    color: var(--ink-muted);
+    margin-top: -0.25rem;
+  }
+
+  .checklist-group {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--line);
+    break-inside: avoid;
+  }
+
+  .checklist-group h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .checklist-items {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+  }
+
+  .checklist-items label {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    padding: 0.45rem 0;
+    min-height: 2.5rem;
+  }
+
+  .checklist-items input[type='checkbox'] {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    flex-shrink: 0;
+    accent-color: var(--signal);
+  }
+
   .next-links {
-    margin-top: 2rem;
+    margin-top: 1.75rem;
     color: var(--ink-muted);
   }
+
+  @media print {
+    .no-print,
+    .no-print-actions .checklist-toolbar,
+    .ad-block,
+    .product-card__buy,
+    .site-header,
+    .site-footer,
+    .skip-link {
+      display: none !important;
+    }
+
+    .checklist-group {
+      break-inside: avoid;
+    }
+
+    .checklist-items label {
+      break-inside: avoid;
+    }
+  }
 </style>
+
+<script>
+  const root = document.getElementById('checklist-root');
+  if (root) {
+    const key = root.getAttribute('data-storage-key') || 'thb-checklist-v1';
+    const status = document.querySelector('[data-checklist-status]');
+    const boxes = Array.from(root.querySelectorAll<HTMLInputElement>('input[data-checklist-item]'));
+
+    const read = (): Record<string, boolean> => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? (JSON.parse(raw) as Record<string, boolean>) : {};
+      } catch {
+        return {};
+      }
+    };
+
+    const write = (state: Record<string, boolean>) => {
+      try {
+        localStorage.setItem(key, JSON.stringify(state));
+        if (status instanceof HTMLElement) {
+          status.hidden = false;
+          status.textContent = 'Progress saved on this device.';
+        }
+      } catch {
+        if (status instanceof HTMLElement) {
+          status.hidden = false;
+          status.textContent = 'Could not save on this device (storage unavailable).';
+        }
+      }
+    };
+
+    const state = read();
+    for (const box of boxes) {
+      const id = box.getAttribute('data-checklist-item');
+      if (id && state[id]) box.checked = true;
+      box.addEventListener('change', () => {
+        const next = read();
+        if (!id) return;
+        if (box.checked) next[id] = true;
+        else delete next[id];
+        write(next);
+      });
+    }
+
+    document.querySelector('[data-checklist-reset]')?.addEventListener('click', () => {
+      try {
+        localStorage.removeItem(key);
+      } catch {
+        /* ignore */
+      }
+      for (const box of boxes) box.checked = false;
+      if (status instanceof HTMLElement) {
+        status.hidden = false;
+        status.textContent = 'Saved ticks cleared on this device.';
+      }
+    });
+
+    document.querySelector('[data-checklist-print]')?.addEventListener('click', () => {
+      window.print();
+    });
+  }
+</script>

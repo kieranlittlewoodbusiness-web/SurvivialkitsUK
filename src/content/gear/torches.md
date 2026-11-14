@@ -3,6 +3,7 @@ title: Torches
 description: "Comparison criteria for household torches and headlamps for UK power cuts—runtime, batteries and indoor usability."
 category: torches
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 order: 1

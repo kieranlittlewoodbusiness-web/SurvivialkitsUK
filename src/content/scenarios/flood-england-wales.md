@@ -3,6 +3,7 @@ title: "Flood alert to flood warning: England and Wales household steps"
 description: "What Environment Agency flood alerts, warnings and severe warnings mean—and calm household actions for each."
 scenario: Environment Agency flood messaging for your postcode
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 featured: false

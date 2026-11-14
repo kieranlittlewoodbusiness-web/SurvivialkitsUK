@@ -4,9 +4,10 @@ description: "How to manage a multi-hour UK power cut at home—torch, radio, wa
 scenario: Multi-hour or overnight electricity outage at home
 pubDate: 2026-11-14
 updated: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
-featured: true
+featured: false
 order: 1
 gearCategories: [torches, power-banks, radios]
 evidence: [official-guidance]
@@ -17,6 +18,7 @@ sources:
     url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
+startHere: false
 ---
 
 Start by checking what you already keep at home: a torch, spare batteries, blankets, a radio, and a charged power bank. Many households already have most of what they need for a short outage.

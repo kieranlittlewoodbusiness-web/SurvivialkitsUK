@@ -3,6 +3,7 @@ title: First-aid kits
 description: "Household first-aid kit criteria for UK readiness—contents, expiry tracking and limits of kit versus training."
 category: first-aid
 pubDate: 2026-11-14
+lastReviewed: 2026-11-14
 draft: false
 affiliate: true
 order: 5

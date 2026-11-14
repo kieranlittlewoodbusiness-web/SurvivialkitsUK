@@ -2,6 +2,8 @@
 
 UK civilian household preparedness site: serious editorial guides for outages, severe weather, supply disruption and temporary evacuation. Built with **Astro** and **TypeScript**, published as a **static** site to **Cloudflare Pages** (`npm run build` → `dist`).
 
+Production domain: **https://uksurvivalkits.uk**
+
 ## Exact commands
 
 ```bash
@@ -30,67 +32,72 @@ npm run check
 | Node version | `22` (or matching `engines` in `package.json`) |
 | Framework preset | None / Astro static |
 
-Production canonical domain is set in `src/data/site.ts` as `https://uksurvivalkits.uk` (used for canonical URLs, Open Graph tags, sitemap and `robots.txt`).
+Canonical URLs, Open Graph, sitemap and `robots.txt` read `siteUrl` from `src/data/site.ts`.
 
-## Content publishing
+## How to publish a new guide
 
-### Scenario articles
+1. Create `src/content/scenarios/your-slug.md` (filename = URL slug).
+2. Frontmatter must include at least:
+   - `title`, `description`, `scenario`
+   - `pubDate`, `lastReviewed` (shown on the page)
+   - `sources: [{ label, url }]` from BUILD_BRIEF / official pages
+   - `draft: false` when ready
+   - optional `startHere: true` to appear on `/start-here`
+   - optional `reviewFlags: ["…"]` for unsupported safety claims or unverified specs (shown as editorial review banners)
+   - optional `gearCategories` to embed product comparisons
+3. Keep copy calm and practical. Prefer official guidance; do not invent urgency.
+4. Run `npm run check` and open `/scenarios/your-slug`.
+5. Commit, push, and deploy via Cloudflare Pages.
 
-1. Add a Markdown file under `src/content/scenarios/`.
-2. Frontmatter must satisfy `src/content.config.ts` (`title`, `description`, `scenario`, `pubDate`, optional `draft`, `sources`, etc.).
-3. Set `draft: true` to keep a piece out of production listings, routes and the sitemap filter of published collections.
-4. Run `npm run build` and confirm the page appears under `/scenarios/<filename-without-extension>`.
+Drafts: set `draft: true` to exclude from listings, routes and the published collection helpers.
 
-### Gear criteria pages
+## How to update a product link
 
-1. Add Markdown under `src/content/gear/`.
-2. Set `category` to one of: `torches`, `power-banks`, `radios`, `water-storage`, `first-aid`, `winter-travel`.
-3. List comparison `criteria` as an array of strings.
-4. Build and open `/gear/<id>`.
+1. Open **`src/data/retailerOffers.json`**.
+2. Find the offer `id` (or add a new offer object matching the schema).
+3. Paste the **exact** programme-generated tracking URL into `url`. Do not rewrite query parameters.
+4. Set `enabled: true` only after programme approval.
+5. If the product comparison card should use that offer, add the offer `id` to `offerIds` on the product in **`src/data/productComparisons.json`**.
+6. For Amazon: when live Associates links exist, set `amazonAssociatesLive: true` in `src/data/site.ts`.
+7. Run `npm run build` and confirm the gear/scenario page shows an **Ad**-labelled link with `rel="sponsored"`.
 
-### Affiliate / retailer offers
+Checklist copy lives in `src/data/checklist.ts` (grouped sections). Product comparison cards live in `src/data/productComparisons.json`.
 
-1. Edit **`src/data/retailerOffers.json`** only (validated by `src/lib/retailerOffers.ts`).
-2. Paste the **exact** programme-generated tracking URL into `url`. Do not rewrite query parameters.
-3. Set `enabled: true` only after programme approval **and** when the URL is final.
-4. For Amazon: after Associates approval and live Special Links, set `amazonAssociatesLive: true` in `src/data/site.ts`. The Amazon Associates statement then appears prominently on pages that include live Amazon offers.
-5. Affiliate anchors are rendered by `AffiliateLink.astro` with `rel="sponsored noopener noreferrer"`. Commercial blocks use `AdBlock.astro`, which shows an **Ad** label before links.
+## Preparedness features
 
-### Drafts
-
-- `draft: true` entries are excluded by `getPublishedScenarios()` / `getPublishedGear()` and therefore omitted from indexes, `getStaticPaths`, and normal navigation.
-- A sample draft lives at `src/content/scenarios/_draft-example-not-published.md`.
+- **`/start-here`** — inventory → checklist → core scenarios → gear
+- **`/checklist`** — printable 72-hour list grouped by water/food, light/warmth, communications, hygiene, documents, household-specific needs; starts with “check what you already have”; ticks save in `localStorage` on this device only; Reset clears; works without JS for reading/printing; ads hidden in print
+- **Core scenarios** — `/scenarios/power-cuts`, `/severe-weather`, `/temporary-evacuation`, `/winter-travel` with sources, last-reviewed date and review flags
+- **Product comparisons** — stacked cards (who it suits, specs, limitations, tested vs researched, retailer choices after guidance)
 
 ## Project map
 
 ```
 src/
-  content/scenarios/   Article Markdown
-  content/gear/        Category criteria Markdown
-  data/site.ts         Brand + production domain flags
+  content/scenarios/          Guide Markdown
+  content/gear/               Category criteria Markdown
+  data/checklist.ts           Checklist groups/items
+  data/productComparisons.json
   data/retailerOffers.json
-  components/          Header, Footer, AdBlock, AffiliateLink, …
-  layouts/BaseLayout.astro
-  pages/               Routes including 404, robots.txt.ts
-public/images/         Original SVG hero (licensed as project original)
-BUILD_BRIEF.md         Product / editorial brief
+  data/site.ts
+  components/ProductCard.astro
+  components/ProductComparison.astro
+  pages/start-here.astro
+  pages/checklist.astro
+BUILD_BRIEF.md
 ```
 
-## Accessibility and layout notes
+## Accessibility and print
 
-- Mobile-first CSS; sticky header with keyboard-operable menu (`aria-expanded`, Escape closes).
-- Visible `:focus-visible` outlines; skip link to `#main`.
-- Checklist is printable via browser print CSS.
-- No third-party tracking scripts in the launch build (Google Fonts are loaded for typography only).
+- Mobile-first CSS; keyboard menu with Escape to close; visible `:focus-visible`
+- Print stylesheet hides header/footer, toolbars, `.ad-block`, `.product-card__buy`, `.no-print`
+- No third-party tracking scripts (Google Fonts load for typography only)
 
 ## What you still need to supply
 
-1. **Affiliate programme approvals** and exact tracking URLs in `retailerOffers.json`.
-2. **Contact inbox** if `editors@uksurvivalkits.uk` is not the real address.
-3. Cloudflare Pages custom domain: `uksurvivalkits.uk` (canonical in `src/data/site.ts`).
-4. Optional: replace the original SVG hero with licensed photography (keep full-bleed treatment).
-5. Re-verify government source URLs on publish day (campaign PDF paths change).
-
-## Licence note for images
-
-`public/images/hero-hall.svg` and `public/favicon.svg` are original project artwork created for this site.
+1. Affiliate programme approvals + exact tracking URLs in `retailerOffers.json`
+2. Contact inbox if not `editors@uksurvivalkits.uk`
+3. Cloudflare Pages DNS for `uksurvivalkits.uk`
+4. Clear or rewrite any `reviewFlags` before treating those claims as published fact
+5. Optional licensed photography for the hero
+6. Re-verify government source URLs on publish day
