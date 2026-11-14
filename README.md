@@ -30,7 +30,7 @@ npm run check
 | Node version | `22` (or matching `engines` in `package.json`) |
 | Framework preset | None / Astro static |
 
-Set the production domain in `src/data/site.ts` (`siteUrl`) so canonical URLs, Open Graph tags and `robots.txt` stay correct.
+Production canonical domain is set in `src/data/site.ts` as `https://uksurvivalkits.uk` (used for canonical URLs, Open Graph tags, sitemap and `robots.txt`).
 
 ## Content publishing
 
@@ -85,9 +85,9 @@ BUILD_BRIEF.md         Product / editorial brief
 
 ## What you still need to supply
 
-1. **Confirmed production domain** (update `siteUrl` if not `https://www.thehouseholdbrief.co.uk`).
-2. **Affiliate programme approvals** and exact tracking URLs in `retailerOffers.json`.
-3. **Contact inbox** if `editors@thehouseholdbrief.co.uk` is not the real address.
+1. **Affiliate programme approvals** and exact tracking URLs in `retailerOffers.json`.
+2. **Contact inbox** if `editors@uksurvivalkits.uk` is not the real address.
+3. Cloudflare Pages custom domain: `uksurvivalkits.uk` (canonical in `src/data/site.ts`).
 4. Optional: replace the original SVG hero with licensed photography (keep full-bleed treatment).
 5. Re-verify government source URLs on publish day (campaign PDF paths change).
 

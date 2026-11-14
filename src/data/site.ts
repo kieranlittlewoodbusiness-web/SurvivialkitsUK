@@ -1,6 +1,6 @@
 /**
  * Site-wide configuration for The Household Brief.
- * Update `siteUrl` to the real Cloudflare Pages / custom domain before launch.
+ * Production canonical host: uksurvivalkits.uk
  */
 export const site = {
   name: 'The Household Brief',
@@ -8,10 +8,10 @@ export const site = {
   description:
     'Independent guides to household readiness in the UK, grounded in official advice and practical product criteria.',
   /** Production canonical origin (no trailing slash). */
-  siteUrl: 'https://www.thehouseholdbrief.co.uk',
+  siteUrl: 'https://uksurvivalkits.uk',
   locale: 'en-GB',
   author: 'The Household Brief',
-  contactEmail: 'editors@thehouseholdbrief.co.uk',
+  contactEmail: 'editors@uksurvivalkits.uk',
   /**
    * Set true only after Amazon Associates approval and when live Amazon
    * tracking URLs are present in retailerOffers.json.
