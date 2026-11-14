@@ -25,20 +25,40 @@ export type SiteConfig = typeof site;
 /** Canonical path of the Sprint 1 comparison page (trailing slash is intentional). */
 export const comparePath = '/compare/72-hour-emergency-kits/';
 
+type Env = Record<string, string | undefined>;
+
+/**
+ * Validated SITE_ENV. Unset/empty -> undefined (default behaviour); 'preview' | 'production' as
+ * given; anything else (typos such as 'Preview' or 'staging') fails the build instead of silently
+ * falling back to the indexable production state.
+ */
+export function siteEnv(env: Env = process.env): 'preview' | 'production' | undefined {
+  const raw = env.SITE_ENV;
+  if (raw === undefined || raw === '') return undefined;
+  if (raw === 'preview' || raw === 'production') return raw;
+  throw new Error(
+    `Unknown SITE_ENV "${raw}". Use "preview", "production" or leave it unset.`,
+  );
+}
+
 /**
  * Build-time deployment check, used to keep previews out of search.
  *
- * A build is treated as a preview (noindex + robots.txt Disallow) when:
- * - SITE_ENV=preview is set explicitly (use this for `wrangler pages deploy --branch` previews), or
- * - it runs on Cloudflare Pages (CF_PAGES=1) for a branch other than PRODUCTION_BRANCH (default `main`).
+ * A build is a preview (noindex + robots.txt Disallow) when:
+ * - SITE_ENV=preview, or
+ * - it runs on Cloudflare Pages (CF_PAGES=1) for a branch other than PRODUCTION_BRANCH (default
+ *   `main`). This wins even over SITE_ENV=production, so a project-wide SITE_ENV cannot make
+ *   branch previews indexable.
  *
- * Any other build (including a plain local `npm run build`) stays indexable, so a production
+ * Otherwise (including a plain local `npm run build`) the build stays indexable, so a production
  * deploy can never be de-indexed by a missing variable. The `_headers` rule for *.pages.dev hosts
- * is the second, host-based layer and applies whatever the build settings were.
+ * is the second, host-based layer. Note: robots.txt Disallow on previews means crawlers may not
+ * fetch the noindex signals; that trade-off is accepted (issue #3 asks for Disallow).
  */
-export function isPreviewBuild(env: Record<string, string | undefined> = process.env): boolean {
-  if (env.SITE_ENV === 'preview') return true;
-  if (env.SITE_ENV === 'production') return false;
+export function isPreviewBuild(env: Env = process.env): boolean {
+  const mode = siteEnv(env);
   const productionBranch = env.PRODUCTION_BRANCH || 'main';
-  return env.CF_PAGES === '1' && !!env.CF_PAGES_BRANCH && env.CF_PAGES_BRANCH !== productionBranch;
+  const cfBranchPreview = env.CF_PAGES === '1' && !!env.CF_PAGES_BRANCH && env.CF_PAGES_BRANCH !== productionBranch;
+  if (mode === 'preview' || cfBranchPreview) return true;
+  return false;
 }
