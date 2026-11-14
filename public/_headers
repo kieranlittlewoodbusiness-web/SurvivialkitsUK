@@ -3,3 +3,15 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
   Permissions-Policy: interest-cohort=()
+
+# Keep Cloudflare Pages hosts out of search. Production on https://uksurvivalkits.uk is not matched.
+# Covers the production alias (uksurvivalkits.pages.dev) and every preview/branch alias.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+# Fingerprinted build assets can be cached long-term.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
