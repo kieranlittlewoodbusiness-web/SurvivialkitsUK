@@ -14,8 +14,9 @@ const description =
   "We compare UK pre-packed 72-hour kits against the government's Be Ready checklist: water, radio, light, medication and storage, plus when DIY is better.";
 
 const now = new Date();
-const result = loadOffers(process.env, now);
+const result = await loadOffers(process.env, now);
 const byVariant = new Map(result.comparisons.map((c) => [c.variant_id, c]));
+const variantRecords = new Map(result.variants.map((v) => [v.variant_id, v]));
 const hasAffiliateLinks = result.comparisons.some((c) => c.offers.some((o) => o.is_affiliate_link));
 
 const jumps = [
@@ -110,15 +111,15 @@ const litresRows = [1, 2, 3, 4, 5, 6];
       <div class="kit-grid">
         {
           kits.map((kit) => (
-            <KitCard kit={kit} comparison={byVariant.get(kit.id)} offersError={result.status === 'error'} />
+            <KitCard kit={kit} variant={variantRecords.get(kit.id)} comparison={byVariant.get(kit.id)} offersError={result.status === 'error'} builtAt={now} />
           ))
         }
       </div>
       <p class="small-print">
-        Prices: we only show a best price when it is verified, has a known delivery cost and was checked in
-        the last 7 days, for that exact model code. Other prices are labelled and never called the best.
-        We do not show savings or “cheapest” claims unless every price compared was verified for the same
-        model in the same capture window.
+        Prices: we only name a best price when at least two prices for the same exact model are verified,
+        include a known delivery cost, were checked in the last 7 days and were captured on the same UK day.
+        Listings we cannot confirm as the exact model are left out. Other prices are labelled and never called
+        the best. Freshness is judged when this page is built, so prices may have changed since.
       </p>
     </div>
   </section>

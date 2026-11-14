@@ -1,28 +1,45 @@
 /**
- * Offer source for the comparison page (S1-2). Returns S1-1 contract v1 `VariantComparison`s.
+ * Offer source for the comparison page (S1-2).
  *
- * TODO(S1-1 merged): call the `src/lib/offers` comparison function (read-only) here instead of
- * returning nothing. Do not edit `src/lib/offers` from this ticket.
+ * Production: S1-1 seed data (`src/lib/offers/data`, validated by Backend's schema) passed through
+ * `buildComparisons`, evaluated once at static build time (`now` = build time). Read-only.
  *
  * Build-time switches (never set in production):
- *   OFFERS_FIXTURES=1     render the test fixtures (all offer states)
+ *   OFFERS_FIXTURES=1     add test fixtures (web scope) to exercise every state
  *   OFFERS_FIXTURES=error simulate a failed data load (error state)
  */
-import type { OffersResult, VariantComparison } from './offerModel';
-import { exampleComparisons } from './offerFixtures';
+import { buildComparisons } from '../../lib/offers';
+import type { OffersResult } from './offerModel';
 
-export function loadOffers(env: Record<string, string | undefined> = process.env, now = new Date()): OffersResult {
+export async function loadOffers(env: Record<string, string | undefined> = process.env, now = new Date()): Promise<OffersResult> {
   const mode = env.OFFERS_FIXTURES;
   const fixture = mode === '1' || mode === 'error';
   try {
     if (mode === 'error') throw new Error('Simulated offer data failure (OFFERS_FIXTURES=error)');
-    // No merged S1-1 source yet: production builds render the empty state.
-    const comparisons: VariantComparison[] = mode === '1' ? exampleComparisons(now) : [];
-    if (!Array.isArray(comparisons)) throw new Error('Offer data is not a list');
-    return comparisons.some((c) => c.offers.length > 0)
-      ? { status: 'ok', comparisons, fixture }
-      : { status: 'empty', comparisons: [], fixture };
+    // Dynamic import so invalid seed data renders the error state instead of breaking the page.
+    const data = await import('../../lib/offers/data');
+    let variants = data.kitVariants;
+    let offers = data.kitOffers;
+    let dataStatus = data.offersFile.status;
+    if (mode === '1') {
+      const fx = await import('./offerFixtures');
+      const extra = fx.fixtureData(now);
+      variants = [...variants, ...extra.variants];
+      offers = [...offers, ...extra.offers];
+      dataStatus = 'unverified-seed';
+    }
+    const { comparisons } = buildComparisons(variants, offers, { now });
+    return comparisons.some((c) => c.offers.length > 0 || c.excluded.length > 0)
+      ? { status: 'ok', comparisons, variants, dataStatus, fixture }
+      : { status: 'empty', comparisons: [], variants, dataStatus: null, fixture };
   } catch (error) {
-    return { status: 'error', comparisons: [], fixture, message: error instanceof Error ? error.message : 'Unknown error' };
+    return {
+      status: 'error',
+      comparisons: [],
+      variants: [],
+      dataStatus: null,
+      fixture,
+      message: error instanceof Error ? error.message : 'Unknown error',
+    };
   }
 }

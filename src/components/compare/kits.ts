@@ -5,9 +5,12 @@
  * (listings read 14 Nov 2026). Nothing here was tested. Anything the listing does not state is
  * `null` and renders as "Not published". No prices live here: prices come only from offer data.
  *
- * If S1-1 product records (`src/data/kits/**`) later carry the same fields, switch to those and
- * keep only page copy here.
+ * Variant facts (name, model code, people, weight, water, contents, source) are taken from S1-1's
+ * `src/data/kits/variants.json` whenever it has a record for the same variant_id (see
+ * `withBackendFacts`). The values below are fallbacks for variants Backend has not recorded yet,
+ * plus editorial copy (labels, "still to add", conflicts) that stays in the web layer.
  */
+import type { KitVariant as BackendVariant } from '../../lib/offers';
 
 export const RESEARCHED_ON = '2026-11-14';
 export const WATER_LITRES_PER_PERSON_PER_DAY = 3;
@@ -38,6 +41,31 @@ export interface KitVariant {
   conflicts?: string[];
   sourceUrl: string;
   seller: string;
+}
+
+export interface ResolvedKit extends KitVariant {
+  /** Listed contents from S1-1 data, when Backend has recorded this variant. */
+  contents: Array<{ quantity: number | null; item: string }> | null;
+  factsFrom: 'backend' | 'web-fallback';
+}
+
+/** Prefer S1-1 variant facts over the web fallbacks above; keep editorial copy from here. */
+export function withBackendFacts(kit: KitVariant, backend: BackendVariant | undefined): ResolvedKit {
+  if (!backend || backend.notes.includes('TEST FIXTURE')) {
+    return { ...kit, contents: null, factsFrom: 'web-fallback' };
+  }
+  return {
+    ...kit,
+    brand: backend.brand,
+    name: backend.product_name,
+    modelCode: backend.model_code,
+    people: backend.people_covered,
+    listedWeightKg: backend.weight_kg,
+    waterLitresIncluded: backend.water_litres_included,
+    sourceUrl: backend.source.url,
+    contents: backend.contents,
+    factsFrom: 'backend',
+  };
 }
 
 export const waterNeeded = (people: number) => people * WATER_LITRES_PER_PERSON_PER_DAY * DAYS;

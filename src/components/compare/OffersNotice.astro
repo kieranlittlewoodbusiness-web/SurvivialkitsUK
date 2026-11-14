@@ -18,6 +18,14 @@ const { result } = Astro.props;
   )
 }
 {
+  result.status === 'ok' && result.dataStatus === 'unverified-seed' && !result.fixture && (
+    <div class="offers-notice" role="status">
+      <strong>No verified prices yet.</strong> Prices shown below are unverified captures from public
+      retailer pages. They are labelled, never named as a best price, and may have changed.
+    </div>
+  )
+}
+{
   result.status === 'empty' && (
     <div class="offers-notice" role="status">
       <strong>No verified prices yet.</strong> We only show a price once we have checked it, with the

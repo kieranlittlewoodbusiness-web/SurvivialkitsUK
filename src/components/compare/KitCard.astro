@@ -6,17 +6,23 @@
  */
 import OfferStateBadge from './OfferStateBadge.astro';
 import RetailerLink from './RetailerLink.astro';
-import { exclusionText, formatGbp, type VariantComparison } from './offerModel';
-import { waterNeeded, waterShortfall, type KitVariant } from './kits';
+import { exclusionText, formatGbp, formatLondonDateTime, type OfferKitVariant, type VariantComparison } from './offerModel';
+import { waterNeeded, waterShortfall, withBackendFacts, type KitVariant } from './kits';
 
 interface Props {
   kit: KitVariant;
+  /** S1-1 variant record for the same variant_id, if Backend has one. */
+  variant?: OfferKitVariant;
   comparison?: VariantComparison;
   /** True when the page-level offer load failed. */
   offersError?: boolean;
+  /** Static build time: staleness was decided at this moment. */
+  builtAt: Date;
 }
 
-const { kit, comparison, offersError = false } = Astro.props;
+const { kit: rawKit, variant, comparison, offersError = false, builtAt } = Astro.props;
+const kit = withBackendFacts(rawKit, variant);
+const builtText = formatLondonDateTime(builtAt);
 const shortfall = waterShortfall(kit);
 const needed = waterNeeded(kit.people);
 const rows = comparison?.offers ?? [];
@@ -68,6 +74,10 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
             {best.price_disclaimer}
             {best.availability_text && <> Availability: “{best.availability_text}”.</>}
           </p>
+          <p class="kit-card__stamp kit-card__checked">
+            Last checked {formatLondonDateTime(best.last_checked)} UK time. This page was built on {builtText} UK time, so the
+            price may have changed since.
+          </p>
           <RetailerLink linkUrl={best.link_url} isAffiliate={best.is_affiliate_link} retailer={best.retailer} />
         </>
       ) : (
@@ -77,7 +87,7 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
             {offersError
               ? 'Prices could not be loaded for this version of the page.'
               : rows.length > 0
-                ? 'None of the prices we hold for this exact model is verified, current and with a known delivery cost, so we do not show a best price.'
+                ? 'We only name a best price when at least two verified, current prices with known delivery were captured on the same UK day for this exact model. That is not the case yet.'
                 : 'We have not captured a price for this exact model yet.'}{' '}
             Check the current price and delivery with the seller.
           </p>
@@ -112,6 +122,17 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
   </dl>
 
   {
+    kit.contents && (
+      <details class="kit-card__contents">
+        <summary>Listed contents ({kit.contents.length} lines)</summary>
+        <ul>
+          {kit.contents.map((c) => <li>{c.quantity !== null ? `${c.quantity} × ` : ''}{c.item}</li>)}
+        </ul>
+      </details>
+    )
+  }
+
+  {
     kit.conflicts && kit.conflicts.length > 0 && (
       <div class="kit-card__conflicts" role="note">
         <strong>Check before you buy</strong>
@@ -140,7 +161,16 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
               {row.delivery_text_verbatim && row.delivery_cost_gbp === null && (
                 <p class="kit-card__stamp">Retailer says: “{row.delivery_text_verbatim}” (not confirmed at checkout).</p>
               )}
-              <p class="kit-card__stamp">{row.price_disclaimer} Not used as a best price{row.labels.length === 0 ? ' because a lower verified total exists' : ''}.</p>
+              <p class="kit-card__stamp">{row.price_disclaimer}</p>
+              <p class="kit-card__stamp kit-card__checked">
+                Last checked {formatLondonDateTime(row.last_checked)} UK time; prices may have changed since this page was
+                built ({builtText} UK time).{' '}
+                {row.labels.length > 0
+                  ? 'Not used as a best price.'
+                  : comparison?.best_price_offer_id
+                    ? 'Verified, but not the lowest verified total.'
+                    : 'Verified, but not named best: no second verified price from the same UK day.'}
+              </p>
               <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" />
             </li>
           ))}
@@ -285,6 +315,7 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
     background: rgba(15, 92, 76, 0.05);
   }
 
+  .kit-card__contents ul,
   .kit-card__add ul,
   .kit-card__conflicts ul {
     margin: 0;
@@ -325,6 +356,11 @@ const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d 
     color: var(--warn);
   }
 
+  .kit-card__checked {
+    font-style: italic;
+  }
+
+  .kit-card__contents summary,
   .kit-card__offers summary {
     cursor: pointer;
     font-weight: 600;

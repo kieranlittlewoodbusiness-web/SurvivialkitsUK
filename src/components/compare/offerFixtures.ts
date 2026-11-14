@@ -1,128 +1,115 @@
 /**
- * TEST FIXTURES in the S1-1 contract v1 shape (`VariantComparison` / `DisplayOffer`).
+ * TEST FIXTURES (web scope), loaded only with OFFERS_FIXTURES=1. Production never uses them.
  *
- * Loaded only when the build runs with OFFERS_FIXTURES=1; production builds never use them.
- * - evaq8-e182p reproduces Backend's posted UNVERIFIED seed (issue #2 comment 6885791811):
- *   EVAQ8 £117.00 unverified with unknown delivery; Amazon UK row excluded (MPN E138 ≠ E182P).
- * - Every other price is an EXAMPLE placeholder (round numbers) chosen to exercise UI states:
- *   best verified price, unverified price, stale, unverified delivery, savings, no offers.
- *   The only affiliate URL is example.com.
- * Flags here are set by hand the way the offers API would set them; the UI does not derive them.
+ * Raw S1-1 `KitVariant` / `Offer` records, validated with Backend's own `parseVariant` /
+ * `parseOffer` so they conform to the contract, then run through `buildComparisons` like real data.
+ * Variant facts come from seller listings (SURVIVAL_COMPARISON_BRIEF §3). Every price is an
+ * EXAMPLE round number. The affiliate programme/URL is example.com. Backend's real E182P seed is
+ * added by loadOffers and is not repeated here.
+ *
+ * States exercised:
+ *   evaq8-e184  two verified, fresh, same-day offers -> best price + savings (one affiliate link)
+ *   evaq8-e180  one verified offer + one unverified  -> no best (needs two verified same-day rows)
+ *   evaq8-e194  two verified offers on different UK days + one stale -> no best (capture window)
+ *   evaq8-e182p Backend seed: unverified, delivery unknown; Amazon row excluded (model unconfirmed)
+ *   tminus-t3-4p no variant record/offers -> "no price captured"
  */
-import {
-  OFFER_LABEL_TEXT,
-  formatUkDateTime,
-  type DisplayOffer,
-  type OfferLabel,
-  type VariantComparison,
-} from './offerModel';
+import { addDaysLondon, parseOffer, parseVariant, toLondonIso, type KitVariant, type Offer } from '../../lib/offers';
 
-const iso = (d: Date) => d.toISOString().replace('Z', '+00:00');
-
-type Seed = {
-  offer_id: string;
-  variant_id: string;
-  retailer: string;
-  people: number;
-  price: number | null;
-  delivery: number | null;
-  price_verified: boolean;
-  delivery_verified: boolean;
-  is_stale?: boolean;
-  is_best_price?: boolean;
-  product_url: string;
-  affiliate_url?: string;
-  availability_text: string | null;
-  delivery_text_verbatim?: string | null;
-  source_name: string;
-  checked: Date;
-};
-
-function display(s: Seed): DisplayOffer {
-  const labels: OfferLabel[] = [];
-  if (s.price === null) labels.push('price_missing');
-  else if (!s.price_verified) labels.push('price_unverified');
-  if (s.delivery === null) labels.push('delivery_unknown');
-  else if (!s.delivery_verified) labels.push('delivery_unverified');
-  if (s.is_stale) labels.push('stale');
-  const total = s.price !== null && s.delivery !== null ? s.price + s.delivery : null;
-  const isAffiliate = !!s.affiliate_url;
-  return {
-    offer_id: s.offer_id,
-    variant_id: s.variant_id,
-    retailer: s.retailer,
-    seller_name: s.retailer,
-    availability_text: s.availability_text,
-    price_gbp_inc_vat: s.price,
-    delivery_cost_gbp: s.delivery,
-    free_delivery_threshold_gbp: null,
-    delivery_text_verbatim: s.delivery_text_verbatim ?? null,
-    delivered_total_gbp: total,
-    total_per_person_gbp: total === null ? null : Math.round((total / s.people) * 100) / 100,
-    total_per_person_day_gbp: total === null ? null : Math.round((total / s.people / 3) * 100) / 100,
-    delivery_known: s.delivery !== null,
-    price_verified: s.price_verified,
-    delivery_verified: s.delivery_verified,
-    is_stale: !!s.is_stale,
-    eligible_for_best_price: labels.length === 0,
-    is_best_price: !!s.is_best_price,
-    labels,
-    label_text: labels.map((l) => OFFER_LABEL_TEXT[l]),
-    price_disclaimer: `Price at ${s.retailer} on ${formatUkDateTime(iso(s.checked))} UK time. Prices change.`,
-    link_url: isAffiliate ? (s.affiliate_url as string) : s.product_url,
-    is_affiliate_link: isAffiliate,
-    product_url: s.product_url,
-    captured_at: iso(s.checked),
-    last_checked: iso(s.checked),
-    next_check_due: iso(new Date(s.checked.getTime() + 7 * 86400_000)),
-    source: { name: s.source_name, url: s.product_url },
-  };
+function variant(v: {
+  id: string; kit: string; name: string; code: string; people: number; weight: number; water: number;
+  format: KitVariant['format']; url: string; captured: string;
+}): KitVariant {
+  return parseVariant({
+    schema_version: 1,
+    variant_id: v.id,
+    kit_id: v.kit,
+    brand: 'EVAQ8',
+    manufacturer: 'Go-Bag',
+    product_name: v.name,
+    model_code: v.code,
+    mpn: v.code,
+    gtin: null,
+    people_covered: v.people,
+    days: 3,
+    format: v.format,
+    weight_kg: v.weight,
+    contents: [{ quantity: null, item: 'EXAMPLE fixture: see seller listing for contents' }],
+    contents_captured_at: v.captured,
+    water_litres_included: v.water,
+    source: { name: 'EVAQ8 product page', url: v.url },
+    notes: ['TEST FIXTURE'],
+  });
 }
 
-const base = (variant_id: string, model_code: string, people: number, water: number) => ({
-  variant_id,
-  model_code,
-  people_covered: people,
-  days: 3,
-  water_litres_included: water,
-});
+function offer(o: {
+  id: string; variant: string; kit: string; retailer: string; mpn: string; price: number; delivery: number | null;
+  priceVerified: boolean; deliveryVerified: boolean; checked: string; url: string; affiliate?: boolean;
+}): Offer {
+  return parseOffer({
+    schema_version: 1,
+    offer_id: o.id,
+    variant_id: o.variant,
+    kit_id: o.kit,
+    retailer: o.retailer,
+    seller_name: o.retailer,
+    fulfilled_by: o.retailer,
+    retailer_sku: o.mpn,
+    asin: null,
+    mpn: o.mpn,
+    gtin: null,
+    model_match_confirmed: true,
+    model_match_note: 'TEST FIXTURE: exact model code shown.',
+    currency: 'GBP',
+    price_gbp_inc_vat: o.price,
+    price_gbp_ex_vat: null,
+    vat_status_note: 'EXAMPLE price',
+    price_verified: o.priceVerified,
+    delivery_cost_gbp: o.delivery,
+    free_delivery_threshold_gbp: null,
+    delivery_text_verbatim: null,
+    delivery_lead_time_text: null,
+    delivery_verified: o.deliveryVerified,
+    availability_text: 'In stock',
+    was_price_gbp: null,
+    was_price_source: null,
+    product_url: o.url,
+    affiliate_url: o.affiliate ? 'https://example.com/affiliate/evaq8-e184' : '',
+    affiliate_programme: o.affiliate ? { name: 'EXAMPLE programme (fixture)', approved_on: '2026-11-01' } : null,
+    affiliate_disclosure_required: true,
+    source: { name: 'EXAMPLE fixture', url: o.url, type: 'retailer_page_manual' },
+    captured_at: o.checked,
+    last_checked: o.checked,
+    next_check_due: addDaysLondon(o.checked, 7),
+    captured_by: 'fixture',
+    screenshot_path: null,
+    internal: { commission_rate: null, commission_rate_source: null },
+  });
+}
 
-export function exampleComparisons(now: Date = new Date()): VariantComparison[] {
-  const fresh = new Date(now.getTime() - 2 * 3600_000);
-  const old = new Date(now.getTime() - 10 * 86400_000);
-  const seedTime = new Date('2026-11-14T23:17:00+00:00');
+export function fixtureData(now: Date = new Date()): { variants: KitVariant[]; offers: Offer[] } {
+  const t = now.getTime();
+  const fresh1 = toLondonIso(t - 60_000);
+  const fresh2 = toLondonIso(t - 120_000);
+  const yesterday = toLondonIso(t - 26 * 3600_000);
+  const old = toLondonIso(t - 10 * 86_400_000);
+  const e180Url = 'https://evaq8.co.uk/go-bag-emergency-kit-72-hour-survival-supplies.html';
+  const e184Url = 'https://evaq8.co.uk/bug-out-bag-4-person-family-go-bag.html';
+  const e194Url = 'https://evaq8.co.uk/gobag-emergency-kit-4-person-in-holdall.html';
 
-  const e180Best = display({ offer_id: 'evaq8-e180--evaq8--example', variant_id: 'evaq8-e180', retailer: 'EVAQ8', people: 1, price: 50, delivery: 5, price_verified: true, delivery_verified: true, is_best_price: true, product_url: 'https://evaq8.co.uk/go-bag-emergency-kit-72-hour-survival-supplies.html', availability_text: 'In stock', source_name: 'EXAMPLE fixture', checked: fresh });
-  const e180Amz = display({ offer_id: 'evaq8-e180--amazon-uk--example', variant_id: 'evaq8-e180', retailer: 'Amazon UK', people: 1, price: 48, delivery: 0, price_verified: false, delivery_verified: true, product_url: 'https://www.amazon.co.uk/', availability_text: 'In stock', source_name: 'EXAMPLE fixture', checked: fresh });
-
-  const e182p = display({ offer_id: 'evaq8-e182p--evaq8--20261114', variant_id: 'evaq8-e182p', retailer: 'EVAQ8', people: 2, price: 117, delivery: null, price_verified: false, delivery_verified: false, product_url: 'https://evaq8.co.uk/gobag-emergency-kit-2-person-e141-plain.html', availability_text: 'In stock (69 items available)', delivery_text_verbatim: 'Free shipping', source_name: 'EVAQ8 product page (manual public capture, not an approved feed)', checked: seedTime });
-
-  const e184A = display({ offer_id: 'evaq8-e184--evaq8--example', variant_id: 'evaq8-e184', retailer: 'EVAQ8', people: 4, price: 200, delivery: 0, price_verified: true, delivery_verified: true, is_best_price: true, product_url: 'https://evaq8.co.uk/bug-out-bag-4-person-family-go-bag.html', affiliate_url: 'https://example.com/affiliate/evaq8-e184', availability_text: 'In stock', source_name: 'EXAMPLE fixture', checked: fresh });
-  const e184B = display({ offer_id: 'evaq8-e184--example-retailer--example', variant_id: 'evaq8-e184', retailer: 'Example Retailer', people: 4, price: 205, delivery: 5, price_verified: true, delivery_verified: true, product_url: 'https://example.com/product/e184', availability_text: 'In stock', source_name: 'EXAMPLE fixture', checked: fresh });
-
-  const e194Stale = display({ offer_id: 'evaq8-e194--evaq8--example-old', variant_id: 'evaq8-e194', retailer: 'EVAQ8', people: 4, price: 190, delivery: 0, price_verified: true, delivery_verified: true, is_stale: true, product_url: 'https://evaq8.co.uk/gobag-emergency-kit-4-person-in-holdall.html', availability_text: 'In stock', source_name: 'EXAMPLE fixture', checked: old });
-  const e194Del = display({ offer_id: 'evaq8-e194--example-retailer--example', variant_id: 'evaq8-e194', retailer: 'Example Retailer', people: 4, price: 195, delivery: 6, price_verified: true, delivery_verified: false, product_url: 'https://example.com/product/e194', availability_text: 'Usually dispatched in 2 to 3 days', source_name: 'EXAMPLE fixture', checked: fresh });
-  const londonDay = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/London' }).format(fresh);
-
-  return [
-    { ...base('evaq8-e180', 'E180', 1, 0.5), offers: [e180Best, e180Amz], excluded: [], best_price_offer_id: e180Best.offer_id, same_capture_window: true, savings: null },
-    {
-      ...base('evaq8-e182p', 'E182P', 2, 1),
-      offers: [e182p],
-      excluded: [{ offer_id: 'evaq8-e182p--amazon-uk--20261114', variant_id: 'evaq8-e182p', retailer: 'Amazon UK', reason: 'model_match_unconfirmed' }],
-      best_price_offer_id: null,
-      same_capture_window: true,
-      savings: null,
-    },
-    {
-      ...base('evaq8-e184', 'E184', 4, 2),
-      offers: [e184A, e184B],
-      excluded: [],
-      best_price_offer_id: e184A.offer_id,
-      same_capture_window: true,
-      savings: { amount_gbp: 10, cheaper_offer_id: e184A.offer_id, dearer_offer_id: e184B.offer_id, capture_window: londonDay },
-    },
-    { ...base('evaq8-e194', 'E194', 4, 2), offers: [e194Del, e194Stale], excluded: [], best_price_offer_id: null, same_capture_window: false, savings: null },
-    // tminus-t3-4p: deliberately absent (per-kit "no price captured" state).
+  const variants = [
+    variant({ id: 'evaq8-e180', kit: 'evaq8-gobag-1-person', name: 'GoBag Emergency Kit 72hr Survival Supplies', code: 'E180', people: 1, weight: 2.5, water: 0.5, format: 'rucksack', url: e180Url, captured: fresh1 }),
+    variant({ id: 'evaq8-e184', kit: 'evaq8-gobag-4-person', name: 'GoBag Emergency Kit 4 Person Family Survival Kit', code: 'E184', people: 4, weight: 9, water: 2, format: 'rucksack', url: e184Url, captured: fresh1 }),
+    variant({ id: 'evaq8-e194', kit: 'evaq8-gobag-4-person', name: '72 Hour Emergency 4 Person Family Kit in Holdall', code: 'E194', people: 4, weight: 8.5, water: 2, format: 'holdall', url: e194Url, captured: fresh1 }),
   ];
+  const offers = [
+    offer({ id: 'fx-e180-evaq8', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'EVAQ8', mpn: 'E180', price: 50, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e180Url }),
+    offer({ id: 'fx-e180-example', variant: 'evaq8-e180', kit: 'evaq8-gobag-1-person', retailer: 'Example Retailer', mpn: 'E180', price: 48, delivery: 0, priceVerified: false, deliveryVerified: true, checked: fresh1, url: 'https://example.com/product/e180' }),
+    offer({ id: 'fx-e184-evaq8', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E184', price: 200, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e184Url, affiliate: true }),
+    offer({ id: 'fx-e184-example', variant: 'evaq8-e184', kit: 'evaq8-gobag-4-person', retailer: 'Example Retailer', mpn: 'E184', price: 205, delivery: 5, priceVerified: true, deliveryVerified: true, checked: fresh2, url: 'https://example.com/product/e184' }),
+    offer({ id: 'fx-e194-evaq8', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'EVAQ8', mpn: 'E194', price: 190, delivery: 0, priceVerified: true, deliveryVerified: true, checked: fresh1, url: e194Url }),
+    offer({ id: 'fx-e194-example', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'Example Retailer', mpn: 'E194', price: 185, delivery: 6, priceVerified: true, deliveryVerified: true, checked: yesterday, url: 'https://example.com/product/e194' }),
+    offer({ id: 'fx-e194-other-old', variant: 'evaq8-e194', kit: 'evaq8-gobag-4-person', retailer: 'Other Example Shop', mpn: 'E194', price: 180, delivery: 0, priceVerified: true, deliveryVerified: true, checked: old, url: 'https://example.com/product/e194-old' }),
+  ];
+  return { variants, offers };
 }
