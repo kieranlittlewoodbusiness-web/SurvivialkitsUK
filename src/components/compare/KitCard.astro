@@ -1,26 +1,33 @@
 ---
 /**
  * One kit variant on the comparison page. Mobile-first: stacked card, no wide table.
- * Shows the best *verified* delivered price for this exact variant, or a labelled empty state.
+ * Renders the S1-1 `VariantComparison` as given: best price only when `best_price_offer_id`
+ * is set, savings only when `savings` is set. Otherwise a labelled empty state.
  */
 import OfferStateBadge from './OfferStateBadge.astro';
 import RetailerLink from './RetailerLink.astro';
-import { formatGbp, formatUkDateTime, stateLabels, type VariantOffers } from './offerModel';
+import { exclusionText, formatGbp, type VariantComparison } from './offerModel';
 import { waterNeeded, waterShortfall, type KitVariant } from './kits';
 
 interface Props {
   kit: KitVariant;
-  offers: VariantOffers;
+  comparison?: VariantComparison;
   /** True when the page-level offer load failed. */
   offersError?: boolean;
 }
 
-const { kit, offers, offersError = false } = Astro.props;
+const { kit, comparison, offersError = false } = Astro.props;
 const shortfall = waterShortfall(kit);
 const needed = waterNeeded(kit.people);
-const others = offers.rows.filter((r) => r !== offers.best);
+const rows = comparison?.offers ?? [];
+const best = comparison?.best_price_offer_id ? rows.find((o) => o.offer_id === comparison.best_price_offer_id) : undefined;
+const others = rows.filter((o) => o !== best);
+const excluded = comparison?.excluded ?? [];
+const savings = comparison?.savings ?? null;
+const dearer = savings ? rows.find((o) => o.offer_id === savings.dearer_offer_id) : undefined;
 const headingId = `kit-${kit.id}`;
 const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
+const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d === 0 ? 'free delivery' : `${formatGbp(d)} delivery`);
 ---
 
 <article class="kit-card" id={kit.id} aria-labelledby={headingId}>
@@ -39,23 +46,29 @@ const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
 
   <section class="kit-card__price" aria-label={`Price for ${kit.modelCode}`}>
     {
-      offers.best ? (
+      best && best.delivered_total_gbp !== null ? (
         <>
           <p class="kit-card__price-label">
-            Best verified delivered price <OfferStateBadge state="verified" />
+            Best verified delivered price <OfferStateBadge label="verified" />
           </p>
           <p class="kit-card__price-value">
-            {formatGbp(offers.best.totalGbp)}
+            {formatGbp(best.delivered_total_gbp)}
             <span class="kit-card__price-split">
-              {formatGbp(offers.best.priceGbpIncVat)} inc VAT +{' '}
-              {offers.best.deliveryGbp === 0 ? 'free delivery' : `${formatGbp(offers.best.deliveryGbp as number)} delivery`}
+              {best.price_gbp_inc_vat !== null && `${formatGbp(best.price_gbp_inc_vat)} inc VAT + `}{deliveryText(best.delivery_cost_gbp)}
             </span>
           </p>
+          {
+            savings && dearer && (
+              <p class="kit-card__savings">
+                {formatGbp(savings.amount_gbp)} less than {dearer.retailer} for the same model, both checked the same day.
+              </p>
+            )
+          }
           <p class="kit-card__stamp">
-            Price at {offers.best.retailer} on {formatUkDateTime(offers.best.lastChecked)} UK time. Prices
-            change. Availability: “{offers.best.availabilityText}”.
+            {best.price_disclaimer}
+            {best.availability_text && <> Availability: “{best.availability_text}”.</>}
           </p>
-          <RetailerLink affiliateUrl={offers.best.affiliateUrl} productUrl={offers.best.productUrl} retailer={offers.best.retailer} />
+          <RetailerLink linkUrl={best.link_url} isAffiliate={best.is_affiliate_link} retailer={best.retailer} />
         </>
       ) : (
         <>
@@ -63,8 +76,8 @@ const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
           <p class="kit-card__stamp">
             {offersError
               ? 'Prices could not be loaded for this version of the page.'
-              : offers.rows.length > 0
-                ? 'None of the prices we hold for this exact model are verified, current and with a known delivery cost, so we do not show a best price.'
+              : rows.length > 0
+                ? 'None of the prices we hold for this exact model is verified, current and with a known delivery cost, so we do not show a best price.'
                 : 'We have not captured a price for this exact model yet.'}{' '}
             Check the current price and delivery with the seller.
           </p>
@@ -110,27 +123,35 @@ const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
   }
 
   {
-    others.length > 0 && (
+    (others.length > 0 || excluded.length > 0) && (
       <details class="kit-card__offers">
         <summary>Other prices we hold ({others.length})</summary>
         <ul>
           {others.map((row) => (
             <li>
               <p class="kit-card__offer-line">
-                <strong>{row.retailer}</strong> <OfferStateBadge state={row.state} />
+                <strong>{row.retailer}</strong>
+                {row.labels.length === 0 ? <OfferStateBadge label="verified" /> : row.labels.map((l) => <OfferStateBadge label={l} />)}
               </p>
               <p class="kit-card__offer-line">
-                {formatGbp(row.priceGbpIncVat)} inc VAT
-                {row.deliveryGbp === null ? ' + delivery unknown' : row.deliveryGbp === 0 ? ' + free delivery' : ` + ${formatGbp(row.deliveryGbp)} delivery`}
+                {row.price_gbp_inc_vat === null ? 'Price not available' : `${formatGbp(row.price_gbp_inc_vat)} inc VAT + ${deliveryText(row.delivery_cost_gbp)}`}
+                {row.delivered_total_gbp !== null && ` (total ${formatGbp(row.delivered_total_gbp)})`}
               </p>
-              <p class="kit-card__stamp">
-                {stateLabels[row.state].detail} Price at {row.retailer} on {formatUkDateTime(row.lastChecked)} UK time.
-                Prices change.
-              </p>
-              <RetailerLink affiliateUrl={row.affiliateUrl} productUrl={row.productUrl} retailer={row.retailer} variant="text" />
+              {row.delivery_text_verbatim && row.delivery_cost_gbp === null && (
+                <p class="kit-card__stamp">Retailer says: “{row.delivery_text_verbatim}” (not confirmed at checkout).</p>
+              )}
+              <p class="kit-card__stamp">{row.price_disclaimer} Not used as a best price{row.labels.length === 0 ? ' because a lower verified total exists' : ''}.</p>
+              <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" />
             </li>
           ))}
         </ul>
+        {
+          excluded.length > 0 && (
+            <p class="kit-card__stamp kit-card__excluded">
+              Left out: {excluded.map((e) => `${e.retailer} (${exclusionText[e.reason]})`).join('; ')}.
+            </p>
+          )
+        }
       </details>
     )
   }
@@ -234,6 +255,15 @@ const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
     margin-top: 0.2rem;
   }
 
+  .kit-card__savings {
+    font-weight: 600;
+    color: var(--signal-deep);
+  }
+
+  .kit-card__excluded {
+    margin-top: 0.75rem !important;
+  }
+
   .kit-card__stamp {
     font-size: 0.88rem;
     color: var(--ink-muted);
@@ -331,8 +361,9 @@ const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
   }
 
   .kit-card__source a {
-    display: inline-block;
-    padding-block: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
   }
 
   @media (min-width: 30rem) {

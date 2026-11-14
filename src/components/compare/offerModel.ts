@@ -1,94 +1,115 @@
 /**
- * PROVISIONAL view model for S1-2 (web), owned by the web ticket.
+ * Local mirror of the S1-1 offer data contract v1 (derived, render-safe shapes only).
+ * Source: https://github.com/kieranlittlewoodbusiness-web/SurvivialkitsUK/issues/2#issuecomment-6885791811
  *
- * The real data contract belongs to S1-1 (`src/lib/offers`, posted on issue #2). Until it lands,
- * the comparison page reads offers through this file only, so swapping in the backend module is a
- * one-file change (`loadOffers` + `classifyOffer`). Field names follow the S1-1 acceptance
- * criteria. This file never ranks across variants and never computes savings.
+ * Copied verbatim (field names and comments) so fixtures type-check against the contract.
+ * TODO(S1-1 merged): delete these declarations and re-export from `src/lib/offers/types` instead,
+ * read-only. Never edit `src/lib/offers`. The UI does not compute best price or savings itself:
+ * it renders `best_price_offer_id` and `savings` exactly as the offers API returns them.
+ * `Offer.internal` (commission) is not part of these shapes and must never be rendered.
  */
-import { z } from 'zod';
 
-/** One offer row: kit variant × retailer × capture. Mirrors the S1-1 acceptance criteria. */
-export const offerSchema = z.object({
-  variantId: z.string().min(1),
-  retailer: z.string().min(1),
-  /** GBP including VAT. */
-  priceGbpIncVat: z.number().nonnegative(),
-  /** `null` means delivery cost is unknown. Never treated as £0. */
-  deliveryGbp: z.number().nonnegative().nullable(),
-  priceVerified: z.boolean(),
-  deliveryVerified: z.boolean(),
-  /** Verbatim from the retailer. */
-  availabilityText: z.string(),
-  /** Exact programme URL. Empty until the affiliate programme is approved. */
-  affiliateUrl: z.string(),
-  /** Non-affiliate product URL, used when affiliateUrl is empty. */
-  productUrl: z.url(),
-  sourceName: z.string().min(1),
-  sourceUrl: z.url(),
-  /** ISO 8601 with offset, captured in Europe/London. */
-  lastChecked: z.iso.datetime({ offset: true }),
-  nextCheckDue: z.iso.datetime({ offset: true }),
-});
+/** ISO 8601 date-time WITH an explicit offset, expressed in Europe/London time. */
+export type LondonIsoDateTime = string;
+/** ISO 8601 calendar date, e.g. "2026-11-14". */
+export type IsoDate = string;
 
-export type Offer = z.infer<typeof offerSchema>;
+export const DEFAULT_STALE_AFTER_DAYS = 7;
 
-export type OfferState = 'verified' | 'unverified-price' | 'unknown-delivery' | 'unverified-delivery' | 'stale';
+export interface SourceRef {
+  name: string;
+  url: string;
+}
 
-export const STALE_AFTER_DAYS = 7;
+export type OfferLabel = 'price_unverified' | 'price_missing' | 'delivery_unverified' | 'delivery_unknown' | 'stale';
+
+export const OFFER_LABEL_TEXT: Record<OfferLabel, string> = {
+  price_unverified: 'Price not verified',
+  price_missing: 'Price not available',
+  delivery_unverified: 'Delivery cost not verified',
+  delivery_unknown: 'Delivery cost unknown – not included in total',
+  stale: 'Price may be out of date',
+};
+
+export type ExclusionReason = 'model_match_unconfirmed' | 'identifier_mismatch' | 'unknown_variant';
+
+export interface ExcludedOffer {
+  offer_id: string;
+  variant_id: string;
+  retailer: string;
+  reason: ExclusionReason;
+}
+
+/** Public, render-safe view of an Offer (no `internal`). */
+export interface DisplayOffer {
+  offer_id: string;
+  variant_id: string;
+  retailer: string;
+  seller_name: string | null;
+  availability_text: string | null;
+  price_gbp_inc_vat: number | null;
+  delivery_cost_gbp: number | null;
+  free_delivery_threshold_gbp: number | null;
+  delivery_text_verbatim: string | null;
+  /** price + delivery. null when price or delivery is unknown. */
+  delivered_total_gbp: number | null;
+  total_per_person_gbp: number | null;
+  total_per_person_day_gbp: number | null;
+  delivery_known: boolean;
+  price_verified: boolean;
+  delivery_verified: boolean;
+  is_stale: boolean;
+  /** price & delivery verified, delivery known, not stale. */
+  eligible_for_best_price: boolean;
+  is_best_price: boolean;
+  labels: OfferLabel[];
+  label_text: string[];
+  /** "Price at [retailer] on [date, time] UK time. Prices change." */
+  price_disclaimer: string;
+  /** affiliate_url when a programme is approved, else product_url. */
+  link_url: string;
+  is_affiliate_link: boolean;
+  product_url: string;
+  captured_at: LondonIsoDateTime;
+  last_checked: LondonIsoDateTime;
+  next_check_due: LondonIsoDateTime;
+  source: SourceRef;
+}
+
+export interface Savings {
+  amount_gbp: number;
+  cheaper_offer_id: string;
+  dearer_offer_id: string;
+  /** Europe/London calendar date both rows were captured on. */
+  capture_window: IsoDate;
+}
+
+export interface VariantComparison {
+  variant_id: string;
+  model_code: string;
+  people_covered: number;
+  days: number;
+  water_litres_included: number;
+  /** Sorted by the offers API. The UI keeps this order. */
+  offers: DisplayOffer[];
+  excluded: ExcludedOffer[];
+  best_price_offer_id: string | null;
+  same_capture_window: boolean;
+  savings: Savings | null;
+}
+
+/* ---------- Web-only helpers (presentation, no business rules) ---------- */
 
 export type OffersResult =
-  | { status: 'ok'; offers: Offer[]; fixture: boolean }
-  | { status: 'empty'; offers: []; fixture: boolean }
-  | { status: 'error'; offers: []; fixture: boolean; message: string };
-
-/**
- * State of one offer at build time. Order of checks matters: stale beats everything, then an
- * unverified price, then delivery. Only `verified` rows can be shown as a best delivered price.
- */
-export function classifyOffer(offer: Offer, now: Date = new Date()): OfferState {
-  const ageMs = now.getTime() - new Date(offer.lastChecked).getTime();
-  if (ageMs > STALE_AFTER_DAYS * 24 * 60 * 60 * 1000) return 'stale';
-  if (!offer.priceVerified) return 'unverified-price';
-  if (offer.deliveryGbp === null) return 'unknown-delivery';
-  if (!offer.deliveryVerified) return 'unverified-delivery';
-  return 'verified';
-}
-
-export type OfferRow = Offer & { state: OfferState; totalGbp: number | null };
-
-export interface VariantOffers {
-  /** Lowest verified delivered total for this exact variant, if any (same object as in `rows`). */
-  best: (OfferRow & { totalGbp: number }) | null;
-  /** All rows for this variant: verified by total, then known totals, then unknown delivery. */
-  rows: OfferRow[];
-}
-
-/** Offers for one exact variant id. Never mixes variants. */
-export function offersForVariant(offers: Offer[], variantId: string, now: Date = new Date()): VariantOffers {
-  const rows = offers
-    .filter((o) => o.variantId === variantId)
-    .map((o): OfferRow => {
-      const state = classifyOffer(o, now);
-      const totalGbp = o.deliveryGbp === null ? null : o.priceGbpIncVat + o.deliveryGbp;
-      return { ...o, state, totalGbp };
-    })
-    .sort((a, b) => {
-      const rank = (r: typeof a) => (r.state === 'verified' ? 0 : r.totalGbp !== null ? 1 : 2);
-      const byRank = rank(a) - rank(b);
-      if (byRank !== 0) return byRank;
-      return (a.totalGbp ?? Number.POSITIVE_INFINITY) - (b.totalGbp ?? Number.POSITIVE_INFINITY);
-    });
-
-  const best = rows.find((r): r is OfferRow & { totalGbp: number } => r.state === 'verified' && r.totalGbp !== null);
-  return { best: best ?? null, rows };
-}
+  | { status: 'ok'; comparisons: VariantComparison[]; fixture: boolean }
+  | { status: 'empty'; comparisons: []; fixture: boolean }
+  | { status: 'error'; comparisons: []; fixture: boolean; message: string };
 
 export function formatGbp(value: number): string {
   return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value);
 }
 
-/** e.g. "14 Nov 2026, 22:50 GMT" in Europe/London. */
+/** e.g. "14 Nov 2026, 23:17" in Europe/London (callers add "UK time"). */
 export function formatUkDateTime(iso: string): string {
   return new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/London',
@@ -98,26 +119,11 @@ export function formatUkDateTime(iso: string): string {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-    timeZoneName: 'short',
   }).format(new Date(iso));
 }
 
-export const stateLabels: Record<OfferState, { label: string; detail: string }> = {
-  verified: { label: 'Verified', detail: 'Price and delivery checked at the retailer.' },
-  'unverified-price': {
-    label: 'Price not verified',
-    detail: 'We could not confirm this price for this exact model. Not used as a best price.',
-  },
-  'unknown-delivery': {
-    label: 'Delivery unknown',
-    detail: 'Delivery cost not known, so no delivered total. Not used as a best price.',
-  },
-  'unverified-delivery': {
-    label: 'Delivery not verified',
-    detail: 'Delivery cost not confirmed. Not used as a best price.',
-  },
-  stale: {
-    label: `Stale (over ${STALE_AFTER_DAYS} days old)`,
-    detail: 'This price is out of date. Check the retailer. Not used as a best price.',
-  },
+export const exclusionText: Record<ExclusionReason, string> = {
+  model_match_unconfirmed: 'listing not confirmed as this exact model',
+  identifier_mismatch: 'product code does not match this model',
+  unknown_variant: 'not matched to a model we compare',
 };

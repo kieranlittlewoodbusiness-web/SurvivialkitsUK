@@ -1,21 +1,19 @@
 ---
 /**
- * Outbound retailer link for an offer.
- * - With an approved affiliate URL: exact URL, rel="sponsored nofollow", labelled Ad.
- * - Without one: the plain (non-affiliate) product URL.
+ * Outbound retailer link for a DisplayOffer.
+ * - is_affiliate_link: exact link_url via AffiliateLink (rel="sponsored nofollow"), labelled Ad.
+ * - otherwise: link_url is the plain product URL.
  */
 import AffiliateLink from '../AffiliateLink.astro';
 
 interface Props {
-  affiliateUrl: string;
-  productUrl: string;
+  linkUrl: string;
+  isAffiliate: boolean;
   retailer: string;
-  /** Visible text after "View at". */
   variant?: 'button' | 'text';
 }
 
-const { affiliateUrl, productUrl, retailer, variant = 'button' } = Astro.props;
-const isAffiliate = affiliateUrl.trim().length > 0;
+const { linkUrl, isAffiliate, retailer, variant = 'button' } = Astro.props;
 const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer-link--text';
 ---
 
@@ -23,12 +21,12 @@ const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer
   isAffiliate ? (
     <span class="retailer-link-wrap">
       <span class="badge badge--ad">Ad</span>
-      <AffiliateLink href={affiliateUrl} merchant={retailer} class={cls}>
+      <AffiliateLink href={linkUrl} merchant={retailer} class={cls}>
         View at {retailer}<span class="visually-hidden"> (affiliate link, opens retailer site)</span>
       </AffiliateLink>
     </span>
   ) : (
-    <a class={cls} href={productUrl} rel="noopener noreferrer" data-merchant={retailer}>
+    <a class={cls} href={linkUrl} rel="noopener noreferrer" data-merchant={retailer}>
       View at {retailer}<span class="visually-hidden"> (retailer site)</span>
     </a>
   )

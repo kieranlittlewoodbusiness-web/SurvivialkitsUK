@@ -7,7 +7,6 @@ import KitCard from '../../../components/compare/KitCard.astro';
 import ContentsMatrix from '../../../components/compare/ContentsMatrix.astro';
 import { kits, sources, RESEARCHED_ON, waterNeeded } from '../../../components/compare/kits';
 import { loadOffers } from '../../../components/compare/loadOffers';
-import { offersForVariant } from '../../../components/compare/offerModel';
 import { site, comparePath } from '../../../data/site';
 
 const title = '72-Hour Emergency Kits UK: Pre-Packed vs DIY Compared';
@@ -16,8 +15,8 @@ const description =
 
 const now = new Date();
 const result = loadOffers(process.env, now);
-const byVariant = new Map(kits.map((k) => [k.id, offersForVariant(result.offers, k.id, now)]));
-const hasAffiliateLinks = result.offers.some((o) => o.affiliateUrl.trim().length > 0);
+const byVariant = new Map(result.comparisons.map((c) => [c.variant_id, c]));
+const hasAffiliateLinks = result.comparisons.some((c) => c.offers.some((o) => o.is_affiliate_link));
 
 const jumps = [
   { href: '#evaq8-e180', label: '1 person' },
@@ -111,7 +110,7 @@ const litresRows = [1, 2, 3, 4, 5, 6];
       <div class="kit-grid">
         {
           kits.map((kit) => (
-            <KitCard kit={kit} offers={byVariant.get(kit.id)!} offersError={result.status === 'error'} />
+            <KitCard kit={kit} comparison={byVariant.get(kit.id)} offersError={result.status === 'error'} />
           ))
         }
       </div>
@@ -317,8 +316,10 @@ const litresRows = [1, 2, 3, 4, 5, 6];
   }
 
   .crumbs a {
-    display: inline-block;
-    padding-block: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
   }
 
   .compare-intro h1 {

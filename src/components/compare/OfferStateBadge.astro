@@ -1,15 +1,16 @@
 ---
-import { stateLabels, type OfferState } from './offerModel';
+import { OFFER_LABEL_TEXT, type OfferLabel } from './offerModel';
 
 interface Props {
-  state: OfferState;
+  label: OfferLabel | 'verified';
 }
 
-const { state } = Astro.props;
-const { label } = stateLabels[state];
+const { label } = Astro.props;
+const text = label === 'verified' ? 'Verified' : OFFER_LABEL_TEXT[label];
+const tone = label === 'verified' ? 'ok' : label === 'stale' ? 'stale' : 'warn';
 ---
 
-<span class:list={['offer-state', `offer-state--${state}`]}>{label}</span>
+<span class:list={['offer-state', `offer-state--${tone}`]}>{text}</span>
 
 <style>
   .offer-state {
@@ -20,17 +21,14 @@ const { label } = stateLabels[state];
     line-height: 1.3;
     padding: 0.15rem 0.45rem;
     border: 1px solid currentColor;
-    white-space: nowrap;
   }
 
-  .offer-state--verified {
+  .offer-state--ok {
     color: var(--signal-deep);
     background: rgba(15, 92, 76, 0.08);
   }
 
-  .offer-state--unverified-price,
-  .offer-state--unverified-delivery,
-  .offer-state--unknown-delivery {
+  .offer-state--warn {
     color: var(--warn);
     background: #f7f0e4;
   }
