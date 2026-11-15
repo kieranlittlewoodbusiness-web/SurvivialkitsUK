@@ -1,22 +1,24 @@
 ---
 /**
- * Be Ready checklist matrix. Cards above carry the mobile essentials, so this table is
- * supplementary: it scrolls horizontally inside its own focusable region with a sticky first column.
+ * Be Ready checklist matrix. Below 48rem each checklist item stacks as a small card with every
+ * kit's value labelled (no sideways swipe, issue #3 S1-3 finding 4); from 48rem it is a normal
+ * table. Explicit ARIA table roles keep the table semantics when the stacked layout changes
+ * `display` (Safari drops them otherwise).
  */
 import { matrixKits, matrixRows } from './kits';
 ---
 
-<div class="matrix" role="region" aria-labelledby="matrix-caption" tabindex="0">
-  <table>
+<div class="matrix">
+  <table role="table" aria-labelledby="matrix-caption">
     <caption id="matrix-caption">
       What each kit lists against the Be Ready checklist (from seller listings, not tested)
     </caption>
     <thead>
-      <tr>
-        <th scope="col">Checklist item</th>
+      <tr role="row">
+        <th scope="col" role="columnheader">Checklist item</th>
         {
           matrixKits.map((k) => (
-            <th scope="col">
+            <th scope="col" role="columnheader">
               {k.label}
               <span>{k.people}</span>
             </th>
@@ -27,10 +29,13 @@ import { matrixKits, matrixRows } from './kits';
     <tbody>
       {
         matrixRows.map((row) => (
-          <tr class:list={[row.emphasis && 'is-emphasis']}>
-            <th scope="row">{row.item}</th>
-            {row.values.map((v) => (
-              <td class:list={[/^Not listed|^Excluded/.test(v) && 'is-gap']}>{v}</td>
+          <tr class:list={[row.emphasis && 'is-emphasis']} role="row">
+            <th scope="row" role="rowheader">{row.item}</th>
+            {row.values.map((v, i) => (
+              <td role="cell" class:list={[/^Not listed|^Excluded/.test(v) && 'is-gap']}>
+                <span class="matrix__kit" aria-hidden="true">{matrixKits[i]?.label}</span>
+                {v}
+              </td>
             ))}
           </tr>
         ))
@@ -38,26 +43,18 @@ import { matrixKits, matrixRows } from './kits';
     </tbody>
   </table>
 </div>
-<p class="matrix-hint">On a small screen, swipe or scroll the table sideways. The kit cards above show the same gaps.</p>
 
 <style>
   .matrix {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     border: 1px solid var(--line);
     background: #fff;
     max-width: 100%;
-  }
-
-  .matrix:focus-visible {
-    outline-offset: 2px;
   }
 
   table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    min-width: 40rem;
     font-size: 0.92rem;
   }
 
@@ -86,15 +83,8 @@ import { matrixKits, matrixRows } from './kits';
     color: var(--ink-muted);
   }
 
-  tbody th,
-  thead th:first-child {
-    position: sticky;
-    left: 0;
-    z-index: 1;
+  tbody th {
     background: var(--field);
-    min-width: 9rem;
-    max-width: 11rem;
-    box-shadow: 1px 0 0 var(--line);
   }
 
   .is-gap {
@@ -106,15 +96,56 @@ import { matrixKits, matrixRows } from './kits';
     font-weight: 700;
   }
 
-  .matrix-hint {
-    font-size: 0.85rem;
-    color: var(--ink-muted);
-    margin-top: 0.5rem;
+  .matrix__kit {
+    display: none;
   }
 
-  @media (min-width: 64rem) {
-    .matrix-hint {
-      display: none;
+  /* Stacked: one card per checklist item, each value labelled with its kit. */
+  @media (max-width: 47.99rem) {
+    table,
+    tbody,
+    tr,
+    th,
+    td {
+      display: block;
+    }
+
+    caption {
+      display: block;
+    }
+
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-top: 1px solid var(--line);
+    }
+
+    tbody th {
+      border-top: 0;
+    }
+
+    td {
+      display: grid;
+      grid-template-columns: minmax(6.5rem, 38%) 1fr;
+      gap: 0.5rem;
+      border-top: 1px dashed var(--line);
+    }
+
+    .matrix__kit {
+      display: block;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+
+    .is-gap .matrix__kit {
+      color: var(--ink-muted);
     }
   }
 </style>
