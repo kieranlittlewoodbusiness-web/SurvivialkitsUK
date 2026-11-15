@@ -21,4 +21,4 @@ if (r.failures.length) {
   for (const f of r.failures.slice(0, 60)) console.error(`  ${f.file}: ${f.reason}`);
   process.exit(1);
 }
-console.log(`PASS: 0 banned strings, every Ad badge has a sponsored link in its card, one robots meta per page${r.production ? ', no noindex outside 404, robots.txt allows crawling, no production noindex header' : ''}.`);
+console.log(`PASS: 0 banned strings, every Ad badge has a sponsored link in its card, one robots meta per page${r.production ? ', no noindex outside 404, robots.txt allows crawling, pages.dev-only noindex headers' : ''}.`);
