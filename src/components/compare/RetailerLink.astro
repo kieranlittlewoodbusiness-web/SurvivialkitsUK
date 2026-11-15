@@ -1,36 +1,36 @@
 ---
 /**
- * Outbound retailer link for a DisplayOffer.
- * - is_affiliate_link: exact link_url via AffiliateLink (rel="sponsored nofollow"), labelled Ad.
- * - otherwise: link_url is the plain product URL.
+ * Outbound retailer action for one DisplayOffer. Affiliate-only (Kieran's ruling on #3):
+ * - affiliate link (contract: is_affiliate_link with a programme URL): Ad label + AffiliateLink
+ *   (rel="sponsored nofollow noopener noreferrer"), visible text names the model, e.g.
+ *   "Check E184 at EVAQ8", so repeated buttons read differently on screen.
+ * - anything else: plain text "Retailer link coming soon". No link, no disabled-looking button.
  */
 import AffiliateLink from '../AffiliateLink.astro';
+import { affiliateHref } from './cardModel';
+import type { DisplayOffer } from './offerModel';
 
 interface Props {
-  linkUrl: string;
-  isAffiliate: boolean;
-  retailer: string;
+  offer: DisplayOffer;
+  modelCode: string;
   variant?: 'button' | 'text';
-  /** Model code, appended to the visually hidden text so repeated links get distinct names (WCAG 2.4.4). */
-  context: string;
 }
 
-const { linkUrl, isAffiliate, retailer, variant = 'button', context } = Astro.props;
+const { offer, modelCode, variant = 'button' } = Astro.props;
+const href = affiliateHref(offer);
 const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer-link--text';
 ---
 
 {
-  isAffiliate ? (
+  href ? (
     <span class="retailer-link-wrap">
       <span class="badge badge--ad">Ad</span>
-      <AffiliateLink href={linkUrl} merchant={retailer} class={cls}>
-        View at {retailer}<span class="visually-hidden"> (affiliate link, retailer site for {context})</span>
+      <AffiliateLink href={href} merchant={offer.retailer} class={cls}>
+        Check {modelCode} at {offer.retailer}<span class="visually-hidden"> (affiliate link)</span>
       </AffiliateLink>
     </span>
   ) : (
-    <a class={cls} href={linkUrl} rel="noopener noreferrer" data-merchant={retailer}>
-      View at {retailer}<span class="visually-hidden"> (retailer site for {context})</span>
-    </a>
+    <p class="retailer-soon">Retailer link coming soon</p>
   )
 }
 
@@ -47,5 +47,12 @@ const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer
     align-items: center;
     min-height: 2.75rem;
     font-weight: 600;
+  }
+
+  .retailer-soon {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-muted);
   }
 </style>

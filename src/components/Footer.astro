@@ -98,7 +98,15 @@ import { site } from '../data/site';
   }
 
   .footer-list li {
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.1rem;
+  }
+
+  /* 44px tap targets (issue #3, S1-3 finding 3). */
+  .footer-list a,
+  .footer-copy a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
   }
 
   .site-footer__legal {
