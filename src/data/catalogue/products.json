@@ -2221,7 +2221,7 @@
       },
       "captured_at": "2026-11-15T09:31:00+00:00",
       "verification": "verified",
-      "display_name": "Maypole E-approved warning triangle",
+      "display_name": "Maypole warning triangle",
       "display_rank": 1,
       "image_url": null,
       "image_width": null,
@@ -2331,9 +2331,8 @@
         "url": "https://www.amazon.co.uk/dp/B00MGM3K7A"
       },
       "captured_at": "2026-11-15T09:31:00+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Simply warning triangle",
-      "display_rank": 3,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -2342,14 +2341,14 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B00MGM3K7A",
         "checked_on": "2026-11-15",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B00MGM3K7A",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Simply SWT1Foldable Warning Triangle, Complied with ECE R27 European Standards, Convenient Carry Box, Highly reflective Design Clearly Alert\". Title, brand and model SWT1 match. The title says \"Complied with ECE R27\"; a bullet says \"ECE R27 COMPLIANT\". Brand recognition (Simply Auto, UK) is weaker than Maypole or RING, so it needs PM/Kieran sign-off. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Simply SWT1Foldable Warning Triangle, Complied with ECE R27 European Standards, Convenient Carry Box, Highly reflective Design Clearly Alert\". Title, brand and model SWT1 match. The title says \"Complied with ECE R27\"; a bullet says \"ECE R27 COMPLIANT\". Brand recognition (Simply Auto, UK) is weaker than Maypole or RING, so it needs PM/Kieran sign-off. Canonical is the dp ASIN. UNVERIFIED (Kieran via PM, 15 Nov 2026): removed from the warning triangle shortlist at sign-off; data kept."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
-        "FLAG for Kieran: brand sign-off needed (Simply Auto is less established than Maypole or RING).",
+        "UNVERIFIED: Kieran removed it at list sign-off (via PM, 15 Nov 2026); listing data kept for reference.",
         "Why picked: The title and a bullet state ECE R27 compliance"
       ]
     },

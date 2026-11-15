@@ -15,7 +15,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
   hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B005DEW1K0'],
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
-  warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z', 'B00MGM3K7A'],
+  warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z'],
 };
 
 /** Every verified ASIN, sorted. */
