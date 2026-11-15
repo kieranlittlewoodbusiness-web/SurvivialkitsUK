@@ -90,7 +90,7 @@ const litresRows = [1, 2, 3, 4, 5, 6];
 
     <nav class="jump" aria-label="Jump to a category">
       <ul class="chips">
-        {productSections.map((s) => <li><a class="chip" href={`#${CATEGORY_META[s.category].anchor}`}>{CATEGORY_META[s.category].title}</a></li>)}
+        {productSections.map((s) => <li><a class="chip" href={`#${CATEGORY_META[s.category].anchor}`}>{s.category_label}</a></li>)}
         <li><a class="chip" href="#water-needed">How much water</a></li>
         <li><a class="chip" href="#diy">Pre-packed or DIY</a></li>
       </ul>
@@ -98,11 +98,11 @@ const litresRows = [1, 2, 3, 4, 5, 6];
 
     {
       productSections.map((s) => (
-        <section class="cat-section" id={CATEGORY_META[s.category].anchor} aria-labelledby={`h-${s.category}`}>
+        <section class="cat-section" id={CATEGORY_META[s.category].anchor} data-category={s.category} aria-labelledby={`h-${s.category}`}>
           <div class="section-head">
             <h2 id={`h-${s.category}`}>
               <span class="cat-section__icon" aria-hidden="true"><CategoryIcon category={s.category} /></span>
-              {CATEGORY_META[s.category].title}
+              {s.category_label}
             </h2>
             <p class="meta">{s.cards.length} {s.cards.length === 1 ? 'product' : 'products'}</p>
           </div>
@@ -114,8 +114,8 @@ const litresRows = [1, 2, 3, 4, 5, 6];
     }
 
     <p class="small-print">
-      Products are listed in the order we added them, not ranked. Details come from each Amazon UK listing and are shown
-      only where the listing states them.
+      We show up to three options in each category. Details come from each Amazon UK listing and are shown only where
+      the listing states them.
     </p>
 
     <section class="section split-2" id="water-needed" aria-labelledby="water-heading">
@@ -221,7 +221,7 @@ const litresRows = [1, 2, 3, 4, 5, 6];
       <h2 id="method-heading">How we researched this</h2>
       <ul>
         <li><strong>Researched from listings, not tested.</strong> Product details come from each Amazon UK listing. Where a listing does not state something, we leave it out.</li>
-        <li><strong>Shortlist:</strong> one category for each Be Ready essential we can buy, from Amazon UK only, matched to the exact product by its ASIN.</li>
+        <li><strong>Shortlist:</strong> one category for each Be Ready essential we can buy, from Amazon UK only, matched to the exact product on the listing.</li>
         <li><strong>Benchmark:</strong> the Be Ready checklist and British Red Cross guidance. Water need is 3 L × people × 3 days.</li>
         <li><strong>Prices:</strong> shown only when Amazon's own product data supplies them and they are under 24 hours old, with the time they were checked.</li>
         <li><strong>Commission:</strong> it does not affect which products we include or their order.</li>

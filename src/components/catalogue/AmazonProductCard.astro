@@ -1,16 +1,18 @@
 ---
 /**
- * Amazon-only product card (S1-7). Renders a ProductCardModel built from
- * buildCatalogueComparisons. Price only when shownPrice allows it; button only when buttonLink
- * returns the contract link. Otherwise neither, and no placeholder text.
+ * Amazon-only product card (S1-10). Renders a ProductCardModel built from
+ * groupComparisonsByCategory. Price only when shownPrice allows it; button only when buttonLink
+ * returns the contract link; image only when productImage allows it. Otherwise none of those,
+ * and no placeholder text or empty image frame.
  */
 import CategoryIcon from './CategoryIcon.astro';
 import { CATEGORY_META, type ProductCardModel } from './catalogueView';
 interface Props { card: ProductCardModel }
 const { card } = Astro.props;
 const headingId = `p-${card.id}`;
+const img = card.image;
 ---
-<article class="pcard" id={card.id} aria-labelledby={headingId}>
+<article class="pcard" id={card.id} data-category={card.category} aria-labelledby={headingId}>
   <header class="pcard__head">
     <span class="pcard__icon"><CategoryIcon category={card.category} /></span>
     <div>
@@ -23,6 +25,17 @@ const headingId = `p-${card.id}`;
       <ul class="chips pcard__facts" aria-label="Listed details">
         {card.facts.map((f) => <li class="chip chip--static">{f}</li>)}
       </ul>
+    )
+  }
+  {
+    img && (
+      img.fixedAspect ? (
+        <div class="pcard__img pcard__img--frame">
+          <img src={img.url} width={img.width} height={img.height} alt={img.alt} loading="lazy" decoding="async" />
+        </div>
+      ) : (
+        <img class="pcard__img" src={img.url} width={img.width} height={img.height} alt={img.alt} loading="lazy" decoding="async" />
+      )
     )
   }
   {
@@ -54,6 +67,9 @@ const headingId = `p-${card.id}`;
   .pcard__head h3 { font-size: 1.0625rem; line-height: 1.35; margin: 0; }
   .pcard__head .kicker { margin-bottom: var(--s-1); }
   .pcard__icon { width: 52px; height: 52px; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .pcard__img { width: 100%; height: auto; object-fit: contain; display: block; border-radius: var(--r-md); }
+  .pcard__img--frame { aspect-ratio: 1 / 1; overflow: hidden; display: grid; place-items: center; }
+  .pcard__img--frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .pcard__offer { display: grid; gap: var(--s-3); }
   .pcard__price { padding: var(--s-4); border-radius: var(--r-md); background: var(--success-soft); }
   .pcard__price p { margin: 0; }
