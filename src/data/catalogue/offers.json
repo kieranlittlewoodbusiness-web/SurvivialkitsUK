@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "unverified-seed",
   "data_source_needed": [
-    "Amazon Associates UK approval and a tracking id in AMAZON_ASSOCIATES_UK_TAG (not applied for yet; PM decision 15 Nov 2026). Until then no Amazon link renders.",
+    "Amazon Associates UK is approved (15 Nov 2026). A link renders only with AMAZON_ASSOCIATES_UK_TAG set at build time (production builds only) and a verified, exact-match product.",
     "Amazon product API access (Creators API / PA-API successor) before any Amazon price, availability or delivery is shown. Until then prices stay null."
   ],
   "offers": [
@@ -518,10 +518,10 @@
       "retailer_sku": null,
       "asin": "B0CSSRD4NT",
       "asin_marketplace": "amazon.co.uk",
-      "mpn": "TSADF7G5634",
+      "mpn": null,
       "gtin": null,
       "model_match_confirmed": true,
-      "model_match_note": "Y: ASIN B0CSSRD4NT shown in the amazon.co.uk URL and Product details; same listing as the product record.",
+      "model_match_note": "Y: ASIN B0CSSRD4NT shown in the amazon.co.uk URL and Product details; same listing as the product record. Listing Manufacturer Part Number TSADF7G5634 is listing-only (not an identity key), so mpn is null; identity is ASIN plus model PB312 / SKU 25683 on the product record.",
       "currency": "GBP",
       "price_gbp_inc_vat": null,
       "price_gbp_ex_vat": null,

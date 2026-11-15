@@ -3,6 +3,15 @@
   "variants": [
     {
       "schema_version": 1,
+      "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B075LHXZ55",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["brand"],
+        "note": "Kit E182P (GTIN 5060176883963). The only Amazon listing on file (B075LHXZ55) is EVAQ8 GoBag 2 Person but shows Model Number / MPN E138, not E182P, so it is a different variant. Kit stays unverified; the Amazon offer stays model_match_confirmed=false."
+      },
       "variant_id": "evaq8-e182p",
       "kit_id": "evaq8-gobag-2-person",
       "brand": "EVAQ8",

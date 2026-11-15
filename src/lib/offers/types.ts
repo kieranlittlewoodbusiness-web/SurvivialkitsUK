@@ -37,6 +37,26 @@ export interface ContentsItem {
   item: string;
 }
 
+/** S1-8b: identity checks recorded against a public listing. */
+export const VERIFICATION_CHECKS = ['title', 'brand', 'model', 'pack_contents', 'size'] as const;
+export type VerificationCheck = (typeof VERIFICATION_CHECKS)[number];
+
+/**
+ * S1-8b: evidence for a product's `verification` value. Never holds prices,
+ * images or tagged URLs: `source_url` is the tagless https://www.amazon.co.uk/dp/{ASIN}.
+ */
+export interface VerificationEvidence {
+  method: 'public_listing';
+  /** https://www.amazon.co.uk/dp/{ASIN} with no query string or fragment. */
+  source_url: string;
+  checked_on: IsoDate;
+  /** 'verified' iff the record's verification is 'verified'. 'not_run' = page unreadable/blocked. */
+  outcome: 'verified' | 'not_verified' | 'not_run';
+  /** Checks that matched our record. Verified needs title, brand, model, pack_contents (+ size for thermals). */
+  checks_matched: VerificationCheck[];
+  note: string;
+}
+
 /** One exact kit variant. variant_id is unique per exact model code
  *  (E184, E184P and E194 are three different variants). */
 export interface KitVariant {
@@ -47,6 +67,8 @@ export interface KitVariant {
   asin_uk?: string | null;
   /** S1-8: absent = 'unverified'. Only verified products may carry affiliate links. */
   verification?: 'unverified' | 'verified';
+  /** S1-8b: how `verification` was decided (required when verified). */
+  verification_evidence?: VerificationEvidence;
   /** Exact-variant key used to group offers, e.g. "evaq8-e182p". */
   variant_id: string;
   /** Kit family key (brief s7 `kit_id`), e.g. "evaq8-gobag-2-person". */
@@ -370,13 +392,24 @@ interface CatalogueProductBase {
   /** amazon.co.uk ASIN, ^[A-Z0-9]{10}$. Placeholders are rejected. */
   asin_uk: string | null;
   gtin: string | null;
+  /** Manufacturer part number used as an identity key. */
   mpn: string | null;
   model_code: string | null;
+  /** S1-8b: manufacturer's own SKU (e.g. UGREEN 25683), an identity key alongside model_code. */
+  manufacturer_sku?: string | null;
+  /**
+   * S1-8b: a part number shown only on the retailer listing (e.g. Amazon "Manufacturer Part
+   * Number") that is NOT confirmed by the manufacturer. Recorded as shown; never an identity key
+   * and never used for matching. Must differ from mpn and manufacturer_sku.
+   */
+  listing_mpn?: string | null;
   pack_quantity: number | null;
   source: SourceRef;
   captured_at: LondonIsoDateTime;
   /** 'unverified' until an approved source (e.g. Amazon product API) confirms it. */
   verification: 'unverified' | 'verified';
+  /** S1-8b: how `verification` was decided (required when verified). */
+  verification_evidence?: VerificationEvidence;
   notes: string[];
 }
 export type CatalogueProduct =
@@ -478,6 +511,11 @@ export interface CatalogueExcludedOffer {
  * - marketplace_not_supported: an Amazon offer whose URLs point at a non-UK Amazon
  *   marketplace or an Amazon short link (amzn.to, a.co, ...). Only amazon.co.uk links
  *   are built. New in PR #12 review r2.
+ * - non_production_build: an Amazon (ASIN-derived) link in a build that is not production:
+ *   SITE_ENV is unset, 'preview' or anything other than 'production', or the build is a
+ *   Cloudflare Pages branch preview (CF_PAGES=1, CF_PAGES_BRANCH != PRODUCTION_BRANCH/'main').
+ *   Checked before the tracking id, so previews never read it. Render as the generic no-link
+ *   text (NO_LINK_TEXT). New in S1-8b (PR #13 review M1).
  */
 export type NoLinkReason =
   | 'no_programme'
@@ -491,7 +529,8 @@ export type NoLinkReason =
   | 'host_not_allowed'
   | 'exact_product_not_confirmed'
   | 'product_unverified'
-  | 'marketplace_not_supported';
+  | 'marketplace_not_supported'
+  | 'non_production_build';
 
 /**
  * S1-8 render-safe offer. The ONLY outbound URL is `link_url`, and it is an approved
