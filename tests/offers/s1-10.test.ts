@@ -22,6 +22,7 @@ import {
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
+import { THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
   CATEGORY_LABELS,
@@ -165,11 +166,13 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
   });
 
   it('migrated the three wind-up torch radios to radio, data otherwise preserved', () => {
-    const radios = catalogueProducts.filter((p) => p.category === 'radio');
-    expect(radios.map((p) => p.asin_uk).sort()).toEqual(['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK']);
-    for (const p of radios) expect((p.specs as { device_type?: { value: string } }).device_type?.value).toBe('torch_radio');
-    expect(catalogueProducts.filter((p) => p.category === 'torch')).toEqual([]);
-    expect(catalogueOffers.filter((o) => o.category === 'radio').map((o) => o.asin).sort()).toEqual(['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK']);
+    const migrated = ['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK'];
+    const torchRadios = catalogueProducts.filter((p) => (p.specs as { device_type?: { value: string } }).device_type?.value === 'torch_radio');
+    expect(torchRadios.map((p) => p.asin_uk).sort()).toEqual(migrated);
+    for (const p of torchRadios) expect(p.category).toBe('radio');
+    for (const a of migrated) expect(catalogueOffers.find((o) => o.asin === a)!.category).toBe('radio');
+    // Devices whose device_type is 'torch' all sit in torch (incl. the PR #17 Energizers ported from the old slug).
+    for (const p of catalogueProducts.filter((x) => (x.specs as { device_type?: { value: string } }).device_type?.value === 'torch')) expect(p.category).toBe('torch');
   });
 
   it('legacy product rows still parse and migrate by device_type', () => {
@@ -263,7 +266,7 @@ describe('S1-10 display_name validator', () => {
 
   it('every verified product in the data has a valid display_name; product_name keeps the full title', () => {
     const verified = catalogueProducts.filter((p) => p.verification === 'verified');
-    expect(verified).toHaveLength(9);
+    expect(verified).toHaveLength(VERIFIED_COUNT);
     for (const p of verified) {
       expect(p.display_name).toBeTruthy();
       expect(validateDisplayName(p.display_name!, p)).toEqual([]);
@@ -417,17 +420,12 @@ describe('S1-10 groupComparisonsByCategory', () => {
     expect(groupComparisonsByCategory([])).toEqual([]);
   });
 
-  it('accepts buildCatalogueComparisons() output directly; real data -> 9 products in 5 categories', () => {
+  it('accepts buildCatalogueComparisons() output directly; real data -> the verified set, in rank order', () => {
     const built = buildCatalogueComparisons(allProducts, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: {} });
     const out = groupComparisonsByCategory(built, { perCategory: 3 });
     expect(out).toEqual(groupComparisonsByCategory(built.comparisons, { perCategory: 3 }));
-    expect(out.map((g) => [g.category, g.comparisons.length])).toEqual([
-      ['emergency_water', 1],
-      ['first_aid_kit', 2],
-      ['radio', 2],
-      ['power_bank', 3],
-      ['emergency_blanket', 1],
-    ]);
+    const expected = PRODUCT_CATEGORIES.filter((c) => VERIFIED_BY_CATEGORY[c]?.length).map((c) => [c, [...VERIFIED_BY_CATEGORY[c]!]]);
+    expect(out.map((g) => [g.category, g.comparisons.map((c) => c.product.asin_uk)])).toEqual(expected);
     for (const g of out) {
       for (const c of g.comparisons) {
         expect(c.product.display_name).toBeTruthy();
@@ -458,8 +456,10 @@ describe('S1-10 production-link probe (fake tag)', () => {
     };
   };
 
-  it('production: exactly 9 links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
-    expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: 9, shown: 9, sponsored: 9, tagged: 9, dp: 9 });
+  it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
+    const n = VERIFIED_COUNT;
+    expect(n).toBe(30);
+    expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
   it.each([
@@ -469,5 +469,131 @@ describe('S1-10 production-link probe (fake tag)', () => {
     ['production without a tag', { SITE_ENV: 'production' }],
   ])('%s: 0 links', (_k, env) => {
     expect(linkCount(env)).toEqual({ all: 0, shown: 0, sponsored: 0, tagged: 0, dp: 0 });
+  });
+});
+
+/* ---------- verified-set invariants ---------- */
+
+describe('S1-10 verified-set invariants (committed data)', () => {
+  const verified = catalogueProducts.filter((p) => p.verification === 'verified');
+
+  it('the verified set equals tests/offers/verifiedSet.ts', () => {
+    expect(verified.map((p) => p.asin_uk!).sort()).toEqual([...VERIFIED_ASINS]);
+    for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
+      const inCat = verified.filter((p) => p.category === cat).sort((a, b) => a.display_rank! - b.display_rank!);
+      expect(inCat.map((p) => p.asin_uk)).toEqual([...asins!]);
+    }
+  });
+
+  it('every verified product: display_name, display_rank 1-3 unique per category, at most 3 per category, images null, model-confirmed offer', () => {
+    const byCat = new Map<string, CatalogueProduct[]>();
+    for (const p of verified) byCat.set(p.category, [...(byCat.get(p.category) ?? []), p]);
+    for (const [cat, list] of byCat) {
+      expect(list.length, cat).toBeLessThanOrEqual(3);
+      const ranks = list.map((p) => p.display_rank);
+      expect(new Set(ranks).size, cat).toBe(ranks.length);
+      for (const r of ranks) expect([1, 2, 3]).toContain(r);
+    }
+    for (const p of verified) {
+      expect(p.display_name, p.asin_uk!).toBeTruthy();
+      expect(validateDisplayName(p.display_name!, p)).toEqual([]);
+      expect(p.image_url).toBeNull();
+      expect(p.image_width).toBeNull();
+      expect(p.image_height).toBeNull();
+      expect(p.image_source).toBeNull();
+      const offers = catalogueOffers.filter((o) => o.variant_id === p.variant_id);
+      expect(offers.length, p.asin_uk!).toBeGreaterThan(0);
+      expect(offers.some((o) => o.model_match_confirmed === true && o.asin === p.asin_uk), p.asin_uk!).toBe(true);
+      for (const o of offers) {
+        expect(o.price_gbp_inc_vat).toBeNull();
+        expect(o.price_origin).toBe('none');
+        expect(o.affiliate_url).toBe('');
+      }
+      expect(p.verification_evidence!.checked_on).toBe('2026-11-15');
+      expect(p.verification_evidence!.canonical_asin).toBe(p.size_child_of ?? p.asin_uk);
+    }
+  });
+
+  it('unverified records carry no display_rank, so they never take a slot', () => {
+    for (const p of catalogueProducts.filter((x) => x.verification !== 'verified')) expect(p.display_rank ?? null).toBeNull();
+  });
+
+  it('the PR #17 Energizers are preserved as unverified torches (not currently purchasable)', () => {
+    for (const a of ['B01F1LUW6Y', 'B00SBD0WL0']) {
+      const p = catalogueProducts.find((x) => x.asin_uk === a)!;
+      expect(p.category).toBe('torch');
+      expect(p.verification).toBe('unverified');
+      expect(p.verification_evidence!.note).toMatch(/not currently purchasable on 2026-11-15/);
+    }
+  });
+
+  it('thermal size children point at their parent canonical', () => {
+    for (const [child, parent] of Object.entries(THERMAL_SIZE_CHILDREN)) {
+      const p = catalogueProducts.find((x) => x.asin_uk === child)!;
+      expect(p.category).toBe('thermal_clothing');
+      expect(p.size_child_of).toBe(parent);
+      expect(p.verification_evidence!.canonical_asin).toBe(parent);
+      expect((p.specs as { size_label?: { value: string } }).size_label?.value).toBeTruthy();
+      expect(p.display_name).toMatch(/\((men's|women's), [A-Z0-9-]+\)$/);
+    }
+  });
+});
+
+/* ---------- size_child_of (PM ruling, option b) ---------- */
+
+describe('S1-10 size_child_of (thermal size children)', () => {
+  const s = (v: unknown) => ({ value: v, source: src('B004KMGZG2'), captured_at: T });
+  const child = (over: Record<string, unknown> = {}, ev: Record<string, unknown> = {}) =>
+    raw({
+      category: 'thermal_clothing',
+      asin_uk: 'B004KMGZG2',
+      model_code: 'TRU112',
+      mpn: null,
+      brand: 'Regatta',
+      display_name: "Regatta thermal base layer top (men's, M)",
+      size_child_of: 'B0DMT14LGZ',
+      specs: { size_label: s('M') },
+      verification_evidence: { ...evidence('B004KMGZG2', 'thermal_clothing'), canonical_asin: 'B0DMT14LGZ', ...ev },
+      ...over,
+    });
+
+  it('a thermal size child verifies when canonical == size_child_of and size_label is set', () => {
+    expect(() => parseCatalogueProduct(child())).not.toThrow();
+    expect(isProductVerified(parseCatalogueProduct(child()))).toBe(true);
+  });
+
+  it('rejects a verified size child whose evidence does not record the parent canonical', () => {
+    expect(() => parseCatalogueProduct(child({}, { canonical_asin: undefined }))).toThrow(/canonical_asin equal to size_child_of/);
+    expect(() => parseCatalogueProduct(child({}, { canonical_asin: 'B004KMGZG2' }))).toThrow(/canonical_asin equal to size_child_of/);
+    expect(() => parseCatalogueProduct(child({}, { canonical_asin: 'B0CKXG19WH' }))).toThrow(/canonical_asin equal to size_child_of/);
+  });
+
+  it('rejects a size child without size_label (verified or not)', () => {
+    expect(() => parseCatalogueProduct(child({ specs: {} }))).toThrow(/size_label/);
+    expect(() => parseCatalogueProduct(child({ specs: {}, verification: 'unverified', verification_evidence: undefined }))).toThrow(/size_label/);
+  });
+
+  it('rejects size_child_of equal to asin_uk, or not ASIN-shaped', () => {
+    expect(() => parseCatalogueProduct(child({ size_child_of: 'B004KMGZG2' }, { canonical_asin: 'B004KMGZG2' }))).toThrow(/must differ/);
+    expect(() => parseCatalogueProduct(child({ size_child_of: 'parent-tbd' }))).toThrow();
+  });
+
+  it.each(PRODUCT_CATEGORIES.filter((c) => c !== 'kit' && c !== 'thermal_clothing'))('rejects size_child_of on %s', (category) => {
+    const r = raw({ category, size_child_of: 'B0DMT14LGZ', specs: {}, verification: 'unverified', display_name: null });
+    expect(() => parseCatalogueProduct(r)).toThrow(/only allowed for thermal_clothing/);
+  });
+
+  it('every other category keeps canonical == asin_uk', () => {
+    const pb = (canonical: string) => raw({ verification_evidence: { ...evidence('B0CZ9LH53B', 'power_bank'), canonical_asin: canonical } });
+    expect(() => parseCatalogueProduct(pb('B0CZ9LH53B'))).not.toThrow();
+    expect(() => parseCatalogueProduct(pb('B0DMT14LGZ'))).toThrow(/canonical_asin must equal asin_uk/);
+    // A thermal without size_child_of is held to the same rule.
+    const th = raw({ category: 'thermal_clothing', specs: { size_label: s('M') }, verification_evidence: { ...evidence('B0CZ9LH53B', 'thermal_clothing'), canonical_asin: 'B0DMT14LGZ' } });
+    expect(() => parseCatalogueProduct(th)).toThrow(/canonical_asin must equal asin_uk/);
+  });
+
+  it('size_child_of is null-safe and optional', () => {
+    expect(() => parseCatalogueProduct(raw({ size_child_of: null }))).not.toThrow();
+    expect(() => parseCatalogueProduct(raw())).not.toThrow();
   });
 });

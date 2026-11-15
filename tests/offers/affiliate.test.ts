@@ -36,7 +36,7 @@ import {
   catalogueProducts,
   kitOffers,
 } from '../../src/lib/offers/data';
-import { NO_LINK_TEXT_EXACT_PRODUCT, NO_LINK_TEXT_PRODUCT_UNVERIFIED, type AffiliateProgrammeRecord, type CatalogueProduct, type Offer } from '../../src/lib/offers/types';
+import { NO_LINK_TEXT_EXACT_PRODUCT, NO_LINK_TEXT_PRODUCT_UNVERIFIED, PRODUCT_CATEGORIES, type AffiliateProgrammeRecord, type CatalogueProduct, type Offer } from '../../src/lib/offers/types';
 import { NOW, offer as v1Offer, variant as v1Variant } from './fixtures';
 
 const T = '2026-11-14T20:00:00+00:00';
@@ -425,7 +425,7 @@ describe('seed data (src/data)', () => {
 
   it('every seeded category except kits is covered by the catalogue', () => {
     const cats = new Set(catalogueProducts.map((p) => p.category));
-    expect([...cats].sort()).toEqual(['emergency_blanket', 'emergency_water', 'first_aid_kit', 'power_bank', 'radio', 'thermal_clothing']);
+    expect([...cats].sort()).toEqual(PRODUCT_CATEGORIES.filter((c) => c !== 'kit').sort());
   });
 });
 
@@ -585,8 +585,8 @@ describe('info: thermal clothing and the renamed no_link_reason', () => {
       parseCatalogueProduct(thermal({ verification: 'verified', specs: { size_label: { value: 'M', source: src, captured_at: T } } } as Partial<CatalogueProduct>)),
     ).not.toThrow();
   });
-  it('seeded thermals stay unverified and record the per-size ASIN requirement', () => {
-    const th = catalogueProducts.filter((p) => p.category === 'thermal_clothing');
+  it('seeded Heatwave thermals stay unverified and record the per-size ASIN requirement', () => {
+    const th = catalogueProducts.filter((p) => p.asin_uk === 'B01LX282CT' || p.asin_uk === 'B01LYD385A');
     expect(th).toHaveLength(2);
     for (const p of th) {
       expect(p.verification).toBe('unverified');

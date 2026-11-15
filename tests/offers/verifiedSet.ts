@@ -1,0 +1,45 @@
+/**
+ * S1-10: the single source of truth for the committed verified set (ASINs in display_rank order).
+ * Tests that depend on which products are verified import from here.
+ */
+import type { ProductCategory } from '../../src/lib/offers/types';
+
+export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly string[]>> = {
+  emergency_water: ['B0896Q8JXD', 'B07L142XSN'],
+  first_aid_kit: ['B00L7S9LU4', 'B005AQK6V2', 'B008XI72FC'],
+  torch: ['B075F3FBTB', 'B013P5S1KC', 'B016P27MGG'],
+  radio: ['B0DFVRT79C', 'B09VBFQNKK', 'B0987MCGXT'],
+  power_bank: ['B0CZ9LH53B', 'B0CSSRD4NT', 'B0DCZ82MGG'],
+  batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
+  emergency_blanket: ['B001FIQ7XU', 'B0CDBYT9WW', 'B0H761VV55'],
+  thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
+  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D'],
+  jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
+  warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z', 'B00MGM3K7A'],
+};
+
+/** Every verified ASIN, sorted. */
+export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEGORY).flat().sort();
+export const VERIFIED_COUNT = VERIFIED_ASINS.length;
+
+/** Thermal size children (PM ruling b): child ASIN -> parent canonical (size_child_of). */
+export const THERMAL_SIZE_CHILDREN: Readonly<Record<string, string>> = {
+  B004KMGZG2: 'B0DMT14LGZ',
+  B0887LWT53: 'B0CKXG19WH',
+  B013LFW3WS: 'B0DZ8DXDGP',
+};
+
+/** Records kept UNVERIFIED on purpose, with the reason in verification_evidence. */
+export const KNOWN_UNVERIFIED: readonly string[] = [
+  'B01IFCIYXE', // Seven Oceans: no model number
+  'B0134DAXJ2', // Datrex: pack conflict
+  'B08GYLB55H', // Mayday: per-pouch volume conflict (S1-10)
+  'B005JRULU8', // St John workplace kit: canonical/MPN mismatch
+  'B08V17BPBC', // SOLARBABY: generic model
+  'B0CMPZJS97', // Lifesystems: canonical/colour
+  'B01LX282CT', // Heatwave: no model number
+  'B01LYD385A', // Heatwave: no model number
+  'B00DNSDDI2', // AA jump leads: model fields hold a barcode (S1-10)
+  'B01F1LUW6Y', // Energizer torch (PR #17): not currently purchasable
+  'B00SBD0WL0', // Energizer head torch (PR #17): not currently purchasable
+];
