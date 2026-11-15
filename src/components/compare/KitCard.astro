@@ -1,0 +1,432 @@
+---
+/**
+ * One kit variant on the comparison page. Mobile-first: stacked card, no wide table.
+ * Renders the S1-1 `VariantComparison` as given: best price only when `best_price_offer_id`
+ * is set, savings only when `savings` is set. Otherwise a labelled empty state.
+ */
+import OfferStateBadge from './OfferStateBadge.astro';
+import RetailerLink from './RetailerLink.astro';
+import { exclusionText, formatGbp, formatLondonDateTime, type OfferKitVariant, type VariantComparison } from './offerModel';
+import { waterNeeded, waterShortfall, withBackendFacts, type KitVariant } from './kits';
+
+interface Props {
+  kit: KitVariant;
+  /** S1-1 variant record for the same variant_id, if Backend has one. */
+  variant?: OfferKitVariant;
+  comparison?: VariantComparison;
+  /** True when the page-level offer load failed. */
+  offersError?: boolean;
+  /** Static build time: staleness was decided at this moment. */
+  builtAt: Date;
+}
+
+const { kit: rawKit, variant, comparison, offersError = false, builtAt } = Astro.props;
+const kit = withBackendFacts(rawKit, variant);
+const builtText = formatLondonDateTime(builtAt);
+const shortfall = waterShortfall(kit);
+const needed = waterNeeded(kit.people);
+const rows = comparison?.offers ?? [];
+// Render only what the API marks as best; never derive one. Defensive: a flagged row is never shown as best.
+const bestCandidate = comparison?.best_price_offer_id ? rows.find((o) => o.offer_id === comparison.best_price_offer_id) : undefined;
+const best = bestCandidate && bestCandidate.is_best_price && bestCandidate.model_match_confirmed && bestCandidate.labels.length === 0 ? bestCandidate : undefined;
+const others = rows.filter((o) => o !== best);
+const excluded = comparison?.excluded ?? [];
+const savings = best ? comparison?.savings ?? null : null;
+const dearer = savings ? rows.find((o) => o.offer_id === savings.dearer_offer_id) : undefined;
+const headingId = `kit-${kit.id}`;
+const fmtL = (n: number) => `${Number.isInteger(n) ? n : n.toFixed(1)} L`;
+const deliveryText = (d: number | null) => (d === null ? 'delivery unknown' : d === 0 ? 'free delivery' : `${formatGbp(d)} delivery`);
+---
+
+<article class="kit-card" id={kit.id} aria-labelledby={headingId}>
+  <header class="kit-card__head">
+    <p class="kit-card__for">{kit.kitLabel}</p>
+    <h3 id={headingId}>
+      {kit.brand} {kit.name}
+      <span class="kit-card__code">Model {kit.modelCode}</span>
+    </h3>
+    <ul class="kit-card__chips" aria-label="Key facts">
+      <li>{kit.people} {kit.people === 1 ? 'person' : 'people'}</li>
+      <li>{kit.format === 'grab-bag' ? 'Grab bag' : 'Stay-at-home box'}</li>
+      <li>{kit.listedWeightKg !== null ? `Listed ${kit.listedWeightKg} kg` : 'Weight not published'}</li>
+    </ul>
+  </header>
+
+  <section class="kit-card__price" aria-label={`Price for ${kit.modelCode}`}>
+    {
+      best && best.delivered_total_gbp !== null ? (
+        <>
+          <p class="kit-card__price-label">
+            Best verified delivered price <OfferStateBadge label="verified" />
+          </p>
+          <p class="kit-card__price-value">
+            {formatGbp(best.delivered_total_gbp)}
+            <span class="kit-card__price-split">
+              {best.price_gbp_inc_vat !== null && `${formatGbp(best.price_gbp_inc_vat)} inc VAT + `}{deliveryText(best.delivery_cost_gbp)}
+            </span>
+          </p>
+          {
+            savings && dearer && (
+              <p class="kit-card__savings">
+                {formatGbp(savings.amount_gbp)} less than {dearer.retailer} for the same model, both checked the same day.
+              </p>
+            )
+          }
+          <p class="kit-card__stamp">
+            {best.price_disclaimer}
+            {best.availability_text && <> Availability: “{best.availability_text}”.</>}
+          </p>
+          <p class="kit-card__stamp">
+            Price source: <a class="kit-card__offer-source" href={best.source.url} rel="noopener noreferrer">{best.source.name}<span class="visually-hidden"> for {kit.modelCode}</span></a>
+          </p>
+          <p class="kit-card__stamp kit-card__checked">
+            Last checked {formatLondonDateTime(best.last_checked)} UK time. This page was built on {builtText} UK time, so the
+            price may have changed since.
+          </p>
+          <RetailerLink linkUrl={best.link_url} isAffiliate={best.is_affiliate_link} retailer={best.retailer} context={kit.modelCode} />
+        </>
+      ) : (
+        <>
+          <p class="kit-card__price-label">No verified delivered price</p>
+          <p class="kit-card__stamp">
+            {offersError
+              ? 'Prices could not be loaded for this version of the page.'
+              : rows.length > 0
+                ? 'We only name a best price when at least two verified, current prices with known delivery were captured on the same UK day for this exact model. That is not the case yet.'
+                : excluded.some((e) => e.reason === 'duplicate_variant_id')
+                  ? 'Our price data for this model has a data error, so no prices are compared until it is fixed.'
+                  : excluded.length > 0
+                    ? 'The only prices we hold could not be confirmed as this exact model.'
+                    : 'We have not captured a price for this exact model yet.'}{' '}
+            Check the current price and delivery with the seller.
+          </p>
+          <a class="btn btn--ghost" href={kit.sourceUrl} rel="noopener noreferrer">
+            Check at {kit.seller}<span class="visually-hidden"> (seller listing for {kit.modelCode})</span>
+          </a>
+        </>
+      )
+    }
+  </section>
+
+  <p class="kit-card__water">
+    <strong>Water: {fmtL(kit.waterLitresIncluded)} listed, {fmtL(needed)} needed. {fmtL(shortfall)} short.</strong>
+    <span>Guidance is 3 L per person per day for 3 days.</span>
+  </p>
+
+  <div class="kit-card__add">
+    <h4>You’d still need to add</h4>
+    <ul>
+      {kit.stillToAdd.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+
+  <dl class="kit-card__specs">
+    <div><dt>Format</dt><dd>{kit.formatNote}</dd></div>
+    {kit.peopleNote && <div><dt>People</dt><dd>{kit.peopleNote}</dd></div>}
+    <div><dt>FM radio</dt><dd>{kit.radio.text}</dd></div>
+    <div><dt>Light</dt><dd>{kit.torches}</dd></div>
+    <div><dt>Power bank</dt><dd>{kit.powerBank}</dd></div>
+    <div><dt>First aid</dt><dd>{kit.firstAid}</dd></div>
+    {kit.weightNote && <div><dt>Weight</dt><dd>{kit.weightNote}</dd></div>}
+  </dl>
+
+  {
+    kit.contents && (
+      <details class="kit-card__contents">
+        <summary>Listed contents ({kit.contents.length} lines)</summary>
+        <ul>
+          {kit.contents.map((c) => <li>{c.quantity !== null ? `${c.quantity} × ` : ''}{c.item}</li>)}
+        </ul>
+      </details>
+    )
+  }
+
+  {
+    kit.conflicts && kit.conflicts.length > 0 && (
+      <div class="kit-card__conflicts" role="note">
+        <strong>Check before you buy</strong>
+        <ul>
+          {kit.conflicts.map((c) => <li>{c}</li>)}
+        </ul>
+      </div>
+    )
+  }
+
+  {
+    (others.length > 0 || excluded.length > 0) && (
+      <details class="kit-card__offers">
+        <summary>{others.length > 0 ? `Other prices we hold (${others.length})` : `Prices left out (${excluded.length})`}</summary>
+        {
+          others.length > 0 && (
+        <ul>
+            {others.map((row) => (
+              <li>
+                <p class="kit-card__offer-line">
+                  <strong>{row.retailer}</strong>
+                  {row.labels.length === 0 ? <OfferStateBadge label="verified" /> : row.labels.map((l) => <OfferStateBadge label={l} />)}
+                </p>
+                <p class="kit-card__offer-line">
+                  {row.price_gbp_inc_vat === null ? 'Price not available' : `${formatGbp(row.price_gbp_inc_vat)} inc VAT + ${deliveryText(row.delivery_cost_gbp)}`}
+                  {row.delivered_total_gbp !== null && ` (total ${formatGbp(row.delivered_total_gbp)})`}
+                </p>
+                {row.delivery_text_verbatim && row.delivery_cost_gbp === null && (
+                  <p class="kit-card__stamp">Retailer says: “{row.delivery_text_verbatim}” (not confirmed at checkout).</p>
+                )}
+                <p class="kit-card__stamp">{row.price_disclaimer}</p>
+                <p class="kit-card__stamp">
+                  Price source: <a class="kit-card__offer-source" href={row.source.url} rel="noopener noreferrer">{row.source.name}<span class="visually-hidden"> ({row.retailer}, {kit.modelCode})</span></a>
+                </p>
+                <p class="kit-card__stamp kit-card__checked">
+                  Last checked {formatLondonDateTime(row.last_checked)} UK time; prices may have changed since this page was
+                  built ({builtText} UK time).{' '}
+                  {row.labels.length > 0
+                    ? 'Not used as a best price.'
+                    : comparison?.best_price_offer_id
+                      ? 'Verified, but not the lowest verified total.'
+                      : 'Verified, but not named best: no second verified price from the same UK day.'}
+                </p>
+                <RetailerLink linkUrl={row.link_url} isAffiliate={row.is_affiliate_link} retailer={row.retailer} variant="text" context={kit.modelCode} />
+              </li>
+            ))}
+          </ul>
+          )
+        }
+        {
+          excluded.length > 0 && (
+            <p class="kit-card__stamp kit-card__excluded">
+              Left out: {excluded.map((e) => `${e.retailer} (${exclusionText[e.reason]})`).join('; ')}.
+            </p>
+          )
+        }
+      </details>
+    )
+  }
+
+  <p class="kit-card__source">
+    Specs from the seller listing, read 14 Nov 2026. Not tested.
+    <a href={kit.sourceUrl} rel="noopener noreferrer">Source: {kit.seller} listing<span class="visually-hidden"> for {kit.modelCode}</span></a>
+  </p>
+</article>
+
+<style>
+  .kit-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 1rem;
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+
+  .kit-card h3 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .kit-card h4 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    margin: 0 0 0.35rem;
+  }
+
+  .kit-card p {
+    margin: 0;
+  }
+
+  .kit-card__for {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 0.25rem !important;
+  }
+
+  .kit-card__code {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    margin-top: 0.2rem;
+  }
+
+  .kit-card__chips {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding: 0;
+    margin: 0.6rem 0 0;
+  }
+
+  .kit-card__chips li {
+    font-size: 0.85rem;
+    padding: 0.15rem 0.55rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+  }
+
+  .kit-card__price {
+    padding: 0.85rem;
+    background: var(--field);
+    border: 1px solid var(--line);
+    display: grid;
+    gap: 0.5rem;
+    justify-items: start;
+  }
+
+  .kit-card__price-label {
+    font-weight: 700;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .kit-card__price-value {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .kit-card__price-split {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--ink-muted);
+    margin-top: 0.2rem;
+  }
+
+  .kit-card__savings {
+    font-weight: 600;
+    color: var(--signal-deep);
+  }
+
+  .kit-card__excluded {
+    margin-top: 0.75rem !important;
+  }
+
+  .kit-card__stamp {
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__water strong {
+    display: block;
+    color: #8f2424;
+  }
+
+  .kit-card__water span {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__add {
+    padding: 0.75rem 0.85rem;
+    border-left: 4px solid var(--signal);
+    background: rgba(15, 92, 76, 0.05);
+  }
+
+  .kit-card__contents ul,
+  .kit-card__add ul,
+  .kit-card__conflicts ul {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .kit-card__specs {
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+  }
+
+  .kit-card__specs div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 0.5rem;
+  }
+
+  .kit-card__specs dt {
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__specs dd {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .kit-card__conflicts {
+    font-size: 0.92rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--warn);
+    background: #f7f0e4;
+  }
+
+  .kit-card__conflicts strong {
+    color: var(--warn);
+  }
+
+  .kit-card__offer-source {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  .kit-card__checked {
+    font-style: italic;
+  }
+
+  .kit-card__contents summary,
+  .kit-card__offers summary {
+    cursor: pointer;
+    font-weight: 600;
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .kit-card__offers ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.25rem 0 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .kit-card__offers li {
+    border-top: 1px solid var(--line);
+    padding-top: 0.6rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .kit-card__offer-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .kit-card__source {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+  }
+
+  .kit-card__source a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  @media (min-width: 30rem) {
+    .kit-card {
+      padding: 1.25rem;
+    }
+  }
+</style>

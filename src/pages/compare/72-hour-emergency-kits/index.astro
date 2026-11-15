@@ -1,0 +1,439 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import EvidenceBadge from '../../../components/EvidenceBadge.astro';
+import ResearchDisclosure from '../../../components/compare/ResearchDisclosure.astro';
+import OffersNotice from '../../../components/compare/OffersNotice.astro';
+import KitCard from '../../../components/compare/KitCard.astro';
+import ContentsMatrix from '../../../components/compare/ContentsMatrix.astro';
+import { kits, sources, RESEARCHED_ON, waterNeeded } from '../../../components/compare/kits';
+import { loadOffers } from '../../../components/compare/loadOffers';
+import { site, comparePath } from '../../../data/site';
+
+const title = '72-Hour Emergency Kits UK: Pre-Packed vs DIY Compared';
+const description =
+  "We compare UK pre-packed 72-hour kits against the government's Be Ready checklist: water, radio, light, medication and storage, plus when DIY is better.";
+
+const now = new Date();
+const result = await loadOffers(process.env, now);
+const byVariant = new Map(result.comparisons.map((c) => [c.variant_id, c]));
+const variantRecords = new Map(result.variants.map((v) => [v.variant_id, v]));
+const hasAffiliateLinks = result.comparisons.some((c) => c.offers.some((o) => o.is_affiliate_link));
+
+const jumps = [
+  { href: '#evaq8-e180', label: '1 person' },
+  { href: '#evaq8-e182p', label: '2 people' },
+  { href: '#evaq8-e184', label: '4 people' },
+  { href: '#tminus-t3-4p', label: 'Premium' },
+  { href: '#diy', label: 'Build your own' },
+];
+
+const pageUrl = new URL(comparePath, site.siteUrl).href;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    dateModified: RESEARCHED_ON,
+    inLanguage: 'en-GB',
+    mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: site.name },
+    publisher: { '@type': 'Organization', name: site.name, url: site.siteUrl },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Pre-packed 72-hour emergency kits compared',
+    itemListElement: kits.map((k, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: `${k.brand} ${k.name} (${k.modelCode})`,
+      url: `${pageUrl}#${k.id}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.siteUrl}/` },
+      { '@type': 'ListItem', position: 2, name: '72-hour emergency kits compared', item: pageUrl },
+    ],
+  },
+];
+
+const litresRows = [1, 2, 3, 4, 5, 6];
+---
+
+<BaseLayout title={title} description={description} canonicalPath={comparePath} ogType="article">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <section class="section compare-intro">
+    <div class="wrap">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> <span aria-current="page">Compare 72-hour kits</span>
+      </nav>
+      <p class="eyebrow">Comparison · updated <time datetime={RESEARCHED_ON}>14 Nov 2026</time></p>
+      <h1>72-hour emergency kits for UK homes: pre-packed kits compared, and what they leave out</h1>
+      <p class="lede">
+        Most pre-packed “72-hour” kits are grab bags with survival rations. None of the kits below includes
+        anything like three days of drinking water.
+      </p>
+      <ResearchDisclosure hasAffiliateLinks={hasAffiliateLinks} researchedOn={RESEARCHED_ON} />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="quick-answer">
+    <div class="wrap">
+      <div class="quick-answer">
+        <h2 id="quick-answer">Quick answer</h2>
+        <p>
+          A 72-hour kit should cover 3 litres of drinking water per person per day, no-cook food, a torch,
+          a battery or wind-up FM radio, a charged power bank, first aid, your medication, cash and copies
+          of documents. The kits we compared list between 0.5 L and 12 L of water, so every one leaves a
+          gap you need to fill yourself.
+        </p>
+        <p><EvidenceBadge kind="official-guidance" /> Benchmark: the government’s Be Ready checklist (Oct 2026).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="kits-heading">
+    <div class="wrap">
+      <h2 id="kits-heading">Which kit for your household?</h2>
+      <nav aria-label="Jump to a kit" class="jump">
+        <ul>
+          {jumps.map((j) => <li><a href={j.href}>{j.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <OffersNotice result={result} />
+
+      <div class="kit-grid">
+        {
+          kits.map((kit) => (
+            <KitCard kit={kit} variant={variantRecords.get(kit.id)} comparison={byVariant.get(kit.id)} offersError={result.status === 'error'} builtAt={now} />
+          ))
+        }
+      </div>
+      <p class="small-print">
+        Prices: we only name a best price when at least two prices for the same exact model are verified,
+        include a known delivery cost, were checked in the last 7 days and were captured on the same UK day.
+        Listings we cannot confirm as the exact model are left out. Other prices are labelled and never called
+        the best. Freshness is judged when this page is built, so prices may have changed since.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="matrix-heading">
+    <div class="wrap">
+      <h2 id="matrix-heading">Kit contents compared</h2>
+      <p>Wording follows the listing: “Not listed” means the seller does not list it, not that we checked the bag.</p>
+      <ContentsMatrix />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="water-heading">
+    <div class="wrap split-2">
+      <div class="prose">
+        <h2 id="water-heading">Water: the gap every kit has</h2>
+        <p>
+          Be Ready advises 3 L of drinking water per person per day for 3 days, with more for cooking and
+          washing. The British Red Cross gives 2.5–3 L. Purification tablets and filters treat water you
+          already have; they do not replace stored water.
+        </p>
+        <ul>
+          <li>Store sealed bottled water where it stays cool and dark, and note the earliest date.</li>
+          <li>Split it: some in the grab bag, the rest at home.</li>
+          <li>Add extra for babies, pets, hot weather or illness.</li>
+        </ul>
+        <p><a href="/gear/water-storage">Water storage criteria</a></p>
+      </div>
+      <div>
+        <table class="litres">
+          <caption>Drinking water for 3 days at 3 L per person per day</caption>
+          <thead>
+            <tr><th scope="col">People</th><th scope="col">Litres</th></tr>
+          </thead>
+          <tbody>
+            {litresRows.map((n) => <tr><th scope="row">{n}</th><td>{waterNeeded(n)} L</td></tr>)}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="diy" aria-labelledby="diy-heading">
+    <div class="wrap">
+      <h2 id="diy-heading">Pre-packed or build your own?</h2>
+      <div class="versus">
+        <div>
+          <h3>Pre-packed kit</h3>
+          <ul>
+            <li>Done in one order, packed in one bag.</li>
+            <li>Long-life rations and survival items (foil blankets, light sticks, multi-tool).</li>
+            <li>Fixed sizes. Shared items like the torch and radio don’t scale with people.</li>
+            <li>Always short on water, medication and cash; usually no documents or tin opener.</li>
+            <li>You may pay for things you already own.</li>
+          </ul>
+          <p><strong>Suits:</strong> buying for someone else, a car or office grab bag, or getting started at all.</p>
+        </div>
+        <div>
+          <h3>Build your own</h3>
+          <ul>
+            <li>Sized to your household, ages, medical needs and pets.</li>
+            <li>Uses food you actually eat, rotated into normal meals.</li>
+            <li>Start with what you already own; spread the cost over normal shops.</li>
+            <li>More effort, and easy to leave half-finished.</li>
+          </ul>
+          <p><strong>Suits:</strong> families with specific needs, people with camping kit, tight budgets.</p>
+        </div>
+      </div>
+      <p class="verdict">
+        <strong>Our take (editorial guidance, not a test result):</strong> use a pre-packed kit as a grab-bag base
+        if it suits you, then complete it with the checklist, starting with water.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="/checklist">Open the 72-hour checklist</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="missing-heading">
+    <div class="wrap split-2">
+      <div class="prose">
+        <h2 id="missing-heading">What no kit includes</h2>
+        <ul>
+          <li>Your essential medication and a written list of it</li>
+          <li>Cash in small notes</li>
+          <li>Copies of important documents</li>
+          <li>Written phone numbers and your household plan</li>
+          <li>Baby supplies: ready-to-feed formula and nappies</li>
+          <li>Pet food and water</li>
+          <li>Spare keys and glasses</li>
+        </ul>
+      </div>
+      <div class="prose">
+        <h2>Grab bag or home kit?</h2>
+        <p>
+          A grab bag is what you take if you are told to leave home, for example in a flood. A home kit is
+          what you need to stay put through a power cut or storm. Most “72-hour kits” on sale are grab bags.
+        </p>
+        <p><strong>If there is a fire, get out and take nothing.</strong></p>
+        <p><a href="/scenarios/leave-home-bag">Packing a leave-home bag</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="power-heading">
+    <div class="wrap split-2">
+      <div class="prose">
+        <h2 id="power-heading">Power cut specifics</h2>
+        <ul>
+          <li>Call <strong>105</strong> to report a power cut in England, Scotland or Wales. In Northern Ireland, contact NIE Networks.</li>
+          <li>Join the Priority Services Register if someone at home relies on power for medical equipment.</li>
+          <li>Digital landlines may stop working in a power cut: keep a charged mobile.</li>
+          <li>Never use camping stoves, gas heaters or barbecues indoors.</li>
+        </ul>
+        <p><a href="/scenarios/power-cuts">Power cut guide</a></p>
+      </div>
+      <div class="prose">
+        <h2>Storage and rotation</h2>
+        <ul>
+          <li>Check the kit every 6 months, as Be Ready advises.</li>
+          <li>Note the earliest expiry date on food, water and first-aid items.</li>
+          <li>Recharge power banks and test torches and radios when you check.</li>
+          <li>Keep it somewhere you can reach in the dark: under the stairs, a wardrobe floor or near the door.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method" aria-labelledby="method-heading">
+    <div class="wrap prose">
+      <h2 id="method-heading">How we researched this</h2>
+      <ul>
+        <li><strong>Researched from listings, not tested.</strong> Specs come from each seller’s own listing, read on 14 November 2026. Where a listing does not state something, we say so.</li>
+        <li><strong>Shortlist:</strong> UK sellers with a published, itemised contents list, covering 1, 2 and 4 people plus a premium tier. Three of the five are EVAQ8 sizes, because it was the only UK maker we found with itemised lists in three sizes.</li>
+        <li><strong>Benchmark:</strong> the Be Ready checklist and British Red Cross guidance. Water need is 3 L × people × 3 days.</li>
+        <li><strong>Prices:</strong> shown only with the retailer, date and UK time. Unverified, unknown-delivery and stale prices are labelled and never shown as the best price. We never compare ex-VAT with inc-VAT prices.</li>
+        <li><strong>Commission:</strong> it does not affect which kits we include or the order. Kits are ordered by household size.</li>
+        <li><strong>Not shortlisted yet:</strong> ReadyHome Complete (no itemised list with quantities), EVAQ8 E137 (water volume not stated), Home Prep Kit (waitlist only), Fortis Supply Co (no itemised contents).</li>
+      </ul>
+      <p><a href="/method">How we label evidence across the site</a></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-heading">
+    <div class="wrap prose faq">
+      <h2 id="faq-heading">Questions</h2>
+      <h3>Does a 72-hour kit include 3 days of water?</h3>
+      <p>Not in the kits we compared. They list 0.5 L to 12 L against 9 L per person for three days.</p>
+      <h3>Is a 72-hour kit a legal requirement?</h3>
+      <p>No. Be Ready is government advice to be ready for 3 days of disruption, not a legal duty.</p>
+      <h3>Are grab bags the same as home kits?</h3>
+      <p>No. Grab bags are for leaving home quickly; home kits are for staying put. Many households need both.</p>
+      <h3>Why don’t you show a price for every kit?</h3>
+      <p>We only show a price once it is verified for that exact model, with delivery and a UK date and time. Prices change, so check with the retailer.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="sources-heading">
+    <div class="wrap prose">
+      <h2 id="sources-heading">Sources</h2>
+      <p>Last checked <time datetime={RESEARCHED_ON}>14 November 2026</time>.</p>
+      <h3>Official guidance</h3>
+      <ul class="source-list">
+        {sources.official.map((s) => <li><a href={s.url} rel="noopener noreferrer">{s.label}</a></li>)}
+      </ul>
+      <h3>Seller listings and third-party pages</h3>
+      <ul class="source-list">
+        {sources.listings.map((s) => <li><a href={s.url} rel="noopener noreferrer">{s.label}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="related-heading">
+    <div class="wrap">
+      <h2 id="related-heading">Related guides</h2>
+      <ul class="link-list">
+        <li><a href="/checklist">72-hour household checklist<span>Tick off what you already own, print it.</span></a></li>
+        <li><a href="/start-here">Start Here<span>The short version of what to do first.</span></a></li>
+        <li><a href="/gear/radios">Radio criteria<span>What to look for in a battery or wind-up FM radio.</span></a></li>
+        <li><a href="/gear/torches">Torch criteria<span>One light per person, and how to power them.</span></a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .compare-intro {
+    padding-top: 1.5rem;
+  }
+
+  .crumbs {
+    font-size: 0.9rem;
+    color: var(--ink-muted);
+    margin-bottom: 1rem;
+  }
+
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  .compare-intro h1 {
+    font-size: clamp(1.7rem, 5vw, 2.75rem);
+    max-width: 26ch;
+  }
+
+  .quick-answer {
+    padding: 1rem 1.1rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--signal);
+    max-width: 44rem;
+  }
+
+  .quick-answer p:last-child {
+    margin-bottom: 0;
+  }
+
+  .jump ul {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .jump a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--signal);
+    border-radius: 999px;
+    background: #fff;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .kit-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .small-print {
+    font-size: 0.88rem;
+    color: var(--ink-muted);
+    margin-top: 1rem;
+  }
+
+  .litres {
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid var(--line);
+    width: 100%;
+    max-width: 20rem;
+  }
+
+  .litres caption {
+    text-align: left;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+  }
+
+  .litres th,
+  .litres td {
+    padding: 0.45rem 0.75rem;
+    border-top: 1px solid var(--line);
+    text-align: left;
+  }
+
+  .versus {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .versus > div {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 1rem;
+  }
+
+  .versus ul {
+    padding-left: 1.15rem;
+  }
+
+  .versus p {
+    margin: 0;
+  }
+
+  .verdict {
+    margin-top: 1rem;
+  }
+
+  .faq h3 {
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 48rem) {
+    .versus {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .kit-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+
+  @media (min-width: 72rem) {
+    .kit-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

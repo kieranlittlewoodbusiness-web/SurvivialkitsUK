@@ -1,5 +1,5 @@
 ---
-import { site } from '../data/site';
+import { site, isPreviewBuild } from '../data/site';
 import '../styles/global.css';
 
 interface Props {
@@ -18,6 +18,8 @@ const {
   ogType = 'website',
 } = Astro.props;
 
+// Preview builds are never indexable, whatever the page asks for.
+const robots = noindex || isPreviewBuild() ? 'noindex, nofollow' : 'index, follow';
 const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
 const canonical = new URL(canonicalPath === '/' ? '/' : canonicalPath, site.siteUrl).href;
 ---
@@ -27,7 +29,7 @@ const canonical = new URL(canonicalPath === '/' ? '/' : canonicalPath, site.site
 <title>{pageTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+<meta name="robots" content={robots} />
 <meta name="author" content={site.author} />
 <meta property="og:type" content={ogType} />
 <meta property="og:site_name" content={site.name} />

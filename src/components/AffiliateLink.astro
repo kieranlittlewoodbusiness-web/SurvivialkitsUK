@@ -1,7 +1,7 @@
 ---
 /**
  * Renders a programme-generated affiliate URL exactly as stored.
- * Always uses rel="sponsored noopener noreferrer".
+ * Always uses rel="sponsored nofollow noopener noreferrer" (ASA/CAP + search guidance).
  */
 interface Props {
   href: string;
@@ -18,7 +18,7 @@ const exactHref = href;
 <a
   class:list={['affiliate-link', className]}
   href={exactHref}
-  rel="sponsored noopener noreferrer"
+  rel="sponsored nofollow noopener noreferrer"
   data-merchant={merchant}
 >
   <slot />

@@ -1,0 +1,68 @@
+---
+/**
+ * Above-the-fold disclosure for comparison pages (ASA/CAP: marketing must be identifiable,
+ * and placed before the first affiliate link).
+ */
+interface Props {
+  hasAffiliateLinks: boolean;
+  researchedOn: string;
+}
+
+const { hasAffiliateLinks, researchedOn } = Astro.props;
+const researched = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'Europe/London',
+}).format(new Date(`${researchedOn}T12:00:00Z`));
+---
+
+<aside class="research-disclosure" aria-label="How this page was researched and how we make money">
+  <p class="research-disclosure__flag"><strong>Researched from listings, not tested</strong></p>
+  <p>
+    Specs come from seller listings read on {researched}. We have not bought, handled or tested these
+    kits.
+  </p>
+  {
+    hasAffiliateLinks ? (
+      <p>
+        Some retailer links on this page are affiliate links, marked <span class="badge badge--ad">Ad</span>.
+        If you buy through one we may earn commission, at no extra cost to you. Commission never
+        changes the order or what we say. <a href="/affiliate-disclosure">Affiliate disclosure</a>.
+      </p>
+    ) : (
+      <p>
+        No links on this page are affiliate links yet. If we add any, they will be marked
+        <span class="badge badge--ad">Ad</span> and we may earn commission. Commission will never
+        change the order or what we say. <a href="/affiliate-disclosure">Affiliate disclosure</a>.
+      </p>
+    )
+  }
+</aside>
+
+<style>
+  .research-disclosure {
+    margin: 1.25rem 0 0;
+    padding: 0.9rem 1rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--warn);
+    max-width: 42rem;
+    font-size: 0.95rem;
+  }
+
+  .research-disclosure p {
+    margin: 0 0 0.5rem;
+  }
+
+  .research-disclosure p:last-child {
+    margin-bottom: 0;
+  }
+
+  .research-disclosure__flag strong {
+    color: var(--warn);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.85rem;
+  }
+</style>

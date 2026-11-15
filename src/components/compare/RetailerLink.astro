@@ -1,0 +1,51 @@
+---
+/**
+ * Outbound retailer link for a DisplayOffer.
+ * - is_affiliate_link: exact link_url via AffiliateLink (rel="sponsored nofollow"), labelled Ad.
+ * - otherwise: link_url is the plain product URL.
+ */
+import AffiliateLink from '../AffiliateLink.astro';
+
+interface Props {
+  linkUrl: string;
+  isAffiliate: boolean;
+  retailer: string;
+  variant?: 'button' | 'text';
+  /** Model code, appended to the visually hidden text so repeated links get distinct names (WCAG 2.4.4). */
+  context: string;
+}
+
+const { linkUrl, isAffiliate, retailer, variant = 'button', context } = Astro.props;
+const cls = variant === 'button' ? 'btn retailer-link' : 'retailer-link retailer-link--text';
+---
+
+{
+  isAffiliate ? (
+    <span class="retailer-link-wrap">
+      <span class="badge badge--ad">Ad</span>
+      <AffiliateLink href={linkUrl} merchant={retailer} class={cls}>
+        View at {retailer}<span class="visually-hidden"> (affiliate link, retailer site for {context})</span>
+      </AffiliateLink>
+    </span>
+  ) : (
+    <a class={cls} href={linkUrl} rel="noopener noreferrer" data-merchant={retailer}>
+      View at {retailer}<span class="visually-hidden"> (retailer site for {context})</span>
+    </a>
+  )
+}
+
+<style>
+  .retailer-link-wrap {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .retailer-link--text {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    font-weight: 600;
+  }
+</style>

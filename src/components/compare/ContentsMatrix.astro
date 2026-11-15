@@ -1,0 +1,120 @@
+---
+/**
+ * Be Ready checklist matrix. Cards above carry the mobile essentials, so this table is
+ * supplementary: it scrolls horizontally inside its own focusable region with a sticky first column.
+ */
+import { matrixKits, matrixRows } from './kits';
+---
+
+<div class="matrix" role="region" aria-labelledby="matrix-caption" tabindex="0">
+  <table>
+    <caption id="matrix-caption">
+      What each kit lists against the Be Ready checklist (from seller listings, not tested)
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Checklist item</th>
+        {
+          matrixKits.map((k) => (
+            <th scope="col">
+              {k.label}
+              <span>{k.people}</span>
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        matrixRows.map((row) => (
+          <tr class:list={[row.emphasis && 'is-emphasis']}>
+            <th scope="row">{row.item}</th>
+            {row.values.map((v) => (
+              <td class:list={[/^Not listed|^Excluded/.test(v) && 'is-gap']}>{v}</td>
+            ))}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+<p class="matrix-hint">On a small screen, swipe or scroll the table sideways. The kit cards above show the same gaps.</p>
+
+<style>
+  .matrix {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--line);
+    background: #fff;
+    max-width: 100%;
+  }
+
+  .matrix:focus-visible {
+    outline-offset: 2px;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    min-width: 40rem;
+    font-size: 0.92rem;
+  }
+
+  caption {
+    text-align: left;
+    padding: 0.75rem;
+    font-weight: 600;
+  }
+
+  th,
+  td {
+    padding: 0.55rem 0.65rem;
+    border-top: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  thead th {
+    background: var(--field);
+    font-size: 0.88rem;
+  }
+
+  thead th span {
+    display: block;
+    font-weight: 400;
+    color: var(--ink-muted);
+  }
+
+  tbody th,
+  thead th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--field);
+    min-width: 9rem;
+    max-width: 11rem;
+    box-shadow: 1px 0 0 var(--line);
+  }
+
+  .is-gap {
+    color: #8f2424;
+  }
+
+  .is-emphasis td,
+  .is-emphasis th {
+    font-weight: 700;
+  }
+
+  .matrix-hint {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 64rem) {
+    .matrix-hint {
+      display: none;
+    }
+  }
+</style>

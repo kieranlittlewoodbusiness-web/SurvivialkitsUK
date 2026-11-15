@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EvidenceBadge from '../components/EvidenceBadge.astro';
-import { site } from '../data/site';
+import { site, comparePath } from '../data/site';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
 
 const scenarios = await getPublishedScenarios();
@@ -9,7 +9,11 @@ const featured = scenarios.filter((s) => s.data.featured).slice(0, 4);
 const gear = await getPublishedGear();
 ---
 
-<BaseLayout title={site.name} description={site.description} canonicalPath="/">
+<BaseLayout
+  title="UK household emergency planning and 72-hour kits"
+  description="Plan for 3 days of disruption in a UK home: a free 72-hour checklist, scenario guides, and pre-packed emergency kits compared against the Be Ready checklist."
+  canonicalPath="/"
+>
   <section class="hero" aria-label="Introduction">
     <div class="hero__visual" aria-hidden="true">
       <img
@@ -32,6 +36,23 @@ const gear = await getPublishedGear();
       <div class="btn-row">
         <a class="btn" href="/start-here">Start Here</a>
         <a class="btn btn--ghost" href="/checklist">72-hour checklist</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section home-compare" aria-labelledby="home-compare-heading">
+    <div class="wrap">
+      <div class="home-compare__card">
+        <p class="eyebrow">New comparison</p>
+        <h2 id="home-compare-heading">Pre-packed 72-hour kits compared</h2>
+        <p>
+          Five kit models from UK sellers, checked against the government’s Be Ready list: how much water each one is short,
+          whether it has a radio, and what you would still need to add.
+        </p>
+        <p class="home-compare__flag">Researched from listings, not tested.</p>
+        <div class="btn-row">
+          <a class="btn" href={comparePath}>Compare 72-hour kits</a>
+        </div>
       </div>
     </div>
   </section>
@@ -123,7 +144,8 @@ const gear = await getPublishedGear();
 <style>
   .hero {
     position: relative;
-    min-height: min(92vh, 52rem);
+    /* Mobile first: keep the next section (kit comparison) within reach of the first screen. */
+    min-height: min(68vh, 34rem);
     display: grid;
     align-items: end;
     color: #f4f7f8;
@@ -161,7 +183,7 @@ const gear = await getPublishedGear();
   .hero__content {
     position: relative;
     z-index: 1;
-    padding: 5rem 0 3rem;
+    padding: 3.5rem 0 2.25rem;
     background: linear-gradient(180deg, transparent 0%, rgba(28, 36, 41, 0.55) 35%, rgba(28, 36, 41, 0.78) 100%);
     width: 100%;
     max-width: none;
@@ -184,6 +206,30 @@ const gear = await getPublishedGear();
 
   .hero .lede {
     color: rgba(244, 247, 248, 0.9);
+  }
+
+  @media (min-width: 48rem) {
+    .hero {
+      min-height: min(92vh, 52rem);
+    }
+  }
+
+  .home-compare__card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--signal);
+    padding: 1.25rem;
+    max-width: 44rem;
+  }
+
+  .home-compare__card p {
+    margin-bottom: 0.75rem;
+  }
+
+  .home-compare__flag {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--warn);
   }
 
   .home-steps {
