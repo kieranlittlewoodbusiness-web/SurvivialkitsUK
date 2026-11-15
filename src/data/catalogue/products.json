@@ -2,9 +2,9 @@
   "schema_version": 2,
   "status": "unverified-seed",
   "data_source_needed": [
-    "Amazon Associates UK approval and a tracking id in AMAZON_ASSOCIATES_UK_TAG (not applied for yet; PM decision 15 Nov 2026). Until then no Amazon link renders.",
+    "Amazon Associates UK is approved (15 Nov 2026, Kieran's reading of Associates Central). Links need AMAZON_ASSOCIATES_UK_TAG at build time (production builds only) and a verified product.",
     "Amazon product API access (Creators API / PA-API successor) before any Amazon price, availability or delivery is shown. Until then prices stay null.",
-    "Independent confirmation of each listing's identity (GTIN/EAN not shown on Amazon listings).",
+    "S1-8b (15 Nov 2026): identity checked against each tagless public listing (title, brand, model, pack contents). 9 verified; 7 stay unverified with the reason in verification_evidence. GTIN/EAN is still not shown on Amazon listings.",
     "Thermal clothing (B01LX282CT, B01LYD385A): a child ASIN per size plus size_label before either can be verified; until then both stay unverified.",
     "Datrex B0134DAXJ2: listing conflict on pack quantity (title 18 packs vs details pack of 1)."
   ],
@@ -68,8 +68,16 @@
       },
       "captured_at": "2026-11-15T00:03:58+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B01IFCIYXE",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "pack_contents"],
+        "note": "Title, brand (Seven Oceans) and pack (6 x 500 ml) match, but the listing shows no model number or part number, so the exact model cannot be confirmed."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "Bullet: each 500 ml pack is 10 inner 50 ml sachets. No model number shown."
       ]
     },
@@ -123,9 +131,17 @@
         "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
       },
       "captured_at": "2026-11-15T00:04:07+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0896Q8JXD",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand Cano Water; Model Number and Part Number STXO500 match; pack 12 x 500 ml (Number of Items 12) matches pack_quantity 12."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
         "Everyday canned spring water, not marketed as long-life emergency water. Shelf life not shown on the listing (left unknown)."
       ]
     },
@@ -164,8 +180,16 @@
       },
       "captured_at": "2026-11-15T00:04:02+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0134DAXJ2",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model"],
+        "note": "Model DX1000W-18 matches, but pack contents conflict on the listing (title 18 packs; Product details Size 'Pack of 1', Number of Items 1) and the canonical URL points to another ASIN. Offer stays model_match_confirmed=false."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "LISTING CONFLICT: title says 18 packs, Product details say 'Size: 76.08 ml (Pack of 1)' and 'Number of Items: 1'. Pack quantity and total volume left unknown; offer model_match_confirmed=false.",
         "Canonical URL on the page points to a different ASIN (B0C85QM535); recorded ASIN is the one shown in Product details."
       ]
@@ -205,8 +229,16 @@
       },
       "captured_at": "2026-11-15T00:04:14+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B005JRULU8",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand"],
+        "note": "Model is ambiguous on the listing: Model Number F30608 but Manufacturer Part Number F30658; the canonical URL points to another ASIN (B078SG8T2S)."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "LISTING NOTE: Product details show Model Number F30608 but Manufacturer Part Number F30658; both recorded as shown.",
         "Canonical URL on the page points to a different ASIN (B078SG8T2S)."
       ]
@@ -245,9 +277,17 @@
         "url": "https://www.amazon.co.uk/dp/B00L7S9LU4"
       },
       "captured_at": "2026-11-15T00:04:18+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00L7S9LU4",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence)."
       ]
     },
     {
@@ -284,9 +324,17 @@
         "url": "https://www.amazon.co.uk/dp/B005AQK6V2"
       },
       "captured_at": "2026-11-15T00:04:23+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B005AQK6V2",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly (includes 77319RM); brand Reliance Medical; Item model number 77319RM matches model_code; single BS8599-1 medium kit with contents listed."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
         "Edition year of BS 8599-1 not shown."
       ]
     },
@@ -348,9 +396,17 @@
         "url": "https://www.amazon.co.uk/dp/B09VBFQNKK"
       },
       "captured_at": "2026-11-15T00:04:28+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B09VBFQNKK",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand PRUNUS; Model Number and Manufacturer Part Number J-369 match; one radio (Number of Items 1)."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence)."
       ]
     },
     {
@@ -412,9 +468,17 @@
         "url": "https://www.amazon.co.uk/dp/B0987MCGXT"
       },
       "captured_at": "2026-11-15T00:04:33+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0987MCGXT",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand ROCAM; Model Number CR1009PRO DAB and Manufacturer Part Number 1009PRO DAB match; one radio (Number of Items 1)."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence)."
       ]
     },
     {
@@ -476,8 +540,16 @@
       },
       "captured_at": "2026-11-15T00:04:37+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B08V17BPBC",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "pack_contents"],
+        "note": "Model Number on the listing is the generic 'Radio' (MPN 'Radio-11'), so the exact model cannot be confirmed."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "Model Number shown is the generic 'Radio' (MPN 'Radio-11'); recorded exactly as shown."
       ]
     },
@@ -515,9 +587,17 @@
         "url": "https://www.amazon.co.uk/dp/B0CZ9LH53B"
       },
       "captured_at": "2026-11-15T00:04:42+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CZ9LH53B",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand Anker; Model Number A1689 and Manufacturer Part Number A1689011 match; one power bank (Number of Items 1)."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
         "Watt-hours not shown on the listing (left unknown)."
       ]
     },
@@ -567,9 +647,17 @@
         "url": "https://www.amazon.co.uk/dp/B0CSSRD4NT"
       },
       "captured_at": "2026-11-15T00:04:47+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CSSRD4NT",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand UGREEN; Model Number PB312 and Manufacturer Part Number TSADF7G5634 match our record as shown; one power bank (Number of Items 1)."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
         "Product details also show 'Model Name: 25683'. Watt-hours not shown."
       ]
     },
@@ -618,9 +706,17 @@
         "url": "https://www.amazon.co.uk/dp/B0DCZ82MGG"
       },
       "captured_at": "2026-11-15T00:04:52+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0DCZ82MGG",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand INIU; Model Number P51L and Manufacturer Part Number P51L-E1 match; one power bank plus cable and manual listed."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
         "Watt-hours not shown."
       ]
     },
@@ -669,9 +765,17 @@
         "url": "https://www.amazon.co.uk/dp/B001FIQ7XU"
       },
       "captured_at": "2026-11-15T00:05:05+00:00",
-      "verification": "unverified",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B001FIQ7XU",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Title matches exactly; brand Safety First Aid Group; Model Number and Manufacturer Part Number Q2023T match; pack of 6 (Number of Items 6) matches pack_quantity 6."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence)."
       ]
     },
     {
@@ -720,8 +824,16 @@
       },
       "captured_at": "2026-11-15T00:05:01+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CMPZJS97",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Model 42120 and pack of 2 match, but the listing is inconsistent (title 'Silver', Product details colour 'Orange') and the canonical URL points to another ASIN (B0H3WSD816)."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "Title says 'Silver' but Product details colour is 'Orange' and bullets say 'bright orange'; recorded as shown.",
         "Canonical URL on the page points to a different ASIN (B0H3WSD816)."
       ]
@@ -769,8 +881,16 @@
       },
       "captured_at": "2026-11-15T00:05:19+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B01LX282CT",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "pack_contents"],
+        "note": "Thermal clothing: size is chosen on the listing (S-XXL variations), there is no per-size ASIN, and no model number; stays unverified until each size has its own ASIN and size_label."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "Size and colour are chosen on Amazon (listing has size variations); this ASIN is the listing as served. Size left unknown.",
         "Canonical URL on the page points to a different ASIN (B01M0MVQ7R).",
         "Stays unverified until each size has its own ASIN (child ASIN per size) and specs.size_label is recorded; the schema rejects verified thermal_clothing without size_label, so prices for different sizes are never compared."
@@ -819,8 +939,16 @@
       },
       "captured_at": "2026-11-15T00:05:10+00:00",
       "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B01LYD385A",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "pack_contents"],
+        "note": "Thermal clothing: size is chosen on the listing (S-XXL variations), there is no per-size ASIN, and no model number; stays unverified until each size has its own ASIN and size_label."
+      },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
         "Size and colour are chosen on Amazon (listing has size variations); this ASIN is the listing as served. Size left unknown.",
         "Canonical URL on the page points to a different ASIN (B01M0N4GI4).",
         "Stays unverified until each size has its own ASIN (child ASIN per size) and specs.size_label is recorded; the schema rejects verified thermal_clothing without size_label, so prices for different sizes are never compared."

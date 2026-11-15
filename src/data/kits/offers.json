@@ -6,7 +6,7 @@
     "Approved price source for Amazon UK: Amazon Associates UK approval (and Product Advertising API / SiteStripe access) for ASIN B075LHXZ55.",
     "Exact-model confirmation for Amazon UK ASIN B075LHXZ55: the listing shows Model Number / MPN E138, not E182P, and no GTIN. Need EVAQ8 to confirm whether E138 is identical to E182P (or the Amazon ASIN for E182P / GTIN 5060176883963). Until then the Amazon row is excluded (model_match_confirmed=false) and there is NO verified like-for-like two-retailer pair.",
     "Delivery cost at checkout for both retailers (product pages show 'Free shipping' and a conditional 'FREE delivery ... on your first order'; neither is a verified delivery cost).",
-    "S1-8 (#11): Amazon prices are not shown until Amazon product API access; the manual Amazon capture was nulled. Links only through approved affiliate programmes (Amazon Associates UK not applied for yet; no EVAQ8 programme)."
+    "S1-8 (#11): Amazon prices are not shown until Amazon product API access; the manual Amazon capture was nulled. Links only through approved affiliate programmes (Amazon Associates UK approved 15 Nov 2026, but this kit's Amazon row is model E138, not E182P, so it stays excluded and unlinked; no EVAQ8 programme)."
   ],
   "offers": [
     {

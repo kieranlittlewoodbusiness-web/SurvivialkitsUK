@@ -5,18 +5,22 @@
       "programme_id": "amazon-associates-uk",
       "name": "Amazon Associates UK",
       "network": "amazon-associates",
-      "status": "pending",
+      "status": "approved",
       "status_updated_on": "2026-11-15",
-      "approved_on": null,
+      "approved_on": "2026-11-15",
       "tracking_id_env": "AMAZON_ASSOCIATES_UK_TAG",
       "link_mode": "derive_from_asin",
-      "allowed_hosts": ["www.amazon.co.uk"],
+      "allowed_hosts": [
+        "www.amazon.co.uk"
+      ],
       "disclosure_text": "As an Amazon Associate I earn from qualifying purchases.",
       "price_display": "api_only",
       "max_price_age_hours": 24,
       "terms_url": "https://affiliate-program.amazon.co.uk/help/operating/policies",
       "notes": [
-        "PM decision 15 Nov 2026 (#11): not applied for yet; 'pending' is the closest contract status. No link renders until status is 'approved' with approved_on AND AMAZON_ASSOCIATES_UK_TAG is set at build time.",
+        "Approved 15 Nov 2026 with full acceptance (#11, S1-8b). This reflects Kieran's reading of Associates Central; no screenshot or account data is stored here.",
+        "The tracking id is never stored in the repo: it is read only from AMAZON_ASSOCIATES_UK_TAG at build time (production builds only; preview builds leave it unset).",
+        "A link renders only for verified, exact-match products (verification: 'verified' with verification_evidence), with the tag set and well formed.",
         "No API access: Amazon prices, availability and delivery are not displayed."
       ]
     }

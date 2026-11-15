@@ -64,7 +64,29 @@ function programme(over: Partial<AffiliateProgrammeRecord> = {}): AffiliateProgr
   };
 }
 
+/** S1-8b: verified records carry verification_evidence (schema rule); fixtures add it unless overridden. */
+function evidenceFor(asin: string | null, category: string) {
+  return {
+    method: 'public_listing' as const,
+    source_url: `https://www.amazon.co.uk/dp/${asin}`,
+    checked_on: '2026-11-15',
+    outcome: 'verified' as const,
+    checks_matched: (category === 'thermal_clothing'
+      ? ['title', 'brand', 'model', 'pack_contents', 'size']
+      : ['title', 'brand', 'model', 'pack_contents']) as ('title' | 'brand' | 'model' | 'pack_contents' | 'size')[],
+    note: 'TEST',
+  };
+}
+
 function product(over: Partial<CatalogueProduct> = {}): CatalogueProduct {
+  const base = productRaw(over);
+  if (base.verification === 'verified' && !('verification_evidence' in over)) {
+    return { ...base, verification_evidence: evidenceFor(base.asin_uk, base.category) } as CatalogueProduct;
+  }
+  return base;
+}
+
+function productRaw(over: Partial<CatalogueProduct> = {}): CatalogueProduct {
   return {
     schema_version: 2,
     variant_id: 'pb-1',
@@ -356,9 +378,9 @@ describe('v1 compatibility', () => {
 });
 
 describe('seed data (src/data)', () => {
-  it('Amazon Associates UK is pending with only an env var name; EVAQ8 has no programme', () => {
+  it('Amazon Associates UK is approved (S1-8b) with only an env var name; EVAQ8 has no programme', () => {
     expect(affiliateProgrammes.map((p) => [p.programme_id, p.status, p.approved_on, p.tracking_id_env])).toEqual([
-      ['amazon-associates-uk', 'pending', null, 'AMAZON_ASSOCIATES_UK_TAG'],
+      ['amazon-associates-uk', 'approved', '2026-11-15', 'AMAZON_ASSOCIATES_UK_TAG'],
     ]);
   });
 
@@ -368,10 +390,11 @@ describe('seed data (src/data)', () => {
     expect(amz.availability_text).toBeNull();
   });
 
-  it('catalogue: real ASIN format, unverified, no prices, Amazon programme reference, no stored affiliate URL', () => {
+  it('catalogue: real ASIN format, verification evidence on every row, no prices, Amazon programme reference, no stored affiliate URL', () => {
     expect(catalogueProducts.length).toBeGreaterThan(0);
     for (const p of catalogueProducts) {
-      expect(p.verification).toBe('unverified');
+      expect(p.verification_evidence?.outcome).toBe(p.verification === 'verified' ? 'verified' : 'not_verified');
+      expect(p.verification_evidence?.source_url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
       expect(p.asin_uk).toMatch(/^[A-Z0-9]{10}$/);
       expect(p.source.url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
     }
@@ -384,15 +407,16 @@ describe('seed data (src/data)', () => {
     }
   });
 
-  it('with the tag unset and the programme pending, nothing renders a link and no price shows', () => {
+  it('with the tag unset, nothing renders a link and no price shows (programme approved)', () => {
     const { comparisons } = buildCatalogueComparisons(allProducts, allOffers, { now: '2026-11-15T12:00:00+00:00', programmes: affiliateProgrammes, buildEnv: {} });
     const offers = comparisons.flatMap((c) => c.offers);
     expect(offers.length).toBeGreaterThan(0);
     expect(offers.every((o) => o.link_url === null)).toBe(true);
     expect(offers.filter((o) => o.retailer === 'Amazon UK').every((o) => o.price_gbp_inc_vat === null && !o.price_display_allowed)).toBe(true);
     expect(comparisons.every((c) => c.disclosures.length === 0)).toBe(true);
-    // Even with a tag set, a pending programme renders no link.
-    const tagged = buildCatalogueComparisons(allProducts, allOffers, { now: '2026-11-15T12:00:00+00:00', programmes: affiliateProgrammes, buildEnv: withTag });
+    // With a pending programme (in memory), even a tag set renders no link.
+    const pendingProgrammes = affiliateProgrammes.map((p) => ({ ...p, status: 'pending' as const, approved_on: null }));
+    const tagged = buildCatalogueComparisons(allProducts, allOffers, { now: '2026-11-15T12:00:00+00:00', programmes: pendingProgrammes, buildEnv: withTag });
     expect(tagged.comparisons.flatMap((c) => c.offers).every((o) => o.no_link_reason !== null)).toBe(true);
   });
 
@@ -572,7 +596,8 @@ describe('info: thermal clothing and the renamed no_link_reason', () => {
     expect(d.no_link_text).toBe(NO_LINK_TEXT_EXACT_PRODUCT);
   });
   it('seed: with a fake tag set, no Amazon link renders while the programme is pending', () => {
-    const r = buildCatalogueComparisons(allProducts, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: withTag });
+    const pendingProgrammes = affiliateProgrammes.map((p) => ({ ...p, status: 'pending' as const, approved_on: null }));
+    const r = buildCatalogueComparisons(allProducts, allOffers, { now: NOW, programmes: pendingProgrammes, buildEnv: withTag });
     const shown = r.comparisons.flatMap((c) => c.offers);
     expect(shown.filter((o) => o.link_url !== null)).toHaveLength(0);
     expect(shown.filter((o) => o.price_gbp_inc_vat !== null && o.retailer.match(/amazon/i))).toHaveLength(0);
@@ -584,15 +609,17 @@ describe('info: thermal clothing and the renamed no_link_reason', () => {
 describe('M2: links only for verified products', () => {
   const approvedProgrammes = () =>
     affiliateProgrammes.map((p) => ({ ...p, status: 'approved' as const, approved_on: '2026-11-15', status_updated_on: '2026-11-15' }));
-  const seedRun = (products = allProducts) =>
+  /** S1-8b: the committed seed now has verified rows; M2 is exercised on an all-unverified copy. */
+  const allUnverified = allProducts.map((p) => ({ ...p, verification: 'unverified' as const, verification_evidence: undefined }));
+  const seedRun = (products: typeof allProducts = allUnverified) =>
     buildCatalogueComparisons(products, allOffers, {
       now: '2026-11-15T12:00:00+00:00',
       programmes: approvedProgrammes(),
       buildEnv: { AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY-21' },
     }).comparisons.flatMap((c) => c.offers);
 
-  it('real seed + approved Amazon programme + TESTONLY-21 => 0 links (all products unverified)', () => {
-    expect(allProducts.filter((p) => (p as { verification?: string }).verification === 'verified')).toHaveLength(0);
+  it('seed with every product set unverified + approved Amazon programme + TESTONLY-21 => 0 links', () => {
+    expect(allUnverified.filter((p) => (p as { verification?: string }).verification === 'verified')).toHaveLength(0);
     const shown = seedRun();
     expect(shown.filter((o) => o.link_url !== null)).toHaveLength(0);
     const amazonRows = shown.filter((o) => o.retailer === 'Amazon UK');
@@ -606,8 +633,9 @@ describe('M2: links only for verified products', () => {
   it('flipping exactly one (non-thermal) seed product to verified => exactly 1 link', () => {
     const target = 'amazon-uk-b0cz9lh53b';
     expect(allProducts.some((p) => p.variant_id === target)).toBe(true);
-    const flipped = allProducts.map((p) => (p.variant_id === target ? { ...p, verification: 'verified' as const } : p));
-    expect(() => parseCatalogueProduct(flipped.find((p) => p.variant_id === target))).not.toThrow();
+    const flipped = allUnverified.map((p) => (p.variant_id === target ? { ...p, verification: 'verified' as const } : p));
+    // Committed record (verified, with evidence) parses; the in-memory flip has the evidence stripped.
+    expect(() => parseCatalogueProduct(allProducts.find((p) => p.variant_id === target))).not.toThrow();
     const linked = seedRun(flipped).filter((o) => o.link_url !== null);
     expect(linked).toHaveLength(1);
     expect(linked[0]!.variant_id).toBe(target);

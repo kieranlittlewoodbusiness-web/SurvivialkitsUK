@@ -246,7 +246,8 @@ export function toAffiliateDisplayOffer(
   const price = priceAllowed && isMoney(offer.price_gbp_inc_vat) ? offer.price_gbp_inc_vat : null;
   const delivery = priceAllowed && isMoney(offer.delivery_cost_gbp) ? offer.delivery_cost_gbp : null;
   const total = modelMatch ? deliveredTotal({ price_gbp_inc_vat: price, delivery_cost_gbp: delivery }) : null;
-  const link = resolveAffiliateLink(offer, modelMatch, programmes, options.buildEnv ?? defaultEnv(), isProductVerified(product));
+  const verified = isProductVerified(product);
+  const link = resolveAffiliateLink(offer, modelMatch, programmes, options.buildEnv ?? defaultEnv(), verified);
 
   const labels: CatalogueOfferLabel[] = [];
   if (!modelMatch) labels.push('model_unconfirmed');
@@ -260,7 +261,8 @@ export function toAffiliateDisplayOffer(
   if (stale) labels.push('stale');
   if (link.link_url === null) labels.push('no_affiliate_link');
 
-  const eligible = modelMatch && priceAllowed && total !== null && offer.price_verified && offer.delivery_verified && !stale;
+  // L6 (S1-8b): an unverified product never gets is_best_price or savings.
+  const eligible = modelMatch && verified && priceAllowed && total !== null && offer.price_verified && offer.delivery_verified && !stale;
   const kit = isKitProduct(product) ? (product as KitVariant) : null;
 
   return {

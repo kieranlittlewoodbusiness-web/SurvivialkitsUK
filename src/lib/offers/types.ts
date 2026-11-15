@@ -37,6 +37,26 @@ export interface ContentsItem {
   item: string;
 }
 
+/** S1-8b: identity checks recorded against a public listing. */
+export const VERIFICATION_CHECKS = ['title', 'brand', 'model', 'pack_contents', 'size'] as const;
+export type VerificationCheck = (typeof VERIFICATION_CHECKS)[number];
+
+/**
+ * S1-8b: evidence for a product's `verification` value. Never holds prices,
+ * images or tagged URLs: `source_url` is the tagless https://www.amazon.co.uk/dp/{ASIN}.
+ */
+export interface VerificationEvidence {
+  method: 'public_listing';
+  /** https://www.amazon.co.uk/dp/{ASIN} with no query string or fragment. */
+  source_url: string;
+  checked_on: IsoDate;
+  /** 'verified' iff the record's verification is 'verified'. 'not_run' = page unreadable/blocked. */
+  outcome: 'verified' | 'not_verified' | 'not_run';
+  /** Checks that matched our record. Verified needs title, brand, model, pack_contents (+ size for thermals). */
+  checks_matched: VerificationCheck[];
+  note: string;
+}
+
 /** One exact kit variant. variant_id is unique per exact model code
  *  (E184, E184P and E194 are three different variants). */
 export interface KitVariant {
@@ -47,6 +67,8 @@ export interface KitVariant {
   asin_uk?: string | null;
   /** S1-8: absent = 'unverified'. Only verified products may carry affiliate links. */
   verification?: 'unverified' | 'verified';
+  /** S1-8b: how `verification` was decided (required when verified). */
+  verification_evidence?: VerificationEvidence;
   /** Exact-variant key used to group offers, e.g. "evaq8-e182p". */
   variant_id: string;
   /** Kit family key (brief s7 `kit_id`), e.g. "evaq8-gobag-2-person". */
@@ -377,6 +399,8 @@ interface CatalogueProductBase {
   captured_at: LondonIsoDateTime;
   /** 'unverified' until an approved source (e.g. Amazon product API) confirms it. */
   verification: 'unverified' | 'verified';
+  /** S1-8b: how `verification` was decided (required when verified). */
+  verification_evidence?: VerificationEvidence;
   notes: string[];
 }
 export type CatalogueProduct =

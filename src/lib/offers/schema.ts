@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PRODUCT_CATEGORIES } from './types';
+import { PRODUCT_CATEGORIES, VERIFICATION_CHECKS } from './types';
 import type {
   AffiliateProgrammeRecord,
   AffiliateProgrammesFile,
@@ -51,12 +51,63 @@ export function isValidGtin(v: string): boolean {
 }
 const gtin = z.string().refine(isValidGtin, { message: 'GTIN must be 8, 12, 13 or 14 digits with a valid GS1 check digit' });
 
+/* ---------- S1-8b: verification evidence ---------- */
+
+const AMAZON_UK_DP_URL = /^https:\/\/www\.amazon\.co\.uk\/dp\/([A-Z0-9]{10})$/;
+
+export const verificationEvidenceSchema = z
+  .object({
+    method: z.literal('public_listing'),
+    /** Tagless https://www.amazon.co.uk/dp/{ASIN}: no query string, no fragment. */
+    source_url: z.string().regex(AMAZON_UK_DP_URL, { message: 'source_url must be exactly https://www.amazon.co.uk/dp/{ASIN} (no query string or tag)' }),
+    checked_on: isoDate,
+    outcome: z.enum(['verified', 'not_verified', 'not_run']),
+    checks_matched: z.array(z.enum(VERIFICATION_CHECKS)),
+    note: z.string().min(1),
+  })
+  .strict();
+
+/** Required checks for a 'verified' record (thermals also need 'size'). */
+export function requiredVerificationChecks(category: string): readonly string[] {
+  const base = ['title', 'brand', 'model', 'pack_contents'];
+  return category === 'thermal_clothing' ? [...base, 'size'] : base;
+}
+
+/** Shared rule: verified <=> evidence outcome 'verified', with every required check and a matching tagless ASIN URL. */
+function refineVerification(
+  p: { verification?: 'unverified' | 'verified'; verification_evidence?: z.infer<typeof verificationEvidenceSchema>; asin_uk?: string | null; category?: string },
+  ctx: z.RefinementCtx,
+): void {
+  const verified = p.verification === 'verified';
+  const ev = p.verification_evidence;
+  if (verified && !ev) {
+    ctx.addIssue({ code: 'custom', path: ['verification_evidence'], message: 'verified products need verification_evidence' });
+    return;
+  }
+  if (!ev) return;
+  if ((ev.outcome === 'verified') !== verified) {
+    ctx.addIssue({ code: 'custom', path: ['verification_evidence', 'outcome'], message: "outcome must be 'verified' exactly when verification is 'verified'" });
+  }
+  if (verified) {
+    for (const c of requiredVerificationChecks(p.category ?? 'kit')) {
+      if (!ev.checks_matched.includes(c as (typeof VERIFICATION_CHECKS)[number])) {
+        ctx.addIssue({ code: 'custom', path: ['verification_evidence', 'checks_matched'], message: `verified needs check '${c}'` });
+      }
+    }
+    const urlAsin = AMAZON_UK_DP_URL.exec(ev.source_url)?.[1];
+    if (!p.asin_uk || urlAsin !== p.asin_uk) {
+      ctx.addIssue({ code: 'custom', path: ['verification_evidence', 'source_url'], message: 'verified source_url must be the listing for this record\'s asin_uk' });
+    }
+  }
+}
+
 export const kitVariantSchema = z.object({
   schema_version: schemaVersion,
   category: z.literal('kit').optional(),
   asin_uk: asin.nullable().optional(),
   /** S1-8: absent = 'unverified'. Only verified products may carry affiliate links. */
   verification: z.enum(['unverified', 'verified']).optional(),
+  verification_evidence: verificationEvidenceSchema.optional(),
   variant_id: z.string().min(1),
   kit_id: z.string().min(1),
   brand: z.string().min(1),
@@ -74,7 +125,7 @@ export const kitVariantSchema = z.object({
   water_litres_included: z.number().nonnegative(),
   source: sourceRef,
   notes: z.array(z.string()),
-});
+}).superRefine((k, ctx) => refineVerification({ ...k, category: 'kit' }, ctx));
 
 export const offerSchema = z
   .object({
@@ -387,6 +438,7 @@ const productBase = {
   source: sourceRef,
   captured_at: londonIso,
   verification: z.enum(['unverified', 'verified']),
+  verification_evidence: verificationEvidenceSchema.optional(),
   notes: z.array(z.string()),
 };
 
@@ -407,6 +459,7 @@ export const catalogueProductSchema = z
       // Prices for different sizes must never be compared: each size needs its own ASIN/GTIN row.
       ctx.addIssue({ code: 'custom', path: ['specs', 'size_label'], message: 'verified thermal_clothing needs size_label (one exact size per ASIN/GTIN)' });
     }
+    refineVerification(p, ctx);
   });
 
 export const catalogueProductsFileSchema = z
@@ -490,7 +543,8 @@ export function parseAffiliateProgrammesFile(raw: unknown): AffiliateProgrammesF
 }
 
 /**
- * Cross-file checks: every referenced programme exists, and a stored affiliate_url
+ * Cross-file checks: every referenced programme exists, a derive_from_asin (Amazon)
+ * programme is referenced only by Amazon offers, and a stored affiliate_url
  * only exists on an approved stored_exact_url programme.
  */
 export function assertCatalogueReferences(offers: Offer[], programmes: AffiliateProgrammeRecord[]): void {
@@ -499,6 +553,10 @@ export function assertCatalogueReferences(offers: Offer[], programmes: Affiliate
     if (!o.affiliate_programme_id) continue;
     const p = byId.get(o.affiliate_programme_id);
     if (!p) throw new Error(`Offer ${o.offer_id}: unknown affiliate_programme_id ${o.affiliate_programme_id}`);
+    if (p.link_mode === 'derive_from_asin' && !isAmazonOffer(o)) {
+      // S1-8b: an ASIN-derived (Amazon) programme can never apply to another retailer's row.
+      throw new Error(`Offer ${o.offer_id}: non-Amazon offer references ASIN-derived programme ${p.programme_id}`);
+    }
     if (o.affiliate_url !== '' && (p.status !== 'approved' || p.link_mode !== 'stored_exact_url')) {
       throw new Error(`Offer ${o.offer_id}: affiliate_url stored but programme ${p.programme_id} is ${p.status}/${p.link_mode}`);
     }
