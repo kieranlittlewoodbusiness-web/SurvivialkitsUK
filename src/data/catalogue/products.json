@@ -956,6 +956,174 @@
         "Canonical URL on the page points to a different ASIN (B01M0N4GI4).",
         "Stays unverified until each size has its own ASIN (child ASIN per size) and specs.size_label is recorded; the schema rejects verified thermal_clothing without size_label, so prices for different sizes are never compared."
       ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b01f1luw6y",
+      "category": "wind_up_torch_radio",
+      "product_name": "Energizer Waterproof Torch with 2 AA Max Batteries ENR Waterproof 2xAA H tray (ESFH21)",
+      "brand": "Energizer",
+      "asin_uk": "B01F1LUW6Y",
+      "gtin": "07638900418811",
+      "mpn": "ENR Waterproof 2xAA H tray (ESFH21)",
+      "model_code": "ESFH21",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "torch",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): title \"Waterproof Torch\"; Item Type Name \"Torch\"",
+            "url": "https://www.amazon.co.uk/dp/B01F1LUW6Y"
+          },
+          "captured_at": "2026-11-15T01:39:56+00:00"
+        },
+        "power_sources": {
+          "value": ["aa"],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Batteries: 2 AA batteries required. (included)\"",
+            "url": "https://www.amazon.co.uk/dp/B01F1LUW6Y"
+          },
+          "captured_at": "2026-11-15T01:39:56+00:00"
+        },
+        "lumens": {
+          "value": 55,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Light Output Maximum: 55 Lumens\"; bullet \"55 lumens of light output\"",
+            "url": "https://www.amazon.co.uk/dp/B01F1LUW6Y"
+          },
+          "captured_at": "2026-11-15T01:39:56+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B01F1LUW6Y"
+      },
+      "captured_at": "2026-11-15T01:39:56+00:00",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B01F1LUW6Y",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Waterproof Torch with 2 AA Max Batteries ENR Waterproof 2xAA H tray (ESFH21)\". Product details ASIN B01F1LUW6Y and canonical URL /dp/B01F1LUW6Y match; brand Energizer (byline \"Visit the Energizer Store\"); Model Number and Manufacturer Part Number \"ENR Waterproof 2xAA H tray (ESFH21)\" match the title; one torch with 2 AA batteries included (Number of Items 1, Number of Packs 1; \"Unit Count 2 Count\" read as the 2 included cells). No colour or size selector on the page."
+      },
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL, canonical link and Product details (ASIN field). GTIN 07638900418811 as shown on the listing (Global Trade Identification Number). VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
+        "S1-9: battery torch for the checklist torch items and the \"AA/AAA household LED torch\" gear type. Category is wind_up_torch_radio (device_type torch, power aa); there is no separate torch category. Runtime and beam figures are maker claims and are not stored."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00sbd0wl0",
+      "category": "wind_up_torch_radio",
+      "product_name": "Energizer 5 LED Head Torch Universal Attachment with 3 AAA Batteries included, Multi-Colour",
+      "brand": "Energizer",
+      "asin_uk": "B00SBD0WL0",
+      "gtin": "07638900375718",
+      "mpn": "638866",
+      "model_code": "638866",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "torch",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): title \"Head Torch\"; Item Type Name \"5 LED Head Torch Universal Attachment with 3x AAA Batteries included\"",
+            "url": "https://www.amazon.co.uk/dp/B00SBD0WL0"
+          },
+          "captured_at": "2026-11-15T01:40:10+00:00"
+        },
+        "power_sources": {
+          "value": ["aaa"],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Batteries: 3 AAA batteries required. (included)\"",
+            "url": "https://www.amazon.co.uk/dp/B00SBD0WL0"
+          },
+          "captured_at": "2026-11-15T01:40:10+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B00SBD0WL0"
+      },
+      "captured_at": "2026-11-15T01:40:10+00:00",
+      "verification": "verified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00SBD0WL0",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer 5 LED Head Torch Universal Attachment with 3 AAA Batteries included, Multi-Colour\". Product details ASIN B00SBD0WL0 and canonical URL /dp/B00SBD0WL0 match; brand Energizer (byline \"Visit the Energizer Store\"); Model Number and Manufacturer Part Number 638866 match; one head torch with 3 AAA batteries included (Number of Items 1). No colour or size selector on the page."
+      },
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL, canonical link and Product details (ASIN field). GTIN 07638900375718 as shown on the listing (Global Trade Identification Number). VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
+        "S1-9: hands-free light for the \"Compact LED headlamp\" gear type. Lumens not stored: the listing gives 326 lumens (Product details) and 300 lumens (comparison table), so the figure is ambiguous."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0fjydmpqh",
+      "category": "thermal_clothing",
+      "product_name": "HEAT HOLDERS Mens 1 Pack Turn Over Cuff Thermal Hat",
+      "brand": "HEAT HOLDERS",
+      "asin_uk": "B0FJYDMPQH",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "BSHH80",
+      "pack_quantity": 1,
+      "specs": {
+        "garment_type": {
+          "value": "hat",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): title \"Thermal Hat\"",
+            "url": "https://www.amazon.co.uk/dp/B0FJYDMPQH"
+          },
+          "captured_at": "2026-11-15T01:40:55+00:00"
+        },
+        "material": {
+          "value": "Outer: 53% Polyester 47% Acrylic Lining: 100% Polyester",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Fabric Type\"",
+            "url": "https://www.amazon.co.uk/dp/B0FJYDMPQH"
+          },
+          "captured_at": "2026-11-15T01:40:55+00:00"
+        },
+        "size_label": {
+          "value": "One Size",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Brand size UK One Size: One Size\"",
+            "url": "https://www.amazon.co.uk/dp/B0FJYDMPQH"
+          },
+          "captured_at": "2026-11-15T01:40:55+00:00"
+        },
+        "pack_count": {
+          "value": 1,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): title \"1 Pack\"; Product details \"Number of Items: 1\"",
+            "url": "https://www.amazon.co.uk/dp/B0FJYDMPQH"
+          },
+          "captured_at": "2026-11-15T01:40:55+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0FJYDMPQH"
+      },
+      "captured_at": "2026-11-15T01:40:55+00:00",
+      "verification": "unverified",
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0FJYDMPQH",
+        "checked_on": "2026-11-15",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"HEAT HOLDERS Mens 1 Pack Turn Over Cuff Thermal Hat\". Brand, model BSHH80, 1 pack and One Size match, but this is a colour/size child (Colour Camo) and the canonical URL points to the parent ASIN B0178CPMH8 (requesting /dp/B0178CPMH8 also resolves to B0FJYDMPQH), so the canonical ASIN is not the same. Stays unverified."
+      },
+      "notes": [
+        "ASIN B0FJYDMPQH shown in the page's Product details; canonical link is the parent B0178CPMH8. GTIN not shown. UNVERIFIED after the 15 Nov 2026 listing check (see verification_evidence for why).",
+        "S1-9 candidate for \"Warm clothing layers\" / \"Warm clothes, boots and a blanket\". Colour Camo is not in the title."
+      ]
     }
   ]
 }

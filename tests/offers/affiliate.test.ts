@@ -585,7 +585,10 @@ describe('info: thermal clothing and the renamed no_link_reason', () => {
     ).not.toThrow();
   });
   it('seeded thermals stay unverified and record the per-size ASIN requirement', () => {
-    const th = catalogueProducts.filter((p) => p.category === 'thermal_clothing');
+    const all = catalogueProducts.filter((p) => p.category === 'thermal_clothing');
+    // S1-8 seeded the two Heatwave tops; S1-9 added one (unverified) Heat Holders hat.
+    expect(all.every((p) => p.verification === 'unverified')).toBe(true);
+    const th = all.filter((p) => ['B01LX282CT', 'B01LYD385A'].includes(p.asin_uk!));
     expect(th).toHaveLength(2);
     for (const p of th) {
       expect(p.verification).toBe('unverified');
