@@ -435,21 +435,29 @@ export interface BatterySpecs {
   size?: Sourced<BatterySize>;
   chemistry?: Sourced<BatteryChemistry>;
   pack_count?: Sourced<number>;
+  /** Storage life as listed, years. */
+  shelf_life_years?: Sourced<number>;
 }
 export interface HiVisSpecs {
+  garment_type?: Sourced<'vest' | 'jacket' | 'other'>;
   /** Standard exactly as shown on the listing, e.g. 'EN ISO 20471 Class 2'. Evidence/spec only; never in display_name. */
   standard?: Sourced<string>;
   /** Required when verified (one exact size per ASIN, like thermals), e.g. 'XL' or 'One size'. */
   size_label?: Sourced<string>;
+  colour?: Sourced<string>;
   pack_count?: Sourced<number>;
 }
 export interface JumpLeadsSpecs {
   length_m?: Sourced<number>;
+  /** Conductor cross-sectional area as listed, mm² (e.g. 16 or 25). */
+  cable_csa_mm2?: Sourced<number>;
   /** Amp rating as listed, e.g. 400. */
-  max_current_a?: Sourced<number>;
-  /** Conductor cross-section as listed, e.g. 16 (mm²). */
-  cable_gauge_mm2?: Sourced<number>;
+  rated_amps?: Sourced<number>;
+  /** Largest engine the listing says the leads suit, cc. */
+  max_engine_cc?: Sourced<number>;
 }
+/** @deprecated name kept for readability; same as JumpLeadsSpecs (contract #11 calls it JumpLeadSpecs). */
+export type JumpLeadSpecs = JumpLeadsSpecs;
 export interface WarningTriangleSpecs {
   /** Listing states the triangle is E-marked. */
   e_marked?: Sourced<boolean>;

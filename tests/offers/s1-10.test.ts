@@ -117,9 +117,9 @@ describe('S1-10 categories', () => {
   });
 
   it.each([
-    ['batteries', { size: 'AA', chemistry: 'alkaline', pack_count: 12 }],
-    ['hi_vis', { standard: 'EN ISO 20471 Class 2', size_label: 'XL', pack_count: 1 }],
-    ['jump_leads', { length_m: 3.5, max_current_a: 400, cable_gauge_mm2: 16 }],
+    ['batteries', { size: 'AA', chemistry: 'alkaline', pack_count: 12, shelf_life_years: 10 }],
+    ['hi_vis', { garment_type: 'vest', standard: 'EN ISO 20471 Class 2', size_label: 'XL', colour: 'Yellow', pack_count: 1 }],
+    ['jump_leads', { length_m: 3.5, cable_csa_mm2: 16, rated_amps: 400, max_engine_cc: 3000 }],
     ['warning_triangle', { e_marked: true, ece_r27: true, pack_count: 1 }],
     ['torch', { device_type: 'torch', power_sources: ['aa'], lumens: 300 }],
     ['radio', { device_type: 'torch_radio', radio_bands: ['AM', 'FM'] }],

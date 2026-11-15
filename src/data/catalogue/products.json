@@ -1619,6 +1619,14 @@
             "url": "https://www.amazon.co.uk/dp/B093C9B1HK"
           },
           "captured_at": "2026-11-15T09:31:00+00:00"
+        },
+        "shelf_life_years": {
+          "value": 10,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): listing \"up to 10 years\" storage life",
+            "url": "https://www.amazon.co.uk/dp/B093C9B1HK"
+          },
+          "captured_at": "2026-11-15T09:31:00+00:00"
         }
       },
       "source": {
@@ -1785,6 +1793,14 @@
       "model_code": "C474YERS/M",
       "pack_quantity": null,
       "specs": {
+        "garment_type": {
+          "value": "vest",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"Safety Vest\"",
+            "url": "https://www.amazon.co.uk/dp/B00KHN3DZE"
+          },
+          "captured_at": "2026-11-15T09:31:00+00:00"
+        },
         "standard": {
           "value": "EN ISO 20471 Class 2 (as shown)",
           "source": {
@@ -1848,6 +1864,22 @@
       "model_code": "80302105",
       "pack_quantity": null,
       "specs": {
+        "garment_type": {
+          "value": "vest",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"Hi Vis Vest\"",
+            "url": "https://www.amazon.co.uk/dp/B09V5JXY6D"
+          },
+          "captured_at": "2026-11-15T09:31:00+00:00"
+        },
+        "colour": {
+          "value": "Yellow & Orange",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"Yellow & Orange\"",
+            "url": "https://www.amazon.co.uk/dp/B09V5JXY6D"
+          },
+          "captured_at": "2026-11-15T09:31:00+00:00"
+        },
         "standard": {
           "value": "EN 20471:2013+A1:2016 class 2 (as shown)",
           "source": {
@@ -1919,18 +1951,18 @@
           },
           "captured_at": "2026-11-15T09:31:00+00:00"
         },
-        "max_current_a": {
-          "value": 450,
+        "cable_csa_mm2": {
+          "value": 25,
           "source": {
-            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"450A\"",
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): listing \"25 mm²\"",
             "url": "https://www.amazon.co.uk/dp/B008RXAX0E"
           },
           "captured_at": "2026-11-15T09:31:00+00:00"
         },
-        "cable_gauge_mm2": {
-          "value": 25,
+        "rated_amps": {
+          "value": 450,
           "source": {
-            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): listing \"25 mm²\"",
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"450A\"",
             "url": "https://www.amazon.co.uk/dp/B008RXAX0E"
           },
           "captured_at": "2026-11-15T09:31:00+00:00"
@@ -1974,10 +2006,18 @@
       "model_code": "RBC160",
       "pack_quantity": null,
       "specs": {
-        "max_current_a": {
+        "rated_amps": {
           "value": 300,
           "source": {
             "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"300A\"",
+            "url": "https://www.amazon.co.uk/dp/B000UZGUFE"
+          },
+          "captured_at": "2026-11-15T09:31:00+00:00"
+        },
+        "max_engine_cc": {
+          "value": 3500,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"Suitable For Vehicles up to 3.5L\"",
             "url": "https://www.amazon.co.uk/dp/B000UZGUFE"
           },
           "captured_at": "2026-11-15T09:31:00+00:00"
@@ -2027,6 +2067,14 @@
           "value": 3,
           "source": {
             "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"3 m Cable\"",
+            "url": "https://www.amazon.co.uk/dp/B00DNSDDI2"
+          },
+          "captured_at": "2026-11-15T09:31:00+00:00"
+        },
+        "max_engine_cc": {
+          "value": 3000,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 research 15 Nov 2026): title \"Up to 3000cc\"",
             "url": "https://www.amazon.co.uk/dp/B00DNSDDI2"
           },
           "captured_at": "2026-11-15T09:31:00+00:00"

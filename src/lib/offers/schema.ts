@@ -477,13 +477,16 @@ const specsByCategory = {
       size: sourced(z.enum(['AA', 'AAA', 'C', 'D', '9V', 'CR2032', 'other'])),
       chemistry: sourced(z.enum(['alkaline', 'lithium', 'nimh', 'zinc_carbon', 'other'])),
       pack_count: sourced(posInt),
+      shelf_life_years: sourced(pos),
     })
     .partial()
     .strict(),
   hi_vis: z
     .object({
+      garment_type: sourced(z.enum(['vest', 'jacket', 'other'])),
       standard: sourced(z.string().min(1)),
       size_label: sourced(z.string().min(1)),
+      colour: sourced(z.string().min(1)),
       pack_count: sourced(posInt),
     })
     .partial()
@@ -491,8 +494,9 @@ const specsByCategory = {
   jump_leads: z
     .object({
       length_m: sourced(pos),
-      max_current_a: sourced(pos),
-      cable_gauge_mm2: sourced(pos),
+      cable_csa_mm2: sourced(pos),
+      rated_amps: sourced(pos),
+      max_engine_cc: sourced(posInt),
     })
     .partial()
     .strict(),
