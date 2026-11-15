@@ -30,7 +30,7 @@ sources:
     url: https://www.nifrs.org/home/staying-safe/community-safety/home-fire-safety/
 ---
 
-A grab bag is for **temporary** leave when authorities advise it—not an off-grid lifestyle. If there is a **fire**, don’t waste time rescuing valuables: get out, stay out and call 999. Official fire and rescue services in England, Scotland, Wales and Northern Ireland all give this advice.
+A grab bag is for **temporary** leave when authorities advise it—not an off-grid lifestyle. If there is a **fire**, don’t waste time rescuing valuables: get out, stay out and call 999. GOV.UK guidance for England, the Scottish Fire and Rescue Service, South Wales Fire and Rescue Service and the Northern Ireland Fire & Rescue Service all advise getting out, staying out and calling 999.
 
 ## What belongs in a leave-home bag
 
