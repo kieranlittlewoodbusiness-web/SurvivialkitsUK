@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
-import ReviewFlags from '../../components/ReviewFlags.astro';
-import ProductComparison from '../../components/ProductComparison.astro';
+import CompareLinks from '../../components/catalogue/CompareLinks.astro';
 import { getPublishedGear } from '../../lib/content';
 import { render } from 'astro:content';
 
@@ -38,8 +37,6 @@ const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pu
         <span>Last reviewed {reviewed}</span>
       </p>
 
-      <ReviewFlags flags={entry.data.reviewFlags} />
-
       <h2>What we compare</h2>
       <ul>
         {entry.data.criteria.map((item) => <li>{item}</li>)}
@@ -49,7 +46,7 @@ const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pu
         <Content />
       </div>
 
-      <ProductComparison category={entry.data.category} />
+      <CompareLinks categories={[entry.data.category]} />
 
       {
         entry.data.sources.length > 0 && (

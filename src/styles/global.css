@@ -380,6 +380,10 @@ strong {
 }
 
 .story__title a {
+  /* The link box itself meets 44px; ::after stretches the hit area over the whole card. */
+  display: flex;
+  align-items: flex-start;
+  min-height: var(--tap);
   color: var(--ink);
   text-decoration: none;
 }

@@ -1,7 +1,7 @@
 /**
  * S1-7 view model for Amazon-only product cards. Read-only over src/lib/offers:
  * comparisons come from buildCatalogueComparisons; this file never sorts offers, never picks a
- * best price and never renders a URL other than the contract's affiliate/preview link.
+ * best price and never renders a URL other than the contract's production affiliate link_url.
  */
 import {
   buildCatalogueComparisons,

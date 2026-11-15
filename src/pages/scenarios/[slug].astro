@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
-import ReviewFlags from '../../components/ReviewFlags.astro';
-import ProductComparison from '../../components/ProductComparison.astro';
+import CompareLinks from '../../components/catalogue/CompareLinks.astro';
 import { getPublishedScenarios } from '../../lib/content';
 import { render } from 'astro:content';
 
@@ -40,8 +39,6 @@ const reviewed = entry.data.lastReviewed.toLocaleDateString('en-GB', {
         <span>Last reviewed {reviewed}</span>
       </p>
 
-      <ReviewFlags flags={entry.data.reviewFlags} />
-
       <div class="prose">
         <Content />
       </div>
@@ -64,13 +61,7 @@ const reviewed = entry.data.lastReviewed.toLocaleDateString('en-GB', {
         )
       }
 
-      {
-        entry.data.gearCategories.map((cat) => (
-          <div class="compare-embed">
-            <ProductComparison category={cat} heading={`Related comparisons · ${cat.replaceAll('-', ' ')}`} />
-          </div>
-        ))
-      }
+      <CompareLinks categories={entry.data.gearCategories} />
 
     </div>
   </article>
@@ -98,9 +89,6 @@ const reviewed = entry.data.lastReviewed.toLocaleDateString('en-GB', {
     color: var(--ink-muted);
   }
 
-  .compare-embed {
-    margin-top: 1.5rem;
-  }
 
   @media print {
     .no-print,

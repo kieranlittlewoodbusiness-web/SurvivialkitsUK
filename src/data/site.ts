@@ -12,12 +12,6 @@ export const site = {
   locale: 'en-GB',
   author: 'U.K. Survival Kit Brief',
   contactEmail: 'editors@uksurvivalkits.uk',
-  /**
-   * Set true only after Amazon Associates approval and when live Amazon
-   * tracking URLs are present in retailerOffers.json.
-   */
-  amazonAssociatesLive: false,
-  amazonAssociatesIdPlaceholder: 'YOUR-ASSOCIATES-TAG',
 } as const;
 
 export type SiteConfig = typeof site;

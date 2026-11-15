@@ -1,6 +1,8 @@
 ---
 interface Props {
   kind: 'official-guidance' | 'desk-research' | 'firsthand-test' | 'reader-tip' | 'ad';
+  /** Legend/explainer use (e.g. on /method): not attached to a commercial link. */
+  legend?: boolean;
 }
 
 const labels: Record<Props['kind'], string> = {
@@ -11,9 +13,9 @@ const labels: Record<Props['kind'], string> = {
   ad: 'Ad',
 };
 
-const { kind } = Astro.props;
+const { kind, legend = false } = Astro.props;
 const isOfficial = kind === 'official-guidance';
 const isAd = kind === 'ad';
 ---
 
-<span class:list={['badge', isOfficial && 'badge--official', isAd && 'badge--ad']}>{labels[kind]}</span>
+<span class:list={['badge', isOfficial && 'badge--official', isAd && 'badge--ad']} data-badge-legend={legend ? '' : undefined}>{labels[kind]}</span>
