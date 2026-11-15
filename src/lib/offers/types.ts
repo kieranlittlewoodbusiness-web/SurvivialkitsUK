@@ -433,6 +433,10 @@ export const AMAZON_PRICE_DISCLAIMER =
 export const NO_LINK_TEXT =
   'No retailer link yet: we only link to retailers through approved affiliate programmes.';
 
+/** Shown when the listing is not confirmed as the exact product (ASIN/GTIN/model). */
+export const NO_LINK_TEXT_EXACT_PRODUCT =
+  "No retailer link: we haven't confirmed this listing is the exact product shown.";
+
 export type CatalogueOfferLabel = OfferLabel | 'no_affiliate_link' | 'price_not_displayable';
 
 export const CATALOGUE_LABEL_TEXT: Record<CatalogueOfferLabel, string> = {
@@ -451,16 +455,29 @@ export interface CatalogueExcludedOffer {
   reason: CatalogueExclusionReason;
 }
 
+/**
+ * Why `link_url` is null (for Web; never shown verbatim to readers):
+ * - no_programme: no approved-programme record applies to this retailer/offer.
+ * - programme_pending / _rejected / _suspended: programme not (or no longer) approved,
+ *   or approved_on is after the offer's capture date (pending).
+ * - tracking_id_missing: the programme's tracking id env var is unset/empty at build time.
+ * - tracking_id_invalid: the env var is set but malformed (UK Associates ids must end in -21).
+ * - no_affiliate_url / not_https / host_not_allowed: stored-link programmes only.
+ * - exact_product_not_confirmed: the offer is not confirmed as the exact product
+ *   (ASIN/GTIN/model mismatch, missing identity, or model_match_confirmed=false).
+ *   Renamed from `product_not_matched` (PR #12 review).
+ */
 export type NoLinkReason =
   | 'no_programme'
   | 'programme_pending'
   | 'programme_rejected'
   | 'programme_suspended'
   | 'tracking_id_missing'
+  | 'tracking_id_invalid'
   | 'no_affiliate_url'
   | 'not_https'
   | 'host_not_allowed'
-  | 'product_not_matched';
+  | 'exact_product_not_confirmed';
 
 /**
  * S1-8 render-safe offer. The ONLY outbound URL is `link_url`, and it is an approved

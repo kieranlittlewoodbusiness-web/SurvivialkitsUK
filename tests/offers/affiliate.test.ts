@@ -4,7 +4,9 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  TRACKING_ID_PATTERN,
   amazonUkAffiliateUrl,
+  isPriceDisplayAllowed,
   buildCatalogueComparisons,
   compareProduct,
   matchOfferToProduct,
@@ -13,6 +15,8 @@ import {
 } from '../../src/lib/offers/affiliate';
 import {
   assertCatalogueReferences,
+  isAmazonOffer,
+  isValidGtin,
   parseAffiliateProgramme,
   parseAffiliateProgrammesFile,
   parseCatalogueProduct,
@@ -29,12 +33,12 @@ import {
   catalogueProducts,
   kitOffers,
 } from '../../src/lib/offers/data';
-import type { AffiliateProgrammeRecord, CatalogueProduct, Offer } from '../../src/lib/offers/types';
+import { NO_LINK_TEXT_EXACT_PRODUCT, type AffiliateProgrammeRecord, type CatalogueProduct, type Offer } from '../../src/lib/offers/types';
 import { NOW, offer as v1Offer, variant as v1Variant } from './fixtures';
 
 const T = '2026-11-14T20:00:00+00:00';
 const ASIN = 'B0CZ9LH53B';
-const TAG = 'example-21';
+const TAG = 'TESTONLY-21';
 const src = { name: 'TEST', url: `https://www.amazon.co.uk/dp/${ASIN}` };
 
 function programme(over: Partial<AffiliateProgrammeRecord> = {}): AffiliateProgrammeRecord {
@@ -111,6 +115,19 @@ function amazonOffer(over: Partial<Offer> = {}): Offer {
   };
 }
 
+/** A non-Amazon retailer row (no ASIN, no amazon.co.uk URLs, retailer name without "amazon"). */
+function shopOffer(over: Partial<Offer> = {}): Offer {
+  return amazonOffer({
+    retailer: 'Example Shop',
+    asin: null,
+    asin_marketplace: null,
+    product_url: 'https://shop.example/p/1',
+    source: { name: 'TEST', url: 'https://shop.example/p/1', type: 'retailer_page_manual' },
+    affiliate_programme_id: null,
+    ...over,
+  });
+}
+
 const withTag = { AMAZON_ASSOCIATES_UK_TAG: TAG };
 const opts = (over: object = {}) => ({ now: NOW, programmes: [programme()], buildEnv: withTag, ...over });
 
@@ -132,7 +149,7 @@ describe('render rule: link only for an approved affiliate link', () => {
   });
 
   it('no tag in the build env => no link (tracking_id_missing)', () => {
-    for (const env of [{}, { AMAZON_ASSOCIATES_UK_TAG: '' }, { AMAZON_ASSOCIATES_UK_TAG: '  ' }, { AMAZON_ASSOCIATES_UK_TAG: 'bad tag/x' }]) {
+    for (const env of [{}, { AMAZON_ASSOCIATES_UK_TAG: '' }, { AMAZON_ASSOCIATES_UK_TAG: '  ' }]) {
       const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: env }));
       expect(d.link_url).toBeNull();
       expect(d.no_link_reason).toBe('tracking_id_missing');
@@ -165,7 +182,8 @@ describe('render rule: link only for an approved affiliate link', () => {
   it('mismatched product => no link (ASIN, variant, model_match)', () => {
     const wrongAsin = toAffiliateDisplayOffer(amazonOffer({ asin: 'B0CSSRD4NT' }), product(), opts());
     expect(wrongAsin.link_url).toBeNull();
-    expect(wrongAsin.no_link_reason).toBe('product_not_matched');
+    expect(wrongAsin.no_link_reason).toBe('exact_product_not_confirmed');
+    expect(wrongAsin.no_link_text).toMatch(/exact product/);
     expect(wrongAsin.labels).toContain('model_unconfirmed');
     const unconfirmed = toAffiliateDisplayOffer(amazonOffer({ model_match_confirmed: false }), product(), opts());
     expect(unconfirmed.link_url).toBeNull();
@@ -198,7 +216,7 @@ describe('render rule: link only for an approved affiliate link', () => {
   });
 
   it('resolveAffiliateLink refuses unmatched products before looking at the programme', () => {
-    expect(resolveAffiliateLink(amazonOffer(), false, [programme()], withTag).no_link_reason).toBe('product_not_matched');
+    expect(resolveAffiliateLink(amazonOffer(), false, [programme()], withTag).no_link_reason).toBe('exact_product_not_confirmed');
     expect(amazonUkAffiliateUrl('B0CZ9LH53B', 'a b')).toBe('https://www.amazon.co.uk/dp/B0CZ9LH53B?tag=a%20b');
   });
 
@@ -218,7 +236,7 @@ describe('exact identity rule', () => {
 
   it('non-Amazon offers join only on equal GTIN', () => {
     const p = product({ gtin: '5060176880023' });
-    const shop = amazonOffer({ retailer: 'Example Shop', asin: null, asin_marketplace: null, mpn: null });
+    const shop = shopOffer({ mpn: null });
     expect(matchOfferToProduct({ ...shop, gtin: '5060176880023' }, p)).toBeNull();
     expect(matchOfferToProduct({ ...shop, gtin: '5060176880030' }, p)).toBe('gtin_mismatch');
     expect(matchOfferToProduct({ ...shop, gtin: null }, product({ gtin: null }))).toBe('no_exact_identity');
@@ -377,5 +395,182 @@ describe('seed data (src/data)', () => {
   it('every seeded category except kits is covered by the catalogue', () => {
     const cats = new Set(catalogueProducts.map((p) => p.category));
     expect([...cats].sort()).toEqual(['emergency_blanket', 'emergency_water', 'first_aid_kit', 'power_bank', 'thermal_clothing', 'wind_up_torch_radio']);
+  });
+});
+
+/* ---------- PR #12 review round 1 (M1, L1-L4, info) ---------- */
+
+const GTIN = '5060176883963';
+
+describe('M1: Amazon detection fails closed', () => {
+  it.each([
+    ['retailer "Amazon", no marketplace, manual price', { retailer: 'Amazon', asin_marketplace: null, gtin: GTIN }],
+    ['retailer "Amazon.co.uk", no marketplace, manual price, ASIN set', { retailer: 'Amazon.co.uk', asin_marketplace: null }],
+    ['retailer "amazon uk" lower case', { retailer: 'amazon uk', asin_marketplace: null }],
+  ] as const)('parse rejects %s', (_k, over) => {
+    const row = amazonOffer({ ...over, price_gbp_inc_vat: 30, price_origin: 'manual_capture', affiliate_programme_id: null });
+    expect(() => parseOffer(row, { now: NOW })).toThrow(/asin_marketplace|Amazon/);
+  });
+
+  it('reviewer repro: retailer "Amazon"/"Amazon.co.uk" with a manual price is hidden at runtime', () => {
+    for (const over of [
+      { retailer: 'Amazon', asin_marketplace: null, gtin: GTIN },
+      { retailer: 'Amazon.co.uk', asin_marketplace: null },
+    ]) {
+      const row = amazonOffer({ ...over, price_gbp_inc_vat: 30, price_origin: 'manual_capture', affiliate_programme_id: null });
+      const d = toAffiliateDisplayOffer(row, product({ gtin: over.gtin ?? null }), opts());
+      expect(d.price_gbp_inc_vat).toBeNull();
+      expect(d.price_display_allowed).toBe(false);
+      expect(d.labels).toContain('price_not_displayable');
+    }
+  });
+
+  it('detects Amazon by ASIN, product_url host or source host even with a neutral retailer name', () => {
+    const neutral = { retailer: 'Example Shop', asin_marketplace: null, price_gbp_inc_vat: 30, price_origin: 'manual_capture' as const, affiliate_programme_id: null };
+    const byAsin = amazonOffer({ ...neutral, product_url: 'https://shop.example/p', source: { name: 'T', url: 'https://shop.example/p', type: 'retailer_page_manual' } });
+    const byProductHost = amazonOffer({ ...neutral, asin: null, gtin: GTIN, product_url: 'https://amazon.co.uk/dp/B0CZ9LH53B', source: { name: 'T', url: 'https://shop.example/p', type: 'retailer_page_manual' } });
+    const bySourceHost = amazonOffer({ ...neutral, asin: null, gtin: GTIN, product_url: 'https://shop.example/p', source: { name: 'T', url: 'https://smile.amazon.co.uk/x', type: 'retailer_page_manual' } });
+    for (const row of [byAsin, byProductHost, bySourceHost]) {
+      expect(isAmazonOffer(row)).toBe(true);
+      expect(() => parseOffer(row, { now: NOW })).toThrow();
+      expect(isPriceDisplayAllowed(row, [], NOW)).toBe(false);
+    }
+    expect(isAmazonOffer(shopOffer())).toBe(false);
+    expect(isAmazonOffer({ ...shopOffer(), product_url: 'https://notamazon.co.uk.evil.example/p' })).toBe(false);
+  });
+
+  it('once detected, every Amazon rule applies (ASIN required and valid, affiliate_url empty, API-only price)', () => {
+    const base = { asin_marketplace: 'amazon.co.uk' as const };
+    expect(() => parseOffer(amazonOffer({ ...base, retailer: 'Amazon', asin: null, gtin: GTIN }), { now: NOW })).toThrow(/ASIN/);
+    expect(() => parseOffer(amazonOffer({ ...base, retailer: 'Amazon', asin: 'b0cz9lh53b' }), { now: NOW })).toThrow();
+    expect(() => parseOffer(amazonOffer({ ...base, retailer: 'Amazon', affiliate_url: `https://www.amazon.co.uk/dp/${ASIN}?tag=someoneelse-21` }), { now: NOW })).toThrow(/affiliate_url/);
+    expect(() => parseOffer(amazonOffer({ ...base, retailer: 'Amazon', price_gbp_inc_vat: 30, price_origin: 'manual_capture' }), { now: NOW })).toThrow(/API/);
+    expect(() => parseOffer(amazonOffer({ retailer: 'Amazon', asin_marketplace: null }), { now: NOW })).toThrow(/asin_marketplace/);
+    expect(() => parseOffer(amazonOffer({ retailer: 'Amazon' }), { now: NOW })).not.toThrow();
+  });
+
+  it('non-Amazon rows are unaffected', () => {
+    expect(() => parseOffer(shopOffer({ gtin: GTIN, price_gbp_inc_vat: 20, price_origin: 'manual_capture' }), { now: NOW })).not.toThrow();
+    const d = toAffiliateDisplayOffer(shopOffer({ gtin: GTIN, price_gbp_inc_vat: 20, price_origin: 'manual_capture' }), product({ gtin: GTIN }), opts());
+    expect(d.price_gbp_inc_vat).toBe(20);
+    expect(d.no_link_reason).toBe('no_programme');
+  });
+});
+
+describe('L1: Amazon price age uses the older timestamp and rejects future timestamps', () => {
+  const api = (captured_at: string, last_checked: string) =>
+    amazonOffer({ price_gbp_inc_vat: 30, price_origin: 'amazon_product_api', price_verified: true, captured_at, last_checked });
+  it.each([
+    ['fresh', T, T, true],
+    ['24h+ old', '2026-11-13T00:00:00+00:00', '2026-11-13T00:00:00+00:00', false],
+    ['old captured, fresh last_checked', '2026-11-13T00:00:00+00:00', T, false],
+    ['fresh captured, old last_checked', T, '2026-11-13T00:00:00+00:00', false],
+    ['future captured (+2h)', '2026-11-15T01:30:00+00:00', '2026-11-15T01:30:00+00:00', false],
+    ['future last_checked only', T, '2026-11-16T00:00:00+00:00', false],
+    ['far future (+1y)', '2027-11-16T00:00:00+00:00', '2027-11-16T00:00:00+00:00', false],
+  ] as const)('%s => displayable %s', (_k, c, l, ok) => {
+    expect(isPriceDisplayAllowed(api(c, l), [programme()], NOW)).toBe(ok);
+    const d = toAffiliateDisplayOffer(api(c, l), product(), opts());
+    expect(d.price_display_allowed).toBe(ok);
+    expect(d.price_gbp_inc_vat).toBe(ok ? 30 : null);
+  });
+
+  it('parse rejects future-dated and out-of-order timestamps', () => {
+    expect(() => parseOffer(api('2027-11-16T00:00:00+00:00', '2027-11-16T00:00:00+00:00'), { now: NOW })).toThrow();
+    expect(() => parseOffer(api(T, '2026-11-13T00:00:00+00:00'), { now: NOW })).toThrow();
+  });
+});
+
+describe('L2: GTIN check digit and length', () => {
+  it.each(['5060176883963', '4006381333931', '5060176880023', '5060176886667', '96385074', '036000291452', '15060176883960'])('accepts %s', (g) => {
+    expect(isValidGtin(g)).toBe(true);
+    expect(() => parseCatalogueProduct(product({ gtin: g }))).not.toThrow();
+  });
+  it.each(['5060176883964', '123456789', '1234567890', '12345678901', '40063813', '00000000', '0000000000000', '506017688396a', ''])('rejects %j', (g) => {
+    expect(isValidGtin(g)).toBe(false);
+    expect(() => parseCatalogueProduct(product({ gtin: g }))).toThrow();
+    expect(() => parseOffer(shopOffer({ gtin: g }), { now: NOW })).toThrow();
+  });
+  it('seeded GTINs still pass (kit variant E182P and kit offers)', () => {
+    expect(() => parseVariant(v1Variant({ gtin: GTIN }))).not.toThrow();
+    expect(kitOffers.some((o) => o.gtin === GTIN)).toBe(true);
+    expect(() => parseVariant(v1Variant({ gtin: '5060176883964' }))).toThrow();
+  });
+});
+
+describe('L3: UK tracking id must end in -21', () => {
+  it.each(['x', 'probe-20', 'TESTONLY', 'TESTONLY-22', '-21', 'bad tag-21', 'a?b=c-21', 'x&y-21', '\u00e9-21', 'a'.repeat(70) + '-21'])(
+    'tag %j => no link, tracking_id_invalid',
+    (tag) => {
+      const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: { AMAZON_ASSOCIATES_UK_TAG: tag } }));
+      expect(d.link_url).toBeNull();
+      expect(d.no_link_reason).toBe('tracking_id_invalid');
+      expect(d.labels).toContain('no_affiliate_link');
+      expect(d.disclosure_text).toBeNull();
+    },
+  );
+  it('valid -21 tags (trimmed) produce a link', () => {
+    for (const tag of ['TESTONLY-21', ' TESTONLY-21 ', 'a-b-c-21']) {
+      const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: { AMAZON_ASSOCIATES_UK_TAG: tag } }));
+      expect(d.link_url).toBe(`https://www.amazon.co.uk/dp/${ASIN}?tag=${tag.trim()}`);
+    }
+    expect(TRACKING_ID_PATTERN.test('TESTONLY-21')).toBe(true);
+  });
+});
+
+describe('L4: Amazon URLs are always built from the ASIN', () => {
+  const stored = programme({ link_mode: 'stored_exact_url' });
+  const thirdParty = `https://www.amazon.co.uk/dp/${ASIN}?tag=someoneelse-21`;
+  it('stored_exact_url programme: a stored Amazon URL (other tag) is ignored', () => {
+    const d = toAffiliateDisplayOffer(amazonOffer({ affiliate_url: thirdParty }), product(), opts({ programmes: [stored] }));
+    expect(d.link_url).toBe(`https://www.amazon.co.uk/dp/${ASIN}?tag=${TAG}`);
+    expect(d.link_url).not.toContain('someoneelse');
+  });
+  it('derive mode ignores a stored URL too', () => {
+    const d = toAffiliateDisplayOffer(amazonOffer({ affiliate_url: thirdParty }), product(), opts());
+    expect(d.link_url).toBe(`https://www.amazon.co.uk/dp/${ASIN}?tag=${TAG}`);
+  });
+  it('stored programme with no tag env => no link (never the stored URL)', () => {
+    const d = toAffiliateDisplayOffer(amazonOffer({ affiliate_url: thirdParty }), product(), opts({ programmes: [programme({ link_mode: 'stored_exact_url', tracking_id_env: null })] }));
+    expect(d.link_url).toBeNull();
+    expect(d.no_link_reason).toBe('tracking_id_missing');
+  });
+  it('a derive_from_asin programme on a non-Amazon offer reports no_programme (not a product mismatch)', () => {
+    const d = toAffiliateDisplayOffer(shopOffer({ gtin: GTIN, affiliate_programme_id: 'amazon-associates-uk' }), product({ gtin: GTIN }), opts());
+    expect(d.model_match_confirmed).toBe(true);
+    expect(d.link_url).toBeNull();
+    expect(d.no_link_reason).toBe('no_programme');
+    expect(d.no_link_text).toMatch(/approved affiliate programmes/);
+  });
+});
+
+describe('info: thermal clothing and the renamed no_link_reason', () => {
+  const thermal = (over: Partial<CatalogueProduct> = {}) =>
+    product({ variant_id: 'th-1', category: 'thermal_clothing', specs: {}, ...over } as Partial<CatalogueProduct>);
+  it('verified thermal_clothing requires size_label; unverified may omit it', () => {
+    expect(() => parseCatalogueProduct(thermal())).not.toThrow();
+    expect(() => parseCatalogueProduct(thermal({ verification: 'verified' }))).toThrow(/size_label/);
+    expect(() =>
+      parseCatalogueProduct(thermal({ verification: 'verified', specs: { size_label: { value: 'M', source: src, captured_at: T } } } as Partial<CatalogueProduct>)),
+    ).not.toThrow();
+  });
+  it('seeded thermals stay unverified and record the per-size ASIN requirement', () => {
+    const th = catalogueProducts.filter((p) => p.category === 'thermal_clothing');
+    expect(th).toHaveLength(2);
+    for (const p of th) {
+      expect(p.verification).toBe('unverified');
+      expect(p.notes.join(' ')).toMatch(/own ASIN/);
+    }
+  });
+  it('exact_product_not_confirmed has its own reader text', () => {
+    const d = toAffiliateDisplayOffer(amazonOffer({ model_match_confirmed: false }), product(), opts());
+    expect(d.no_link_reason).toBe('exact_product_not_confirmed');
+    expect(d.no_link_text).toBe(NO_LINK_TEXT_EXACT_PRODUCT);
+  });
+  it('seed: with a fake tag set, no Amazon link renders while the programme is pending', () => {
+    const r = buildCatalogueComparisons(allProducts, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: withTag });
+    const shown = r.comparisons.flatMap((c) => c.offers);
+    expect(shown.filter((o) => o.link_url !== null)).toHaveLength(0);
+    expect(shown.filter((o) => o.price_gbp_inc_vat !== null && o.retailer.match(/amazon/i))).toHaveLength(0);
   });
 });

@@ -11,6 +11,7 @@ import {
   AMAZON_PRICE_DISCLAIMER,
   CATALOGUE_LABEL_TEXT,
   NO_LINK_TEXT,
+  NO_LINK_TEXT_EXACT_PRODUCT,
   type AffiliateDisplayOffer,
   type AffiliateProgrammeRecord,
   type BuildEnv,
@@ -36,7 +37,7 @@ import {
   sortOffers,
   type CompareOptions,
 } from './compare';
-import { isAmazonOffer } from './schema';
+import { ASIN_PATTERN, isAmazonOffer } from './schema';
 import { londonDateKey } from './time';
 
 export interface AffiliateOptions extends CompareOptions {
@@ -48,7 +49,8 @@ export interface AffiliateOptions extends CompareOptions {
 
 const HOUR_MS = 3_600_000;
 const AMAZON_UK_HOST = 'www.amazon.co.uk';
-const TRACKING_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9-]{0,63}$/;
+/** UK Associates tracking ids end in -21 (e.g. "example-21"). Anything else => no links. */
+export const TRACKING_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9-]{0,60}-21$/;
 
 const money = (n: number) => Math.round(n * 100) / 100;
 const isMoney = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0;
@@ -137,7 +139,7 @@ export function resolveAffiliateLink(
   programmes: AffiliateProgrammeRecord[],
   buildEnv: BuildEnv = defaultEnv(),
 ): ResolvedLink {
-  if (!productMatched) return noLink('product_not_matched');
+  if (!productMatched) return noLink('exact_product_not_confirmed');
   const id = offer.affiliate_programme_id ?? null;
   if (id === null) return noLink('no_programme');
   const programme = programmes.find((p) => p.programme_id === id);
@@ -149,12 +151,18 @@ export function resolveAffiliateLink(
     return noLink('programme_pending');
   }
 
+  const amazon = isAmazonOffer(offer);
   let candidate: string;
-  if (programme.link_mode === 'derive_from_asin') {
+  if (amazon || programme.link_mode === 'derive_from_asin') {
+    // Amazon links are ALWAYS built from the ASIN; any stored affiliate_url is ignored.
+    // A derive_from_asin programme does not apply to non-Amazon offers.
+    if (!amazon) return noLink('no_programme');
     const envName = programme.tracking_id_env;
-    const tag = envName ? buildEnv[envName]?.trim() : undefined;
-    if (!tag || !TRACKING_ID_PATTERN.test(tag)) return noLink('tracking_id_missing');
-    if (!offer.asin) return noLink('product_not_matched');
+    const raw = envName ? buildEnv[envName] : undefined;
+    const tag = raw?.trim();
+    if (!tag) return noLink('tracking_id_missing');
+    if (!TRACKING_ID_PATTERN.test(tag)) return noLink('tracking_id_invalid');
+    if (!offer.asin || !ASIN_PATTERN.test(offer.asin)) return noLink('exact_product_not_confirmed');
     candidate = amazonUkAffiliateUrl(offer.asin, tag);
   } else {
     if (!offer.affiliate_url.trim()) return noLink('no_affiliate_url');
@@ -195,7 +203,13 @@ export function isPriceDisplayAllowed(
   if (offer.price_origin !== 'amazon_product_api') return false;
   const maxHours = programme?.max_price_age_hours ?? 24;
   const captured = Date.parse(offer.captured_at);
-  return !Number.isNaN(captured) && nowMs(now) - captured <= maxHours * HOUR_MS;
+  const checked = Date.parse(offer.last_checked);
+  if (Number.isNaN(captured) || Number.isNaN(checked)) return false;
+  const t = nowMs(now);
+  // Age is judged from the OLDER timestamp; any future-dated timestamp hides the price.
+  if (captured > t || checked > t) return false;
+  const age = t - Math.min(captured, checked);
+  return Number.isFinite(age) && age >= 0 && age <= maxHours * HOUR_MS;
 }
 
 /* ---------- Display ---------- */
@@ -260,7 +274,12 @@ export function toAffiliateDisplayOffer(
     link_rel: link.link_rel,
     is_affiliate_link: link.link_url !== null,
     no_link_reason: link.no_link_reason,
-    no_link_text: link.link_url === null ? NO_LINK_TEXT : null,
+    no_link_text:
+      link.link_url !== null
+        ? null
+        : link.no_link_reason === 'exact_product_not_confirmed'
+          ? NO_LINK_TEXT_EXACT_PRODUCT
+          : NO_LINK_TEXT,
     disclosure_text: link.disclosure_text,
     captured_at: offer.captured_at,
     last_checked: offer.last_checked,

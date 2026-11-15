@@ -38,7 +38,18 @@ const schemaVersion = z.union([z.literal(1), z.literal(2)]);
 /** Real ASIN shape only: placeholders such as "ASIN_TBD" are rejected. */
 export const ASIN_PATTERN = /^[A-Z0-9]{10}$/;
 const asin = z.string().regex(ASIN_PATTERN, { message: 'ASIN must be 10 upper-case letters/digits (placeholders are rejected)' });
-const gtin = z.string().regex(/^\d{8,14}$/);
+/** GS1 mod-10 check digit over GTIN-8/12/13/14. All-zero codes are rejected. */
+export function isValidGtin(v: string): boolean {
+  if (!/^\d+$/.test(v) || ![8, 12, 13, 14].includes(v.length) || /^0+$/.test(v)) return false;
+  const digits = [...v].map(Number);
+  const check = digits.pop()!;
+  let sum = 0;
+  digits.reverse().forEach((d, i) => {
+    sum += d * (i % 2 === 0 ? 3 : 1);
+  });
+  return (10 - (sum % 10)) % 10 === check;
+}
+const gtin = z.string().refine(isValidGtin, { message: 'GTIN must be 8, 12, 13 or 14 digits with a valid GS1 check digit' });
 
 export const kitVariantSchema = z.object({
   schema_version: schemaVersion,
@@ -51,7 +62,7 @@ export const kitVariantSchema = z.object({
   product_name: z.string().min(1),
   model_code: z.string().min(1),
   mpn: z.string().min(1).nullable(),
-  gtin: z.string().regex(/^\d{8,14}$/).nullable(),
+  gtin: gtin.nullable(),
   people_covered: z.number().int().positive(),
   days: z.number().int().positive(),
   format: z.enum(['rucksack', 'holdall', 'box', 'other']),
@@ -75,7 +86,7 @@ export const offerSchema = z
     retailer_sku: z.string().nullable(),
     asin: asin.nullable(),
     mpn: z.string().nullable(),
-    gtin: z.string().regex(/^\d{8,14}$/).nullable(),
+    gtin: gtin.nullable(),
     model_match_confirmed: z.boolean(),
     model_match_note: z.string().min(1),
     currency: z.literal('GBP'),
@@ -127,6 +138,7 @@ export const offerSchema = z
         ctx.addIssue({ code: 'custom', path: ['price_origin'], message: "a price requires price_origin other than 'none'" });
       }
       if (isAmazonOffer(o)) {
+        // Detected by marketplace, ASIN, amazon.co.uk host or retailer name; every Amazon rule applies.
         if (o.asin === null) ctx.addIssue({ code: 'custom', path: ['asin'], message: 'Amazon UK rows need an ASIN' });
         if (o.asin_marketplace !== 'amazon.co.uk') ctx.addIssue({ code: 'custom', path: ['asin_marketplace'], message: "Amazon UK rows need asin_marketplace 'amazon.co.uk'" });
         if (o.affiliate_url !== '') ctx.addIssue({ code: 'custom', path: ['affiliate_url'], message: 'Amazon links are derived at build time; affiliate_url must be empty' });
@@ -161,9 +173,35 @@ export const offerSchema = z
     }
   });
 
-/** Amazon UK offer (by marketplace or retailer name). */
-export function isAmazonOffer(o: Pick<Offer, 'retailer' | 'asin_marketplace'>): boolean {
-  return o.asin_marketplace === 'amazon.co.uk' || o.retailer === 'Amazon UK';
+function isAmazonUkHost(url: string | null | undefined): boolean {
+  if (!url) return false;
+  try {
+    const h = new URL(url).hostname.toLowerCase();
+    return h === 'amazon.co.uk' || h.endsWith('.amazon.co.uk');
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Amazon detection (fails closed). A row is treated as Amazon when ANY of these hold:
+ * asin_marketplace is 'amazon.co.uk'; an ASIN is set; product_url or source.url is on
+ * amazon.co.uk; or the retailer name contains "amazon" (any case).
+ */
+export function isAmazonOffer(
+  o: Pick<Offer, 'retailer' | 'asin_marketplace'> & {
+    asin?: string | null;
+    product_url?: string | null;
+    source?: { url?: string | null } | null;
+  },
+): boolean {
+  return (
+    o.asin_marketplace === 'amazon.co.uk' ||
+    (o.asin !== undefined && o.asin !== null) ||
+    isAmazonUkHost(o.product_url) ||
+    isAmazonUkHost(o.source?.url) ||
+    /amazon/i.test(o.retailer ?? '')
+  );
 }
 
 function duplicates(values: (string | null)[]): string[] {
@@ -343,6 +381,10 @@ export const catalogueProductSchema = z
   .superRefine((p, ctx) => {
     if (p.asin_uk === null && p.gtin === null) {
       ctx.addIssue({ code: 'custom', path: ['asin_uk'], message: 'a catalogue product needs an exact identity: asin_uk or gtin' });
+    }
+    if (p.category === 'thermal_clothing' && p.verification === 'verified' && !p.specs.size_label) {
+      // Prices for different sizes must never be compared: each size needs its own ASIN/GTIN row.
+      ctx.addIssue({ code: 'custom', path: ['specs', 'size_label'], message: 'verified thermal_clothing needs size_label (one exact size per ASIN/GTIN)' });
     }
   });
 

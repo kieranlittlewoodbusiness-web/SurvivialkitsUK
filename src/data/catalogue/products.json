@@ -4,7 +4,8 @@
   "data_source_needed": [
     "Amazon Associates UK approval and a tracking id in AMAZON_ASSOCIATES_UK_TAG (not applied for yet; PM decision 15 Nov 2026). Until then no Amazon link renders.",
     "Amazon product API access (Creators API / PA-API successor) before any Amazon price, availability or delivery is shown. Until then prices stay null.",
-    "Independent confirmation of each listing's identity (GTIN/EAN not shown on Amazon listings); child ASINs per size for thermal clothing.",
+    "Independent confirmation of each listing's identity (GTIN/EAN not shown on Amazon listings).",
+    "Thermal clothing (B01LX282CT, B01LYD385A): a child ASIN per size plus size_label before either can be verified; until then both stay unverified.",
     "Datrex B0134DAXJ2: listing conflict on pack quantity (title 18 packs vs details pack of 1)."
   ],
   "products": [
@@ -771,7 +772,8 @@
       "notes": [
         "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
         "Size and colour are chosen on Amazon (listing has size variations); this ASIN is the listing as served. Size left unknown.",
-        "Canonical URL on the page points to a different ASIN (B01M0MVQ7R)."
+        "Canonical URL on the page points to a different ASIN (B01M0MVQ7R).",
+        "Stays unverified until each size has its own ASIN (child ASIN per size) and specs.size_label is recorded; the schema rejects verified thermal_clothing without size_label, so prices for different sizes are never compared."
       ]
     },
     {
@@ -820,7 +822,8 @@
       "notes": [
         "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
         "Size and colour are chosen on Amazon (listing has size variations); this ASIN is the listing as served. Size left unknown.",
-        "Canonical URL on the page points to a different ASIN (B01M0N4GI4)."
+        "Canonical URL on the page points to a different ASIN (B01M0N4GI4).",
+        "Stays unverified until each size has its own ASIN (child ASIN per size) and specs.size_label is recorded; the schema rejects verified thermal_clothing without size_label, so prices for different sizes are never compared."
       ]
     }
   ]
