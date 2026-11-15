@@ -605,7 +605,7 @@
       "schema_version": 2,
       "variant_id": "amazon-uk-b0cssrd4nt",
       "category": "power_bank",
-      "product_name": "UGREEN Nexode 20,000mAh PD 20W QC Power Bank Built-in Cable",
+      "product_name": "UGREEN 20,000mAh 22.5W power bank (PB312)",
       "brand": "UGREEN",
       "asin_uk": "B0CSSRD4NT",
       "gtin": null,
@@ -624,9 +624,9 @@
           "captured_at": "2026-11-15T00:04:47+00:00"
         },
         "max_output_w": {
-          "value": 20,
+          "value": 22.5,
           "source": {
-            "name": "Amazon UK product page (public listing, unverified): listing title \"PD 20W\"",
+            "name": "Amazon UK product page (public listing): bullet \"Featuring QC 22.5W and PD 20W powerful output\" (PD/USB-C 20 W, QC 22.5 W max); UGREEN official SKU 25683 page \"UGREEN Power Bank 22.5W 20000mAh\"",
             "url": "https://www.amazon.co.uk/dp/B0CSSRD4NT"
           },
           "captured_at": "2026-11-15T00:04:47+00:00"
@@ -656,10 +656,11 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand UGREEN; Model Number PB312 and Model Name (SKU) 25683 match our identity keys; Manufacturer Part Number TSADF7G5634 recorded as listing_mpn only; one power bank (Number of Items 1)."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"UGREEN Nexode 20,000mAh PD 20W QC Power Bank Built-in Cable\". Title checked against the listing; our display name is our own wording (PM decision). Brand UGREEN; Model Number PB312 and Model Name (SKU) 25683 match our identity keys; Manufacturer Part Number TSADF7G5634 recorded as listing_mpn only; one power bank (Number of Items 1)."
       },
       "notes": [
         "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
+        "Display name is our own wording, not Amazon's title (PM decision, 15 Nov 2026); the verbatim listing title is kept only in verification_evidence.note. Max output 22.5 W (QC); USB-C PD is 20 W.",
         "Identity keys: model_code PB312 and manufacturer_sku 25683 (Amazon 'Model Name: 25683'; UGREEN's own pages list SKU 25683 as model PB312). Amazon's 'Manufacturer Part Number' TSADF7G5634 is not a UGREEN SKU or model, so it is kept as listing_mpn only and is not an identity key (PM decision, 15 Nov 2026). Watt-hours not shown."
       ]
     },
