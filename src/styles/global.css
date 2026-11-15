@@ -475,6 +475,12 @@ p {
   border-color: #f4f7f8;
 }
 
+/* The solid hero CTA gets a light edge so its boundary also clears 3:1 against the photo. */
+.hero .btn:not(.btn--ghost),
+.hero .btn:not(.btn--ghost):hover {
+  border-color: #f4f7f8;
+}
+
 /* Focus rings on the dark hero use the light ink so they stay visible (>=3:1). */
 .hero .btn:focus-visible {
   outline-color: #f4f7f8;
