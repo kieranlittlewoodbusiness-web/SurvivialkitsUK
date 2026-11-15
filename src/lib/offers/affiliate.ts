@@ -3,7 +3,7 @@
  * and catalogue comparisons.
  *
  * Render rule: `link_url` is non-null ONLY when the offer matches its product
- * exactly, its programme is `approved`, the tracking id env var is present at
+ * exactly, the product record is verified, its programme is `approved`, the tracking id env var is present at
  * build time (Amazon), and the URL is https on one of the programme's
  * allowed hosts. There is no fallback to product_url, ever.
  */
@@ -12,6 +12,7 @@ import {
   CATALOGUE_LABEL_TEXT,
   NO_LINK_TEXT,
   NO_LINK_TEXT_EXACT_PRODUCT,
+  NO_LINK_TEXT_PRODUCT_UNVERIFIED,
   type AffiliateDisplayOffer,
   type AffiliateProgrammeRecord,
   type BuildEnv,
@@ -37,7 +38,7 @@ import {
   sortOffers,
   type CompareOptions,
 } from './compare';
-import { ASIN_PATTERN, isAmazonOffer } from './schema';
+import { ASIN_PATTERN, hasNonUkAmazonUrl, isAmazonOffer } from './schema';
 import { londonDateKey } from './time';
 
 export interface AffiliateOptions extends CompareOptions {
@@ -109,6 +110,20 @@ export function matchOfferToProduct(offer: Offer, product: ProductRecord): Catal
   return null;
 }
 
+/**
+ * Link gate on the product record: only `verification: 'verified'` products may carry
+ * affiliate links. Kit variants without a verification field are unverified. Verified
+ * thermal_clothing must also name its exact size (belt and braces; the schema enforces it).
+ */
+export function isProductVerified(product: ProductRecord): boolean {
+  if ((product as { verification?: string }).verification !== 'verified') return false;
+  if (productCategory(product) === 'thermal_clothing') {
+    const size = (product as CatalogueProduct & { category: 'thermal_clothing' }).specs.size_label;
+    if (!size || typeof size.value !== 'string' || !size.value.trim()) return false;
+  }
+  return true;
+}
+
 /* ---------- Render rule ---------- */
 
 export interface ResolvedLink {
@@ -138,8 +153,11 @@ export function resolveAffiliateLink(
   productMatched: boolean,
   programmes: AffiliateProgrammeRecord[],
   buildEnv: BuildEnv = defaultEnv(),
+  /** The product record is verified (see isProductVerified). Defaults to false: fail closed. */
+  productVerified = false,
 ): ResolvedLink {
   if (!productMatched) return noLink('exact_product_not_confirmed');
+  if (!productVerified) return noLink('product_unverified');
   const id = offer.affiliate_programme_id ?? null;
   if (id === null) return noLink('no_programme');
   const programme = programmes.find((p) => p.programme_id === id);
@@ -157,6 +175,7 @@ export function resolveAffiliateLink(
     // Amazon links are ALWAYS built from the ASIN; any stored affiliate_url is ignored.
     // A derive_from_asin programme does not apply to non-Amazon offers.
     if (!amazon) return noLink('no_programme');
+    if (hasNonUkAmazonUrl(offer)) return noLink('marketplace_not_supported');
     const envName = programme.tracking_id_env;
     const raw = envName ? buildEnv[envName] : undefined;
     const tag = raw?.trim();
@@ -227,7 +246,7 @@ export function toAffiliateDisplayOffer(
   const price = priceAllowed && isMoney(offer.price_gbp_inc_vat) ? offer.price_gbp_inc_vat : null;
   const delivery = priceAllowed && isMoney(offer.delivery_cost_gbp) ? offer.delivery_cost_gbp : null;
   const total = modelMatch ? deliveredTotal({ price_gbp_inc_vat: price, delivery_cost_gbp: delivery }) : null;
-  const link = resolveAffiliateLink(offer, modelMatch, programmes, options.buildEnv ?? defaultEnv());
+  const link = resolveAffiliateLink(offer, modelMatch, programmes, options.buildEnv ?? defaultEnv(), isProductVerified(product));
 
   const labels: CatalogueOfferLabel[] = [];
   if (!modelMatch) labels.push('model_unconfirmed');
@@ -279,7 +298,9 @@ export function toAffiliateDisplayOffer(
         ? null
         : link.no_link_reason === 'exact_product_not_confirmed'
           ? NO_LINK_TEXT_EXACT_PRODUCT
-          : NO_LINK_TEXT,
+          : link.no_link_reason === 'product_unverified'
+            ? NO_LINK_TEXT_PRODUCT_UNVERIFIED
+            : NO_LINK_TEXT,
     disclosure_text: link.disclosure_text,
     captured_at: offer.captured_at,
     last_checked: offer.last_checked,
@@ -301,7 +322,7 @@ export function toPublicProductSummary(product: ProductRecord): PublicProductSum
       mpn: k.mpn,
       model_code: k.model_code,
       pack_quantity: null,
-      verification: 'unverified',
+      verification: k.verification ?? 'unverified',
       specs: {
         people_covered: k.people_covered,
         days: k.days,

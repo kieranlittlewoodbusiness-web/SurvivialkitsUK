@@ -55,6 +55,8 @@ export const kitVariantSchema = z.object({
   schema_version: schemaVersion,
   category: z.literal('kit').optional(),
   asin_uk: asin.nullable().optional(),
+  /** S1-8: absent = 'unverified'. Only verified products may carry affiliate links. */
+  verification: z.enum(['unverified', 'verified']).optional(),
   variant_id: z.string().min(1),
   kit_id: z.string().min(1),
   brand: z.string().min(1),
@@ -140,6 +142,9 @@ export const offerSchema = z
       if (isAmazonOffer(o)) {
         // Detected by marketplace, ASIN, amazon.co.uk host or retailer name; every Amazon rule applies.
         if (o.asin === null) ctx.addIssue({ code: 'custom', path: ['asin'], message: 'Amazon UK rows need an ASIN' });
+        if (hasNonUkAmazonUrl(o)) {
+          ctx.addIssue({ code: 'custom', path: ['product_url'], message: 'Only amazon.co.uk listings are supported: no other Amazon marketplaces or short links (use https://www.amazon.co.uk/dp/{ASIN})' });
+        }
         if (o.asin_marketplace !== 'amazon.co.uk') ctx.addIssue({ code: 'custom', path: ['asin_marketplace'], message: "Amazon UK rows need asin_marketplace 'amazon.co.uk'" });
         if (o.affiliate_url !== '') ctx.addIssue({ code: 'custom', path: ['affiliate_url'], message: 'Amazon links are derived at build time; affiliate_url must be empty' });
         if (o.price_gbp_inc_vat !== null && o.price_origin !== 'amazon_product_api') {
@@ -173,21 +178,37 @@ export const offerSchema = z
     }
   });
 
-function isAmazonUkHost(url: string | null | undefined): boolean {
-  if (!url) return false;
+function hostOf(url: string | null | undefined): string | null {
+  if (!url) return null;
   try {
-    const h = new URL(url).hostname.toLowerCase();
-    return h === 'amazon.co.uk' || h.endsWith('.amazon.co.uk');
+    return new URL(url).hostname.toLowerCase().replace(/\.$/, '');
   } catch {
-    return false;
+    return null;
   }
 }
 
+/** amazon.co.uk or any subdomain (the only marketplace we support). */
+export function isAmazonUkHost(url: string | null | undefined): boolean {
+  const h = hostOf(url);
+  return h !== null && (h === 'amazon.co.uk' || h.endsWith('.amazon.co.uk'));
+}
+
 /**
- * Amazon detection (fails closed). A row is treated as Amazon when ANY of these hold:
- * asin_marketplace is 'amazon.co.uk'; an ASIN is set; product_url or source.url is on
- * amazon.co.uk; or the retailer name contains "amazon" (any case).
+ * Any Amazon host: amazon.<tld> including two-part TLDs (amazon.com, amazon.de,
+ * amazon.co.uk, amazon.co.jp, amazon.com.au, ...), Amazon short links (amzn.to,
+ * amzn.eu, amzn.asia, a.co), and their subdomains.
  */
+const AMAZON_HOST_PATTERN = /(^|\.)(amazon\.((com|co)\.[a-z]{2}|[a-z]{2,3})|amzn\.(to|eu|asia)|a\.co)$/;
+export function isAmazonHost(url: string | null | undefined): boolean {
+  const h = hostOf(url);
+  return h !== null && AMAZON_HOST_PATTERN.test(h);
+}
+
+/** True when the row points at an Amazon host that is not amazon.co.uk (other marketplace or short link). */
+export function hasNonUkAmazonUrl(o: { product_url?: string | null; source?: { url?: string | null } | null }): boolean {
+  return [o.product_url, o.source?.url].some((u) => isAmazonHost(u) && !isAmazonUkHost(u));
+}
+
 export function isAmazonOffer(
   o: Pick<Offer, 'retailer' | 'asin_marketplace'> & {
     asin?: string | null;
@@ -198,8 +219,8 @@ export function isAmazonOffer(
   return (
     o.asin_marketplace === 'amazon.co.uk' ||
     (o.asin !== undefined && o.asin !== null) ||
-    isAmazonUkHost(o.product_url) ||
-    isAmazonUkHost(o.source?.url) ||
+    isAmazonHost(o.product_url) ||
+    isAmazonHost(o.source?.url) ||
     /amazon/i.test(o.retailer ?? '')
   );
 }

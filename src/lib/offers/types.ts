@@ -45,6 +45,8 @@ export interface KitVariant {
   category?: 'kit';
   /** S1-8: amazon.co.uk ASIN for this exact variant, if known. */
   asin_uk?: string | null;
+  /** S1-8: absent = 'unverified'. Only verified products may carry affiliate links. */
+  verification?: 'unverified' | 'verified';
   /** Exact-variant key used to group offers, e.g. "evaq8-e182p". */
   variant_id: string;
   /** Kit family key (brief s7 `kit_id`), e.g. "evaq8-gobag-2-person". */
@@ -437,6 +439,10 @@ export const NO_LINK_TEXT =
 export const NO_LINK_TEXT_EXACT_PRODUCT =
   "No retailer link: we haven't confirmed this listing is the exact product shown.";
 
+/** Shown when the product's details have not been verified yet. */
+export const NO_LINK_TEXT_PRODUCT_UNVERIFIED =
+  "No retailer link yet: we haven't finished checking this product's details.";
+
 export type CatalogueOfferLabel = OfferLabel | 'no_affiliate_link' | 'price_not_displayable';
 
 export const CATALOGUE_LABEL_TEXT: Record<CatalogueOfferLabel, string> = {
@@ -466,6 +472,12 @@ export interface CatalogueExcludedOffer {
  * - exact_product_not_confirmed: the offer is not confirmed as the exact product
  *   (ASIN/GTIN/model mismatch, missing identity, or model_match_confirmed=false).
  *   Renamed from `product_not_matched` (PR #12 review).
+ * - product_unverified: the offer matches, but the product record is not
+ *   `verification: 'verified'` (kits: absent = unverified; verified thermal_clothing
+ *   also needs specs.size_label). New in PR #12 review r2.
+ * - marketplace_not_supported: an Amazon offer whose URLs point at a non-UK Amazon
+ *   marketplace or an Amazon short link (amzn.to, a.co, ...). Only amazon.co.uk links
+ *   are built. New in PR #12 review r2.
  */
 export type NoLinkReason =
   | 'no_programme'
@@ -477,7 +489,9 @@ export type NoLinkReason =
   | 'no_affiliate_url'
   | 'not_https'
   | 'host_not_allowed'
-  | 'exact_product_not_confirmed';
+  | 'exact_product_not_confirmed'
+  | 'product_unverified'
+  | 'marketplace_not_supported';
 
 /**
  * S1-8 render-safe offer. The ONLY outbound URL is `link_url`, and it is an approved
