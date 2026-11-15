@@ -1,0 +1,827 @@
+{
+  "schema_version": 2,
+  "status": "unverified-seed",
+  "data_source_needed": [
+    "Amazon Associates UK approval and a tracking id in AMAZON_ASSOCIATES_UK_TAG (not applied for yet; PM decision 15 Nov 2026). Until then no Amazon link renders.",
+    "Amazon product API access (Creators API / PA-API successor) before any Amazon price, availability or delivery is shown. Until then prices stay null.",
+    "Independent confirmation of each listing's identity (GTIN/EAN not shown on Amazon listings); child ASINs per size for thermal clothing.",
+    "Datrex B0134DAXJ2: listing conflict on pack quantity (title 18 packs vs details pack of 1)."
+  ],
+  "products": [
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b01ifciyxe",
+      "category": "emergency_water",
+      "product_name": "Pack of 6 Seven Oceans Long-Life Emergency Drinking Water 500ml for Liferafts, Lifeboats Survival",
+      "brand": "Seven Oceans",
+      "asin_uk": "B01IFCIYXE",
+      "gtin": null,
+      "mpn": null,
+      "model_code": null,
+      "pack_quantity": 6,
+      "specs": {
+        "pack_format": {
+          "value": "pouch",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Container Type: Pouch\"",
+            "url": "https://www.amazon.co.uk/dp/B01IFCIYXE"
+          },
+          "captured_at": "2026-11-15T00:03:58+00:00"
+        },
+        "unit_volume_ml": {
+          "value": 500,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Size: 500 ml (Pack of 6)\"",
+            "url": "https://www.amazon.co.uk/dp/B01IFCIYXE"
+          },
+          "captured_at": "2026-11-15T00:03:58+00:00"
+        },
+        "units_per_pack": {
+          "value": 6,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Items: 6\"",
+            "url": "https://www.amazon.co.uk/dp/B01IFCIYXE"
+          },
+          "captured_at": "2026-11-15T00:03:58+00:00"
+        },
+        "total_litres": {
+          "value": 3,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Unit Count: 3000 millilitre\"",
+            "url": "https://www.amazon.co.uk/dp/B01IFCIYXE"
+          },
+          "captured_at": "2026-11-15T00:03:58+00:00"
+        },
+        "shelf_life_years": {
+          "value": 5,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Product Shelf Life: 1825 Days\"; bullet \"five year unconditional shelf life from the date of production\"",
+            "url": "https://www.amazon.co.uk/dp/B01IFCIYXE"
+          },
+          "captured_at": "2026-11-15T00:03:58+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B01IFCIYXE"
+      },
+      "captured_at": "2026-11-15T00:03:58+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Bullet: each 500 ml pack is 10 inner 50 ml sachets. No model number shown."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0896q8jxd",
+      "category": "emergency_water",
+      "product_name": "Cano Water Still Multipack Cans (12 x 500ml), Resealable Lids, Natural Spring",
+      "brand": "Cano Water",
+      "asin_uk": "B0896Q8JXD",
+      "gtin": null,
+      "mpn": "STXO500",
+      "model_code": "STXO500",
+      "pack_quantity": 12,
+      "specs": {
+        "pack_format": {
+          "value": "can",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Container Type: Tin\"; title \"Cans\"",
+            "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
+          },
+          "captured_at": "2026-11-15T00:04:07+00:00"
+        },
+        "unit_volume_ml": {
+          "value": 500,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Size: 500 ml (Pack of 12)\"",
+            "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
+          },
+          "captured_at": "2026-11-15T00:04:07+00:00"
+        },
+        "units_per_pack": {
+          "value": 12,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Items: 12\"",
+            "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
+          },
+          "captured_at": "2026-11-15T00:04:07+00:00"
+        },
+        "total_litres": {
+          "value": 6,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Unit Count: 6000.0 millilitre\"",
+            "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
+          },
+          "captured_at": "2026-11-15T00:04:07+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
+      },
+      "captured_at": "2026-11-15T00:04:07+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Everyday canned spring water, not marketed as long-life emergency water. Shelf life not shown on the listing (left unknown)."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0134daxj2",
+      "category": "emergency_water",
+      "product_name": "Datrex Emergency Water Packet 4.227 oz - 3 Day/72 Hour Supply (18 Packs), White",
+      "brand": "Datrex",
+      "asin_uk": "B0134DAXJ2",
+      "gtin": null,
+      "mpn": "DX1000W-18",
+      "model_code": "DX1000W-18",
+      "pack_quantity": null,
+      "specs": {
+        "pack_format": {
+          "value": "pouch",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Container Type: Pouch\"",
+            "url": "https://www.amazon.co.uk/dp/B0134DAXJ2"
+          },
+          "captured_at": "2026-11-15T00:04:02+00:00"
+        },
+        "shelf_life_years": {
+          "value": 5,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Product Shelf Life: 5 Years\"",
+            "url": "https://www.amazon.co.uk/dp/B0134DAXJ2"
+          },
+          "captured_at": "2026-11-15T00:04:02+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0134DAXJ2"
+      },
+      "captured_at": "2026-11-15T00:04:02+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "LISTING CONFLICT: title says 18 packs, Product details say 'Size: 76.08 ml (Pack of 1)' and 'Number of Items: 1'. Pack quantity and total volume left unknown; offer model_match_confirmed=false.",
+        "Canonical URL on the page points to a different ASIN (B0C85QM535); recorded ASIN is the one shown in Product details."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b005jrulu8",
+      "category": "first_aid_kit",
+      "product_name": "St John Ambulance Medium Workplace First Aid Kit | BS 8599-1:2019 Compliant | for 25 – 50 People | with Wall Bracket | Eco-Friendly Packaging",
+      "brand": "St John Ambulance",
+      "asin_uk": "B005JRULU8",
+      "gtin": null,
+      "mpn": "F30658",
+      "model_code": "F30608",
+      "pack_quantity": null,
+      "specs": {
+        "standard": {
+          "value": "BS 8599-1:2019",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title",
+            "url": "https://www.amazon.co.uk/dp/B005JRULU8"
+          },
+          "captured_at": "2026-11-15T00:04:14+00:00"
+        },
+        "kit_size_label": {
+          "value": "Medium Workplace (25 – 50 people)",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title",
+            "url": "https://www.amazon.co.uk/dp/B005JRULU8"
+          },
+          "captured_at": "2026-11-15T00:04:14+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B005JRULU8"
+      },
+      "captured_at": "2026-11-15T00:04:14+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "LISTING NOTE: Product details show Model Number F30608 but Manufacturer Part Number F30658; both recorded as shown.",
+        "Canonical URL on the page points to a different ASIN (B078SG8T2S)."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00l7s9lu4",
+      "category": "first_aid_kit",
+      "product_name": "St John Ambulance BS 8599-2:2014 Medium Motor Vehicle First Aid Kit",
+      "brand": "St John Ambulance",
+      "asin_uk": "B00L7S9LU4",
+      "gtin": null,
+      "mpn": "F30801",
+      "model_code": "F30801",
+      "pack_quantity": null,
+      "specs": {
+        "standard": {
+          "value": "BS 8599-2:2014",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title",
+            "url": "https://www.amazon.co.uk/dp/B00L7S9LU4"
+          },
+          "captured_at": "2026-11-15T00:04:18+00:00"
+        },
+        "kit_size_label": {
+          "value": "Medium Motor Vehicle",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title",
+            "url": "https://www.amazon.co.uk/dp/B00L7S9LU4"
+          },
+          "captured_at": "2026-11-15T00:04:18+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B00L7S9LU4"
+      },
+      "captured_at": "2026-11-15T00:04:18+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b005aqk6v2",
+      "category": "first_aid_kit",
+      "product_name": "Reliance Medical | BS8599-1 Medium Workplace First Aid Kit (for Ref 343 - 77319RM)",
+      "brand": "Reliance Medical",
+      "asin_uk": "B005AQK6V2",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "77319RM",
+      "pack_quantity": null,
+      "specs": {
+        "standard": {
+          "value": "BS 8599-1",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"BS8599-1\"",
+            "url": "https://www.amazon.co.uk/dp/B005AQK6V2"
+          },
+          "captured_at": "2026-11-15T00:04:23+00:00"
+        },
+        "kit_size_label": {
+          "value": "Medium Workplace",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title",
+            "url": "https://www.amazon.co.uk/dp/B005AQK6V2"
+          },
+          "captured_at": "2026-11-15T00:04:23+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B005AQK6V2"
+      },
+      "captured_at": "2026-11-15T00:04:23+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Edition year of BS 8599-1 not shown."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b09vbfqnkk",
+      "category": "wind_up_torch_radio",
+      "product_name": "PRUNUS J-369 Wind Up Radio Solar, AM/FM Emergency Hand Crank Radio",
+      "brand": "PRUNUS",
+      "asin_uk": "B09VBFQNKK",
+      "gtin": null,
+      "mpn": "J-369",
+      "model_code": "J-369",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "torch_radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullets \"LED Flashlight & Reading Lamp\" and title \"Radio\"",
+            "url": "https://www.amazon.co.uk/dp/B09VBFQNKK"
+          },
+          "captured_at": "2026-11-15T00:04:28+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "wind_up",
+            "solar",
+            "usb",
+            "built_in_battery"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"4 Ways to Power Supply\": hand crank, solar panels, USB-C, built-in 3000mAh battery",
+            "url": "https://www.amazon.co.uk/dp/B09VBFQNKK"
+          },
+          "captured_at": "2026-11-15T00:04:28+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "AM",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"AM/FM\"",
+            "url": "https://www.amazon.co.uk/dp/B09VBFQNKK"
+          },
+          "captured_at": "2026-11-15T00:04:28+00:00"
+        },
+        "battery_mah": {
+          "value": 3000,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"built-in non-removable 3000mAh rechargeable battery\"",
+            "url": "https://www.amazon.co.uk/dp/B09VBFQNKK"
+          },
+          "captured_at": "2026-11-15T00:04:28+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B09VBFQNKK"
+      },
+      "captured_at": "2026-11-15T00:04:28+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0987mcgxt",
+      "category": "wind_up_torch_radio",
+      "product_name": "ROCAM Wind up Radio Solar, Battery, Torch, Portable DAB Radio",
+      "brand": "ROCAM",
+      "asin_uk": "B0987MCGXT",
+      "gtin": null,
+      "mpn": "1009PRO DAB",
+      "model_code": "CR1009PRO DAB",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "torch_radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"Torch, Portable DAB Radio\"",
+            "url": "https://www.amazon.co.uk/dp/B0987MCGXT"
+          },
+          "captured_at": "2026-11-15T00:04:33+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "usb",
+            "solar",
+            "wind_up",
+            "built_in_battery",
+            "aaa"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"5 Charging Methods\": USB, solar panel, hand crank, built-in 5000mAh battery, 3 AAA batteries (not included)",
+            "url": "https://www.amazon.co.uk/dp/B0987MCGXT"
+          },
+          "captured_at": "2026-11-15T00:04:33+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "DAB",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"receives DAB+/DAB programs\" and \"classic FM radio\"",
+            "url": "https://www.amazon.co.uk/dp/B0987MCGXT"
+          },
+          "captured_at": "2026-11-15T00:04:33+00:00"
+        },
+        "battery_mah": {
+          "value": 5000,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"built-in 5000mAh battery\"",
+            "url": "https://www.amazon.co.uk/dp/B0987MCGXT"
+          },
+          "captured_at": "2026-11-15T00:04:33+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0987MCGXT"
+      },
+      "captured_at": "2026-11-15T00:04:33+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b08v17bpbc",
+      "category": "wind_up_torch_radio",
+      "product_name": "Wind Up Solar Radio,Solarbaby Portable Hand Crank Radio with AM/FM,Emergency Radio with 2000mAh Rechargeable Power Bank SOS Alarm,LED Torch Dynamo",
+      "brand": "SOLARBABY",
+      "asin_uk": "B08V17BPBC",
+      "gtin": null,
+      "mpn": "Radio-11",
+      "model_code": "Radio",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "torch_radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"Radio ... LED Torch\"",
+            "url": "https://www.amazon.co.uk/dp/B08V17BPBC"
+          },
+          "captured_at": "2026-11-15T00:04:37+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "wind_up",
+            "solar",
+            "usb",
+            "built_in_battery"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): title \"Hand Crank\", \"Solar\"; bullet: 2000mAh battery charged via USB cable, solar or hand crank",
+            "url": "https://www.amazon.co.uk/dp/B08V17BPBC"
+          },
+          "captured_at": "2026-11-15T00:04:37+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "AM",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"AM/FM\"",
+            "url": "https://www.amazon.co.uk/dp/B08V17BPBC"
+          },
+          "captured_at": "2026-11-15T00:04:37+00:00"
+        },
+        "battery_mah": {
+          "value": 2000,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"2000mAh Rechargeable Power Bank\"",
+            "url": "https://www.amazon.co.uk/dp/B08V17BPBC"
+          },
+          "captured_at": "2026-11-15T00:04:37+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B08V17BPBC"
+      },
+      "captured_at": "2026-11-15T00:04:37+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Model Number shown is the generic 'Radio' (MPN 'Radio-11'); recorded exactly as shown."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cz9lh53b",
+      "category": "power_bank",
+      "product_name": "Anker Zolo Power Bank, 20,000mAh 30W Portable Charger with Built-in USB-C",
+      "brand": "Anker",
+      "asin_uk": "B0CZ9LH53B",
+      "gtin": null,
+      "mpn": "A1689011",
+      "model_code": "A1689",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_mah": {
+          "value": 20000,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Battery Capacity: 20000 Milliamp Hours\"",
+            "url": "https://www.amazon.co.uk/dp/B0CZ9LH53B"
+          },
+          "captured_at": "2026-11-15T00:04:42+00:00"
+        },
+        "max_output_w": {
+          "value": 30,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"30W\"",
+            "url": "https://www.amazon.co.uk/dp/B0CZ9LH53B"
+          },
+          "captured_at": "2026-11-15T00:04:42+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0CZ9LH53B"
+      },
+      "captured_at": "2026-11-15T00:04:42+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Watt-hours not shown on the listing (left unknown)."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cssrd4nt",
+      "category": "power_bank",
+      "product_name": "UGREEN Nexode 20,000mAh PD 20W QC Power Bank Built-in Cable",
+      "brand": "UGREEN",
+      "asin_uk": "B0CSSRD4NT",
+      "gtin": null,
+      "mpn": "TSADF7G5634",
+      "model_code": "PB312",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_mah": {
+          "value": 20000,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Battery Capacity: 20000 Milliamp Hours\"",
+            "url": "https://www.amazon.co.uk/dp/B0CSSRD4NT"
+          },
+          "captured_at": "2026-11-15T00:04:47+00:00"
+        },
+        "max_output_w": {
+          "value": 20,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"PD 20W\"",
+            "url": "https://www.amazon.co.uk/dp/B0CSSRD4NT"
+          },
+          "captured_at": "2026-11-15T00:04:47+00:00"
+        },
+        "ports": {
+          "value": [
+            "USB-A",
+            "USB-A",
+            "USB-C"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"Equipped with 2*USB A ports and 1*USB C port\"",
+            "url": "https://www.amazon.co.uk/dp/B0CSSRD4NT"
+          },
+          "captured_at": "2026-11-15T00:04:47+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0CSSRD4NT"
+      },
+      "captured_at": "2026-11-15T00:04:47+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Product details also show 'Model Name: 25683'. Watt-hours not shown."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0dcz82mgg",
+      "category": "power_bank",
+      "product_name": "INIU 20000mAh Power Bank, 45W Fast Charging Battery Pack 30% Smaller",
+      "brand": "INIU",
+      "asin_uk": "B0DCZ82MGG",
+      "gtin": null,
+      "mpn": "P51L-E1",
+      "model_code": "P51L",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_mah": {
+          "value": 20000,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Battery Capacity: 20000 Milliamp Hours\"",
+            "url": "https://www.amazon.co.uk/dp/B0DCZ82MGG"
+          },
+          "captured_at": "2026-11-15T00:04:52+00:00"
+        },
+        "max_output_w": {
+          "value": 45,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"45W\"",
+            "url": "https://www.amazon.co.uk/dp/B0DCZ82MGG"
+          },
+          "captured_at": "2026-11-15T00:04:52+00:00"
+        },
+        "ports": {
+          "value": [
+            "USB-C",
+            "USB-A"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Connector Type: Output: USB-C*1+USB-A*1\"",
+            "url": "https://www.amazon.co.uk/dp/B0DCZ82MGG"
+          },
+          "captured_at": "2026-11-15T00:04:52+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0DCZ82MGG"
+      },
+      "captured_at": "2026-11-15T00:04:52+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Watt-hours not shown."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b001fiq7xu",
+      "category": "emergency_blanket",
+      "product_name": "Safety First Aid HypaGuard Pack of 6 Foil Survival Blankets",
+      "brand": "Safety First Aid Group",
+      "asin_uk": "B001FIQ7XU",
+      "gtin": null,
+      "mpn": "Q2023T",
+      "model_code": "Q2023T",
+      "pack_quantity": 6,
+      "specs": {
+        "material": {
+          "value": "Mylar, foil blanket",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Material Type\"",
+            "url": "https://www.amazon.co.uk/dp/B001FIQ7XU"
+          },
+          "captured_at": "2026-11-15T00:05:05+00:00"
+        },
+        "size_cm": {
+          "value": {
+            "w": 130,
+            "h": 210
+          },
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Product Dimensions: 210 x 130 x 0.1 cm\"",
+            "url": "https://www.amazon.co.uk/dp/B001FIQ7XU"
+          },
+          "captured_at": "2026-11-15T00:05:05+00:00"
+        },
+        "pack_count": {
+          "value": 6,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Items: 6\"",
+            "url": "https://www.amazon.co.uk/dp/B001FIQ7XU"
+          },
+          "captured_at": "2026-11-15T00:05:05+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B001FIQ7XU"
+      },
+      "captured_at": "2026-11-15T00:05:05+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cmpzjs97",
+      "category": "emergency_blanket",
+      "product_name": "Lifesystems Emergency Silver Foil Thermal Blanket For Hiking, Mountaineering And Outdoor Survival (Pack of 2)",
+      "brand": "Lifesystems",
+      "asin_uk": "B0CMPZJS97",
+      "gtin": null,
+      "mpn": "42120",
+      "model_code": "42120",
+      "pack_quantity": 2,
+      "specs": {
+        "material": {
+          "value": "Metalised polyester",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"made from bright orange, heat reflective metalised polyester\"",
+            "url": "https://www.amazon.co.uk/dp/B0CMPZJS97"
+          },
+          "captured_at": "2026-11-15T00:05:01+00:00"
+        },
+        "size_cm": {
+          "value": {
+            "w": 140,
+            "h": 210
+          },
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): bullet \"Open dimensions: 210x140 cm\"",
+            "url": "https://www.amazon.co.uk/dp/B0CMPZJS97"
+          },
+          "captured_at": "2026-11-15T00:05:01+00:00"
+        },
+        "pack_count": {
+          "value": 2,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Items: 2\"",
+            "url": "https://www.amazon.co.uk/dp/B0CMPZJS97"
+          },
+          "captured_at": "2026-11-15T00:05:01+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B0CMPZJS97"
+      },
+      "captured_at": "2026-11-15T00:05:01+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Title says 'Silver' but Product details colour is 'Orange' and bullets say 'bright orange'; recorded as shown.",
+        "Canonical URL on the page points to a different ASIN (B0H3WSD816)."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b01lx282ct",
+      "category": "thermal_clothing",
+      "product_name": "Heatwave® Pack of 2 Men's Thermal Long Sleeve Top, Warm Underwear Baselayer, S M L XL XXL Thermals",
+      "brand": "Heatwave Thermalwear",
+      "asin_uk": "B01LX282CT",
+      "gtin": null,
+      "mpn": null,
+      "model_code": null,
+      "pack_quantity": 2,
+      "specs": {
+        "garment_type": {
+          "value": "base_layer_top",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"Thermal Long Sleeve Top ... Baselayer\"",
+            "url": "https://www.amazon.co.uk/dp/B01LX282CT"
+          },
+          "captured_at": "2026-11-15T00:05:19+00:00"
+        },
+        "material": {
+          "value": "60% Cotton, 40% Polyester",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Fabric Type\"",
+            "url": "https://www.amazon.co.uk/dp/B01LX282CT"
+          },
+          "captured_at": "2026-11-15T00:05:19+00:00"
+        },
+        "pack_count": {
+          "value": 2,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Items: 2\"",
+            "url": "https://www.amazon.co.uk/dp/B01LX282CT"
+          },
+          "captured_at": "2026-11-15T00:05:19+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B01LX282CT"
+      },
+      "captured_at": "2026-11-15T00:05:19+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Size and colour are chosen on Amazon (listing has size variations); this ASIN is the listing as served. Size left unknown.",
+        "Canonical URL on the page points to a different ASIN (B01M0MVQ7R)."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b01lyd385a",
+      "category": "thermal_clothing",
+      "product_name": "Heatwave® Pack of 2 Men's Thermal T Shirt, Warm Underwear Baselayer, S M L XL XXL Thermals",
+      "brand": "Heatwave Thermalwear",
+      "asin_uk": "B01LYD385A",
+      "gtin": null,
+      "mpn": null,
+      "model_code": null,
+      "pack_quantity": 2,
+      "specs": {
+        "garment_type": {
+          "value": "base_layer_top",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): listing title \"Thermal T Shirt ... Baselayer\"",
+            "url": "https://www.amazon.co.uk/dp/B01LYD385A"
+          },
+          "captured_at": "2026-11-15T00:05:10+00:00"
+        },
+        "material": {
+          "value": "50% Cotton, 50% Polyester",
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Fabric Type\"",
+            "url": "https://www.amazon.co.uk/dp/B01LYD385A"
+          },
+          "captured_at": "2026-11-15T00:05:10+00:00"
+        },
+        "pack_count": {
+          "value": 2,
+          "source": {
+            "name": "Amazon UK product page (public listing, unverified): Product details \"Number of Items: 2\"",
+            "url": "https://www.amazon.co.uk/dp/B01LYD385A"
+          },
+          "captured_at": "2026-11-15T00:05:10+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, unverified)",
+        "url": "https://www.amazon.co.uk/dp/B01LYD385A"
+      },
+      "captured_at": "2026-11-15T00:05:10+00:00",
+      "verification": "unverified",
+      "notes": [
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. UNVERIFIED: public listing, no approved source.",
+        "Size and colour are chosen on Amazon (listing has size variations); this ASIN is the listing as served. Size left unknown.",
+        "Canonical URL on the page points to a different ASIN (B01M0N4GI4)."
+      ]
+    }
+  ]
+}
