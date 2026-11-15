@@ -131,7 +131,7 @@ describe('verification_evidence schema', () => {
   it('a verified thermal also needs the size check (and size_label)', () => {
     const th = catalogueProducts.find((p) => p.category === 'thermal_clothing')! as CatalogueProduct;
     const src = { name: 'TEST', url: `https://www.amazon.co.uk/dp/${th.asin_uk}` };
-    const sized = { ...th, verification: 'verified', specs: { ...th.specs, size_label: { value: 'M', source: src, captured_at: th.captured_at } } };
+    const sized = { ...th, verification: 'verified', display_name: 'Heatwave thermal top (medium)', specs: { ...th.specs, size_label: { value: 'M', source: src, captured_at: th.captured_at } } };
     const ev = { ...th.verification_evidence!, outcome: 'verified', checks_matched: ['title', 'brand', 'model', 'pack_contents'] };
     expect(() => parseCatalogueProduct({ ...sized, verification_evidence: ev })).toThrow(/size/);
     expect(() => parseCatalogueProduct({ ...sized, verification_evidence: { ...ev, checks_matched: [...ev.checks_matched, 'size'] } })).not.toThrow();

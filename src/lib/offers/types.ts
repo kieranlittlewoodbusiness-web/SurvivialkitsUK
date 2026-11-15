@@ -318,20 +318,58 @@ export type ProductCategory =
   | 'kit'
   | 'emergency_water'
   | 'first_aid_kit'
-  | 'wind_up_torch_radio'
+  | 'torch'
+  | 'radio'
   | 'power_bank'
+  | 'batteries'
   | 'emergency_blanket'
-  | 'thermal_clothing';
+  | 'thermal_clothing'
+  | 'hi_vis'
+  | 'jump_leads'
+  | 'warning_triangle';
 
+/**
+ * S1-10: canonical category order (also the order groupComparisonsByCategory returns).
+ * 'wind_up_torch_radio' was split into 'torch' and 'radio'; see LEGACY_CATEGORY_WIND_UP_TORCH_RADIO.
+ */
 export const PRODUCT_CATEGORIES: readonly ProductCategory[] = [
   'kit',
   'emergency_water',
   'first_aid_kit',
-  'wind_up_torch_radio',
+  'torch',
+  'radio',
   'power_bank',
+  'batteries',
   'emergency_blanket',
   'thermal_clothing',
+  'hi_vis',
+  'jump_leads',
+  'warning_triangle',
 ];
+
+/**
+ * S1-10: pre-split slug. Still accepted when parsing (backward compatible) and migrated on
+ * parse: products by specs.device_type ('torch' => 'torch'; 'radio' / 'torch_radio' / absent =>
+ * 'radio'), offers to 'radio' (offer.category is informational only and never used for matching
+ * or grouping; grouping uses the product's category). Never emitted.
+ */
+export const LEGACY_CATEGORY_WIND_UP_TORCH_RADIO = 'wind_up_torch_radio' as const;
+
+/** S1-10: plain-English display label per category (Web renders this as category_label). */
+export const CATEGORY_LABELS: Readonly<Record<ProductCategory, string>> = {
+  kit: 'Pre-packed kits',
+  emergency_water: 'Emergency water',
+  first_aid_kit: 'First aid kits',
+  torch: 'Torches',
+  radio: 'Emergency radios',
+  power_bank: 'Power banks',
+  batteries: 'Batteries',
+  emergency_blanket: 'Emergency blankets',
+  thermal_clothing: 'Thermals',
+  hi_vis: 'Hi-vis vests',
+  jump_leads: 'Jump leads',
+  warning_triangle: 'Warning triangles',
+};
 
 export type PriceOrigin = 'none' | 'manual_capture' | 'amazon_product_api' | 'affiliate_feed';
 
@@ -364,6 +402,9 @@ export interface TorchRadioSpecs {
   usb_output?: Sourced<boolean>;
   battery_mah?: Sourced<number>;
 }
+/** S1-10: torches and radios share the pre-split spec shape. */
+export type TorchSpecs = TorchRadioSpecs;
+export type RadioSpecs = TorchRadioSpecs;
 export interface PowerBankSpecs {
   capacity_mah?: Sourced<number>;
   capacity_wh?: Sourced<number>;
@@ -382,6 +423,41 @@ export interface ThermalClothingSpecs {
   size_label?: Sourced<string>;
   pack_count?: Sourced<number>;
 }
+
+export type BatterySize = 'AA' | 'AAA' | 'C' | 'D' | '9V' | 'CR2032' | 'other';
+export type BatteryChemistry = 'alkaline' | 'lithium' | 'nimh' | 'zinc_carbon' | 'other';
+export interface BatterySpecs {
+  size?: Sourced<BatterySize>;
+  chemistry?: Sourced<BatteryChemistry>;
+  pack_count?: Sourced<number>;
+}
+export interface HiVisSpecs {
+  /** Standard exactly as shown on the listing, e.g. 'EN ISO 20471 Class 2'. Evidence/spec only; never in display_name. */
+  standard?: Sourced<string>;
+  /** Required when verified (one exact size per ASIN, like thermals), e.g. 'XL' or 'One size'. */
+  size_label?: Sourced<string>;
+  pack_count?: Sourced<number>;
+}
+export interface JumpLeadsSpecs {
+  length_m?: Sourced<number>;
+  /** Amp rating as listed, e.g. 400. */
+  max_current_a?: Sourced<number>;
+  /** Conductor cross-section as listed, e.g. 16 (mm²). */
+  cable_gauge_mm2?: Sourced<number>;
+}
+export interface WarningTriangleSpecs {
+  /** Listing states the triangle is E-marked. */
+  e_marked?: Sourced<boolean>;
+  /** Listing states ECE R27 approval. A verified triangle needs e_marked or ece_r27 === true. */
+  ece_r27?: Sourced<boolean>;
+  pack_count?: Sourced<number>;
+}
+
+/**
+ * S1-10: image source. 'paapi' = Amazon's Creators API (formerly the Product Advertising API,
+ * PA-API); the literal is kept as 'paapi'. No downloaded, rehosted, scraped or tag-bearing images.
+ */
+export type ImageSource = 'paapi';
 
 interface CatalogueProductBase {
   schema_version: 2;
@@ -410,15 +486,37 @@ interface CatalogueProductBase {
   verification: 'unverified' | 'verified';
   /** S1-8b: how `verification` was decided (required when verified). */
   verification_evidence?: VerificationEvidence;
+  /**
+   * S1-10: short, plain product name for card headings and image alt (e.g. "Anker 20,000mAh power
+   * bank"). REQUIRED when verified. No standards codes, model/part/SKU numbers, ALL-CAPS keyword
+   * stuffing, and at most DISPLAY_NAME_MAX_LENGTH characters (see validateDisplayName).
+   * product_name keeps the full listing title for evidence only.
+   */
+  display_name?: string | null;
+  /** S1-10: order within the category, integer 1-3 (lower first). Absent/null = after ranked items, source order. */
+  display_rank?: number | null;
+  /**
+   * S1-10: Amazon-served image from Amazon's Creators API (formerly PA-API) only: https on
+   * m.media-amazon.com, with image_source 'paapi'. null at launch (no API access yet).
+   */
+  image_url?: string | null;
+  image_width?: number | null;
+  image_height?: number | null;
+  image_source?: ImageSource | null;
   notes: string[];
 }
 export type CatalogueProduct =
   | (CatalogueProductBase & { category: 'emergency_water'; specs: EmergencyWaterSpecs })
   | (CatalogueProductBase & { category: 'first_aid_kit'; specs: FirstAidKitSpecs })
-  | (CatalogueProductBase & { category: 'wind_up_torch_radio'; specs: TorchRadioSpecs })
+  | (CatalogueProductBase & { category: 'torch'; specs: TorchSpecs })
+  | (CatalogueProductBase & { category: 'radio'; specs: RadioSpecs })
   | (CatalogueProductBase & { category: 'power_bank'; specs: PowerBankSpecs })
   | (CatalogueProductBase & { category: 'emergency_blanket'; specs: EmergencyBlanketSpecs })
-  | (CatalogueProductBase & { category: 'thermal_clothing'; specs: ThermalClothingSpecs });
+  | (CatalogueProductBase & { category: 'thermal_clothing'; specs: ThermalClothingSpecs })
+  | (CatalogueProductBase & { category: 'batteries'; specs: BatterySpecs })
+  | (CatalogueProductBase & { category: 'hi_vis'; specs: HiVisSpecs })
+  | (CatalogueProductBase & { category: 'jump_leads'; specs: JumpLeadsSpecs })
+  | (CatalogueProductBase & { category: 'warning_triangle'; specs: WarningTriangleSpecs });
 
 export type ProductRecord = KitVariant | CatalogueProduct;
 
@@ -599,6 +697,15 @@ export interface PublicProductSummary {
   /** e.g. 'Amazon UK product page (public listing, unverified)'. */
   source_name: string;
   captured_at: LondonIsoDateTime;
+  /** S1-10: short plain name for headings/alt; null for kits and for unverified products without one. */
+  display_name: string | null;
+  /** S1-10: 1-3 within the category, or null. */
+  display_rank: number | null;
+  /** S1-10: Creators API (formerly PA-API) image on m.media-amazon.com, or null (all null at launch). */
+  image_url: string | null;
+  image_width: number | null;
+  image_height: number | null;
+  image_source: ImageSource | null;
 }
 
 export interface CatalogueComparison {
@@ -612,4 +719,12 @@ export interface CatalogueComparison {
   savings: Savings | null;
   /** Distinct disclosure texts for links that rendered (show before the first link). */
   disclosures: string[];
+}
+
+/** S1-10: one category's shortlisted comparisons (see groupComparisonsByCategory). */
+export interface CategoryComparisonGroup {
+  category: ProductCategory;
+  category_label: string;
+  /** Gated, sorted by display_rank (ties/unranked in source order), capped at perCategory. */
+  comparisons: CatalogueComparison[];
 }

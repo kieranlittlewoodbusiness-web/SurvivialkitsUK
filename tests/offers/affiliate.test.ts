@@ -102,6 +102,7 @@ function productRaw(over: Partial<CatalogueProduct> = {}): CatalogueProduct {
     source: src,
     captured_at: T,
     verification: 'verified', // link-path tests need a verified product; unverified is tested explicitly (M2)
+    display_name: 'Test power bank', // S1-10: required when verified
     notes: [],
     ...over,
   } as CatalogueProduct;
@@ -424,7 +425,7 @@ describe('seed data (src/data)', () => {
 
   it('every seeded category except kits is covered by the catalogue', () => {
     const cats = new Set(catalogueProducts.map((p) => p.category));
-    expect([...cats].sort()).toEqual(['emergency_blanket', 'emergency_water', 'first_aid_kit', 'power_bank', 'thermal_clothing', 'wind_up_torch_radio']);
+    expect([...cats].sort()).toEqual(['emergency_blanket', 'emergency_water', 'first_aid_kit', 'power_bank', 'radio', 'thermal_clothing']);
   });
 });
 

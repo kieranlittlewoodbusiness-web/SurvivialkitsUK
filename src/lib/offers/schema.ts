@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { PRODUCT_CATEGORIES, VERIFICATION_CHECKS } from './types';
+import { LEGACY_CATEGORY_WIND_UP_TORCH_RADIO, PRODUCT_CATEGORIES, VERIFICATION_CHECKS } from './types';
 import type {
   AffiliateProgrammeRecord,
   AffiliateProgrammesFile,
@@ -67,10 +67,13 @@ export const verificationEvidenceSchema = z
   })
   .strict();
 
-/** Required checks for a 'verified' record (thermals also need 'size'). */
+/** Categories sold in sizes: a verified record names one exact size (S1-8b thermals; S1-10 hi-vis). */
+export const SIZED_CATEGORIES: readonly string[] = ['thermal_clothing', 'hi_vis'];
+
+/** Required checks for a 'verified' record (sized categories also need 'size'). */
 export function requiredVerificationChecks(category: string): readonly string[] {
   const base = ['title', 'brand', 'model', 'pack_contents'];
-  return category === 'thermal_clothing' ? [...base, 'size'] : base;
+  return SIZED_CATEGORIES.includes(category) ? [...base, 'size'] : base;
 }
 
 /** Shared rule: verified <=> evidence outcome 'verified', with every required check and a matching tagless ASIN URL. */
@@ -166,7 +169,12 @@ export const offerSchema = z
     next_check_due: londonIso,
     captured_by: z.string().min(1),
     screenshot_path: z.string().nullable(),
-    category: z.enum(PRODUCT_CATEGORIES as [string, ...string[]]).optional(),
+    // S1-10: the pre-split slug still parses; offer.category is informational only (never used for
+    // matching or grouping), and every legacy row in the repo was a wind-up radio, so it maps to 'radio'.
+    category: z
+      .enum([...PRODUCT_CATEGORIES, LEGACY_CATEGORY_WIND_UP_TORCH_RADIO] as string[] as [string, ...string[]])
+      .transform((c) => (c === LEGACY_CATEGORY_WIND_UP_TORCH_RADIO ? 'radio' : c))
+      .optional(),
     asin_marketplace: z.literal('amazon.co.uk').nullable().optional(),
     affiliate_programme_id: z.string().min(1).nullable().optional(),
     price_origin: z.enum(['none', 'manual_capture', 'amazon_product_api', 'affiliate_feed']).optional(),
@@ -386,6 +394,18 @@ const sourced = <T extends z.ZodType>(value: T) =>
 const pos = z.number().positive();
 const posInt = z.number().int().positive();
 
+const torchRadioSpecs = z
+  .object({
+    device_type: sourced(z.enum(['torch', 'radio', 'torch_radio'])),
+    power_sources: sourced(z.array(z.enum(['wind_up', 'dynamo', 'solar', 'usb', 'aa', 'aaa', 'built_in_battery'])).min(1)),
+    lumens: sourced(pos),
+    radio_bands: sourced(z.array(z.enum(['AM', 'FM', 'DAB', 'LW'])).min(1)),
+    usb_output: sourced(z.boolean()),
+    battery_mah: sourced(pos),
+  })
+  .partial()
+  .strict();
+
 const specsByCategory = {
   emergency_water: z
     .object({
@@ -405,17 +425,8 @@ const specsByCategory = {
     })
     .partial()
     .strict(),
-  wind_up_torch_radio: z
-    .object({
-      device_type: sourced(z.enum(['torch', 'radio', 'torch_radio'])),
-      power_sources: sourced(z.array(z.enum(['wind_up', 'dynamo', 'solar', 'usb', 'aa', 'aaa', 'built_in_battery'])).min(1)),
-      lumens: sourced(pos),
-      radio_bands: sourced(z.array(z.enum(['AM', 'FM', 'DAB', 'LW'])).min(1)),
-      usb_output: sourced(z.boolean()),
-      battery_mah: sourced(pos),
-    })
-    .partial()
-    .strict(),
+  torch: torchRadioSpecs,
+  radio: torchRadioSpecs,
   power_bank: z
     .object({
       capacity_mah: sourced(pos),
@@ -443,7 +454,127 @@ const specsByCategory = {
     })
     .partial()
     .strict(),
+  batteries: z
+    .object({
+      size: sourced(z.enum(['AA', 'AAA', 'C', 'D', '9V', 'CR2032', 'other'])),
+      chemistry: sourced(z.enum(['alkaline', 'lithium', 'nimh', 'zinc_carbon', 'other'])),
+      pack_count: sourced(posInt),
+    })
+    .partial()
+    .strict(),
+  hi_vis: z
+    .object({
+      standard: sourced(z.string().min(1)),
+      size_label: sourced(z.string().min(1)),
+      pack_count: sourced(posInt),
+    })
+    .partial()
+    .strict(),
+  jump_leads: z
+    .object({
+      length_m: sourced(pos),
+      max_current_a: sourced(pos),
+      cable_gauge_mm2: sourced(pos),
+    })
+    .partial()
+    .strict(),
+  warning_triangle: z
+    .object({
+      e_marked: sourced(z.boolean()),
+      ece_r27: sourced(z.boolean()),
+      pack_count: sourced(posInt),
+    })
+    .partial()
+    .strict(),
 } as const;
+
+/* ---------- S1-10: display_name and image rules ---------- */
+
+export const DISPLAY_NAME_MAX_LENGTH = 60;
+/** Standards codes (BS 8599, EN 471, ISO 20471, ...). Same pattern Web's card-text test bans. */
+export const STANDARDS_CODE_PATTERN = /\bBS\s?\d|\bEN\s?\d|ISO\s?\d/i;
+/** Measurements are fine in a display name: "20,000mAh", "500ml", "3.5m", "400A", "12V", "2x". */
+const MEASUREMENT_TOKEN = /^\d+(?:[.,]\d+)*(?:mAh|Ah|Wh|W|kW|V|ml|cl|L|m|cm|mm|mm²|kg|g|lm|A|x)$/i;
+/** Counts written with a hyphen: "2-pack", "4-piece", "2-person". */
+const COUNT_TOKEN = /^\d+-(?:pack|piece|person|litre|metre|year)s?$/i;
+
+export interface DisplayNameIdentity {
+  brand?: string | null;
+  model_code?: string | null;
+  mpn?: string | null;
+  manufacturer_sku?: string | null;
+  listing_mpn?: string | null;
+}
+
+const stripPunct = (t: string) => t.replace(/^[("'\[]+|[)"'\],.;:!?]+$/g, '');
+
+/**
+ * S1-10: problems with a display_name ([] = valid). Rejects standards codes, model / part / SKU-like
+ * tokens (letters mixed with digits such as PB312 or ESFH21, long bare digit runs, and any
+ * digit-bearing token of the record's own model_code / mpn / manufacturer_sku / listing_mpn),
+ * ALL-CAPS keyword stuffing (brand words excepted), pipes, and names over DISPLAY_NAME_MAX_LENGTH.
+ */
+export function validateDisplayName(name: string, identity: DisplayNameIdentity = {}): string[] {
+  const issues: string[] = [];
+  if (name.trim() !== name || name.length === 0) issues.push('display_name must be non-empty with no leading/trailing spaces');
+  if (name.length > DISPLAY_NAME_MAX_LENGTH) issues.push(`display_name must be at most ${DISPLAY_NAME_MAX_LENGTH} characters`);
+  if (STANDARDS_CODE_PATTERN.test(name)) issues.push('display_name must not contain standards codes (BS / EN / ISO numbers)');
+  if (/[|®™]/.test(name)) issues.push('display_name must not contain listing separators or trademark symbols');
+  const tokens = name.split(/\s+/).map(stripPunct).filter(Boolean);
+  for (const t of tokens) {
+    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t)) {
+      issues.push(`display_name must not contain model/part-number-like token "${t}"`);
+    } else if (/^\d{5,}$/.test(t)) {
+      issues.push(`display_name must not contain SKU-like number "${t}"`);
+    }
+  }
+  const lower = name.toLowerCase();
+  const own = [identity.model_code, identity.mpn, identity.manufacturer_sku, identity.listing_mpn]
+    .flatMap((v) => (v ? v.split(/[\s,;/]+/) : []))
+    .map(stripPunct)
+    .filter((t) => t.length >= 3 && /\d/.test(t));
+  for (const t of new Set(own)) {
+    if (lower.includes(t.toLowerCase())) issues.push(`display_name must not contain the product's own model/part number "${t}"`);
+  }
+  const brandWords = new Set((identity.brand ?? '').split(/\s+/).map((w) => stripPunct(w).toUpperCase()).filter(Boolean));
+  const letters = name.replace(/[^A-Za-z]/g, '');
+  if (letters.length >= 4 && letters === letters.toUpperCase()) {
+    issues.push('display_name must not be written in capitals');
+  } else {
+    const caps = tokens.filter((t) => {
+      const l = t.replace(/[^A-Za-z]/g, '');
+      return l.length >= 2 && l === l.toUpperCase() && !brandWords.has(t.toUpperCase());
+    });
+    if (caps.some((t) => t.replace(/[^A-Za-z]/g, '').length >= 5) || caps.length >= 3) {
+      issues.push(`display_name must not use ALL-CAPS keywords (${caps.join(', ')})`);
+    }
+  }
+  return issues;
+}
+
+/** S1-10: the only host a product image may come from (Amazon's Creators API, formerly PA-API). */
+export const ALLOWED_IMAGE_HOSTS: readonly string[] = ['m.media-amazon.com'];
+
+/** https on an allowed image host, with no credentials, query string or fragment. */
+export function isAllowedImageUrl(url: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return false;
+  }
+  return (
+    u.protocol === 'https:' &&
+    ALLOWED_IMAGE_HOSTS.includes(u.hostname) &&
+    u.port === '' &&
+    u.username === '' &&
+    u.password === '' &&
+    u.search === '' &&
+    u.hash === ''
+  );
+}
+
+const imageDimension = z.number().int().positive().nullable().optional();
 
 const productBase = {
   schema_version: z.literal(2),
@@ -463,32 +594,77 @@ const productBase = {
   captured_at: londonIso,
   verification: z.enum(['unverified', 'verified']),
   verification_evidence: verificationEvidenceSchema.optional(),
+  /** S1-10: required when verified; rules in validateDisplayName. */
+  display_name: z.string().nullable().optional(),
+  display_rank: z.number().int().min(1).max(3).nullable().optional(),
+  image_url: z.string().nullable().optional(),
+  image_width: imageDimension,
+  image_height: imageDimension,
+  image_source: z.literal('paapi').nullable().optional(),
   notes: z.array(z.string()),
 };
 
-export const catalogueProductSchema = z
+/**
+ * S1-10: migrates the pre-split 'wind_up_torch_radio' category on parse: a device_type of
+ * 'torch' becomes 'torch'; 'radio', 'torch_radio' or no device_type becomes 'radio'.
+ */
+export function migrateLegacyProductCategory(raw: unknown): unknown {
+  if (!raw || typeof raw !== 'object' || (raw as { category?: unknown }).category !== LEGACY_CATEGORY_WIND_UP_TORCH_RADIO) return raw;
+  const device = (raw as { specs?: { device_type?: { value?: unknown } } }).specs?.device_type?.value;
+  return { ...(raw as object), category: device === 'torch' ? 'torch' : 'radio' };
+}
+
+const catalogueProductUnion = z
   .discriminatedUnion('category', [
     z.object({ ...productBase, category: z.literal('emergency_water'), specs: specsByCategory.emergency_water }).strict(),
     z.object({ ...productBase, category: z.literal('first_aid_kit'), specs: specsByCategory.first_aid_kit }).strict(),
-    z.object({ ...productBase, category: z.literal('wind_up_torch_radio'), specs: specsByCategory.wind_up_torch_radio }).strict(),
+    z.object({ ...productBase, category: z.literal('torch'), specs: specsByCategory.torch }).strict(),
+    z.object({ ...productBase, category: z.literal('radio'), specs: specsByCategory.radio }).strict(),
     z.object({ ...productBase, category: z.literal('power_bank'), specs: specsByCategory.power_bank }).strict(),
     z.object({ ...productBase, category: z.literal('emergency_blanket'), specs: specsByCategory.emergency_blanket }).strict(),
     z.object({ ...productBase, category: z.literal('thermal_clothing'), specs: specsByCategory.thermal_clothing }).strict(),
+    z.object({ ...productBase, category: z.literal('batteries'), specs: specsByCategory.batteries }).strict(),
+    z.object({ ...productBase, category: z.literal('hi_vis'), specs: specsByCategory.hi_vis }).strict(),
+    z.object({ ...productBase, category: z.literal('jump_leads'), specs: specsByCategory.jump_leads }).strict(),
+    z.object({ ...productBase, category: z.literal('warning_triangle'), specs: specsByCategory.warning_triangle }).strict(),
   ])
   .superRefine((p, ctx) => {
     if (p.asin_uk === null && p.gtin === null) {
       ctx.addIssue({ code: 'custom', path: ['asin_uk'], message: 'a catalogue product needs an exact identity: asin_uk or gtin' });
     }
-    if (p.category === 'thermal_clothing' && p.verification === 'verified' && !p.specs.size_label) {
+    if ((p.category === 'thermal_clothing' || p.category === 'hi_vis') && p.verification === 'verified' && !p.specs.size_label) {
       // Prices for different sizes must never be compared: each size needs its own ASIN/GTIN row.
-      ctx.addIssue({ code: 'custom', path: ['specs', 'size_label'], message: 'verified thermal_clothing needs size_label (one exact size per ASIN/GTIN)' });
+      ctx.addIssue({ code: 'custom', path: ['specs', 'size_label'], message: `verified ${p.category} needs size_label (one exact size per ASIN/GTIN)` });
+    }
+    if (p.category === 'warning_triangle' && p.verification === 'verified' && p.specs.e_marked?.value !== true && p.specs.ece_r27?.value !== true) {
+      ctx.addIssue({ code: 'custom', path: ['specs', 'e_marked'], message: 'a verified warning_triangle needs e_marked or ece_r27 === true from the listing' });
     }
     if (p.listing_mpn && (p.listing_mpn === p.mpn || p.listing_mpn === p.manufacturer_sku || p.listing_mpn === p.model_code)) {
       // A listing-only number must not double as an identity key.
       ctx.addIssue({ code: 'custom', path: ['listing_mpn'], message: 'listing_mpn is listing-only and must not equal mpn, manufacturer_sku or model_code' });
     }
+    // S1-10: display_name (required when verified).
+    if (p.display_name === undefined || p.display_name === null) {
+      if (p.verification === 'verified') ctx.addIssue({ code: 'custom', path: ['display_name'], message: 'verified products need display_name' });
+    } else {
+      for (const message of validateDisplayName(p.display_name, p)) ctx.addIssue({ code: 'custom', path: ['display_name'], message });
+    }
+    // S1-10: images come only from Amazon's Creators API (formerly PA-API) on m.media-amazon.com.
+    if (p.image_url !== undefined && p.image_url !== null) {
+      if (!isAllowedImageUrl(p.image_url)) {
+        ctx.addIssue({ code: 'custom', path: ['image_url'], message: `image_url must be https on ${ALLOWED_IMAGE_HOSTS.join(', ')} with no query string or fragment` });
+      }
+      if (p.image_source !== 'paapi') ctx.addIssue({ code: 'custom', path: ['image_source'], message: "image_url requires image_source 'paapi'" });
+    } else {
+      for (const k of ['image_source', 'image_width', 'image_height'] as const) {
+        if (p[k] !== undefined && p[k] !== null) ctx.addIssue({ code: 'custom', path: [k], message: `${k} must be null when image_url is null` });
+      }
+    }
     refineVerification(p, ctx);
   });
+
+/** S1-8 catalogue product. S1-10: the legacy 'wind_up_torch_radio' slug is migrated before validation. */
+export const catalogueProductSchema = z.preprocess(migrateLegacyProductCategory, catalogueProductUnion);
 
 export const catalogueProductsFileSchema = z
   .object({

@@ -132,6 +132,7 @@
       },
       "captured_at": "2026-11-15T00:04:07+00:00",
       "verification": "verified",
+      "display_name": "Cano still spring water cans (12 x 500ml)",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B0896Q8JXD",
@@ -278,6 +279,7 @@
       },
       "captured_at": "2026-11-15T00:04:18+00:00",
       "verification": "verified",
+      "display_name": "St John Ambulance vehicle first aid kit (medium)",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B00L7S9LU4",
@@ -325,6 +327,7 @@
       },
       "captured_at": "2026-11-15T00:04:23+00:00",
       "verification": "verified",
+      "display_name": "Reliance Medical workplace first aid kit (medium)",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B005AQK6V2",
@@ -341,7 +344,7 @@
     {
       "schema_version": 2,
       "variant_id": "amazon-uk-b09vbfqnkk",
-      "category": "wind_up_torch_radio",
+      "category": "radio",
       "product_name": "PRUNUS J-369 Wind Up Radio Solar, AM/FM Emergency Hand Crank Radio",
       "brand": "PRUNUS",
       "asin_uk": "B09VBFQNKK",
@@ -397,6 +400,7 @@
       },
       "captured_at": "2026-11-15T00:04:28+00:00",
       "verification": "verified",
+      "display_name": "PRUNUS wind-up solar AM/FM radio",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B09VBFQNKK",
@@ -412,7 +416,7 @@
     {
       "schema_version": 2,
       "variant_id": "amazon-uk-b0987mcgxt",
-      "category": "wind_up_torch_radio",
+      "category": "radio",
       "product_name": "ROCAM Wind up Radio Solar, Battery, Torch, Portable DAB Radio",
       "brand": "ROCAM",
       "asin_uk": "B0987MCGXT",
@@ -469,6 +473,7 @@
       },
       "captured_at": "2026-11-15T00:04:33+00:00",
       "verification": "verified",
+      "display_name": "ROCAM wind-up DAB radio with torch",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B0987MCGXT",
@@ -484,7 +489,7 @@
     {
       "schema_version": 2,
       "variant_id": "amazon-uk-b08v17bpbc",
-      "category": "wind_up_torch_radio",
+      "category": "radio",
       "product_name": "Wind Up Solar Radio,Solarbaby Portable Hand Crank Radio with AM/FM,Emergency Radio with 2000mAh Rechargeable Power Bank SOS Alarm,LED Torch Dynamo",
       "brand": "SOLARBABY",
       "asin_uk": "B08V17BPBC",
@@ -588,6 +593,7 @@
       },
       "captured_at": "2026-11-15T00:04:42+00:00",
       "verification": "verified",
+      "display_name": "Anker Zolo 20,000mAh power bank",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B0CZ9LH53B",
@@ -650,6 +656,7 @@
       },
       "captured_at": "2026-11-15T00:04:47+00:00",
       "verification": "verified",
+      "display_name": "UGREEN Nexode 20,000mAh power bank",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B0CSSRD4NT",
@@ -710,6 +717,7 @@
       },
       "captured_at": "2026-11-15T00:04:52+00:00",
       "verification": "verified",
+      "display_name": "INIU 20,000mAh power bank",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B0DCZ82MGG",
@@ -769,6 +777,7 @@
       },
       "captured_at": "2026-11-15T00:05:05+00:00",
       "verification": "verified",
+      "display_name": "HypaGuard foil survival blankets (pack of 6)",
       "verification_evidence": {
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B001FIQ7XU",
