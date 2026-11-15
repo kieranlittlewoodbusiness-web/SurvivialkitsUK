@@ -7,7 +7,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const links = [
   { href: '/start-here', label: 'Start here' },
   { href: '/checklist', label: 'Checklist' },
-  { href: comparePath, label: 'Compare kits' },
+  { href: comparePath, label: 'Get prepared here', cta: true },
   { href: '/scenarios', label: 'Scenarios' },
   { href: '/gear', label: 'Gear criteria' },
   { href: '/method', label: 'Method' },
@@ -31,8 +31,12 @@ function isActive(rawHref: string) {
       <ul>
         {
           links.map((link) => (
-            <li>
-              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+            <li class:list={[link.cta && 'site-nav__cta-item']}>
+              <a
+                href={link.href}
+                class:list={[link.cta && 'site-nav__cta']}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+              >
                 {link.label}
               </a>
             </li>
@@ -112,6 +116,26 @@ function isActive(rawHref: string) {
     color: var(--accent);
   }
 
+  .site-nav a.site-nav__cta {
+    justify-content: center;
+    min-height: 52px;
+    background: var(--accent);
+    color: var(--on-accent);
+    border-radius: var(--r-pill);
+    font-weight: 650;
+  }
+
+  .site-nav a.site-nav__cta:hover,
+  .site-nav a.site-nav__cta[aria-current='page'] {
+    background: var(--accent-hover);
+    color: var(--on-accent);
+  }
+
+  .site-nav a.site-nav__cta:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
   @media (min-width: 1080px) {
     .nav-toggle {
       display: none;
@@ -147,6 +171,18 @@ function isActive(rawHref: string) {
     .site-nav a[aria-current='page'] {
       background: var(--surface);
       color: var(--ink);
+      box-shadow: var(--shadow-1);
+    }
+
+    .site-nav a.site-nav__cta {
+      min-height: var(--tap);
+      padding-inline: var(--s-5);
+    }
+
+    .site-nav a.site-nav__cta:hover,
+    .site-nav a.site-nav__cta[aria-current='page'] {
+      background: var(--accent-hover);
+      color: var(--on-accent);
       box-shadow: var(--shadow-1);
     }
   }
