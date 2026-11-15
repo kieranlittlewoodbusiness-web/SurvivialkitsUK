@@ -287,7 +287,8 @@ const litresRows = [1, 2, 3, 4, 5, 6];
       </ul>
       <h3>Seller listings and third-party pages</h3>
       <ul class="source-list">
-        {sources.listings.map((s) => <li><a href={s.url} rel="noopener noreferrer">{s.label}</a></li>)}
+        {/* Retailer pages are cited as plain text (Kieran: only affiliate links to retailers, #3 S1-2b). */}
+        {sources.listings.map((s) => <li>{s.label} ({new URL(s.url).hostname.replace(/^www\./, '')})</li>)}
       </ul>
     </div>
   </section>
