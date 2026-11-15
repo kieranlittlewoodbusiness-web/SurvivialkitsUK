@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { buttonLink, shownPrice, AMAZON_DISCLOSURE } from './catalogueView';
+import {
+  buttonLink,
+  shownPrice,
+  AMAZON_DISCLOSURE,
+  cardDisplayName,
+  cleanProductTitle,
+  productImage,
+  FALLBACK_IMAGE_SIZE,
+  loadCatalogue,
+} from './catalogueView';
 import type { AffiliateDisplayOffer } from '../../lib/offers';
 import { affiliateProgrammes } from '../../lib/offers/data';
+import { isProductVerified, isShortlistable, PRODUCT_CATEGORIES } from '../../lib/offers';
+import { catalogueProducts } from '../../lib/offers/data';
+import { VERIFIED_BY_CATEGORY, VERIFIED_ASINS, VERIFIED_COUNT } from '../../../tests/offers/verifiedSet';
 
 const NOW = new Date('2026-11-15T12:00:00Z');
 const base = {
@@ -105,16 +117,149 @@ describe('Amazon disclosure wording', () => {
   });
 });
 
-describe('approved set (verified + exact model match, same gate as resolveAffiliateLink)', () => {
-  it('renders exactly the 9 approved ASINs from the real catalogue', async () => {
-    const { loadCatalogue } = await import('./catalogueView');
-    for (const env of [{ SITE_ENV: 'preview' }, { SITE_ENV: 'production' }, {}]) {
-      const m = await loadCatalogue(env, new Date('2026-11-15T12:00:00Z'));
+describe('plain names', () => {
+  it('uses display_name when present', () => {
+    expect(
+      cardDisplayName({
+        display_name: 'St John Ambulance vehicle first aid kit (medium)',
+        product_name: 'St John Ambulance BS 8599-2:2014 Medium Motor Vehicle First Aid Kit',
+      }),
+    ).toBe('St John Ambulance vehicle first aid kit (medium)');
+  });
+  it('falls back to a cleaned title, stripping standards codes and model/SKU tokens', () => {
+    expect(cleanProductTitle('St John Ambulance BS 8599-2:2014 Medium Motor Vehicle First Aid Kit')).toBe(
+      'St John Ambulance Medium Motor Vehicle First Aid Kit',
+    );
+    expect(cleanProductTitle('UGREEN 20,000mAh 22.5W power bank (PB312)')).toBe('UGREEN 20,000mAh 22.5W power bank');
+    expect(cleanProductTitle('Reliance Medical | BS8599-1 Medium Workplace First Aid Kit (for Ref 343 - 77319RM)')).toBe(
+      'Reliance Medical Medium Workplace First Aid Kit',
+    );
+  });
+  it('falls back when display_name is missing', () => {
+    expect(
+      cardDisplayName({
+        display_name: null,
+        product_name: 'Anker A1689 20,000mAh Power Bank',
+      }),
+    ).toBe('Anker 20,000mAh Power Bank');
+  });
+});
+
+describe('productImage', () => {
+  const display_name = 'Anker Zolo 20,000mAh power bank';
+  const allowed = {
+    image_url: 'https://m.media-amazon.com/images/I/example.jpg',
+    image_width: 160,
+    image_height: 200,
+    image_source: 'paapi' as const,
+    display_name,
+    product_name: 'Anker A1689 Power Bank',
+  };
+  it('renders an allowed Amazon image with explicit width, height and display_name alt', () => {
+    expect(productImage(allowed)).toEqual({
+      url: allowed.image_url,
+      width: 160,
+      height: 200,
+      alt: display_name,
+      fixedAspect: false,
+    });
+  });
+  it('uses a fixed-aspect fallback size when dimensions are missing', () => {
+    const img = productImage({ ...allowed, image_width: null, image_height: null });
+    expect(img).toEqual({
+      url: allowed.image_url,
+      width: FALLBACK_IMAGE_SIZE,
+      height: FALLBACK_IMAGE_SIZE,
+      alt: display_name,
+      fixedAspect: true,
+    });
+  });
+  it('returns null (no image, no frame) when image_url or image_source is missing, or the host is not m.media-amazon.com', () => {
+    expect(productImage({ ...allowed, image_url: null, image_source: null, image_width: null, image_height: null })).toBeNull();
+    expect(productImage({ ...allowed, image_source: null })).toBeNull();
+    expect(productImage({ ...allowed, image_url: 'https://images-eu.ssl-images-amazon.com/images/I/x.jpg' })).toBeNull();
+    expect(productImage({ ...allowed, image_url: 'https://example.com/images/I/x.jpg' })).toBeNull();
+  });
+});
+
+const PER_CATEGORY = 3;
+const expectedFromVerifiedSet = Object.values(VERIFIED_BY_CATEGORY).reduce(
+  (n, asins) => n + Math.min(asins.length, PER_CATEGORY),
+  0,
+);
+const expectedCategories = PRODUCT_CATEGORIES.filter((c) => (VERIFIED_BY_CATEGORY[c]?.length ?? 0) > 0);
+const PROD_ENV = { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: 'verifydist-21' };
+
+describe('catalogue grouping (groupComparisonsByCategory, cap 3)', () => {
+  it('derives the rendered set from the verified data, caps at 3, hides empty categories, and keeps short categories as-is', async () => {
+    for (const env of [PROD_ENV, { SITE_ENV: 'preview' }, {}]) {
+      const m = await loadCatalogue(env, NOW);
+      expect(m.stats.cards).toBe(expectedFromVerifiedSet);
+      expect(m.asins).toHaveLength(expectedFromVerifiedSet);
       expect([...m.asins].sort()).toEqual(
-        ['B0896Q8JXD', 'B00L7S9LU4', 'B005AQK6V2', 'B09VBFQNKK', 'B0987MCGXT', 'B0CZ9LH53B', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B001FIQ7XU'].sort(),
+        expectedCategories.flatMap((cat) => [...(VERIFIED_BY_CATEGORY[cat] ?? [])].slice(0, PER_CATEGORY)).sort(),
       );
-      expect(m.sections.find((s) => s.category === 'thermal_clothing')?.cards).toHaveLength(0);
-      expect(m.sections.find((s) => s.category === 'kit')?.cards).toHaveLength(0);
+      expect(m.sections.map((s) => s.category)).toEqual(expectedCategories);
+      expect(m.sections.find((s) => s.category === 'kit')).toBeUndefined();
+      for (const s of m.sections) {
+        expect(s.cards.length).toBeGreaterThan(0);
+        expect(s.cards.length).toBeLessThanOrEqual(PER_CATEGORY);
+        expect(s.cards.length).toBe(Math.min(VERIFIED_BY_CATEGORY[s.category]!.length, PER_CATEGORY));
+        expect(s.category_label).toBeTruthy();
+        expect(s.cards.every((c) => c.category === s.category)).toBe(true);
+      }
+      // Short categories (fewer than PER_CATEGORY verified products) render exactly what exists, no placeholder.
+      for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
+        if (asins.length > 0 && asins.length < PER_CATEGORY) {
+          expect(m.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
+        }
+      }
     }
+  });
+
+  it('uses display_name for headings, omits standards codes and size_child_of, and has no image when image_url is null', async () => {
+    const m = await loadCatalogue({ SITE_ENV: 'preview' }, NOW);
+    const records = new Map(catalogueProducts.map((p) => [p.asin_uk, p]));
+    for (const s of m.sections) {
+      for (const card of s.cards) {
+        expect(card.image).toBeNull();
+        expect(card.name).not.toMatch(/\bBS\s?\d|\bEN\s?\d|ISO\s?\d/);
+        expect(card.facts.join(' ')).not.toMatch(/\bBS\s?\d|\bEN\s?\d|ISO\s?\d/);
+        expect(card.facts.join(' ')).not.toMatch(/size_child_of/i);
+        expect(card.buttonLabel).toContain(card.name);
+        expect(card.buttonLabel).not.toMatch(/B0[A-Z0-9]{8}/);
+        const record = [...records.values()].find((p) => p.variant_id === card.id);
+        expect(record).toBeTruthy();
+        if (record?.display_name) expect(card.name).toBe(record.display_name);
+        expect(record).not.toBeUndefined();
+        expect('size_child_of' in card).toBe(false);
+      }
+    }
+  });
+
+  it('every production CTA maps to a shortlistable verified product and the button count is derived, not hard-coded', async () => {
+    const m = await loadCatalogue(PROD_ENV, NOW);
+    expect(m.stats.withButton).toBe(expectedFromVerifiedSet);
+    expect(m.stats.withButton).toBe(m.stats.cards);
+    expect(m.stats.withPrice).toBe(0);
+    const records = new Map(catalogueProducts.map((p) => [p.variant_id, p]));
+    for (const s of m.sections) {
+      for (const card of s.cards) {
+        const record = records.get(card.id);
+        expect(record).toBeTruthy();
+        expect(record!.verification).toBe('verified');
+        expect(isProductVerified(record!)).toBe(true);
+        const links = card.offers.filter((o) => o.link);
+        expect(links.length).toBeGreaterThan(0);
+        for (const o of links) {
+          expect(o.link!.rel).toBe('sponsored nofollow');
+          expect(o.link!.href).toMatch(/^https:\/\/www\.amazon\.co\.uk\/dp\/[A-Z0-9]{10}\?tag=verifydist-21$/);
+        }
+        expect(card.offers.every((o) => o.price === null)).toBe(true);
+      }
+    }
+    expect(VERIFIED_COUNT).toBe(VERIFIED_ASINS.length);
+    expect(m.asins.every((id) => VERIFIED_ASINS.includes(id))).toBe(true);
+    expect(isShortlistable).toEqual(expect.any(Function));
   });
 });

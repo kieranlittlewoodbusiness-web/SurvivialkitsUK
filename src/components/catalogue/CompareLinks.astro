@@ -11,8 +11,8 @@ type GearCategory = 'torches' | 'power-banks' | 'radios' | 'water-storage' | 'fi
 interface Props { categories: GearCategory[] }
 
 const GEAR_TO_CATALOGUE: Record<GearCategory, ProductCategory[]> = {
-  torches: ['wind_up_torch_radio'],
-  radios: ['wind_up_torch_radio'],
+  torches: ['torch'],
+  radios: ['radio'],
   'power-banks': ['power_bank'],
   'water-storage': ['emergency_water'],
   'first-aid': ['first_aid_kit'],

@@ -4,6 +4,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges } from './lib/dist-checks.mjs';
+import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
+import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
 const ROBOTS = '<meta name="robots" content="index, follow">';
@@ -45,8 +47,17 @@ describe('checkLinks', () => {
     expect(JSON.stringify(r)).not.toContain('secret-21');
   });
   it('fails when the affiliate count is not the expected number', () => {
-    const r = checkLinks(site({ 'index.html': page(card('sponsored nofollow')) }), cfg, { expectAffiliate: 9 });
-    expect(r.failures.map((f) => f.reason)).toContain('expected 9 affiliate links, found 1');
+    const r = checkLinks(site({ 'index.html': page(card('sponsored nofollow')) }), cfg, { expectAffiliate: 4 });
+    expect(r.failures.map((f) => f.reason)).toContain('expected 4 affiliate links, found 1');
+  });
+  it('allows https product images only on m.media-amazon.com in <img> or <source>', () => {
+    const img = '<img src="https://m.media-amazon.com/images/I/example.jpg" width="160" height="160" alt="x">';
+    const good = checkLinks(site({ 'index.html': page(img) }), cfg);
+    expect(good.failures).toEqual([]);
+    const badHost = checkLinks(site({ 'index.html': page('<img src="https://images-eu.ssl-images-amazon.com/images/I/x.jpg" alt="x">') }), cfg);
+    expect(badHost.failures.map((f) => f.reason).join()).toMatch(/is not allowlisted/);
+    const badTag = checkLinks(site({ 'index.html': page('<a href="https://m.media-amazon.com/images/I/example.jpg">x</a>') }), cfg);
+    expect(badTag.failures.map((f) => f.reason).join()).toMatch(/image host in <a>/);
   });
 });
 
@@ -110,8 +121,17 @@ describe('checkContent', () => {
   });
 });
 
+const PER_CATEGORY = 3;
+const expectedAffiliate = Object.values(VERIFIED_BY_CATEGORY).reduce(
+  (n, asins) => n + Math.min(asins.length, PER_CATEGORY),
+  0,
+);
+const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
+  .filter(([, asins]) => asins.length > 0)
+  .map(([cat]) => cat);
+
 describe('verify:dist (production build with a dummy tag)', () => {
-  it('builds production and passes links (9 affiliate, sponsored + nofollow) and content (indexable) checks', () => {
+  it('builds production and passes links (derived affiliate count, sponsored + nofollow) and content (indexable) checks', () => {
     const out = fs.mkdtempSync(path.join(os.tmpdir(), 'verify-dist-'));
     const r = spawnSync('node', ['scripts/verify-dist.mjs'], {
       cwd: path.resolve(new URL('..', import.meta.url).pathname),
@@ -119,15 +139,27 @@ describe('verify:dist (production build with a dummy tag)', () => {
       encoding: 'utf8',
     });
     const log = `${r.stdout}\n${r.stderr}`;
-    expect(log).toMatch(/affiliate 9\)/);
-    expect(log).toMatch(/exactly 9 affiliate links/);
+    expect(log).toMatch(new RegExp(`affiliate ${expectedAffiliate}\\)`));
+    expect(log).toMatch(new RegExp(`exactly ${expectedAffiliate} affiliate links`));
     expect(log).toMatch(/robots\.txt allows crawling/);
     expect(r.status).toBe(0);
     const realTag = process.env.AMAZON_ASSOCIATES_UK_TAG;
     if (realTag) expect(log.includes(realTag)).toBe(false);
-    const compare = fs.readFileSync(path.join(out, 'compare/72-hour-emergency-kits/index.html'), 'utf8');
-    expect(compare.match(/data-affiliate="amazon"/g)).toHaveLength(9);
+    const compare = readCompareHtml(out);
+    expect(compare.match(/data-affiliate="amazon"/g)).toHaveLength(expectedAffiliate);
     if (realTag) expect(compare.includes(realTag)).toBe(false);
+    const rules = checkComparePage(compare, {
+      expectedButtons: expectedAffiliate,
+      expectedCategories,
+      maxPerCategory: PER_CATEGORY,
+      expectNoImages: true,
+    });
+    expect(rules.failures).toEqual([]);
+    for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
+      if (asins.length > 0 && asins.length < PER_CATEGORY) {
+        expect(rules.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
+      }
+    }
     fs.rmSync(out, { recursive: true, force: true });
   }, 180_000);
 });

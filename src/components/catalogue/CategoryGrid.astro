@@ -1,12 +1,12 @@
 ---
-/** Seven-category grid (S1-7). Links to the matching section of the compare page. */
+/** Category grid. Links to the matching section of the compare page, or to guidance when a category has no products. */
 import CategoryIcon from './CategoryIcon.astro';
 import { CATEGORY_META, CATEGORY_ORDER } from './catalogueView';
 import { comparePath } from '../../data/site';
 interface Props { counts?: Partial<Record<string, number>> }
 const { counts = {} } = Astro.props;
 // Categories with no approved products link to our guidance instead of an empty section.
-const GUIDANCE: Partial<Record<string, string>> = { kit: '/checklist', thermal_clothing: '/gear/winter-travel', emergency_blanket: '/gear/winter-travel', emergency_water: '/gear/water-storage', first_aid_kit: '/gear/first-aid', wind_up_torch_radio: '/gear/radios', power_bank: '/gear/power-banks' };
+const GUIDANCE: Partial<Record<string, string>> = { kit: '/checklist', thermal_clothing: '/gear/winter-travel', emergency_blanket: '/gear/winter-travel', emergency_water: '/gear/water-storage', first_aid_kit: '/gear/first-aid', torch: '/gear/torches', radio: '/gear/radios', power_bank: '/gear/power-banks', batteries: '/checklist', hi_vis: '/gear/winter-travel', jump_leads: '/gear/winter-travel', warning_triangle: '/gear/winter-travel' };
 ---
 <ul class="cat-grid">
   {

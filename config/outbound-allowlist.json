@@ -36,5 +36,8 @@
       "sponsored",
       "nofollow"
     ]
-  }
+  },
+  "image_hosts": [
+    "m.media-amazon.com"
+  ]
 }
