@@ -54,6 +54,11 @@ export interface VerificationEvidence {
   outcome: 'verified' | 'not_verified' | 'not_run';
   /** Checks that matched our record. Verified needs title, brand, model, pack_contents (+ size for thermals). */
   checks_matched: VerificationCheck[];
+  /**
+   * S1-10: ASIN in the listing's canonical link. When present it must equal asin_uk, except for a
+   * thermal_clothing size child, where it must equal size_child_of (and is then required).
+   */
+  canonical_asin?: string;
   note: string;
 }
 
@@ -493,6 +498,12 @@ interface CatalogueProductBase {
    * product_name keeps the full listing title for evidence only.
    */
   display_name?: string | null;
+  /**
+   * S1-10 (PM ruling, option b): thermal_clothing ONLY. The parent ASIN that a per-size child
+   * listing's canonical link points to. A size child verifies when the evidence's canonical_asin
+   * equals size_child_of (instead of asin_uk), and size_label is set. Rejected for every other category.
+   */
+  size_child_of?: string | null;
   /** S1-10: order within the category, integer 1-3 (lower first). Absent/null = after ranked items, source order. */
   display_rank?: number | null;
   /**
