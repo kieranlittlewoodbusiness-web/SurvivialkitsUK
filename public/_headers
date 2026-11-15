@@ -4,12 +4,17 @@
   X-Frame-Options: DENY
   Permissions-Policy: interest-cohort=()
 
-# Keep Cloudflare Pages hosts out of search. Production on https://uksurvivalkits.uk is not matched.
-# Covers the production alias (uksurvivalkits.pages.dev) and every preview/branch alias.
-https://:project.pages.dev/*
+# Keep Cloudflare Pages hosts out of search. These absolute-URL rules follow
+# https://developers.cloudflare.com/pages/configuration/headers/ (host placeholders
+# and a single path splat). They are written against this project's hostnames, not
+# a generic :project placeholder: curl of the live production alias
+# https://uksurvivalkits.pages.dev/ on 15 Nov 2026 (Europe/London) returned no
+# X-Robots-Tag, and other custom headers from this file were also absent.
+# Explicit hosts cannot match https://uksurvivalkits.uk or www.uksurvivalkits.uk.
+https://uksurvivalkits.pages.dev/*
   X-Robots-Tag: noindex
 
-https://:version.:project.pages.dev/*
+https://:version.uksurvivalkits.pages.dev/*
   X-Robots-Tag: noindex
 
 # Fingerprinted build assets can be cached long-term.

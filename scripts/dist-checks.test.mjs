@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges } from './lib/dist-checks.mjs';
+import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile } from './lib/dist-checks.mjs';
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
 const ROBOTS = '<meta name="robots" content="index, follow">';
@@ -86,7 +86,7 @@ describe('checkContent', () => {
         'index.html': page('<p>x</p>', noindex),
         '404.html': page('<p>missing</p>', noindex),
         'robots.txt': 'User-agent: *\nDisallow: /\n',
-        '_headers': '/*\n  X-Robots-Tag: noindex\n\nhttps://:project.pages.dev/*\n  X-Robots-Tag: noindex\n',
+        '_headers': '/*\n  X-Robots-Tag: noindex\n\nhttps://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
       }),
       { production: true },
     );
@@ -95,14 +95,38 @@ describe('checkContent', () => {
     expect(reasons.some((x) => x.startsWith('404.html'))).toBe(false);
     expect(reasons).toContain('robots.txt: does not contain "Allow: /"');
     expect(reasons).toContain('robots.txt: contains "Disallow: /"');
-    expect(reasons.filter((x) => x.startsWith('_headers'))).toHaveLength(1);
+    expect(reasons).toContain('_headers: X-Robots-Tag noindex applies to "/*", which can match the production host');
+    expect(reasons.some((x) => x.includes('noindex must not apply to https://uksurvivalkits.uk/'))).toBe(true);
+  });
+  it('production: fails when preview pages.dev aliases are not noindexed', () => {
+    const r = checkContent(
+      site({
+        'index.html': page('<p>x</p>'),
+        'robots.txt': 'User-agent: *\nAllow: /\n',
+        '_headers': 'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
+      }),
+      { production: true },
+    );
+    const reasons = r.failures.map((f) => `${f.file}: ${f.reason}`);
+    expect(reasons).toContain('_headers: X-Robots-Tag noindex does not apply to https://preview-sha.uksurvivalkits.pages.dev/');
+    expect(reasons.some((x) => x.includes('noindex must not apply to https://uksurvivalkits.uk/'))).toBe(false);
+  });
+  it('production: fails when _headers is missing', () => {
+    const r = checkContent(
+      site({
+        'index.html': page('<p>x</p>'),
+        'robots.txt': 'User-agent: *\nAllow: /\n',
+      }),
+      { production: true },
+    );
+    expect(r.failures.map((f) => `${f.file}: ${f.reason}`)).toContain('_headers: missing');
   });
   it('production: passes an indexable site with robots.txt Allow and pages.dev-only noindex headers', () => {
     const r = checkContent(
       site({
         'index.html': page('<p>x</p>'),
         'robots.txt': 'User-agent: *\nAllow: /\n',
-        '_headers': 'https://:project.pages.dev/*\n  X-Robots-Tag: noindex\n',
+        '_headers': 'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n\nhttps://:version.uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
       }),
       { production: true },
     );
@@ -130,4 +154,31 @@ describe('verify:dist (production build with a dummy tag)', () => {
     if (realTag) expect(compare.includes(realTag)).toBe(false);
     fs.rmSync(out, { recursive: true, force: true });
   }, 180_000);
+});
+
+describe('pages.dev _headers patterns', () => {
+  const alias = 'https://uksurvivalkits.pages.dev/*';
+  const preview = 'https://:version.uksurvivalkits.pages.dev/*';
+  it('matches the production pages.dev alias and preview subdomains only', () => {
+    expect(headersPatternMatches(alias, 'https://uksurvivalkits.pages.dev/')).toBe(true);
+    expect(headersPatternMatches(alias, 'https://uksurvivalkits.pages.dev/scenarios/leave-home-bag/')).toBe(true);
+    expect(headersPatternMatches(alias, 'https://preview-sha.uksurvivalkits.pages.dev/')).toBe(false);
+    expect(headersPatternMatches(preview, 'https://preview-sha.uksurvivalkits.pages.dev/')).toBe(true);
+    expect(headersPatternMatches(preview, 'https://preview-sha.uksurvivalkits.pages.dev/scenarios/leave-home-bag/')).toBe(true);
+    expect(headersPatternMatches(preview, 'https://uksurvivalkits.pages.dev/')).toBe(false);
+    expect(headersPatternMatches(alias, 'https://uksurvivalkits.uk/')).toBe(false);
+    expect(headersPatternMatches(preview, 'https://uksurvivalkits.uk/')).toBe(false);
+    expect(headersPatternMatches(alias, 'https://www.uksurvivalkits.uk/')).toBe(false);
+    expect(headersPatternMatches(preview, 'https://www.uksurvivalkits.uk/')).toBe(false);
+  });
+  it('parses the project _headers noindex rules', () => {
+    const rules = parseHeadersFile(
+      'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n\nhttps://:version.uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
+    );
+    expect(rules).toHaveLength(2);
+    expect(rules.map((r) => r.pattern)).toEqual([
+      'https://uksurvivalkits.pages.dev/*',
+      'https://:version.uksurvivalkits.pages.dev/*',
+    ]);
+  });
 });

@@ -41,7 +41,7 @@ A build without the tag (or a non-production `SITE_ENV`) has 0 affiliate links. 
 **`npm run verify:dist`** (`scripts/verify-dist.mjs`) is the production gate. Run it before every production deploy. It builds with `SITE_ENV=production` and the dummy tag `verifydist-21` into `.verify-dist/` (the real tag is never used or printed), then runs:
 
 - `check:links --expect-affiliate 9`: exactly 9 affiliate links, all with `sponsored` and `nofollow`;
-- `check:content --production`: no `noindex` on any page except `404.html`, `robots.txt` contains `Allow: /` and no `Disallow: /`, and `_headers` sends `X-Robots-Tag: noindex` only for `*.pages.dev` hosts.
+- `check:content --production`: no `noindex` on any page except `404.html`, `robots.txt` contains `Allow: /` and no `Disallow: /`, and `_headers` exists and sends `X-Robots-Tag: noindex` for `uksurvivalkits.pages.dev` and `*.uksurvivalkits.pages.dev` only, never for `uksurvivalkits.uk`.
 
 `npm test` runs the same `verify:dist` path, plus mutation tests for both checkers (`scripts/dist-checks.test.mjs`). There is no CI workflow in this repo yet. Run `npm run check`, `npm test` and `npm run verify:dist` locally before merging and deploying. Preview builds stay `noindex` with `robots.txt` `Disallow: /`.
 
