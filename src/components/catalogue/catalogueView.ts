@@ -199,7 +199,12 @@ export function toCardModel(c: CatalogueComparison, env: Env, now: Date): Produc
  */
 /** Render gate: verified product record (isProductVerified) with at least one exact-match offer. */
 export function isApproved(c: CatalogueComparison, record: ProductRecord | undefined): boolean {
-  return record !== undefined && isProductVerified(record) && c.offers.some((o) => o.model_match_confirmed);
+  return (
+    c.product.verification === 'verified' &&
+    record !== undefined &&
+    isProductVerified(record) &&
+    c.offers.some((o) => o.model_match_confirmed === true)
+  );
 }
 
 export async function loadCatalogue(env: Env = process.env, now = new Date()): Promise<CatalogueModel> {
@@ -216,7 +221,7 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
   const records = new Map(data.catalogueProducts.map((p) => [p.variant_id, p]));
   const cards = comparisons
     .filter((c) => isApproved(c, records.get(c.variant_id)))
-    .map((c) => toCardModel({ ...c, offers: c.offers.filter((o) => o.model_match_confirmed) }, env, now));
+    .map((c) => toCardModel({ ...c, offers: c.offers.filter((o) => o.model_match_confirmed === true) }, env, now));
   // Distinct visible labels: fall back to the ASIN when two items would read the same.
   const seen = new Map<string, number>();
   for (const card of cards) seen.set(card.buttonLabel, (seen.get(card.buttonLabel) ?? 0) + 1);
