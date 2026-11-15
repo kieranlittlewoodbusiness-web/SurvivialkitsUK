@@ -1,0 +1,40 @@
+{
+  "description": "Outbound link allowlist for scripts/check-outbound-links.mjs (S1-7). Official citation hosts only, plus Amazon UK affiliate product links. Any other external host fails the check.",
+  "own_hosts": [
+    "uksurvivalkits.uk",
+    "www.uksurvivalkits.uk"
+  ],
+  "citation_hosts": [
+    "prepare.campaign.gov.uk",
+    "beready.campaign.gov.uk",
+    "ready.campaign.gov.scot",
+    "www.gov.uk",
+    "www.gov.scot",
+    "weather.metoffice.gov.uk",
+    "www.metoffice.gov.uk",
+    "www.redcross.org.uk",
+    "www.thepsr.co.uk",
+    "myfloodline.sepa.scot",
+    "beta.sepa.scot",
+    "www.sepa.org.uk",
+    "www.asa.org.uk",
+    "www.powercut105.com",
+    "check-for-flooding.service.gov.uk",
+    "www.nienetworks.co.uk",
+    "www.nidirect.gov.uk"
+  ],
+  "affiliate": {
+    "hosts": [
+      "www.amazon.co.uk"
+    ],
+    "path_pattern": "^/dp/[A-Z0-9]{10}$",
+    "required_query": [
+      "tag"
+    ],
+    "tag_pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,60}-21$",
+    "required_rel": [
+      "sponsored",
+      "nofollow"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+---
+/** Seven-category grid (S1-7). Links to the matching section of the compare page. */
+import CategoryIcon from './CategoryIcon.astro';
+import { CATEGORY_META, CATEGORY_ORDER } from './catalogueView';
+import { comparePath } from '../../data/site';
+interface Props { counts?: Partial<Record<string, number>> }
+const { counts = {} } = Astro.props;
+// Categories with no approved products link to our guidance instead of an empty section.
+const GUIDANCE: Partial<Record<string, string>> = { kit: '/checklist', thermal_clothing: '/gear/winter-travel', emergency_blanket: '/gear/winter-travel', emergency_water: '/gear/water-storage', first_aid_kit: '/gear/first-aid', wind_up_torch_radio: '/gear/radios', power_bank: '/gear/power-banks' };
+---
+<ul class="cat-grid">
+  {
+    CATEGORY_ORDER.map((c) => {
+      const m = CATEGORY_META[c];
+      const n = counts[c];
+      return (
+        <li>
+          <a class="cat" href={typeof n === 'number' && n > 0 ? `${comparePath}#${m.anchor}` : (GUIDANCE[c] ?? '/checklist')}>
+            <span class="cat__icon"><CategoryIcon category={c} /></span>
+            <span class="cat__txt">
+              <strong>{m.title}</strong>
+              <span>{typeof n === 'number' && n > 0 ? `${m.dek} · ${n} listed` : 'What to look for: our guidance'}</span>
+            </span>
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>
+<style>
+  .cat-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cat { display: grid; gap: var(--s-3); align-content: start; height: 100%; min-height: 132px; padding: var(--s-4); border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); color: var(--ink); text-decoration: none; box-shadow: var(--shadow-1); }
+  .cat:hover { color: var(--ink); border-color: var(--line-strong); box-shadow: var(--shadow-2); }
+  .cat__icon { width: 48px; height: 48px; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .cat__txt { display: grid; gap: 2px; }
+  .cat__txt strong { font-size: 1rem; line-height: 1.25; }
+  .cat__txt span { font-size: var(--step--1); color: var(--ink-2); }
+  li:first-child { grid-column: 1 / -1; }
+  li:first-child .cat { grid-template-columns: 48px 1fr; align-items: center; min-height: 0; background: var(--band); border-color: var(--band); color: var(--on-band); }
+  li:first-child .cat__txt span { color: var(--on-band-2); }
+  li:first-child .cat__icon { background: rgb(255 255 255 / 0.1); color: var(--band-accent); }
+  @media (min-width: 768px) {
+    .cat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    li:first-child { grid-column: span 2; }
+  }
+</style>

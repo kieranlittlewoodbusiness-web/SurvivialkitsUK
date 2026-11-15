@@ -1,262 +1,207 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import EvidenceBadge from '../components/EvidenceBadge.astro';
+import CategoryGrid from '../components/catalogue/CategoryGrid.astro';
 import { site, comparePath } from '../data/site';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
+import { loadCatalogue } from '../components/catalogue/catalogueView';
 
 const scenarios = await getPublishedScenarios();
-const featured = scenarios.filter((s) => s.data.featured).slice(0, 4);
+const featured = scenarios.filter((s) => s.data.featured).slice(0, 6);
 const gear = await getPublishedGear();
+const catalogue = await loadCatalogue(process.env, new Date());
+const counts = Object.fromEntries(catalogue.sections.map((s) => [s.category, s.cards.length]));
+
+const artFor = (id: string) =>
+  id.includes('power') ? 'power'
+  : id.includes('water') ? 'water'
+  : id.includes('weather') || id.includes('warning') ? 'weather'
+  : id.includes('evacuation') || id.includes('bag') ? 'bag'
+  : id.includes('cupboard') || id.includes('food') ? 'cupboard'
+  : id.includes('flood') ? 'flood'
+  : id.includes('winter') ? 'winter'
+  : 'kit';
+const kickerFor = (id: string) =>
+  id.includes('power') ? 'Power cuts'
+  : id.includes('water') ? 'Water supply'
+  : id.includes('weather') ? 'Severe weather'
+  : id.includes('evacuation') ? 'Evacuation'
+  : id.includes('cupboard') ? 'Food'
+  : id.includes('winter') ? 'Winter travel'
+  : 'Scenario';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: `${site.siteUrl}/`,
+  inLanguage: 'en-GB',
+  publisher: { '@type': 'Organization', name: site.name, url: site.siteUrl },
+};
 ---
 
 <BaseLayout
   title="UK household emergency planning and 72-hour kits"
-  description="Plan for 3 days of disruption in a UK home: a free 72-hour checklist, scenario guides, and pre-packed emergency kits compared against the Be Ready checklist."
+  description="Plan for 3 days of disruption in a UK home: a free 72-hour checklist, scenario guides, and emergency essentials on Amazon UK compared by what their listings state."
   canonicalPath="/"
 >
-  <section class="hero" aria-label="Introduction">
-    <div class="hero__visual" aria-hidden="true">
-      <img
-        src="/images/hero-hall.svg"
-        alt=""
-        width="1600"
-        height="900"
-        decoding="async"
-        fetchpriority="high"
-      />
-      <div class="hero__rain"></div>
-    </div>
-    <div class="wrap hero__content">
-      <p class="brand-hero">{site.name}</p>
-      <h1>Know what you already own. Fill the gaps calmly.</h1>
-      <p class="lede">
-        Practical household planning for UK outages, severe weather, supply disruption and temporary
-        evacuation—grounded in official guidance.
-      </p>
-      <div class="btn-row">
-        <a class="btn" href="/start-here">Start Here</a>
-        <a class="btn btn--ghost" href="/checklist">72-hour checklist</a>
-      </div>
-    </div>
-  </section>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
-  <section class="section home-compare" aria-labelledby="home-compare-heading">
-    <div class="wrap">
-      <div class="home-compare__card">
-        <p class="eyebrow">New comparison</p>
-        <h2 id="home-compare-heading">Pre-packed 72-hour kits compared</h2>
-        <p>
-          Five kit models from UK sellers, checked against the government’s Be Ready list: how much water each one is short,
-          whether it has a radio, and what you would still need to add.
+  <div class="wrap">
+    <section class="lead" aria-labelledby="lead-h">
+      <div class="hero">
+        <p class="kicker">Start here</p>
+        <h1 id="lead-h">Know what you already own. Fill the gaps calmly.</h1>
+        <p class="lede">
+          Practical household planning for UK power cuts, severe weather, supply disruption and temporary evacuation,
+          grounded in official guidance.
         </p>
-        <p class="home-compare__flag">Researched from listings, not tested.</p>
         <div class="btn-row">
-          <a class="btn" href={comparePath}>Compare 72-hour kits</a>
+          <a class="btn btn--band btn--lg" href="/start-here">Start here</a>
+          <a class="btn btn--band-outline btn--lg" href="/checklist">Open the checklist</a>
         </div>
       </div>
-    </div>
-  </section>
+      <aside class="brief card" aria-labelledby="brief-h">
+        <p class="kicker">The short version</p>
+        <h2 id="brief-h">Why it matters</h2>
+        <ol>
+          <li>UK government guidance asks households to plan for a few days of disruption.</li>
+          <li>Most of what you need is already in your cupboards, drawers and car.</li>
+          <li>Water is the gap most households have: plan 3 litres per person per day.</li>
+        </ol>
+        <p><a href="/method">How we label evidence</a></p>
+      </aside>
+    </section>
 
-  <section class="section">
-    <div class="wrap split-2">
-      <div>
-        <p class="eyebrow">Why this exists</p>
-        <h2>Ordinary shocks, ordinary competence</h2>
-        <p>
-          UK government resilience campaigns ask households to prepare for up to a few days of
-          disruption so responders can prioritise people who need help most. Climate-driven severe
-          weather and occasional supply interruptions make those household logistics more relevant—not
-          as a prediction, but as context for planning.
-        </p>
-        <p>
-          <EvidenceBadge kind="official-guidance" />
-          See <a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer">Prepare</a>,
-          <a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a>
-          and our <a href="/sources">sources list</a>.
-        </p>
+    <section class="section feature-wrap" aria-labelledby="feat-h">
+      <div class="feature card">
+        <div class="feature__media" aria-hidden="true"><div class="art art--kit"></div></div>
+        <div>
+          <p class="kicker">72-hour kit · Updated Nov 2026</p>
+          <h2 id="feat-h">Build a 72-hour kit from essentials on Amazon UK</h2>
+          <p class="lede">
+            Water, first aid, wind-up radios, power banks, blankets and thermals, compared by what each listing states and
+            checked against the government's Be Ready list.
+          </p>
+          <ul class="chips" aria-label="About this comparison">
+            <li class="chip chip--static">{catalogue.stats.cards} products</li>
+            <li class="chip chip--static">7 categories</li>
+            <li class="chip chip--static">Researched from listings, not tested</li>
+          </ul>
+          <div class="btn-row">
+            <a class="btn btn--lg" href={comparePath}>See the 72-hour kit guide</a>
+          </div>
+        </div>
       </div>
-      <div>
-        <p class="eyebrow">Method</p>
-        <h2>Guidance first, then criteria, then labelled ads</h2>
-        <p>
-          We separate official advice, desk research, firsthand tests and advertising. Affiliate
-          links use clear <strong>Ad</strong> labels before you engage.
-        </p>
-        <p><a href="/method">How we label evidence →</a></p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="section">
-    <div class="wrap">
-      <p class="eyebrow">Household scenarios</p>
-      <h2>Four places to start</h2>
-      <ul class="link-list">
+    <section class="section section--flush" aria-labelledby="cat-h">
+      <div class="section-head">
+        <h2 id="cat-h">Browse by category</h2>
+        <a href={comparePath}>All products</a>
+      </div>
+      <CategoryGrid counts={counts} />
+    </section>
+
+    <section class="section" aria-labelledby="scen-h">
+      <div class="section-head">
+        <h2 id="scen-h">Household scenarios</h2>
+        <a href="/scenarios">All scenarios</a>
+      </div>
+      <div class="grid grid--3">
         {
           featured.map((entry) => (
+            <article class="card story">
+              <div class="story__media" aria-hidden="true"><div class={`art art--${artFor(entry.id)}`} /></div>
+              <div class="story__body">
+                <p class="kicker">{kickerFor(entry.id)}</p>
+                <h3 class="story__title"><a href={`/scenarios/${entry.id}`}>{entry.data.title}</a></h3>
+                <p class="story__dek">{entry.data.scenario}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section section--flush" aria-labelledby="steps-h">
+      <div class="section-head">
+        <h2 id="steps-h">72-hour checklist in three steps</h2>
+        <a href="/checklist">Open the checklist</a>
+      </div>
+      <ol class="steps grid grid--3">
+        <li class="card card-pad"><span class="steps__n" aria-hidden="true">1</span><h3>Check what you already own</h3><p>Cupboards, drawers and the car first.</p></li>
+        <li class="card card-pad"><span class="steps__n" aria-hidden="true">2</span><h3>Write it down</h3><p>Contacts, meeting points and medical notes on paper.</p></li>
+        <li class="card card-pad"><span class="steps__n" aria-hidden="true">3</span><h3>Fill gaps gradually</h3><p>Genuine gaps only, on normal shops.</p></li>
+      </ol>
+    </section>
+
+    <section class="section" aria-labelledby="gear-h">
+      <div class="section-head">
+        <h2 id="gear-h">Gear criteria</h2>
+        <a href="/gear">All criteria</a>
+      </div>
+      <ul class="link-list link-list--grid">
+        {
+          gear.map((entry) => (
             <li>
-              <a href={`/scenarios/${entry.id}`}>
+              <a href={`/gear/${entry.id}`}>
                 {entry.data.title}
-                <span>{entry.data.scenario}</span>
+                <span>{entry.data.description}</span>
               </a>
             </li>
           ))
         }
       </ul>
-      <p><a href="/scenarios">All scenarios</a></p>
-    </div>
-  </section>
+    </section>
 
-  <section class="section">
-    <div class="wrap split-2">
-      <div>
-        <p class="eyebrow">72-hour checklist</p>
-        <h2>Three steps</h2>
-        <ol class="home-steps">
-          <li>Check cupboards, drawers and the car for what you already own.</li>
-          <li>Write contacts, meeting points and medical notes on paper.</li>
-          <li>Fill genuine gaps gradually on normal shops.</li>
-        </ol>
-        <div class="btn-row">
-          <a class="btn" href="/checklist">Open the checklist</a>
-        </div>
-      </div>
-      <div>
-        <p class="eyebrow">Gear criteria</p>
-        <h2>Compare before you buy</h2>
-        <ul class="link-list">
-          {
-            gear.map((entry) => (
-              <li>
-                <a href={`/gear/${entry.id}`}>
-                  {entry.data.title}
-                  <span>{entry.data.description}</span>
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </div>
-  </section>
+    <aside class="notice notice--info" aria-labelledby="gov-h">
+      <h2 id="gov-h" class="notice__title">Official guidance first</h2>
+      <p>
+        We separate official advice, desk research, firsthand tests and advertising. See
+        <a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer">Prepare</a>,
+        <a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a> and our
+        <a href="/sources">sources list</a>.
+      </p>
+    </aside>
+  </div>
 </BaseLayout>
 
 <style>
-  .hero {
-    position: relative;
-    /* Mobile first: keep the next section (kit comparison) within reach of the first screen. */
-    min-height: min(68vh, 34rem);
-    display: grid;
-    align-items: end;
-    color: #f4f7f8;
-    overflow: hidden;
+  .lead { display: grid; gap: var(--s-4); padding-top: var(--s-4); }
+  .hero { position: relative; isolation: isolate; overflow: hidden; padding: var(--s-6) var(--s-5); border-radius: var(--r-lg); background: var(--band); color: var(--on-band); }
+  .hero::after { content: ''; position: absolute; z-index: -1; right: -80px; bottom: -120px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgb(127 214 184 / 0.28), transparent 70%); }
+  .hero h1 { color: var(--on-band); font-size: var(--step-5); max-width: 14ch; margin-top: var(--s-3); }
+  .hero .kicker { color: var(--band-accent); }
+  .hero .lede { color: var(--on-band-2); max-width: 36ch; }
+  .btn--band { background: var(--on-band); border-color: var(--on-band); color: var(--band); }
+  .btn--band:hover { background: #ffffff; border-color: #ffffff; color: var(--band); }
+  .btn--band-outline { background: transparent; border-color: var(--on-band-2); color: var(--on-band); }
+  .btn--band-outline:hover { background: rgb(255 255 255 / 0.08); border-color: var(--on-band); color: var(--on-band); }
+  .hero :focus-visible { outline-color: var(--band-accent); }
+  .brief { padding: var(--s-5); border-radius: var(--r-lg); }
+  .brief h2 { font-size: var(--step-1); }
+  .brief ol { list-style: none; counter-reset: b; margin: var(--s-3) 0 var(--s-2); padding: 0; display: grid; gap: var(--s-3); }
+  .brief li { counter-increment: b; display: grid; grid-template-columns: 32px 1fr; gap: var(--s-3); align-items: start; }
+  .brief li::before { content: counter(b); width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 750; display: grid; place-items: center; font-size: 0.9375rem; }
+  .brief p { margin: 0; font-weight: 650; }
+  .feature { display: grid; gap: var(--s-5); padding: var(--s-5); border-radius: var(--r-lg); }
+  .feature__media { position: relative; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 16 / 9; }
+  .feature .chips { margin-top: var(--s-2); }
+  .section--flush { padding-top: 0; }
+  .steps { list-style: none; padding: 0; margin: 0; }
+  .steps p { margin: 0; color: var(--ink-2); }
+  .steps__n { display: inline-grid; place-items: center; width: 40px; height: 40px; margin-bottom: var(--s-3); border-radius: var(--r-sm); background: var(--ink); color: var(--canvas); font-weight: 800; }
+  .link-list--grid { grid-template-columns: minmax(0, 1fr); }
+  .notice__title { font-size: var(--step-1); margin: 0; }
+  @media (min-width: 768px) {
+    .feature { grid-template-columns: 1.1fr 1fr; align-items: center; padding: var(--s-6); }
+    .link-list--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-
-  .hero__visual {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+  @media (min-width: 960px) {
+    .lead { grid-template-columns: 2fr 1fr; }
+    .hero { padding: var(--s-8) var(--s-7); }
   }
-
-  .hero__visual img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    animation: drift 28s ease-in-out infinite alternate;
-  }
-
-  .hero__rain {
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      -15deg,
-      transparent,
-      transparent 8px,
-      rgba(244, 247, 248, 0.04) 8px,
-      rgba(244, 247, 248, 0.04) 10px
-    );
-    animation: rain 12s linear infinite;
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  .hero__content {
-    position: relative;
-    z-index: 1;
-    padding: 3.5rem 0 2.25rem;
-    background: linear-gradient(180deg, transparent 0%, rgba(28, 36, 41, 0.55) 35%, rgba(28, 36, 41, 0.78) 100%);
-    width: 100%;
-    max-width: none;
-    padding-inline: max(1rem, calc((100% - var(--max)) / 2));
-  }
-
-  .brand-hero {
-    font-family: var(--font-display);
-    font-size: clamp(1.8rem, 4.5vw, 2.6rem);
-    font-weight: 700;
-    margin: 0 0 0.75rem;
-    color: #f4f7f8;
-    max-width: 20ch;
-  }
-
-  .hero h1 {
-    color: #f4f7f8;
-    max-width: 16ch;
-  }
-
-  .hero .lede {
-    color: rgba(244, 247, 248, 0.9);
-  }
-
-  @media (min-width: 48rem) {
-    .hero {
-      min-height: min(92vh, 52rem);
-    }
-  }
-
-  .home-compare__card {
-    background: #fff;
-    border: 1px solid var(--line);
-    border-top: 4px solid var(--signal);
-    padding: 1.25rem;
-    max-width: 44rem;
-  }
-
-  .home-compare__card p {
-    margin-bottom: 0.75rem;
-  }
-
-  .home-compare__flag {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--warn);
-  }
-
-  .home-steps {
-    margin: 0;
-    padding-left: 1.2rem;
-    max-width: 34rem;
-  }
-
-  .home-steps li {
-    margin-bottom: 0.65rem;
-  }
-
-  @keyframes drift {
-    from {
-      transform: scale(1.04) translate3d(0, 0, 0);
-    }
-    to {
-      transform: scale(1.1) translate3d(-1.5%, -1%, 0);
-    }
-  }
-
-  @keyframes rain {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 120px 220px;
-    }
+  @media (min-width: 1100px) {
+    .link-list--grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 </style>

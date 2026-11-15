@@ -1,6 +1,6 @@
-# Build Brief: The Household Brief
+# Build Brief: U.K. Survival Kit Brief
 
-**Working brand name:** The Household Brief  
+**Working brand name:** U.K. Survival Kit Brief  
 **Tagline:** Practical household planning for disruption  
 **Stack:** Astro + TypeScript on Cloudflare Pages  
 **Monetisation:** UK retailer affiliate links with ASA-compliant disclosure  
@@ -14,7 +14,7 @@ This brief is the build contract for Cursor Agent. Prefer government and Red Cro
 
 ### Brand
 
-**The Household Brief** presents preparedness as ordinary domestic competence: knowing what you already own, writing down contacts, and filling a few gaps over ordinary shopping trips. The name should appear as a hero-level signal on the homepage—not only in the nav.
+**U.K. Survival Kit Brief** presents preparedness as ordinary domestic competence: knowing what you already own, writing down contacts, and filling a few gaps over ordinary shopping trips. The name should appear as a hero-level signal on the homepage—not only in the nav.
 
 Positioning line for About/meta: *Independent guides to household readiness in the UK, grounded in official advice and practical product criteria.*
 

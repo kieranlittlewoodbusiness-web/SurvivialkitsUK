@@ -68,7 +68,7 @@ export const checklistGroups: ChecklistGroup[] = [
     id: 'communications',
     title: 'Communications',
     items: [
-      { id: 'com-105', label: 'Power-cut number on paper: 105 (England, Scotland, Wales); confirm NI number on Prepare pages' },
+      { id: 'com-105', label: 'Power-cut number on paper: 105 (England, Scotland, Wales) or 03457 643643 (Northern Ireland)' },
       { id: 'com-radio', label: 'Battery or wind-up radio for updates if broadband fails' },
       { id: 'com-freqs', label: 'Local/national radio frequencies written on paper' },
       { id: 'com-powerbank', label: 'Charged power bank for essential phone use' },

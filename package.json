@@ -1,5 +1,5 @@
 {
-  "name": "the-household-brief",
+  "name": "uk-survival-kit-brief",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -10,9 +10,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check && astro build",
+    "check": "astro check && astro build && npm run -s check:dist",
     "astro": "astro",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:links": "node scripts/check-outbound-links.mjs dist",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:content": "node scripts/check-content.mjs dist",
+    "check:dist": "npm run -s check:links && npm run -s check:content",
+    "verify:dist": "node scripts/verify-dist.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",

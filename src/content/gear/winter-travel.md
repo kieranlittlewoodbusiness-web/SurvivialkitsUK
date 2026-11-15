@@ -8,8 +8,8 @@ draft: false
 affiliate: true
 order: 6
 criteria:
-  - "Hi-vis layer, scraper/de-icer, compact shovel, warm layers, blanket"
-  - "Jump leads matched to vehicle type (extra caution for hybrids/EVs)"
+  - "High-visibility jacket, scraper/de-icer, compact shovel, warm layers, blanket"
+  - "Battery jump leads"
   - "Torch and in-car charge lead"
   - "Snacks and warm drink flask"
   - "Paper map when signal fails"

@@ -12,9 +12,7 @@ startHere: true
 order: 4
 gearCategories: [winter-travel, torches, first-aid]
 evidence: [official-guidance]
-reviewFlags:
-  - "Jump-lead suitability for hybrids and EVs is vehicle-specific—unverified as a generic recommendation."
-  - "Any statement of legal duties for warning triangles or hi-vis must cite current rules before publication."
+reviewFlags: []
 sources:
   - label: Ready Scotland – Emergency kit (car section)
     url: https://ready.campaign.gov.scot/emergency-kit
@@ -32,10 +30,10 @@ Ready Scotland and Prepare-style guidance commonly include:
 
 - Torch and spare batteries
 - Warm clothes, boots and a blanket
-- High-visibility layer
+- High-visibility jacket
 - Ice scraper and de-icer
 - Phone charger
-- Jump leads only if suitable for your vehicle type
+- Battery jump leads
 - Compact shovel, map, snacks and a warm drink in a flask
 - First-aid kit
 

@@ -1,0 +1,51 @@
+---
+/**
+ * S1-7: internal links from gear and scenario pages to the matching sections of the 72-hour
+ * compare page, where the verified Amazon cards live. Renders nothing when no matching
+ * category has an approved product. No outbound links, no Ad label (nothing here is an ad).
+ */
+import { CATEGORY_META, loadCatalogue } from './catalogueView';
+import type { ProductCategory } from '../../lib/offers';
+
+type GearCategory = 'torches' | 'power-banks' | 'radios' | 'water-storage' | 'first-aid' | 'winter-travel';
+interface Props { categories: GearCategory[] }
+
+const GEAR_TO_CATALOGUE: Record<GearCategory, ProductCategory[]> = {
+  torches: ['wind_up_torch_radio'],
+  radios: ['wind_up_torch_radio'],
+  'power-banks': ['power_bank'],
+  'water-storage': ['emergency_water'],
+  'first-aid': ['first_aid_kit'],
+  'winter-travel': ['emergency_blanket', 'thermal_clothing'],
+};
+
+const { categories } = Astro.props;
+const catalogue = await loadCatalogue(process.env, new Date());
+const wanted = [...new Set(categories.flatMap((c) => GEAR_TO_CATALOGUE[c]))];
+const links = catalogue.sections
+  .filter((s) => wanted.includes(s.category) && s.cards.length > 0)
+  .map((s) => ({ ...CATEGORY_META[s.category], count: s.cards.length }));
+---
+
+{
+  links.length > 0 && (
+    <aside class="notice compare-links" aria-labelledby="compare-links-h">
+      <h2 id="compare-links-h">Products we have checked</h2>
+      <p>We compare a short list of items on Amazon UK against these criteria in our 72-hour kit guide.</p>
+      <ul class="link-list">
+        {links.map((l) => (
+          <li>
+            <a href={`/compare/72-hour-emergency-kits/#${l.anchor}`}>
+              {l.title}: {l.count} listed
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  )
+}
+
+<style>
+  .compare-links { margin-top: var(--s-7, 2rem); }
+  .compare-links h2 { margin-top: 0; font-size: var(--step-1, 1.25rem); }
+</style>

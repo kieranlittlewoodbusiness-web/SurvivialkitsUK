@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# S1-7 production verification build (npm run verify:dist)
+.verify-dist/
