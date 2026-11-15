@@ -300,3 +300,43 @@ describe('L1: verification_evidence.checked_on cannot be in the future (Europe/L
     expect(() => parseCatalogueProductsFile(rawProducts, { now: NOW })).not.toThrow();
   });
 });
+
+/* ---------- PM: UGREEN identity keys (PB312 + SKU 25683); TSADF7G5634 listing-only ---------- */
+
+describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
+  const ug = () => catalogueProducts.find((p) => p.asin_uk === 'B0CSSRD4NT')! as CatalogueProduct;
+  it('model PB312 and SKU 25683 are the identity keys; TSADF7G5634 is listing_mpn only (not mpn)', () => {
+    const p = ug();
+    expect(p.model_code).toBe('PB312');
+    expect(p.manufacturer_sku).toBe('25683');
+    expect(p.listing_mpn).toBe('TSADF7G5634');
+    expect(p.mpn).toBeNull();
+    const o = catalogueOffers.find((x) => x.asin === 'B0CSSRD4NT')!;
+    expect(o.mpn).toBeNull();
+    expect(o.model_match_confirmed).toBe(true);
+  });
+  it('still verified and still linked in a production build; the verified set stays 9', () => {
+    expect(isProductVerified(ug())).toBe(true);
+    expect(catalogueProducts.filter((p) => p.verification === 'verified')).toHaveLength(9);
+    const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
+    expect(linked).toHaveLength(9);
+    expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(true);
+  });
+  it('schema: listing_mpn may not double as an identity key; blank values are rejected; both fields optional', () => {
+    const p = ug();
+    expect(() => parseCatalogueProduct(p, { now: NOW })).not.toThrow();
+    for (const key of ['mpn', 'manufacturer_sku', 'model_code'] as const) {
+      expect(() => parseCatalogueProduct({ ...p, [key]: 'TSADF7G5634' }, { now: NOW })).toThrow(/listing_mpn/);
+    }
+    expect(() => parseCatalogueProduct({ ...p, manufacturer_sku: '  ' }, { now: NOW })).toThrow();
+    expect(() => parseCatalogueProduct({ ...p, listing_mpn: '' }, { now: NOW })).toThrow();
+    const { manufacturer_sku: _s, listing_mpn: _l, ...without } = p;
+    expect(() => parseCatalogueProduct(without, { now: NOW })).not.toThrow();
+  });
+  it('a different offer MPN does not break the ASIN match once the product mpn is null (listing MPN is ignored for identity)', () => {
+    const o = { ...catalogueOffers.find((x) => x.asin === 'B0CSSRD4NT')!, mpn: 'TSADF7G5634' };
+    const d = toAffiliateDisplayOffer(o, ug(), { now: NOW, programmes: affiliateProgrammes, buildEnv: { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG } });
+    expect(d.model_match_confirmed).toBe(true);
+    expect(d.link_url).not.toBeNull();
+  });
+});

@@ -454,6 +454,10 @@ const productBase = {
   gtin: gtin.nullable(),
   mpn: z.string().min(1).nullable(),
   model_code: z.string().min(1).nullable(),
+  /** S1-8b: manufacturer SKU (identity key). */
+  manufacturer_sku: z.string().trim().min(1).nullable().optional(),
+  /** S1-8b: listing-only part number (not an identity key). */
+  listing_mpn: z.string().trim().min(1).nullable().optional(),
   pack_quantity: posInt.nullable(),
   source: sourceRef,
   captured_at: londonIso,
@@ -478,6 +482,10 @@ export const catalogueProductSchema = z
     if (p.category === 'thermal_clothing' && p.verification === 'verified' && !p.specs.size_label) {
       // Prices for different sizes must never be compared: each size needs its own ASIN/GTIN row.
       ctx.addIssue({ code: 'custom', path: ['specs', 'size_label'], message: 'verified thermal_clothing needs size_label (one exact size per ASIN/GTIN)' });
+    }
+    if (p.listing_mpn && (p.listing_mpn === p.mpn || p.listing_mpn === p.manufacturer_sku || p.listing_mpn === p.model_code)) {
+      // A listing-only number must not double as an identity key.
+      ctx.addIssue({ code: 'custom', path: ['listing_mpn'], message: 'listing_mpn is listing-only and must not equal mpn, manufacturer_sku or model_code' });
     }
     refineVerification(p, ctx);
   });

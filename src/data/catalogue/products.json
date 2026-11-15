@@ -609,8 +609,10 @@
       "brand": "UGREEN",
       "asin_uk": "B0CSSRD4NT",
       "gtin": null,
-      "mpn": "TSADF7G5634",
+      "mpn": null,
       "model_code": "PB312",
+      "manufacturer_sku": "25683",
+      "listing_mpn": "TSADF7G5634",
       "pack_quantity": null,
       "specs": {
         "capacity_mah": {
@@ -654,11 +656,11 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand UGREEN; Model Number PB312 and Manufacturer Part Number TSADF7G5634 match our record as shown; one power bank (Number of Items 1)."
+        "note": "Title matches exactly; brand UGREEN; Model Number PB312 and Model Name (SKU) 25683 match our identity keys; Manufacturer Part Number TSADF7G5634 recorded as listing_mpn only; one power bank (Number of Items 1)."
       },
       "notes": [
         "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
-        "Product details also show 'Model Name: 25683'. Watt-hours not shown."
+        "Identity keys: model_code PB312 and manufacturer_sku 25683 (Amazon 'Model Name: 25683'; UGREEN's own pages list SKU 25683 as model PB312). Amazon's 'Manufacturer Part Number' TSADF7G5634 is not a UGREEN SKU or model, so it is kept as listing_mpn only and is not an identity key (PM decision, 15 Nov 2026). Watt-hours not shown."
       ]
     },
     {

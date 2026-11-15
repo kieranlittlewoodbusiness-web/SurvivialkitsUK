@@ -392,8 +392,17 @@ interface CatalogueProductBase {
   /** amazon.co.uk ASIN, ^[A-Z0-9]{10}$. Placeholders are rejected. */
   asin_uk: string | null;
   gtin: string | null;
+  /** Manufacturer part number used as an identity key. */
   mpn: string | null;
   model_code: string | null;
+  /** S1-8b: manufacturer's own SKU (e.g. UGREEN 25683), an identity key alongside model_code. */
+  manufacturer_sku?: string | null;
+  /**
+   * S1-8b: a part number shown only on the retailer listing (e.g. Amazon "Manufacturer Part
+   * Number") that is NOT confirmed by the manufacturer. Recorded as shown; never an identity key
+   * and never used for matching. Must differ from mpn and manufacturer_sku.
+   */
+  listing_mpn?: string | null;
   pack_quantity: number | null;
   source: SourceRef;
   captured_at: LondonIsoDateTime;
