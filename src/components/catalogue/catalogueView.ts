@@ -11,6 +11,7 @@ import {
   type ProductRecord,
   type AffiliateDisplayOffer,
   type CatalogueComparison,
+  CATEGORY_LABELS,
   type ProductCategory,
 } from '../../lib/offers';
 import { isPreviewBuild } from '../../data/site';
@@ -81,23 +82,33 @@ export function shownPrice(offer: AffiliateDisplayOffer, now: Date): ShownPrice 
 /* ---------- Categories ---------- */
 
 export const CATEGORY_META: Record<ProductCategory, { title: string; short: string; dek: string; anchor: string }> = {
-  kit: { title: 'Pre-packed kits', short: 'kit', dek: 'Grab bags and home boxes', anchor: 'kits' },
-  emergency_water: { title: 'Emergency water', short: 'water', dek: 'Cans, cartons and pouches', anchor: 'water' },
-  first_aid_kit: { title: 'First aid', short: 'first aid kit', dek: 'Household, workplace and car kits', anchor: 'first-aid' },
-  wind_up_torch_radio: { title: 'Wind-up torches & radios', short: 'radio', dek: 'Light and news without mains power', anchor: 'radios' },
-  power_bank: { title: 'Power banks', short: 'power bank', dek: 'Keep phones charged', anchor: 'power-banks' },
-  emergency_blanket: { title: 'Emergency blankets', short: 'blankets', dek: 'Foil and thermal blankets', anchor: 'blankets' },
-  thermal_clothing: { title: 'Thermals', short: 'thermals', dek: 'Base layers for cold homes', anchor: 'thermals' },
+  kit: { title: CATEGORY_LABELS.kit, short: 'kit', dek: 'Grab bags and home boxes', anchor: 'kits' },
+  emergency_water: { title: CATEGORY_LABELS.emergency_water, short: 'water', dek: 'Cans, cartons and pouches', anchor: 'water' },
+  first_aid_kit: { title: CATEGORY_LABELS.first_aid_kit, short: 'first aid kit', dek: 'Household, workplace and car kits', anchor: 'first-aid' },
+  torch: { title: CATEGORY_LABELS.torch, short: 'torch', dek: 'Light without mains power', anchor: 'torches' },
+  radio: { title: CATEGORY_LABELS.radio, short: 'radio', dek: 'News without mains power', anchor: 'radios' },
+  batteries: { title: CATEGORY_LABELS.batteries, short: 'batteries', dek: 'Spares for torches and radios', anchor: 'batteries' },
+  hi_vis: { title: CATEGORY_LABELS.hi_vis, short: 'hi-vis vest', dek: 'Be seen at the roadside', anchor: 'hi-vis' },
+  jump_leads: { title: CATEGORY_LABELS.jump_leads, short: 'jump leads', dek: 'Restart a flat car battery', anchor: 'jump-leads' },
+  warning_triangle: { title: CATEGORY_LABELS.warning_triangle, short: 'warning triangle', dek: 'Be seen if you break down', anchor: 'warning-triangles' },
+  power_bank: { title: CATEGORY_LABELS.power_bank, short: 'power bank', dek: 'Keep phones charged', anchor: 'power-banks' },
+  emergency_blanket: { title: CATEGORY_LABELS.emergency_blanket, short: 'blankets', dek: 'Foil and thermal blankets', anchor: 'blankets' },
+  thermal_clothing: { title: CATEGORY_LABELS.thermal_clothing, short: 'thermals', dek: 'Base layers for cold homes', anchor: 'thermals' },
 };
 
 export const CATEGORY_ORDER: ProductCategory[] = [
   'kit',
   'emergency_water',
   'first_aid_kit',
-  'wind_up_torch_radio',
+  'torch',
+  'radio',
   'power_bank',
+  'batteries',
   'emergency_blanket',
   'thermal_clothing',
+  'hi_vis',
+  'jump_leads',
+  'warning_triangle',
 ];
 
 /* ---------- Specs ---------- */
