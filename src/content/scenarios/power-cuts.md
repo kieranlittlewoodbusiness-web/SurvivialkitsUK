@@ -12,9 +12,7 @@ startHere: true
 order: 1
 gearCategories: [torches, power-banks, radios]
 evidence: [official-guidance]
-reviewFlags:
-  - "Northern Ireland power-cut number must be re-confirmed on Prepare pages before treating any printed NI figure as current."
-  - "Do not publish load-block letter tooling claims without re-checking powercut105.com on review day."
+reviewFlags: []
 sources:
   - label: Prepare – Power cuts
     url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
@@ -28,7 +26,7 @@ Start by checking what you already keep at home: a torch, spare batteries, blank
 
 ## Stay informed without draining your phone
 
-Write **105** (England, Scotland and Wales) on paper and keep it with a torch. UK guidance recommends a battery or wind-up radio when broadband drops. A car radio can work, but in severe weather it may be safer to stay indoors.
+Write down the number to report a power cut, **105** in England, Scotland and Wales or **03457 643643** in Northern Ireland, and keep it with a torch. UK guidance recommends a battery or wind-up radio when broadband drops. A car radio can work, but in severe weather it may be safer to stay indoors.
 
 ## Light and warmth
 

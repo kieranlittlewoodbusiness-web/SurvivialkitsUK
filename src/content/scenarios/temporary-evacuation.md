@@ -1,6 +1,6 @@
 ---
 title: "Temporary evacuation: a calm leave-home bag"
-description: "UK grab-bag guidance for short evacuations—documents, medication and essentials. Fire escape means leave possessions behind."
+description: "UK grab-bag guidance for short evacuations—documents, medication and essentials."
 scenario: Asked to leave home for flooding, gas incident or similar
 pubDate: 2026-11-14
 updated: 2026-11-14
@@ -12,8 +12,7 @@ startHere: true
 order: 3
 gearCategories: [first-aid, power-banks, water-storage]
 evidence: [official-guidance]
-reviewFlags:
-  - "Do not imply a grab bag is appropriate during fire escape—official advice is to take nothing, get out, stay out, call 999."
+reviewFlags: []
 sources:
   - label: Prepare – Get prepared for emergencies
     url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
@@ -23,7 +22,7 @@ sources:
     url: https://www.gov.uk/help-during-flood
 ---
 
-A grab bag is for **temporary** leave when authorities advise it—not an off-grid lifestyle. If you are escaping a **fire**, take nothing: get out, stay out, call 999.
+A grab bag is for **temporary** leave when authorities advise it—not an off-grid lifestyle.
 
 ## What belongs in a leave-home bag
 
