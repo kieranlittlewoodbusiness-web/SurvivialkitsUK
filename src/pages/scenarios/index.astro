@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedScenarios } from '../../lib/content';
+
+const scenarios = await getPublishedScenarios();
+---
+
+<BaseLayout
+  title="Scenarios"
+  description="Household scenario guides for UK power cuts, weather warnings, floods, water interruption and temporary evacuation."
+  canonicalPath="/scenarios"
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Articles</p>
+      <h1>Household scenarios</h1>
+      <p class="lede">
+        Each guide starts with inventory and official advice before any product criteria.
+      </p>
+      <ul class="link-list scenario-index">
+        {
+          scenarios.map((entry) => (
+            <li>
+              <a href={`/scenarios/${entry.id}`}>
+                {entry.data.title}
+                <span>{entry.data.scenario}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .scenario-index {
+    margin-top: 1.5rem;
+  }
+</style>

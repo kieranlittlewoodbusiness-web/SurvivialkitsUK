@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Privacy"
+  description="Privacy notice for U.K. Survival Kit Brief static site launch—no third-party tracking scripts."
+  canonicalPath="/privacy"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow prose">
+      <p class="eyebrow">Privacy</p>
+      <h1>Privacy</h1>
+      <p>
+        {site.name} is published as a static site. This launch build does not include third-party
+        analytics, advertising pixels or social tracking scripts.
+      </p>
+      <h2>What we collect</h2>
+      <p>
+        If you email us, we receive the information you send (such as your address and message) so
+        we can reply. Hosting providers such as Cloudflare may process standard server logs (IP
+        address, user agent, timestamps) to operate the service.
+      </p>
+      <h2>Cookies</h2>
+      <p>
+        This launch build does not set non-essential cookies for analytics. If Cloudflare or the
+        browser sets strictly necessary cookies for security or network services, those are outside
+        our editorial control. We will update this page if we add optional cookies later.
+      </p>
+      <h2>Affiliate links</h2>
+      <p>
+        Clicking an affiliate link takes you to a retailer who may set their own cookies and process
+        data under their privacy notice. See our
+        <a href="/affiliate-disclosure">affiliate disclosure</a>.
+      </p>
+      <h2>Contact</h2>
+      <p>
+        Privacy questions: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

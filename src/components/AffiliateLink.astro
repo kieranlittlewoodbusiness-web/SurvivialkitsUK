@@ -1,0 +1,31 @@
+---
+/**
+ * Renders a programme-generated affiliate URL exactly as stored.
+ * Always uses rel="sponsored nofollow noopener noreferrer" (ASA/CAP + search guidance).
+ */
+interface Props {
+  href: string;
+  merchant: string;
+  class?: string;
+}
+
+const { href, merchant, class: className } = Astro.props;
+
+// Preserve the exact programme URL — do not normalise query order or strip params.
+const exactHref = href;
+---
+
+<a
+  class:list={['affiliate-link', className]}
+  href={exactHref}
+  rel="sponsored nofollow noopener noreferrer"
+  data-merchant={merchant}
+>
+  <slot />
+</a>
+
+<style>
+  .affiliate-link {
+    font-weight: 600;
+  }
+</style>

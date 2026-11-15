@@ -1,0 +1,21 @@
+---
+interface Props {
+  kind: 'official-guidance' | 'desk-research' | 'firsthand-test' | 'reader-tip' | 'ad';
+  /** Legend/explainer use (e.g. on /method): not attached to a commercial link. */
+  legend?: boolean;
+}
+
+const labels: Record<Props['kind'], string> = {
+  'official-guidance': 'Official guidance',
+  'desk-research': 'Desk research',
+  'firsthand-test': 'Firsthand test',
+  'reader-tip': 'Reader tip',
+  ad: 'Ad',
+};
+
+const { kind, legend = false } = Astro.props;
+const isOfficial = kind === 'official-guidance';
+const isAd = kind === 'ad';
+---
+
+<span class:list={['badge', isOfficial && 'badge--official', isAd && 'badge--ad']} data-badge-legend={legend ? '' : undefined}>{labels[kind]}</span>

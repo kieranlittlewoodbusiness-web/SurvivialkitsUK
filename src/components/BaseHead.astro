@@ -1,0 +1,47 @@
+---
+import { site, isPreviewBuild } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalPath?: string;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
+}
+
+const {
+  title,
+  description = site.description,
+  canonicalPath = Astro.url.pathname.replace(/\/$/, '') || '/',
+  noindex = false,
+  ogType = 'website',
+} = Astro.props;
+
+// Preview builds are never indexable, whatever the page asks for.
+const robots = noindex || isPreviewBuild() ? 'noindex, nofollow' : 'index, follow';
+const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
+const canonical = new URL(canonicalPath === '/' ? '/' : canonicalPath, site.siteUrl).href;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="robots" content={robots} />
+<meta name="author" content={site.author} />
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content="en_GB" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="preload" href="/fonts/schibsted-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0e1312" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="light dark" />

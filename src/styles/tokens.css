@@ -1,0 +1,133 @@
+/* U.K. Survival Kit Brief design tokens (S1-7, approved direction: accent A, all-sans).
+   Every text/background pair is measured by scripts/check-contrast.mjs (light and dark).
+   Keep each colour token on its own line as `--name: #rrggbb;` so the script can parse it. */
+
+@font-face {
+  font-family: 'Schibsted Grotesk Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  src: url('/fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2-variations'),
+    url('/fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* @tokens light */
+:root {
+  color-scheme: light dark;
+  --canvas: #f5f3ee;
+  --surface: #ffffff;
+  --surface-2: #eeebe4;
+  --band: #10201c;
+  --line: #ddd8ce;
+  --line-strong: #858a8e;
+  --ink: #14181b;
+  --ink-2: #434b51;
+  --ink-3: #5a6268;
+  --on-band: #f5f3ee;
+  --on-band-2: #c3cdc9;
+  --band-accent: #7fd6b8;
+  --accent: #0b5d4b;
+  --accent-hover: #07463a;
+  --accent-soft: #e2f1ec;
+  --on-accent: #ffffff;
+  --success: #13592b;
+  --success-soft: #e3f3e7;
+  --warning: #7a4100;
+  --warning-soft: #fcefd8;
+  --error: #9b1c1c;
+  --error-soft: #fbe7e5;
+  --info: #1b4a85;
+  --info-soft: #e5edf8;
+  --ad: #3a3e42;
+  --ad-soft: #ebe7de;
+  --focus: #1a55c9;
+  --header-bg: rgb(245 243 238 / 0.9);
+  --shadow-1: 0 1px 2px rgb(20 24 27 / 0.06), 0 2px 8px rgb(20 24 27 / 0.04);
+  --shadow-2: 0 2px 4px rgb(20 24 27 / 0.06), 0 12px 28px rgb(20 24 27 / 0.08);
+}
+/* @end */
+
+@media (prefers-color-scheme: dark) {
+  /* @tokens dark */
+  :root {
+    --canvas: #0e1312;
+    --surface: #161d1b;
+    --surface-2: #1d2523;
+    --band: #08100e;
+    --line: #2b3532;
+    --line-strong: #7a8682;
+    --ink: #edf1ef;
+    --ink-2: #bcc5c1;
+    --ink-3: #9da7a3;
+    --on-band: #edf1ef;
+    --on-band-2: #bcc5c1;
+    --band-accent: #7fd6b8;
+    --accent: #6fd0ae;
+    --accent-hover: #8fdcc0;
+    --accent-soft: #143229;
+    --on-accent: #062219;
+    --success: #86d9a1;
+    --success-soft: #12301d;
+    --warning: #f1c46e;
+    --warning-soft: #33260c;
+    --error: #ff9f97;
+    --error-soft: #3a1614;
+    --info: #a3c4ff;
+    --info-soft: #14253f;
+    --ad: #d8d3c8;
+    --ad-soft: #2a2924;
+    --focus: #8cb4ff;
+    --header-bg: rgb(14 19 18 / 0.88);
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-2: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 28px rgb(0 0 0 / 0.35);
+  }
+  /* @end */
+}
+
+:root {
+  /* Type */
+  --font-sans: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-0: clamp(1rem, 0.98rem + 0.1vw, 1.0625rem);
+  --step-1: clamp(1.125rem, 1.08rem + 0.21vw, 1.25rem);
+  --step-2: clamp(1.3125rem, 1.22rem + 0.42vw, 1.5625rem);
+  --step-3: clamp(1.625rem, 1.46rem + 0.83vw, 2.125rem);
+  --step-4: clamp(2rem, 1.67rem + 1.67vw, 3rem);
+  --step-5: clamp(2.375rem, 1.83rem + 2.71vw, 4rem);
+
+  /* Shape */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 20px;
+  --r-lg: 28px;
+  --r-pill: 999px;
+
+  /* Space */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --gutter: clamp(16px, 3vw, 32px);
+  --max: 76rem;
+  --measure: 40rem;
+  --tap: 44px;
+  --header-h: 4rem;
+  --ring: 0 0 0 2px var(--canvas), 0 0 0 5px var(--focus);
+
+  /* Legacy aliases used by older component styles (S1-2). */
+  --paper: var(--canvas);
+  --field: var(--surface);
+  --signal: var(--accent);
+  --signal-deep: var(--accent-hover);
+  --warn: var(--warning);
+  --ad-bg: var(--ad-soft);
+  --ink-muted: var(--ink-2);
+  --font-display: var(--font-sans);
+  --font-body: var(--font-sans);
+}

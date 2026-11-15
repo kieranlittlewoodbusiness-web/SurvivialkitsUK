@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you requested is not available on U.K. Survival Kit Brief."
+  canonicalPath="/404"
+  noindex={true}
+>
+  <section class="section">
+    <div class="wrap wrap--narrow">
+      <p class="eyebrow">404</p>
+      <h1>Page not found</h1>
+      <p class="lede">
+        That address is not on this site. Try the checklist, scenarios or gear criteria.
+      </p>
+      <div class="btn-row">
+        <a class="btn" href="/">Home</a>
+        <a class="btn btn--ghost" href="/checklist">Checklist</a>
+        <a class="btn btn--ghost" href="/scenarios">Scenarios</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

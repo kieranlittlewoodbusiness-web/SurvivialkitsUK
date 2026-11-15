@@ -1,0 +1,301 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import EvidenceBadge from '../../../components/EvidenceBadge.astro';
+import AmazonProductCard from '../../../components/catalogue/AmazonProductCard.astro';
+import CategoryIcon from '../../../components/catalogue/CategoryIcon.astro';
+import { CATEGORY_META, loadCatalogue } from '../../../components/catalogue/catalogueView';
+import { site, comparePath } from '../../../data/site';
+
+const UPDATED_ON = '2026-11-15';
+const title = '72-Hour Emergency Kit UK: What to Pack and Essentials Compared';
+const description =
+  "Build a 72-hour emergency kit for a UK home: water, first aid, wind-up radios, power banks, blankets and thermals on Amazon UK, checked against the government's Be Ready list.";
+
+const now = new Date();
+const catalogue = await loadCatalogue(process.env, now);
+const productSections = catalogue.sections.filter((s) => s.category !== 'kit' && s.cards.length > 0);
+
+const official = [
+  { label: 'Be Ready: be ready for emergencies (GOV.UK campaign)', url: 'https://beready.campaign.gov.uk/be-ready-for-emergencies/' },
+  { label: 'Be Ready checklist (PDF)', url: 'https://beready.campaign.gov.uk/wp-content/uploads/sites/252/2026/10/Be-Ready-Checklist_English.pdf' },
+  { label: 'GOV.UK: households encouraged to take small, simple steps (22 Oct 2026)', url: 'https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency' },
+  { label: 'British Red Cross: prepare an emergency kit', url: 'https://www.redcross.org.uk/get-help/prepare-for-emergencies/prepare-an-emergency-kit' },
+  { label: 'Cabinet Office: UK Public Survey of Risk Perception, Resilience and Preparedness 2026', url: 'https://www.gov.uk/government/statistics/uk-public-survey-of-risk-perception-resilience-and-preparedness-2026/uk-public-survey-of-risk-perception-resilience-and-preparedness-2026-headline-findings-html' },
+  { label: 'Power Cut 105 (GB)', url: 'https://www.powercut105.com/en/' },
+  { label: 'GOV.UK: fire safety in the home', url: 'https://www.gov.uk/government/publications/make-your-home-safe-from-fire/fire-safety-in-the-home-accessible-version' },
+];
+
+const pageUrl = new URL(comparePath, site.siteUrl).href;
+const allCards = productSections.flatMap((s) => s.cards);
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    dateModified: UPDATED_ON,
+    inLanguage: 'en-GB',
+    mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: site.name },
+    publisher: { '@type': 'Organization', name: site.name, url: site.siteUrl },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: '72-hour kit essentials on Amazon UK',
+    itemListElement: allCards.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, url: `${pageUrl}#${c.id}` })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${site.siteUrl}/` },
+      { '@type': 'ListItem', position: 2, name: '72-hour emergency kit', item: pageUrl },
+    ],
+  },
+];
+const litresRows = [1, 2, 3, 4, 5, 6];
+---
+
+<BaseLayout title={title} description={description} canonicalPath={comparePath} ogType="article">
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div class="wrap">
+    <nav aria-label="Breadcrumb">
+      <ol class="crumbs"><li><a href="/">Home</a></li><li aria-current="page">72-hour emergency kit</li></ol>
+    </nav>
+
+    <header class="article-head">
+      <p class="kicker">Guide and comparison · Updated <time datetime={UPDATED_ON}>15 Nov 2026</time></p>
+      <h1>72-hour emergency kit for UK homes: what to pack, and the essentials compared</h1>
+      <p class="lede">
+        Build your kit around the government's Be Ready list. Start with what you already own, then fill the gaps: water
+        first, then light, a radio, power, first aid and warmth.
+      </p>
+      <ul class="chips" aria-label="About this page">
+        <li class="chip chip--static">{catalogue.stats.cards} products on Amazon UK</li>
+        <li class="chip chip--static">Researched from listings, not tested</li>
+      </ul>
+    </header>
+
+    <section class="quick card" aria-labelledby="quick-answer">
+      <p class="kicker">The short version</p>
+      <h2 id="quick-answer">Quick answer</h2>
+      <p>
+        A 72-hour kit should cover 3 litres of drinking water per person per day, no-cook food, a torch, a battery or
+        wind-up radio, a charged power bank, first aid, your medication, cash, warm layers and copies of documents.
+      </p>
+      <p><EvidenceBadge kind="official-guidance" /> Benchmark: the government's Be Ready checklist (Oct 2026).</p>
+    </section>
+
+    <nav class="jump" aria-label="Jump to a category">
+      <ul class="chips">
+        {productSections.map((s) => <li><a class="chip" href={`#${CATEGORY_META[s.category].anchor}`}>{CATEGORY_META[s.category].title}</a></li>)}
+        <li><a class="chip" href="#water-needed">How much water</a></li>
+        <li><a class="chip" href="#diy">Pre-packed or DIY</a></li>
+      </ul>
+    </nav>
+
+    {
+      productSections.map((s) => (
+        <section class="cat-section" id={CATEGORY_META[s.category].anchor} aria-labelledby={`h-${s.category}`}>
+          <div class="section-head">
+            <h2 id={`h-${s.category}`}>
+              <span class="cat-section__icon" aria-hidden="true"><CategoryIcon category={s.category} /></span>
+              {CATEGORY_META[s.category].title}
+            </h2>
+            <p class="meta">{s.cards.length} {s.cards.length === 1 ? 'product' : 'products'}</p>
+          </div>
+          <div class="pgrid">
+            {s.cards.map((card) => <AmazonProductCard card={card} />)}
+          </div>
+        </section>
+      ))
+    }
+
+    <p class="small-print">
+      Products are listed in the order we added them, not ranked. Details come from each Amazon UK listing and are shown
+      only where the listing states them.
+    </p>
+
+    <section class="section split-2" id="water-needed" aria-labelledby="water-heading">
+      <div class="prose">
+        <h2 id="water-heading">Water: plan 3 litres per person per day</h2>
+        <p>
+          Be Ready advises 3 L of drinking water per person per day for 3 days, with more for cooking and washing. The British
+          Red Cross gives 2.5 to 3 L. Purification tablets and filters treat water you already have; they do not replace stored
+          water.
+        </p>
+        <ul>
+          <li>Store sealed water where it stays cool and dark, and note the earliest date.</li>
+          <li>Split it: some in a grab bag, the rest at home.</li>
+          <li>Add extra for babies, pets, hot weather or illness.</li>
+        </ul>
+        <p><a href="/gear/water-storage">Water storage criteria</a></p>
+      </div>
+      <div class="card card-pad">
+        <table class="litres">
+          <caption>Drinking water for 3 days at 3 L per person per day</caption>
+          <thead><tr><th scope="col">People</th><th scope="col">Litres</th></tr></thead>
+          <tbody>{litresRows.map((n) => <tr><th scope="row">{n}</th><td>{n * 3 * 3} L</td></tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section" id="diy" aria-labelledby="diy-heading">
+      <div class="section-head"><h2 id="diy-heading">Pre-packed or build your own?</h2></div>
+      <div class="grid grid--2">
+        <div class="card card-pad">
+          <h3>Pre-packed kit</h3>
+          <ul>
+            <li>Done in one order, packed in one bag.</li>
+            <li>Fixed sizes: shared items like a torch and radio don't scale with people.</li>
+            <li>Check the listed water volume against 3 L per person per day; most bags carry far less.</li>
+            <li>You may pay for things you already own.</li>
+          </ul>
+        </div>
+        <div class="card card-pad">
+          <h3>Build your own</h3>
+          <ul>
+            <li>Sized to your household, ages, medical needs and pets.</li>
+            <li>Uses food you actually eat, rotated into normal meals.</li>
+            <li>Start with what you own; spread the cost over normal shops.</li>
+            <li>More effort, and easy to leave half-finished.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="verdict">
+        <strong>Our take (editorial guidance, not a test result):</strong> build from what you already own, then add the
+        missing pieces, starting with water.
+      </p>
+      <div class="btn-row"><a class="btn" href="/checklist">Open the 72-hour checklist</a></div>
+    </section>
+
+    <section class="section split-2" aria-labelledby="missing-heading">
+      <div class="prose">
+        <h2 id="missing-heading">What you add yourself</h2>
+        <ul>
+          <li>Your essential medication and a written list of it</li>
+          <li>Cash in small notes</li>
+          <li>Copies of important documents</li>
+          <li>Written phone numbers and your household plan</li>
+          <li>Baby supplies: ready-to-feed formula and nappies</li>
+          <li>Pet food and water</li>
+          <li>Spare keys and glasses</li>
+        </ul>
+      </div>
+      <div class="prose">
+        <h2>Grab bag or home kit?</h2>
+        <p>
+          A grab bag is what you take if you are told to leave home, for example in a flood. A home kit is what you need to stay
+          put through a power cut or storm.
+        </p>
+        <p><strong>If there is a fire, get out, stay out and call 999.</strong> Don’t waste time rescuing valuables (<a href="https://www.gov.uk/government/publications/make-your-home-safe-from-fire/fire-safety-in-the-home-accessible-version" rel="noopener noreferrer">GOV.UK: fire safety in the home</a>).</p>
+        <p><a href="/scenarios/leave-home-bag">Packing a leave-home bag</a></p>
+      </div>
+    </section>
+
+    <section class="section split-2" aria-labelledby="power-heading">
+      <div class="prose">
+        <h2 id="power-heading">Power cut specifics</h2>
+        <ul>
+          <li>Call <strong>105</strong> to report a power cut in England, Scotland or Wales.</li>
+          <li>Join the Priority Services Register if someone at home relies on power for medical equipment.</li>
+          <li>Digital landlines may stop working in a power cut: keep a charged mobile.</li>
+          <li>Never use camping stoves, gas heaters or barbecues indoors.</li>
+        </ul>
+        <p><a href="/scenarios/power-cuts">Power cut guide</a></p>
+      </div>
+      <div class="prose">
+        <h2>Storage and rotation</h2>
+        <ul>
+          <li>Check the kit every 6 months, as Be Ready advises.</li>
+          <li>Note the earliest expiry date on food, water and first-aid items.</li>
+          <li>Recharge power banks and test torches and radios when you check.</li>
+          <li>Keep it somewhere you can reach in the dark: under the stairs, a wardrobe floor or near the door.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section prose" id="method" aria-labelledby="method-heading">
+      <h2 id="method-heading">How we researched this</h2>
+      <ul>
+        <li><strong>Researched from listings, not tested.</strong> Product details come from each Amazon UK listing. Where a listing does not state something, we leave it out.</li>
+        <li><strong>Shortlist:</strong> one category for each Be Ready essential we can buy, from Amazon UK only, matched to the exact product by its ASIN.</li>
+        <li><strong>Benchmark:</strong> the Be Ready checklist and British Red Cross guidance. Water need is 3 L × people × 3 days.</li>
+        <li><strong>Prices:</strong> shown only when Amazon's own product data supplies them and they are under 24 hours old, with the time they were checked.</li>
+        <li><strong>Commission:</strong> it does not affect which products we include or their order.</li>
+      </ul>
+      <p><a href="/method">How we label evidence across the site</a></p>
+    </section>
+
+    <section class="section prose faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Questions</h2>
+      <h3>How much water does a 72-hour kit need?</h3>
+      <p>3 litres per person per day for 3 days: 9 litres per person, more for babies, pets and hot weather.</p>
+      <h3>Is a 72-hour kit a legal requirement?</h3>
+      <p>No. Be Ready is government advice to be ready for 3 days of disruption, not a legal duty.</p>
+      <h3>Are grab bags the same as home kits?</h3>
+      <p>No. Grab bags are for leaving home quickly; home kits are for staying put. Many households need both.</p>
+      <h3>Why don't you show a price for every product?</h3>
+      <p>We only show an Amazon price that comes from Amazon's own product data and is less than 24 hours old. Prices change, so check on Amazon.</p>
+    </section>
+
+    <section class="section prose" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">Sources</h2>
+      <p>Last checked <time datetime={UPDATED_ON}>15 November 2026</time>.</p>
+      <h3>Official guidance</h3>
+      <ul class="source-list">
+        {official.map((s) => <li><a href={s.url} rel="noopener noreferrer">{s.label}</a></li>)}
+      </ul>
+      <h3>Product listings</h3>
+      <p>Amazon UK product pages for each item above, read on 15 November 2026.</p>
+    </section>
+
+    <section class="section" aria-labelledby="related-heading">
+      <div class="section-head"><h2 id="related-heading">Related guides</h2></div>
+      <ul class="link-list related">
+        <li><a href="/checklist">72-hour household checklist<span>Tick off what you already own, print it.</span></a></li>
+        <li><a href="/start-here">Start here<span>The short version of what to do first.</span></a></li>
+        <li><a href="/gear/radios">Radio criteria<span>What to look for in a battery or wind-up radio.</span></a></li>
+        <li><a href="/gear/torches">Torch criteria<span>One light per person, and how to power them.</span></a></li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .crumbs { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-2); list-style: none; padding: var(--s-3) 0 0; margin: 0; font-size: var(--step--1); color: var(--ink-2); }
+  .crumbs a { display: inline-flex; align-items: center; min-height: var(--tap); min-width: var(--tap); color: var(--ink-2); }
+  .crumbs li { display: inline-flex; align-items: center; }
+  .crumbs li + li::before { content: '/'; margin-right: var(--s-2); color: var(--ink-3); }
+  .article-head { padding-block: var(--s-3) var(--s-6); max-width: 52rem; }
+  .article-head .chips { margin-top: var(--s-4); }
+  .quick { padding: var(--s-5); border-radius: var(--r-lg); max-width: 52rem; }
+  .quick p:last-child { margin-bottom: 0; }
+  .jump { margin-block: var(--s-6) var(--s-2); }
+  .jump .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding-block: 4px; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
+  .jump .chips::-webkit-scrollbar { display: none; }
+  .jump li { flex: none; }
+  .cat-section { padding-top: var(--s-6); }
+  .cat-section h2 { display: flex; align-items: center; gap: var(--s-3); }
+  .cat-section__icon { width: 44px; height: 44px; flex: none; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .cat-section .section-head .meta { margin: 0; }
+  .pgrid { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
+  .small-print { font-size: var(--step--1); color: var(--ink-2); margin-top: var(--s-5); }
+  .litres { border-collapse: collapse; width: 100%; }
+  .litres caption { text-align: left; font-weight: 650; padding-bottom: var(--s-2); }
+  .litres th, .litres td { padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line); text-align: left; }
+  .grid ul { padding-left: 1.15rem; margin: 0; }
+  .grid li { margin-bottom: var(--s-2); }
+  .verdict { margin-top: var(--s-5); }
+  .faq h3 { margin-top: var(--s-5); }
+  .related { grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 720px) {
+    .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .related { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1100px) {
+    .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

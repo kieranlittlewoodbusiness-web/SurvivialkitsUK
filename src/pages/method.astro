@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EvidenceBadge from '../components/EvidenceBadge.astro';
+---
+
+<BaseLayout
+  title="Method"
+  description="How U.K. Survival Kit Brief labels official guidance, desk research, firsthand tests and ads."
+  canonicalPath="/method"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow prose">
+      <p class="eyebrow">Method</p>
+      <h1>How we source and label</h1>
+      <p class="lede">
+        Readers should always know whether a claim is government guidance, our research, a physical
+        test, or advertising.
+      </p>
+      <ul class="label-legend">
+        <li><EvidenceBadge kind="official-guidance" /> Paraphrase of official advice with a citation.</li>
+        <li><EvidenceBadge kind="desk-research" /> Specs and standards without a physical test.</li>
+        <li><EvidenceBadge kind="firsthand-test" /> Author-used item with method notes.</li>
+        <li><EvidenceBadge kind="reader-tip" /> Moderated, not independently verified.</li>
+        <li><EvidenceBadge kind="ad" legend /> Affiliate or other commercial content—shown before engagement.</li>
+      </ul>
+      <p>
+        Full policy: <a href="/editorial-policy">Editorial policy</a>. Cited links:
+        <a href="/sources">Sources</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .label-legend {
+    list-style: none;
+    padding: 0;
+  }
+
+  .label-legend li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+    margin-bottom: 0.85rem;
+  }
+</style>

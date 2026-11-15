@@ -1,0 +1,174 @@
+---
+import Wordmark from './Wordmark.astro';
+import { comparePath } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const links = [
+  { href: '/start-here', label: 'Start here' },
+  { href: '/checklist', label: 'Checklist' },
+  { href: comparePath, label: 'Compare kits' },
+  { href: '/scenarios', label: 'Scenarios' },
+  { href: '/gear', label: 'Gear criteria' },
+  { href: '/method', label: 'Method' },
+  { href: '/about', label: 'About' },
+];
+
+function isActive(rawHref: string) {
+  const href = rawHref.replace(/\/$/, '') || '/';
+  if (href === '/') return path === '/';
+  return path === href || path.startsWith(`${href}/`);
+}
+---
+
+<header class="site-header">
+  <div class="wrap site-header__bar">
+    <Wordmark />
+    <button class="btn btn--secondary nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" id="nav-toggle">
+      Menu
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--header-bg);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding-top: env(safe-area-inset-top, 0);
+  }
+
+  .site-header__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+    min-height: var(--header-h);
+    padding-block: var(--s-2);
+  }
+
+  .nav-toggle {
+    padding-inline: var(--s-5);
+  }
+
+  .site-nav {
+    display: none;
+    flex-basis: 100%;
+    padding-bottom: var(--s-3);
+  }
+
+  .site-nav.is-open {
+    display: block;
+  }
+
+  .site-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: var(--s-2);
+    display: grid;
+    gap: 2px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-2);
+  }
+
+  .site-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    padding: 0 var(--s-4);
+    border-radius: var(--r-sm);
+    color: var(--ink);
+    font-weight: 650;
+    font-size: var(--step-1);
+    text-decoration: none;
+  }
+
+  .site-nav a:hover {
+    background: var(--surface-2);
+  }
+
+  .site-nav a[aria-current='page'] {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  @media (min-width: 1080px) {
+    .nav-toggle {
+      display: none;
+    }
+
+    .site-nav {
+      display: block;
+      flex-basis: auto;
+      padding: 0;
+    }
+
+    .site-nav ul {
+      display: flex;
+      padding: 4px;
+      background: var(--surface-2);
+      border: 0;
+      border-radius: var(--r-pill);
+      box-shadow: none;
+    }
+
+    .site-nav a {
+      min-height: var(--tap);
+      padding: 0 var(--s-4);
+      border-radius: var(--r-pill);
+      font-size: 0.9375rem;
+      font-weight: 600;
+    }
+
+    .site-nav a:hover {
+      background: var(--surface);
+    }
+
+    .site-nav a[aria-current='page'] {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: var(--shadow-1);
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.textContent = open ? 'Close' : 'Menu';
+      nav.classList.toggle('is-open', open);
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    };
+    nav.addEventListener('keydown', closeOnEscape);
+    toggle.addEventListener('keydown', closeOnEscape);
+  }
+</script>

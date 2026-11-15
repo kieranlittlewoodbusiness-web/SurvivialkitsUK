@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "updated": "2026-11-14",
+  "products": [
+    {
+      "id": "torch-aa-household",
+      "category": "torches",
+      "name": "AA/AAA household LED torch",
+      "suits": "Flats and houses that want common batteries and simple indoor navigation during a power cut.",
+      "specs": [
+        "Common primary cells (AA or AAA)",
+        "Flood beam useful indoors",
+        "Lock or protected switch preferred"
+      ],
+      "limitations": [
+        "Runtime claims vary widely—treat peak lumen figures as marketing unless measured",
+        "Not a substitute for leaving quickly in a fire"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [
+        "Manufacturer runtime at turbo mode is unverified—do not publish as a measured figure without a firsthand test"
+      ],
+      "offerIds": ["torch-example-amazon"]
+    },
+    {
+      "id": "torch-headlamp",
+      "category": "torches",
+      "name": "Compact LED headlamp",
+      "suits": "Households that need hands-free light for finding kit, caring for others or short outdoor checks.",
+      "specs": [
+        "Hands-free wear",
+        "Red or low mode useful to preserve night vision",
+        "USB-rechargeable or AAA options"
+      ],
+      "limitations": [
+        "Headbands can fail in damp storage—check elastics on review",
+        "Phone torch still drains the handset; keep a dedicated light"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [],
+      "offerIds": []
+    },
+    {
+      "id": "powerbank-usbc-mid",
+      "category": "power-banks",
+      "name": "USB-C mid-capacity power bank",
+      "suits": "Keeping one phone available for essential calls during a short outage.",
+      "specs": [
+        "USB-C input/output where practical",
+        "Capacity stated in Wh or mAh",
+        "Charge indicator"
+      ],
+      "limitations": [
+        "Self-discharge in a drawer is unverified until tested",
+        "Not assumed suitable for medical devices—confirm with the manufacturer"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [
+        "Unsupported safety claim risk: never imply a consumer power bank is approved for medical equipment without manufacturer guidance"
+      ],
+      "offerIds": ["powerbank-example-amazon"]
+    },
+    {
+      "id": "radio-fm-battery",
+      "category": "radios",
+      "name": "Battery or wind-up FM radio",
+      "suits": "Hearing updates when broadband and mobile data are unavailable.",
+      "specs": [
+        "FM reception",
+        "Battery and/or wind-up power",
+        "Headphone jack helpful"
+      ],
+      "limitations": [
+        "Indoor reception varies by building—desk research cannot guarantee performance at your address",
+        "DAB is optional for outage basics"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [],
+      "offerIds": ["radio-example-decathlon"]
+    },
+    {
+      "id": "water-carrier-foodgrade",
+      "category": "water-storage",
+      "name": "Food-grade water carrier",
+      "suits": "Households topping up beyond bottled water for a known shut-off or three-day buffer.",
+      "specs": [
+        "Food-grade materials",
+        "Sealable cap",
+        "Size you can lift and store"
+      ],
+      "limitations": [
+        "Does not make floodwater safe to drink",
+        "Static stores need rotation on the six-month review"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [],
+      "offerIds": ["water-carrier-example"]
+    },
+    {
+      "id": "firstaid-home",
+      "category": "first-aid",
+      "name": "Compact home first-aid kit",
+      "suits": "Topping up plasters and sterile dressings for everyday injuries and short disruption.",
+      "specs": [
+        "Plasters, sterile dressings, gloves, tape",
+        "Antiseptic and basic extras as listed by the maker"
+      ],
+      "limitations": [
+        "Does not replace first-aid training",
+        "Prescribed medication stays with the household, not inside a sealed kit alone",
+        "BS workplace kit claims need verification against the stated standard"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [
+        "Unverified specification: any BS compliance claim must match the kit’s labelling before publication"
+      ],
+      "offerIds": ["first-aid-example-argos"]
+    },
+    {
+      "id": "winter-car-basics",
+      "category": "winter-travel",
+      "name": "Winter car basics (hi-vis, warmth, shovel)",
+      "suits": "Drivers who may face short winter delays—not expedition motoring.",
+      "specs": [
+        "Hi-vis layer",
+        "Warm blanket or spare layers",
+        "Compact shovel / scraper as relevant",
+        "Torch and phone charge lead"
+      ],
+      "limitations": [
+        "Jump-lead suitability for hybrids/EVs is vehicle-specific—unverified generically",
+        "A boot kit is not a reason to ignore Met Office travel advice"
+      ],
+      "evidence": "desk-research",
+      "reviewFlags": [
+        "Unsupported safety claim risk: do not state legal duties for warning triangles/hi-vis without citing current rules"
+      ],
+      "offerIds": ["winter-car-example-millets"]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { AMAZON_DISCLOSURE } from '../components/catalogue/catalogueView';
+---
+
+<BaseLayout
+  title="Affiliate disclosure"
+  description="How U.K. Survival Kit Brief labels affiliate advertising and Amazon Associates links under UK CAP/ASA rules."
+  canonicalPath="/affiliate-disclosure"
+>
+  <section class="section">
+    <div class="wrap wrap--narrow prose">
+      <p class="eyebrow">Disclosure</p>
+      <h1>Affiliate disclosure</h1>
+      <p>
+        Some links on this site are affiliate links. If you click and buy, we may earn a commission
+        at no extra cost to you. Under the UK CAP Code, marketing must be obviously identifiable.
+        We label commercial blocks with a clear <strong>Ad</strong> marker before you engage with
+        those links.
+      </p>
+      <p>
+        We only link to retailers through approved affiliate programmes. At launch that is Amazon
+        Associates UK only. Affiliate links use <code>rel=&quot;sponsored&quot;</code>.
+      </p>
+      <h2>Amazon Associates</h2>
+      <p class="amazon-notice">{AMAZON_DISCLOSURE}</p>
+      <p>
+        Amazon product links on this site are Amazon Associates links. Prices are shown only when they come from
+        Amazon's own product data and are under 24 hours old. Amazon and the Amazon logo are trademarks of
+        Amazon.com, Inc. or its affiliates.
+      </p>
+      <h2>Independence</h2>
+      <p>
+        Editorial criteria are written before product examples. We do not accept payment for
+        favourable reviews in launch content. See also the
+        {' '}<a href="/editorial-policy">editorial policy</a>.
+      </p>
+      <p>
+        ASA advice:
+        {' '}
+        <a href="https://www.asa.org.uk/advice-online/affiliate-marketing.html" rel="noopener noreferrer"
+          >Online affiliate marketing</a
+        >.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
