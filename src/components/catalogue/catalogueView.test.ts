@@ -208,10 +208,11 @@ describe('catalogue grouping (groupComparisonsByCategory, cap 3)', () => {
         expect(s.category_label).toBeTruthy();
         expect(s.cards.every((c) => c.category === s.category)).toBe(true);
       }
-      // Water, hi-vis and jump leads have 2 verified products: render 2, no placeholder.
-      for (const cat of ['emergency_water', 'hi_vis', 'jump_leads'] as const) {
-        expect(VERIFIED_BY_CATEGORY[cat]!.length).toBe(2);
-        expect(m.sections.find((s) => s.category === cat)?.cards).toHaveLength(2);
+      // Short categories (fewer than PER_CATEGORY verified products) render exactly what exists, no placeholder.
+      for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
+        if (asins.length > 0 && asins.length < PER_CATEGORY) {
+          expect(m.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
+        }
       }
     }
   });

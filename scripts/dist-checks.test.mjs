@@ -155,8 +155,10 @@ describe('verify:dist (production build with a dummy tag)', () => {
       expectNoImages: true,
     });
     expect(rules.failures).toEqual([]);
-    for (const cat of ['emergency_water', 'hi_vis', 'jump_leads']) {
-      expect(rules.sections.find((s) => s.category === cat)?.cards).toHaveLength(2);
+    for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
+      if (asins.length > 0 && asins.length < PER_CATEGORY) {
+        expect(rules.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
+      }
     }
     fs.rmSync(out, { recursive: true, force: true });
   }, 180_000);
