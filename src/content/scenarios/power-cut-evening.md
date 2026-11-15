@@ -25,7 +25,7 @@ Start by checking what you already keep at home: a torch, spare batteries, blank
 
 ## Stay informed without burning your phone battery
 
-Write down **105** (England, Scotland and Wales) on paper and keep it with a torch. In Northern Ireland, check the current power-cut number on the Prepare pages before you rely on it. UK guidance recommends a battery or wind-up radio for updates when broadband and mobile data drop; a car radio can work, but in severe weather it may be safer to stay indoors.
+Write down the number to report a power cut, **105** in England, Scotland and Wales or **03457 643643** in Northern Ireland, and keep it with a torch. UK guidance recommends a battery or wind-up radio for updates when broadband and mobile data drop; a car radio can work, but in severe weather it may be safer to stay indoors.
 
 ## Light and warmth
 

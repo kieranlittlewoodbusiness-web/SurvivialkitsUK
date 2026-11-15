@@ -28,11 +28,11 @@ Ready Scotland and Prepare-style guidance commonly include:
 
 - Torch and spare batteries
 - Warm clothes, boots and a blanket
-- High-visibility layer
+- High-visibility jacket
 - Ice scraper and de-icer
 - Phone charger
-- Jump leads (confirm suitability for your vehicle type—hybrids and EVs differ)
-- Reflective warning sign where appropriate
+- Battery jump leads
+- Reflective warning sign
 - Compact shovel, map, snacks and a warm drink in a flask
 - First-aid kit
 
