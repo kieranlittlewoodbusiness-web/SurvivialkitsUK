@@ -224,7 +224,22 @@ export function toDisplayOffer(offer: Offer, variant: KitVariant, options: Compa
  * 0 eligible known total, 1 known total but unverified/unconfirmed, 2 unknown delivery,
  * 3 stale known total, 4 stale unknown delivery, 5 no price.
  */
-function tier(o: DisplayOffer): number {
+/** Fields the ranking and savings rules need (DisplayOffer and AffiliateDisplayOffer both qualify). */
+export type RankableOffer = Pick<
+  DisplayOffer,
+  | 'offer_id'
+  | 'variant_id'
+  | 'price_gbp_inc_vat'
+  | 'delivered_total_gbp'
+  | 'is_stale'
+  | 'eligible_for_best_price'
+  | 'model_match_confirmed'
+  | 'price_verified'
+  | 'delivery_verified'
+  | 'captured_at'
+>;
+
+function tier(o: RankableOffer): number {
   if (o.price_gbp_inc_vat === null) return 5;
   if (o.is_stale) return o.delivered_total_gbp === null ? 4 : 3;
   if (o.delivered_total_gbp === null) return 2;
@@ -238,7 +253,7 @@ function tier(o: DisplayOffer): number {
  * `delivery_unknown` label; they are never costed as if delivery were 0.
  * Delivered totals and bare prices are never compared within one tier.
  */
-export function sortOffers(offers: DisplayOffer[]): DisplayOffer[] {
+export function sortOffers<T extends RankableOffer>(offers: T[]): T[] {
   return [...offers].sort((a, b) => {
     const t = tier(a) - tier(b);
     if (t !== 0) return t;
@@ -256,7 +271,7 @@ export function sortOffers(offers: DisplayOffer[]): DisplayOffer[] {
  * (price + delivery), fresh, finite, for the same exact variant, captured on the
  * same Europe/London day, and one is strictly cheaper.
  */
-export function computeSavings(a: DisplayOffer, b: DisplayOffer): Savings | null {
+export function computeSavings(a: RankableOffer, b: RankableOffer): Savings | null {
   if (a.variant_id !== b.variant_id) return null;
   if (a.offer_id === b.offer_id) return null;
   if (!a.model_match_confirmed || !b.model_match_confirmed) return null;

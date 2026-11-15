@@ -5,7 +5,8 @@
     "Approved price source for EVAQ8 direct: EVAQ8 affiliate programme approval (programme name + approval date) or a written EVAQ8 price/delivery confirmation, so price_verified and delivery_verified can be set true.",
     "Approved price source for Amazon UK: Amazon Associates UK approval (and Product Advertising API / SiteStripe access) for ASIN B075LHXZ55.",
     "Exact-model confirmation for Amazon UK ASIN B075LHXZ55: the listing shows Model Number / MPN E138, not E182P, and no GTIN. Need EVAQ8 to confirm whether E138 is identical to E182P (or the Amazon ASIN for E182P / GTIN 5060176883963). Until then the Amazon row is excluded (model_match_confirmed=false) and there is NO verified like-for-like two-retailer pair.",
-    "Delivery cost at checkout for both retailers (product pages show 'Free shipping' and a conditional 'FREE delivery ... on your first order'; neither is a verified delivery cost)."
+    "Delivery cost at checkout for both retailers (product pages show 'Free shipping' and a conditional 'FREE delivery ... on your first order'; neither is a verified delivery cost).",
+    "S1-8 (#11): Amazon prices are not shown until Amazon product API access; the manual Amazon capture was nulled. Links only through approved affiliate programmes (Amazon Associates UK not applied for yet; no EVAQ8 programme)."
   ],
   "offers": [
     {
@@ -66,16 +67,16 @@
       "model_match_confirmed": false,
       "model_match_note": "N: listing title 'GoBag Emergency Kit For 2 Persons - 72 Hours Survival Supplies' and contents match E182P, but Model Number / MPN shown is E138 and no GTIN is listed. Mapping to E182P unconfirmed.",
       "currency": "GBP",
-      "price_gbp_inc_vat": 137.0,
+      "price_gbp_inc_vat": null,
       "price_gbp_ex_vat": null,
-      "vat_status_note": "Amazon UK states all prices include VAT. UNVERIFIED public capture; no approved source.",
+      "vat_status_note": "Manual Amazon capture (£137.00 on 14 Nov 2026) removed per PM decision on #11 (15 Nov 2026): no Amazon prices until Amazon product API access.",
       "price_verified": false,
       "delivery_cost_gbp": null,
       "free_delivery_threshold_gbp": null,
-      "delivery_text_verbatim": "FREE delivery Wednesday, 18 November on your first order to UK or Ireland.",
+      "delivery_text_verbatim": null,
       "delivery_lead_time_text": null,
       "delivery_verified": false,
-      "availability_text": "In stock",
+      "availability_text": null,
       "was_price_gbp": null,
       "was_price_source": null,
       "product_url": "https://www.amazon.co.uk/dp/B075LHXZ55",
