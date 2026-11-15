@@ -1,5 +1,6 @@
 ---
 import Wordmark from './Wordmark.astro';
+import GetPreparedCta from './GetPreparedCta.astro';
 import { comparePath } from '../data/site';
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -32,13 +33,13 @@ function isActive(rawHref: string) {
         {
           links.map((link) => (
             <li class:list={[link.cta && 'site-nav__cta-item']}>
-              <a
-                href={link.href}
-                class:list={[link.cta && 'site-nav__cta']}
-                aria-current={isActive(link.href) ? 'page' : undefined}
-              >
-                {link.label}
-              </a>
+              {link.cta ? (
+                <GetPreparedCta class="site-nav__cta" aria-current={isActive(link.href) ? 'page' : undefined} />
+              ) : (
+                <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                  {link.label}
+                </a>
+              )}
             </li>
           ))
         }
