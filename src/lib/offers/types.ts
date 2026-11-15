@@ -56,7 +56,7 @@ export interface VerificationEvidence {
   checks_matched: VerificationCheck[];
   /**
    * S1-10: ASIN in the listing's canonical link. When present it must equal asin_uk, except for a
-   * thermal_clothing size child, where it must equal size_child_of (and is then required).
+   * thermal_clothing or hi_vis size child, where it must equal size_child_of (and is then required).
    */
   canonical_asin?: string;
   note: string;
@@ -507,7 +507,7 @@ interface CatalogueProductBase {
    */
   display_name?: string | null;
   /**
-   * S1-10 (PM ruling, option b): thermal_clothing ONLY. The parent ASIN that a per-size child
+   * S1-10 (PM rulings): thermal_clothing and hi_vis ONLY (SIZED_CATEGORIES). The parent ASIN that a per-size child
    * listing's canonical link points to. A size child verifies when the evidence's canonical_asin
    * equals size_child_of (instead of asin_uk), and size_label is set. Rejected for every other category.
    */

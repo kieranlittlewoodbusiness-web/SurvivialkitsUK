@@ -13,7 +13,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
   emergency_blanket: ['B001FIQ7XU', 'B0CDBYT9WW', 'B0H761VV55'],
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
-  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D'],
+  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B005DEW1K0'],
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
   warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z', 'B00MGM3K7A'],
 };
@@ -27,6 +27,11 @@ export const THERMAL_SIZE_CHILDREN: Readonly<Record<string, string>> = {
   B004KMGZG2: 'B0DMT14LGZ',
   B0887LWT53: 'B0CKXG19WH',
   B013LFW3WS: 'B0DZ8DXDGP',
+};
+
+/** Hi-vis size children (PM ruling extending size_child_of to hi_vis): child ASIN -> parent canonical. */
+export const HI_VIS_SIZE_CHILDREN: Readonly<Record<string, string>> = {
+  B005DEW1K0: 'B0GZ3CPMWB',
 };
 
 /** Records kept UNVERIFIED on purpose, with the reason in verification_evidence. */

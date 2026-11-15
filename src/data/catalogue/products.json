@@ -1933,6 +1933,87 @@
     },
     {
       "schema_version": 2,
+      "variant_id": "amazon-uk-b005dew1k0",
+      "category": "hi_vis",
+      "product_name": "Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small",
+      "brand": "Blackrock",
+      "asin_uk": "B005DEW1K0",
+      "gtin": null,
+      "mpn": "8010003",
+      "model_code": "8010003",
+      "pack_quantity": null,
+      "specs": {
+        "garment_type": {
+          "value": "vest",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 hi-vis #3 research 15 Nov 2026): title \"Long Sleeve Vests\"; Style \"Long Sleeve Waistcoat\"",
+            "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
+          },
+          "captured_at": "2026-11-15T09:45:00+00:00"
+        },
+        "colour": {
+          "value": "Yellow",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 hi-vis #3 research 15 Nov 2026): title \"Yellow\"; selected colour Yellow",
+            "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
+          },
+          "captured_at": "2026-11-15T09:45:00+00:00"
+        },
+        "standard": {
+          "value": "EN 20471:2013+A1:2016 class 3 (as shown)",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 hi-vis #3 research 15 Nov 2026): bullet \"SAFETY RATING: EN20471:2013 +A1:2016 class 3\"",
+            "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
+          },
+          "captured_at": "2026-11-15T09:45:00+00:00"
+        },
+        "size_label": {
+          "value": "S",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 hi-vis #3 research 15 Nov 2026): title \"Size Small\"; selected size S; Product details Size S",
+            "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
+          },
+          "captured_at": "2026-11-15T09:45:00+00:00"
+        },
+        "pack_count": {
+          "value": 1,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10 hi-vis #3 research 15 Nov 2026): Number of Items 1",
+            "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
+          },
+          "captured_at": "2026-11-15T09:45:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10 hi-vis #3 research 15 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
+      },
+      "captured_at": "2026-11-15T09:45:00+00:00",
+      "verification": "verified",
+      "display_name": "Blackrock long-sleeve hi-vis vest (S)",
+      "display_rank": 3,
+      "size_child_of": "B0GZ3CPMWB",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B005DEW1K0",
+        "checked_on": "2026-11-15",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
+        "canonical_asin": "B0GZ3CPMWB",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis)."
+      },
+      "notes": [
+        "Identity from the tagless public child listing (fetched by Backend 15 Nov 2026 09:45 GMT, Firefox UA). No price, availability or image stored.",
+        "One exact size per ASIN: S, colour Yellow. Parent ASIN B0GZ3CPMWB.",
+        "Why picked: A different product from #1 and #2: long-sleeve class 3 hi-vis from a recognised UK hi-vis brand (more coverage than the class 2 vests)."
+      ]
+    },
+    {
+      "schema_version": 2,
       "variant_id": "amazon-uk-b008rxax0e",
       "category": "jump_leads",
       "product_name": "Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc",
