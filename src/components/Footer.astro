@@ -1,130 +1,67 @@
 ---
+import Wordmark from './Wordmark.astro';
 import { site } from '../data/site';
+import { AMAZON_DISCLOSURE } from './catalogue/catalogueView';
 ---
 
 <footer class="site-footer">
-  <div class="wrap site-footer__grid">
-    <div>
-      <p class="brand-mark">{site.name}</p>
-      <p class="footer-copy">
-        Independent UK household readiness guides. Start with what you already own; fill gaps
-        gradually.
-      </p>
-      <p class="footer-copy">
-        <a href="/affiliate-disclosure">Affiliate disclosure</a>
-        {' · '}
-        <a href="/editorial-policy">Editorial policy</a>
-        {' · '}
-        <a href="/privacy">Privacy</a>
-      </p>
+  <div class="wrap">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <Wordmark tone="band" />
+        <p>Independent UK household readiness guides. Start with what you already own; fill gaps gradually.</p>
+        <p>
+          <a href="/affiliate-disclosure">Affiliate disclosure</a> · <a href="/editorial-policy">Editorial policy</a> ·
+          <a href="/privacy">Privacy</a>
+        </p>
+      </div>
+      <div>
+        <h2 class="footer-heading">Useful numbers</h2>
+        <ul class="footer-list">
+          <li>Emergency services: <strong>999</strong></li>
+          <li>NHS / NHS 24: <strong>111</strong></li>
+          <li>Power cut (England, Scotland, Wales): <strong>105</strong></li>
+          <li>Floodline: <strong>0345 988 1188</strong></li>
+          <li>Priority Services Register: <a href="https://www.thepsr.co.uk/" rel="noopener noreferrer">thepsr.co.uk</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="footer-heading">Official guidance</h2>
+        <ul class="footer-list">
+          <li><a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer">Prepare (UK)</a></li>
+          <li><a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a></li>
+          <li><a href="/sources">All sources we cite</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/sitemap-index.xml">Sitemap</a></li>
+        </ul>
+      </div>
     </div>
-
-    <div>
-      <h2 class="footer-heading">Useful numbers</h2>
-      <ul class="footer-list">
-        <li>Emergency services: <strong>999</strong></li>
-        <li>NHS / NHS 24: <strong>111</strong></li>
-        <li>Power cut (England, Scotland, Wales): <strong>105</strong></li>
-        <li>Floodline: <strong>0345 988 1188</strong></li>
-        <li>
-          Priority Services Register:
-          <a href="https://www.thepsr.co.uk/" rel="noopener noreferrer">thepsr.co.uk</a>
-        </li>
-      </ul>
+    <div class="site-footer__legal">
+      <p class="amazon-disclosure" data-testid="amazon-disclosure">{AMAZON_DISCLOSURE}</p>
+      <p>© {new Date().getFullYear()} {site.name}. No third-party tracking scripts on this launch build.</p>
     </div>
-
-    <div>
-      <h2 class="footer-heading">Official guidance</h2>
-      <ul class="footer-list">
-        <li>
-          <a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer"
-            >Prepare (UK)</a
-          >
-        </li>
-        <li>
-          <a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a>
-        </li>
-        <li>
-          <a href="/sources">All sources we cite</a>
-        </li>
-        <li>
-          <a href="/contact">Contact</a>
-        </li>
-        <li>
-          <a href="/sitemap-index.xml">Sitemap</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="wrap site-footer__legal">
-    <p>
-      Some pages may contain advertising. Where we use affiliate links, they are labelled
-      {' '}<strong>Ad</strong> before you engage with them. See our
-      {' '}<a href="/affiliate-disclosure">affiliate disclosure</a>.
-    </p>
-    <p>© {new Date().getFullYear()} {site.name}. No third-party tracking scripts on this launch build.</p>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    margin-top: 3rem;
-    padding: 2.5rem 0 2rem;
-    border-top: 1px solid var(--line);
-    background: rgba(28, 36, 41, 0.04);
+    margin-top: var(--s-8);
+    padding: var(--s-7) 0 calc(var(--s-6) + env(safe-area-inset-bottom, 0));
+    background: var(--band);
+    color: var(--on-band-2);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
   }
-
-  .site-footer__grid {
-    display: grid;
-    gap: 1.75rem;
-  }
-
-  .footer-heading {
-    font-size: 1rem;
-    margin-bottom: 0.65rem;
-  }
-
-  .footer-copy,
-  .footer-list {
-    font-size: 0.95rem;
-    color: var(--ink-muted);
-    max-width: none;
-  }
-
-  .footer-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .footer-list li {
-    margin-bottom: 0.1rem;
-  }
-
-  /* 44px tap targets (issue #3, S1-3 finding 3). */
-  .footer-list a,
-  .footer-copy a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 2.75rem;
-  }
-
-  .site-footer__legal {
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--line);
-    font-size: 0.88rem;
-    color: var(--ink-muted);
-  }
-
-  .site-footer__legal p {
-    max-width: none;
-  }
-
-  @media (min-width: 48rem) {
-    .site-footer__grid {
-      grid-template-columns: 1.3fr 1fr 1fr;
-      gap: 2rem;
-    }
-  }
+  .site-footer a { color: var(--on-band); }
+  .site-footer a:hover { color: #ffffff; }
+  .site-footer strong { color: var(--on-band); }
+  .site-footer p { max-width: 34rem; }
+  .site-footer__grid { display: grid; gap: var(--s-6); }
+  .footer-heading { color: var(--on-band); font-size: var(--step-0); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: var(--s-3); }
+  .footer-list { list-style: none; margin: 0; padding: 0; display: grid; }
+  .footer-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.35em; min-height: var(--tap); }
+  .footer-list a { display: inline-flex; align-items: center; min-height: var(--tap); }
+  .site-footer__legal { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid rgb(255 255 255 / 0.14); font-size: var(--step--1); }
+  .site-footer__legal p { margin: 0 0 var(--s-2); }
+  .amazon-disclosure { color: var(--on-band); }
+  @media (min-width: 768px) { .site-footer__grid { grid-template-columns: 1.4fr 1fr 1fr; } }
 </style>

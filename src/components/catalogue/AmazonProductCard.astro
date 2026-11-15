@@ -1,0 +1,64 @@
+---
+/**
+ * Amazon-only product card (S1-7). Renders a ProductCardModel built from
+ * buildCatalogueComparisons. Price only when shownPrice allows it; button only when buttonLink
+ * returns the contract link. Otherwise neither, and no placeholder text.
+ */
+import CategoryIcon from './CategoryIcon.astro';
+import { CATEGORY_META, type ProductCardModel } from './catalogueView';
+interface Props { card: ProductCardModel }
+const { card } = Astro.props;
+const headingId = `p-${card.id}`;
+---
+<article class="pcard" id={card.id} aria-labelledby={headingId}>
+  <header class="pcard__head">
+    <span class="pcard__icon"><CategoryIcon category={card.category} /></span>
+    <div>
+      <p class="kicker">{CATEGORY_META[card.category].title} · {card.brand}</p>
+      <h3 id={headingId}>{card.name}</h3>
+    </div>
+  </header>
+  {
+    card.facts.length > 0 && (
+      <ul class="chips pcard__facts" aria-label="Listed details">
+        {card.facts.map((f) => <li class="chip chip--static">{f}</li>)}
+      </ul>
+    )
+  }
+  {
+    card.offers.map((o) =>
+      o.price || o.link ? (
+        <div class="pcard__offer">
+          {o.price && (
+            <div class="pcard__price">
+              <p class="pcard__amount">{o.price.text}</p>
+              <p class="meta">Amazon price checked {o.price.checkedText} UK time. {o.price.disclaimer}</p>
+            </div>
+          )}
+          {o.link && (
+            <p class="pcard__cta">
+              <span class="badge badge--ad">Ad</span>
+              <a class="btn" href={o.link.href} rel={`${o.link.rel} noopener`} data-link-kind={o.link.kind}>
+                {card.buttonLabel}<span class="visually-hidden"> (affiliate link)</span>
+              </a>
+            </p>
+          )}
+        </div>
+      ) : null,
+    )
+  }
+</article>
+<style>
+  .pcard { display: grid; gap: var(--s-4); align-content: start; padding: var(--s-5); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-1); min-width: 0; }
+  .pcard__head { display: grid; grid-template-columns: 52px 1fr; gap: var(--s-4); align-items: start; }
+  .pcard__head h3 { font-size: 1.0625rem; line-height: 1.35; margin: 0; }
+  .pcard__head .kicker { margin-bottom: var(--s-1); }
+  .pcard__icon { width: 52px; height: 52px; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
+  .pcard__offer { display: grid; gap: var(--s-3); }
+  .pcard__price { padding: var(--s-4); border-radius: var(--r-md); background: var(--success-soft); }
+  .pcard__price p { margin: 0; }
+  .pcard__amount { font-size: var(--step-3); font-weight: 780; letter-spacing: -0.02em; color: var(--success); font-variant-numeric: tabular-nums; }
+  .pcard__cta { display: flex; align-items: center; gap: var(--s-2); margin: 0; max-width: none; }
+  .pcard__cta .btn { flex: 1 1 auto; }
+  @media (min-width: 640px) { .pcard__cta .btn { flex: 0 1 auto; } }
+</style>
