@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { buttonLink, shownPrice, AMAZON_DISCLOSURE } from './catalogueView';
-import type { DisplayOfferWithPreview } from './previewLinkShim';
+import type { AffiliateDisplayOffer } from '../../lib/offers';
 import { affiliateProgrammes } from '../../lib/offers/data';
 
 const NOW = new Date('2026-11-15T12:00:00Z');
@@ -40,7 +40,7 @@ const base = {
   last_checked: '2026-11-15T10:00:00+00:00',
   next_check_due: '2026-11-16T10:00:00+00:00',
   source: { name: 'Amazon UK product page' },
-} as unknown as DisplayOfferWithPreview;
+} as unknown as AffiliateDisplayOffer;
 
 const PROD = { SITE_ENV: 'production' };
 const PREVIEW = { SITE_ENV: 'preview' };
@@ -50,38 +50,38 @@ const TAGLESS = 'https://www.amazon.co.uk/dp/B0CZ9LH53B';
 describe('buttonLink (affiliate-only, Code Reviewer link security)', () => {
   it('does NOT render a non-affiliate https URL even when is_affiliate_link is true', () => {
     for (const url of ['https://evaq8.co.uk/products/e182p', 'https://example.com/', 'https://www.amazon.co.uk/dp/B0CZ9LH53B', 'https://www.amazon.com/dp/B0CZ9LH53B?tag=example-21']) {
-      const o = { ...base, link_url: url, link_rel: 'sponsored nofollow', is_affiliate_link: true } as DisplayOfferWithPreview;
+      const o = { ...base, link_url: url, link_rel: 'sponsored nofollow', is_affiliate_link: true } as AffiliateDisplayOffer;
       expect(buttonLink(o, PROD)).toBeNull();
     }
   });
   it('renders the contract link_url in production with rel sponsored nofollow', () => {
-    const o = { ...base, link_url: LIVE, link_rel: 'sponsored nofollow', is_affiliate_link: true } as DisplayOfferWithPreview;
-    expect(buttonLink(o, PROD)).toEqual({ href: LIVE, rel: 'sponsored nofollow', kind: 'affiliate' });
+    const o = { ...base, link_url: LIVE, link_rel: 'sponsored nofollow', is_affiliate_link: true } as AffiliateDisplayOffer;
+    expect(buttonLink(o, PROD)).toEqual({ href: LIVE, rel: 'sponsored nofollow' });
   });
-  it('never renders link_url in a preview build', () => {
-    const o = { ...base, link_url: LIVE, link_rel: 'sponsored nofollow', is_affiliate_link: true } as DisplayOfferWithPreview;
+  it('never renders a link in a preview build (no preview links at all)', () => {
+    const o = { ...base, link_url: LIVE, link_rel: 'sponsored nofollow', is_affiliate_link: true } as AffiliateDisplayOffer;
     expect(buttonLink(o, PREVIEW)).toBeNull();
+    expect(buttonLink(o, { SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'feature' })).toBeNull();
+    // A tagless dp URL is never a button, even in link_url.
+    const tagless = { ...base, link_url: TAGLESS, link_rel: 'sponsored nofollow', is_affiliate_link: true } as AffiliateDisplayOffer;
+    expect(buttonLink(tagless, PROD)).toBeNull();
   });
-  it('renders preview_link_url only in a preview build, and only the tagless dp shape', () => {
-    const o = { ...base, preview_link_url: TAGLESS, link_rel: 'sponsored nofollow' } as DisplayOfferWithPreview;
-    expect(buttonLink(o, PREVIEW)).toEqual({ href: TAGLESS, rel: 'sponsored nofollow', kind: 'preview' });
+  it('needs is_affiliate_link as well as a valid link_url', () => {
+    const o = { ...base, link_url: LIVE, link_rel: 'sponsored nofollow', is_affiliate_link: false } as AffiliateDisplayOffer;
     expect(buttonLink(o, PROD)).toBeNull();
-    expect(buttonLink(o, {})).toBeNull();
-    expect(buttonLink({ ...o, preview_link_url: LIVE } as DisplayOfferWithPreview, PREVIEW)).toBeNull();
-    expect(buttonLink({ ...o, preview_link_url: 'https://example.com/dp/B0CZ9LH53B' } as DisplayOfferWithPreview, PREVIEW)).toBeNull();
   });
-  it('renders nothing when both links are null', () => {
-    expect(buttonLink({ ...base, link_rel: 'sponsored nofollow' } as DisplayOfferWithPreview, PREVIEW)).toBeNull();
+  it('renders nothing when link_url is null', () => {
+    expect(buttonLink({ ...base, link_rel: 'sponsored nofollow', is_affiliate_link: true } as AffiliateDisplayOffer, PROD)).toBeNull();
     expect(buttonLink(base, PROD)).toBeNull();
   });
   it('requires rel sponsored nofollow from the contract', () => {
-    const o = { ...base, link_url: LIVE, link_rel: null, is_affiliate_link: true } as DisplayOfferWithPreview;
+    const o = { ...base, link_url: LIVE, link_rel: null, is_affiliate_link: true } as AffiliateDisplayOffer;
     expect(buttonLink(o, PROD)).toBeNull();
   });
 });
 
 describe('shownPrice (Amazon API price under 24 h only)', () => {
-  const priced = { ...base, price_display_allowed: true, price_gbp_inc_vat: 19.99, retailer_price_disclaimer: 'Amazon disclaimer' } as DisplayOfferWithPreview;
+  const priced = { ...base, price_display_allowed: true, price_gbp_inc_vat: 19.99, retailer_price_disclaimer: 'Amazon disclaimer' } as AffiliateDisplayOffer;
   it('shows an allowed, fresh Amazon price', () => {
     expect(shownPrice(priced, NOW)?.text).toBe('£19.99');
   });

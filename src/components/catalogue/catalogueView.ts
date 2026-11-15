@@ -14,7 +14,6 @@ import {
   type ProductCategory,
 } from '../../lib/offers';
 import { isPreviewBuild } from '../../data/site';
-import { previewLinkOf, type DisplayOfferWithPreview } from './previewLinkShim';
 
 type Env = Record<string, string | undefined>;
 const HOUR_MS = 3_600_000;
@@ -25,31 +24,26 @@ export const AMAZON_DISCLOSURE = 'As an Amazon Associate I earn from qualifying 
 /* ---------- Links ---------- */
 
 const AFFILIATE_RE = /^https:\/\/www\.amazon\.co\.uk\/dp\/[A-Z0-9]{10}\?tag=[A-Za-z0-9][A-Za-z0-9-]{0,60}-21$/;
-const PREVIEW_RE = /^https:\/\/www\.amazon\.co\.uk\/dp\/[A-Z0-9]{10}$/;
 
 export interface ButtonLink {
   href: string;
   rel: 'sponsored nofollow';
-  kind: 'affiliate' | 'preview';
 }
 
 /**
- * Contract (S1-8c): href = link_url ?? preview_link_url, rel = link_rel; both null => no button.
- * Defence in depth (Code Reviewer): link_url must be the exact amazon.co.uk Special Link shape
- * that resolveAffiliateLink builds and only in a non-preview build; preview_link_url must be a
- * tagless amazon.co.uk/dp URL and only in a preview build. `is_affiliate_link` is never trusted
- * on its own, and no other URL field is ever read.
+ * Affiliate button link. The href comes ONLY from the contract's link_url (built by
+ * resolveAffiliateLink), and only when all hold: the offer is flagged is_affiliate_link with
+ * link_rel 'sponsored nofollow', the build is not a preview, and link_url has the exact
+ * amazon.co.uk Special Link shape (https://www.amazon.co.uk/dp/<ASIN>?tag=<id>-21).
+ * is_affiliate_link alone never produces a link, and no other URL field is ever read.
+ * Previews therefore show no buttons.
  */
-export function buttonLink(offer: DisplayOfferWithPreview, env: Env): ButtonLink | null {
-  if (offer.link_rel !== 'sponsored nofollow') return null;
-  const preview = isPreviewBuild(env);
+export function buttonLink(offer: AffiliateDisplayOffer, env: Env): ButtonLink | null {
+  if (!offer.is_affiliate_link || offer.link_rel !== 'sponsored nofollow') return null;
+  if (isPreviewBuild(env)) return null;
   const live = offer.link_url;
-  if (live !== null && !preview && AFFILIATE_RE.test(live)) return { href: live, rel: 'sponsored nofollow', kind: 'affiliate' };
-  const prev = previewLinkOf(offer);
-  if (live === null && prev !== null && preview && env.SITE_ENV === 'preview' && PREVIEW_RE.test(prev)) {
-    return { href: prev, rel: 'sponsored nofollow', kind: 'preview' };
-  }
-  return null;
+  if (live === null || !AFFILIATE_RE.test(live)) return null;
+  return { href: live, rel: 'sponsored nofollow' };
 }
 
 /* ---------- Price ---------- */
@@ -176,7 +170,7 @@ export interface CatalogueModel {
 }
 
 export function toCardModel(c: CatalogueComparison, env: Env, now: Date): ProductCardModel {
-  const offers = (c.offers as DisplayOfferWithPreview[]).map((o) => ({
+  const offers = c.offers.map((o) => ({
     offer_id: o.offer_id,
     price: shownPrice(o, now),
     link: buttonLink(o, env),

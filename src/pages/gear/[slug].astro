@@ -1,11 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
-import AdBlock from '../../components/AdBlock.astro';
 import ReviewFlags from '../../components/ReviewFlags.astro';
 import ProductComparison from '../../components/ProductComparison.astro';
 import { getPublishedGear } from '../../lib/content';
-import { getLiveOffers } from '../../lib/retailerOffers';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -18,7 +16,6 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const offers = getLiveOffers(entry.data.category);
 const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate).toLocaleDateString(
   'en-GB',
   { day: 'numeric', month: 'long', year: 'numeric' },
@@ -29,7 +26,6 @@ const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pu
   title={entry.data.title}
   description={entry.data.description}
   canonicalPath={`/gear/${entry.id}`}
-  showAmazonNotice={offers.some((o) => o.network === 'amazon-associates')}
 >
   <article class="section">
     <div class="wrap wrap--narrow">
@@ -73,13 +69,6 @@ const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pu
         )
       }
 
-      {
-        entry.data.affiliate && (
-          <div class="no-print">
-            <AdBlock offers={offers} heading={`Where to buy · ${entry.data.title}`} />
-          </div>
-        )
-      }
     </div>
   </article>
 </BaseLayout>

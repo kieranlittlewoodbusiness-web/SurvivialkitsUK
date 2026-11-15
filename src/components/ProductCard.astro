@@ -11,7 +11,9 @@ interface Props {
 }
 
 const { product, hideBuys = false } = Astro.props;
-const offers = hideBuys ? [] : resolveProductOffers(product);
+// S1-7: legacy retailer offers never render. Outbound product links come only from the
+// Amazon catalogue (src/components/catalogue), so this card shows criteria without links.
+const offers: ReturnType<typeof resolveProductOffers> = hideBuys ? [] : [];
 const liveOffers = offers.filter((o) => o.enabled && o.url.trim());
 const evidenceLabel =
   product.evidence === 'firsthand-test' ? 'Personally tested' : 'Researched';
@@ -134,7 +136,7 @@ const evidenceLabel =
     margin-top: 0.85rem;
     padding: 0.75rem 0.85rem;
     border: 1px dashed var(--warn);
-    background: #f7f0e4;
+    background: var(--warning-soft);
     font-size: 0.92rem;
   }
 

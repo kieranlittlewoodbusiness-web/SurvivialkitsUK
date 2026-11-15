@@ -2,7 +2,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import AmazonAssociatesNotice from '../components/AmazonAssociatesNotice.astro';
 import { site } from '../data/site';
 
 interface Props {
@@ -11,6 +10,7 @@ interface Props {
   canonicalPath?: string;
   noindex?: boolean;
   ogType?: 'website' | 'article';
+  /** @deprecated S1-7: the Amazon disclosure is a single site-wide footer line. Ignored. */
   showAmazonNotice?: boolean;
 }
 
@@ -20,7 +20,6 @@ const {
   canonicalPath,
   noindex = false,
   ogType = 'website',
-  showAmazonNotice = false,
 } = Astro.props;
 ---
 
@@ -40,7 +39,6 @@ const {
     <div class="site-shell">
       <Header />
       <main id="main">
-        {showAmazonNotice && <div class="wrap"><AmazonAssociatesNotice /></div>}
         <slot />
       </main>
       <Footer />
