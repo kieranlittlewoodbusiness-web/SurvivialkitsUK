@@ -1,0 +1,137 @@
+/* S1-7 design direction: UK Survival Kit Brief
+   Tokens only. Drop-in replacement for the :root block in src/styles/global.css at implementation.
+   Every text/background pair is measured in contrast.md (tools/contrast.mjs). */
+
+@font-face {
+  font-family: 'Schibsted Grotesk Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 900;
+  src: url('fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* Option B only (serif headlines). Not loaded unless a .serif element is rendered. */
+@font-face {
+  font-family: 'Source Serif 4 Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url('fonts/source-serif-4-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --canvas: #f5f3ee;
+  --surface: #ffffff;
+  --surface-2: #eeebe4;
+  --band: #10201c;
+  --line: #ddd8ce;
+  --line-strong: #858a8e;
+
+  /* Text */
+  --ink: #14181b;
+  --ink-2: #434b51;
+  --ink-3: #5a6268;
+  --on-band: #f5f3ee;
+  --on-band-2: #c3cdc9;
+  --band-accent: #7fd6b8;
+
+  /* Accent: option A "Signal green" (continuity with today's --signal #0f5c4c) */
+  --accent: #0b5d4b;
+  --accent-hover: #07463a;
+  --accent-soft: #e2f1ec;
+  --on-accent: #ffffff;
+
+  /* Semantic: price labels and callouts. Meaning unchanged from S1-2. */
+  --success: #13592b;      /* Verified / best verified delivered price */
+  --success-soft: #e3f3e7;
+  --warning: #7a4100;      /* Price not verified, delivery unverified/unknown, model unconfirmed, research disclosure */
+  --warning-soft: #fcefd8;
+  --error: #9b1c1c;        /* Price not available, data error */
+  --error-soft: #fbe7e5;
+  --info: #1b4a85;         /* Price may be out of date (stale), neutral info */
+  --info-soft: #e5edf8;
+  --ad: #3a3e42;           /* Ad label */
+  --ad-soft: #ebe7de;
+  --focus: #1a55c9;
+
+  /* Type */
+  --font-sans: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Source Serif 4 Variable', Georgia, 'Times New Roman', serif;
+  --font-head: var(--font-sans);           /* option A: sans headlines. Option B sets --font-serif. */
+  /* Fluid scale, 320px -> 1280px viewport */
+  --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);   /* 13 -> 14  meta, badges */
+  --step-0:  clamp(1rem, 0.98rem + 0.1vw, 1.0625rem);       /* 16 -> 17  body */
+  --step-1:  clamp(1.125rem, 1.08rem + 0.21vw, 1.25rem);    /* 18 -> 20  standfirst, card titles */
+  --step-2:  clamp(1.3125rem, 1.22rem + 0.42vw, 1.5625rem); /* 21 -> 25  h3 */
+  --step-3:  clamp(1.625rem, 1.46rem + 0.83vw, 2.125rem);   /* 26 -> 34  h2 / section heads */
+  --step-4:  clamp(2rem, 1.67rem + 1.67vw, 3rem);           /* 32 -> 48  h1 */
+  --step-5:  clamp(2.375rem, 1.83rem + 2.71vw, 4rem);       /* 38 -> 64  homepage lead */
+  --lh-tight: 1.08;
+  --lh-head: 1.18;
+  --lh-body: 1.6;
+
+  /* Shape */
+  --r-xs: 8px;     /* badges, inputs, small thumbs */
+  --r-sm: 12px;    /* nested panels, price rows */
+  --r-md: 20px;    /* cards */
+  --r-lg: 28px;    /* hero, feature bands, sheets */
+  --r-pill: 999px; /* buttons, chips, nav pills */
+
+  /* Space (4px base) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px;
+  --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 96px;
+  --gutter: clamp(16px, 3vw, 32px);
+  --max: 76rem;
+  --measure: 40rem;
+  --tap: 44px;
+
+  /* Elevation: hairline + soft shadow, no heavy drop shadows */
+  --shadow-1: 0 1px 2px rgb(20 24 27 / 0.06), 0 2px 8px rgb(20 24 27 / 0.04);
+  --shadow-2: 0 2px 4px rgb(20 24 27 / 0.06), 0 12px 28px rgb(20 24 27 / 0.08);
+  --ring: 0 0 0 2px var(--surface), 0 0 0 5px var(--focus);
+}
+
+/* Accent option B "Beacon amber" (warmer, more news-like). White button labels still pass AA (see contrast.md). */
+[data-accent="b"] {
+  --accent: #a3360a;
+  --accent-hover: #842b07;
+  --accent-soft: #fbe9de;
+  --on-accent: #ffffff;
+  --band-accent: #ffb48a;
+}
+
+/* Optional dark theme (prefers-color-scheme at implementation; not in sprint scope unless approved) */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #0e1312;
+  --surface: #161d1b;
+  --surface-2: #1d2523;
+  --band: #08100e;
+  --line: #2b3532;
+  --line-strong: #7a8682;
+  --ink: #edf1ef;
+  --ink-2: #bcc5c1;
+  --ink-3: #9da7a3;
+  --on-band: #edf1ef;
+  --on-band-2: #bcc5c1;
+  --band-accent: #7fd6b8;
+  --accent: #6fd0ae;
+  --accent-hover: #8fdcc0;
+  --accent-soft: #143229;
+  --on-accent: #062219;
+  --success: #86d9a1;
+  --success-soft: #12301d;
+  --warning: #f1c46e;
+  --warning-soft: #33260c;
+  --error: #ff9f97;
+  --error-soft: #3a1614;
+  --info: #a3c4ff;
+  --info-soft: #14253f;
+  --ad: #d8d3c8;
+  --ad-soft: #2a2924;
+  --focus: #8cb4ff;
+}

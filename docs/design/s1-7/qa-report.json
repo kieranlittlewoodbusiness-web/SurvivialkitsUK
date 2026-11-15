@@ -1,0 +1,205 @@
+{
+  "browser": "Chromium 159.0.8154.6",
+  "results": [
+    {
+      "page": "home-mock",
+      "width": 320,
+      "hOverflow": false,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "home-mock",
+      "width": 375,
+      "hOverflow": false,
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "home-mock",
+      "width": 390,
+      "hOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "home-mock",
+      "width": 768,
+      "hOverflow": false,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "home-mock",
+      "width": 1280,
+      "hOverflow": false,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "compare-mock",
+      "width": 320,
+      "hOverflow": false,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "compare-mock",
+      "width": 375,
+      "hOverflow": false,
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "compare-mock",
+      "width": 390,
+      "hOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "compare-mock",
+      "width": 768,
+      "hOverflow": false,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "compare-mock",
+      "width": 1280,
+      "hOverflow": false,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "components",
+      "width": 320,
+      "hOverflow": false,
+      "scrollWidth": 320,
+      "clientWidth": 320,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable",
+        "Source Serif 4 Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "components",
+      "width": 375,
+      "hOverflow": false,
+      "scrollWidth": 375,
+      "clientWidth": 375,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable",
+        "Source Serif 4 Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "components",
+      "width": 390,
+      "hOverflow": false,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable",
+        "Source Serif 4 Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "components",
+      "width": 768,
+      "hOverflow": false,
+      "scrollWidth": 768,
+      "clientWidth": 768,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable",
+        "Source Serif 4 Variable"
+      ],
+      "axeViolations": []
+    },
+    {
+      "page": "components",
+      "width": 1280,
+      "hOverflow": false,
+      "scrollWidth": 1280,
+      "clientWidth": 1280,
+      "overflowing": [],
+      "smallTargets": [],
+      "fontsLoaded": [
+        "Schibsted Grotesk Variable",
+        "Source Serif 4 Variable"
+      ],
+      "axeViolations": []
+    }
+  ]
+}

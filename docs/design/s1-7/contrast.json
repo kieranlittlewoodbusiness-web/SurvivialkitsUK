@@ -1,0 +1,818 @@
+{
+  "light (accent A green)": [
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Body and headlines on page canvas",
+      "ratio": 16.1,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Body and headlines on cards",
+      "ratio": 17.85,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "surface-2",
+      "bgHex": "#eeebe4",
+      "use": "Text on sunken band / chips",
+      "ratio": 15,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#434b51",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Standfirst / secondary text on canvas",
+      "ratio": 8.01,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#434b51",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Standfirst / secondary text on cards",
+      "ratio": 8.88,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#434b51",
+      "bg": "surface-2",
+      "bgHex": "#eeebe4",
+      "use": "Secondary text on sunken band",
+      "ratio": 7.46,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-3",
+      "fgHex": "#5a6268",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Meta (dates, last checked) on cards",
+      "ratio": 6.21,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-3",
+      "fgHex": "#5a6268",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Meta on canvas",
+      "ratio": 5.6,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#0b5d4b",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Links, kickers on cards",
+      "ratio": 7.83,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#0b5d4b",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Links, kickers on canvas",
+      "ratio": 7.06,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#0b5d4b",
+      "bg": "accent-soft",
+      "bgHex": "#e2f1ec",
+      "use": "Accent chip text",
+      "ratio": 6.72,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-accent",
+      "fgHex": "#ffffff",
+      "bg": "accent",
+      "bgHex": "#0b5d4b",
+      "use": "Primary button label",
+      "ratio": 7.83,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-accent",
+      "fgHex": "#ffffff",
+      "bg": "accent-hover",
+      "bgHex": "#07463a",
+      "use": "Primary button label (hover)",
+      "ratio": 10.79,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-band",
+      "fgHex": "#f5f3ee",
+      "bg": "band",
+      "bgHex": "#10201c",
+      "use": "Text on dark hero/feature band",
+      "ratio": 15.21,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-band-2",
+      "fgHex": "#c3cdc9",
+      "bg": "band",
+      "bgHex": "#10201c",
+      "use": "Secondary text on dark band",
+      "ratio": 10.36,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "band-accent",
+      "fgHex": "#7fd6b8",
+      "bg": "band",
+      "bgHex": "#10201c",
+      "use": "Kicker on dark band",
+      "ratio": 9.81,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "success",
+      "fgHex": "#13592b",
+      "bg": "success-soft",
+      "bgHex": "#e3f3e7",
+      "use": "Badge: Verified / best verified price",
+      "ratio": 7.32,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "success",
+      "fgHex": "#13592b",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Best price figure on card",
+      "ratio": 8.43,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "warning",
+      "fgHex": "#7a4100",
+      "bg": "warning-soft",
+      "bgHex": "#fcefd8",
+      "use": "Badge: Price not verified / delivery unknown / model unconfirmed",
+      "ratio": 7.15,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "error",
+      "fgHex": "#9b1c1c",
+      "bg": "error-soft",
+      "bgHex": "#fbe7e5",
+      "use": "Badge: Price not available / error state",
+      "ratio": 6.86,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "info",
+      "fgHex": "#1b4a85",
+      "bg": "info-soft",
+      "bgHex": "#e5edf8",
+      "use": "Badge: Price may be out of date (stale) / info callout",
+      "ratio": 7.53,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ad",
+      "fgHex": "#3a3e42",
+      "bg": "ad-soft",
+      "bgHex": "#ebe7de",
+      "use": "Ad label",
+      "ratio": 8.74,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "warning-soft",
+      "bgHex": "#fcefd8",
+      "use": "Body copy inside disclosure callout",
+      "ratio": 15.71,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "info-soft",
+      "bgHex": "#e5edf8",
+      "use": "Body copy inside info callout",
+      "ratio": 15.13,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "line-strong",
+      "fgHex": "#858a8e",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Control / secondary-button border (non-text, 1.4.11)",
+      "ratio": 3.49,
+      "min": 3,
+      "pass": true
+    },
+    {
+      "fg": "focus",
+      "fgHex": "#1a55c9",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Focus ring vs canvas (non-text, 1.4.11)",
+      "ratio": 5.94,
+      "min": 3,
+      "pass": true
+    },
+    {
+      "fg": "focus",
+      "fgHex": "#1a55c9",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Focus ring vs card (non-text, 1.4.11)",
+      "ratio": 6.59,
+      "min": 3,
+      "pass": true
+    }
+  ],
+  "light (accent B amber)": [
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Body and headlines on page canvas",
+      "ratio": 16.1,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Body and headlines on cards",
+      "ratio": 17.85,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "surface-2",
+      "bgHex": "#eeebe4",
+      "use": "Text on sunken band / chips",
+      "ratio": 15,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#434b51",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Standfirst / secondary text on canvas",
+      "ratio": 8.01,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#434b51",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Standfirst / secondary text on cards",
+      "ratio": 8.88,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#434b51",
+      "bg": "surface-2",
+      "bgHex": "#eeebe4",
+      "use": "Secondary text on sunken band",
+      "ratio": 7.46,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-3",
+      "fgHex": "#5a6268",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Meta (dates, last checked) on cards",
+      "ratio": 6.21,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-3",
+      "fgHex": "#5a6268",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Meta on canvas",
+      "ratio": 5.6,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#a3360a",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Links, kickers on cards",
+      "ratio": 6.8,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#a3360a",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Links, kickers on canvas",
+      "ratio": 6.13,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#a3360a",
+      "bg": "accent-soft",
+      "bgHex": "#fbe9de",
+      "use": "Accent chip text",
+      "ratio": 5.77,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-accent",
+      "fgHex": "#ffffff",
+      "bg": "accent",
+      "bgHex": "#a3360a",
+      "use": "Primary button label",
+      "ratio": 6.8,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-accent",
+      "fgHex": "#ffffff",
+      "bg": "accent-hover",
+      "bgHex": "#842b07",
+      "use": "Primary button label (hover)",
+      "ratio": 9.01,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-band",
+      "fgHex": "#f5f3ee",
+      "bg": "band",
+      "bgHex": "#10201c",
+      "use": "Text on dark hero/feature band",
+      "ratio": 15.21,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-band-2",
+      "fgHex": "#c3cdc9",
+      "bg": "band",
+      "bgHex": "#10201c",
+      "use": "Secondary text on dark band",
+      "ratio": 10.36,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "band-accent",
+      "fgHex": "#ffb48a",
+      "bg": "band",
+      "bgHex": "#10201c",
+      "use": "Kicker on dark band",
+      "ratio": 9.75,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "success",
+      "fgHex": "#13592b",
+      "bg": "success-soft",
+      "bgHex": "#e3f3e7",
+      "use": "Badge: Verified / best verified price",
+      "ratio": 7.32,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "success",
+      "fgHex": "#13592b",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Best price figure on card",
+      "ratio": 8.43,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "warning",
+      "fgHex": "#7a4100",
+      "bg": "warning-soft",
+      "bgHex": "#fcefd8",
+      "use": "Badge: Price not verified / delivery unknown / model unconfirmed",
+      "ratio": 7.15,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "error",
+      "fgHex": "#9b1c1c",
+      "bg": "error-soft",
+      "bgHex": "#fbe7e5",
+      "use": "Badge: Price not available / error state",
+      "ratio": 6.86,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "info",
+      "fgHex": "#1b4a85",
+      "bg": "info-soft",
+      "bgHex": "#e5edf8",
+      "use": "Badge: Price may be out of date (stale) / info callout",
+      "ratio": 7.53,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ad",
+      "fgHex": "#3a3e42",
+      "bg": "ad-soft",
+      "bgHex": "#ebe7de",
+      "use": "Ad label",
+      "ratio": 8.74,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "warning-soft",
+      "bgHex": "#fcefd8",
+      "use": "Body copy inside disclosure callout",
+      "ratio": 15.71,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#14181b",
+      "bg": "info-soft",
+      "bgHex": "#e5edf8",
+      "use": "Body copy inside info callout",
+      "ratio": 15.13,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "line-strong",
+      "fgHex": "#858a8e",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Control / secondary-button border (non-text, 1.4.11)",
+      "ratio": 3.49,
+      "min": 3,
+      "pass": true
+    },
+    {
+      "fg": "focus",
+      "fgHex": "#1a55c9",
+      "bg": "canvas",
+      "bgHex": "#f5f3ee",
+      "use": "Focus ring vs canvas (non-text, 1.4.11)",
+      "ratio": 5.94,
+      "min": 3,
+      "pass": true
+    },
+    {
+      "fg": "focus",
+      "fgHex": "#1a55c9",
+      "bg": "surface",
+      "bgHex": "#ffffff",
+      "use": "Focus ring vs card (non-text, 1.4.11)",
+      "ratio": 6.59,
+      "min": 3,
+      "pass": true
+    }
+  ],
+  "dark (optional)": [
+    {
+      "fg": "ink",
+      "fgHex": "#edf1ef",
+      "bg": "canvas",
+      "bgHex": "#0e1312",
+      "use": "Body and headlines on page canvas",
+      "ratio": 16.45,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#edf1ef",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Body and headlines on cards",
+      "ratio": 15.04,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#edf1ef",
+      "bg": "surface-2",
+      "bgHex": "#1d2523",
+      "use": "Text on sunken band / chips",
+      "ratio": 13.74,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#bcc5c1",
+      "bg": "canvas",
+      "bgHex": "#0e1312",
+      "use": "Standfirst / secondary text on canvas",
+      "ratio": 10.62,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#bcc5c1",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Standfirst / secondary text on cards",
+      "ratio": 9.7,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-2",
+      "fgHex": "#bcc5c1",
+      "bg": "surface-2",
+      "bgHex": "#1d2523",
+      "use": "Secondary text on sunken band",
+      "ratio": 8.87,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-3",
+      "fgHex": "#9da7a3",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Meta (dates, last checked) on cards",
+      "ratio": 6.93,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink-3",
+      "fgHex": "#9da7a3",
+      "bg": "canvas",
+      "bgHex": "#0e1312",
+      "use": "Meta on canvas",
+      "ratio": 7.58,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#6fd0ae",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Links, kickers on cards",
+      "ratio": 9.23,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#6fd0ae",
+      "bg": "canvas",
+      "bgHex": "#0e1312",
+      "use": "Links, kickers on canvas",
+      "ratio": 10.09,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "accent",
+      "fgHex": "#6fd0ae",
+      "bg": "accent-soft",
+      "bgHex": "#143229",
+      "use": "Accent chip text",
+      "ratio": 7.45,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-accent",
+      "fgHex": "#062219",
+      "bg": "accent",
+      "bgHex": "#6fd0ae",
+      "use": "Primary button label",
+      "ratio": 9.04,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-accent",
+      "fgHex": "#062219",
+      "bg": "accent-hover",
+      "bgHex": "#8fdcc0",
+      "use": "Primary button label (hover)",
+      "ratio": 10.53,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-band",
+      "fgHex": "#edf1ef",
+      "bg": "band",
+      "bgHex": "#08100e",
+      "use": "Text on dark hero/feature band",
+      "ratio": 16.9,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "on-band-2",
+      "fgHex": "#bcc5c1",
+      "bg": "band",
+      "bgHex": "#08100e",
+      "use": "Secondary text on dark band",
+      "ratio": 10.9,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "band-accent",
+      "fgHex": "#7fd6b8",
+      "bg": "band",
+      "bgHex": "#08100e",
+      "use": "Kicker on dark band",
+      "ratio": 11.2,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "success",
+      "fgHex": "#86d9a1",
+      "bg": "success-soft",
+      "bgHex": "#12301d",
+      "use": "Badge: Verified / best verified price",
+      "ratio": 8.49,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "success",
+      "fgHex": "#86d9a1",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Best price figure on card",
+      "ratio": 10.16,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "warning",
+      "fgHex": "#f1c46e",
+      "bg": "warning-soft",
+      "bgHex": "#33260c",
+      "use": "Badge: Price not verified / delivery unknown / model unconfirmed",
+      "ratio": 9.04,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "error",
+      "fgHex": "#ff9f97",
+      "bg": "error-soft",
+      "bgHex": "#3a1614",
+      "use": "Badge: Price not available / error state",
+      "ratio": 8.17,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "info",
+      "fgHex": "#a3c4ff",
+      "bg": "info-soft",
+      "bgHex": "#14253f",
+      "use": "Badge: Price may be out of date (stale) / info callout",
+      "ratio": 8.71,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ad",
+      "fgHex": "#d8d3c8",
+      "bg": "ad-soft",
+      "bgHex": "#2a2924",
+      "use": "Ad label",
+      "ratio": 9.76,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#edf1ef",
+      "bg": "warning-soft",
+      "bgHex": "#33260c",
+      "use": "Body copy inside disclosure callout",
+      "ratio": 12.95,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "ink",
+      "fgHex": "#edf1ef",
+      "bg": "info-soft",
+      "bgHex": "#14253f",
+      "use": "Body copy inside info callout",
+      "ratio": 13.49,
+      "min": 4.5,
+      "pass": true
+    },
+    {
+      "fg": "line-strong",
+      "fgHex": "#7a8682",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Control / secondary-button border (non-text, 1.4.11)",
+      "ratio": 4.54,
+      "min": 3,
+      "pass": true
+    },
+    {
+      "fg": "focus",
+      "fgHex": "#8cb4ff",
+      "bg": "canvas",
+      "bgHex": "#0e1312",
+      "use": "Focus ring vs canvas (non-text, 1.4.11)",
+      "ratio": 9,
+      "min": 3,
+      "pass": true
+    },
+    {
+      "fg": "focus",
+      "fgHex": "#8cb4ff",
+      "bg": "surface",
+      "bgHex": "#161d1b",
+      "use": "Focus ring vs card (non-text, 1.4.11)",
+      "ratio": 8.23,
+      "min": 3,
+      "pass": true
+    }
+  ]
+}
