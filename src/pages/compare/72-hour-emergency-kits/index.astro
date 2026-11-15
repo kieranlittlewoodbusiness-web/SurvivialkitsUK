@@ -13,7 +13,7 @@ const description =
 
 const now = new Date();
 const catalogue = await loadCatalogue(process.env, now);
-const productSections = catalogue.sections.filter((s) => s.category !== 'kit');
+const productSections = catalogue.sections.filter((s) => s.category !== 'kit' && s.cards.length > 0);
 
 const official = [
   { label: 'Be Ready: be ready for emergencies (GOV.UK campaign)', url: 'https://beready.campaign.gov.uk/be-ready-for-emergencies/' },

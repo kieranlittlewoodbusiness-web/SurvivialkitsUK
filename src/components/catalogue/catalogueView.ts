@@ -7,6 +7,8 @@ import {
   buildCatalogueComparisons,
   formatLondonDateTime,
   isAmazonOffer,
+  isProductVerified,
+  type ProductRecord,
   type AffiliateDisplayOffer,
   type CatalogueComparison,
   type ProductCategory,
@@ -168,6 +170,8 @@ export interface ProductCardModel {
 export interface CatalogueModel {
   sections: { category: ProductCategory; cards: ProductCardModel[] }[];
   hasAmazonLinks: boolean;
+  /** ASINs of rendered products, in render order (for tests and evidence). */
+  asins: string[];
   stats: { cards: number; withButton: number; withoutButton: number; withPrice: number };
 }
 
@@ -193,6 +197,11 @@ export function toCardModel(c: CatalogueComparison, env: Env, now: Date): Produc
  * Inputs: catalogue products (non-kit; kits.json holds only a non-Amazon-brand kit) and offers
  * that the contract's own isAmazonOffer recognises. Order is the data's; nothing is re-sorted.
  */
+/** Render gate: verified product record (isProductVerified) with at least one exact-match offer. */
+export function isApproved(c: CatalogueComparison, record: ProductRecord | undefined): boolean {
+  return record !== undefined && isProductVerified(record) && c.offers.some((o) => o.model_match_confirmed);
+}
+
 export async function loadCatalogue(env: Env = process.env, now = new Date()): Promise<CatalogueModel> {
   const data = await import('../../lib/offers/data');
   const offers = data.catalogueOffers.filter((o) => isAmazonOffer(o));
@@ -201,7 +210,13 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
     buildEnv: env,
     now,
   });
-  const cards = comparisons.filter((c) => c.offers.length > 0).map((c) => toCardModel(c, env, now));
+  // Approved set = the same gate resolveAffiliateLink applies: the product record passes
+  // isProductVerified (verification: 'verified', plus size for thermals) AND the offer is an exact
+  // model match (matchOfferToProduct === null, surfaced as model_match_confirmed). No ASIN list.
+  const records = new Map(data.catalogueProducts.map((p) => [p.variant_id, p]));
+  const cards = comparisons
+    .filter((c) => isApproved(c, records.get(c.variant_id)))
+    .map((c) => toCardModel({ ...c, offers: c.offers.filter((o) => o.model_match_confirmed) }, env, now));
   // Distinct visible labels: fall back to the ASIN when two items would read the same.
   const seen = new Map<string, number>();
   for (const card of cards) seen.set(card.buttonLabel, (seen.get(card.buttonLabel) ?? 0) + 1);
@@ -213,9 +228,11 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
   }
   const sections = CATEGORY_ORDER.map((category) => ({ category, cards: cards.filter((c) => c.category === category) }));
   const withButton = cards.filter((c) => c.offers.some((o) => o.link)).length;
+  const asinOf = new Map(comparisons.map((c) => [c.variant_id, c.product.asin_uk ?? c.variant_id]));
   return {
     sections,
     hasAmazonLinks: withButton > 0,
+    asins: cards.map((c) => asinOf.get(c.id)!),
     stats: { cards: cards.length, withButton, withoutButton: cards.length - withButton, withPrice: cards.filter((c) => c.offers.some((o) => o.price)).length },
   };
 }

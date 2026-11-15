@@ -104,3 +104,17 @@ describe('Amazon disclosure wording', () => {
     expect(affiliateProgrammes.find((p) => p.programme_id === 'amazon-associates-uk')?.disclosure_text).toBe(AMAZON_DISCLOSURE);
   });
 });
+
+describe('approved set (verified + exact model match, same gate as resolveAffiliateLink)', () => {
+  it('renders exactly the 9 approved ASINs from the real catalogue', async () => {
+    const { loadCatalogue } = await import('./catalogueView');
+    for (const env of [{ SITE_ENV: 'preview' }, { SITE_ENV: 'production' }, {}]) {
+      const m = await loadCatalogue(env, new Date('2026-11-15T12:00:00Z'));
+      expect([...m.asins].sort()).toEqual(
+        ['B0896Q8JXD', 'B00L7S9LU4', 'B005AQK6V2', 'B09VBFQNKK', 'B0987MCGXT', 'B0CZ9LH53B', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B001FIQ7XU'].sort(),
+      );
+      expect(m.sections.find((s) => s.category === 'thermal_clothing')?.cards).toHaveLength(0);
+      expect(m.sections.find((s) => s.category === 'kit')?.cards).toHaveLength(0);
+    }
+  });
+});

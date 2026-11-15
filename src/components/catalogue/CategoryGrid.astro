@@ -5,6 +5,8 @@ import { CATEGORY_META, CATEGORY_ORDER } from './catalogueView';
 import { comparePath } from '../../data/site';
 interface Props { counts?: Partial<Record<string, number>> }
 const { counts = {} } = Astro.props;
+// Categories with no approved products link to our guidance instead of an empty section.
+const GUIDANCE: Partial<Record<string, string>> = { kit: '/checklist', thermal_clothing: '/gear/winter-travel', emergency_blanket: '/gear/winter-travel', emergency_water: '/gear/water-storage', first_aid_kit: '/gear/first-aid', wind_up_torch_radio: '/gear/radios', power_bank: '/gear/power-banks' };
 ---
 <ul class="cat-grid">
   {
@@ -13,11 +15,11 @@ const { counts = {} } = Astro.props;
       const n = counts[c];
       return (
         <li>
-          <a class="cat" href={`${comparePath}#${m.anchor}`}>
+          <a class="cat" href={typeof n === 'number' && n > 0 ? `${comparePath}#${m.anchor}` : (GUIDANCE[c] ?? '/checklist')}>
             <span class="cat__icon"><CategoryIcon category={c} /></span>
             <span class="cat__txt">
               <strong>{m.title}</strong>
-              <span>{m.dek}{typeof n === 'number' && n > 0 ? ` · ${n} listed` : ''}</span>
+              <span>{typeof n === 'number' && n > 0 ? `${m.dek} · ${n} listed` : 'What to look for: our guidance'}</span>
             </span>
           </a>
         </li>

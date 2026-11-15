@@ -1,4 +1,4 @@
-# The Household Brief
+# U.K. Survival Kit Brief
 
 UK civilian household preparedness site: serious editorial guides for outages, severe weather, supply disruption and temporary evacuation. Built with **Astro** and **TypeScript**, published as a **static** site to **Cloudflare Pages** (`npm run build` → `dist`).
 
