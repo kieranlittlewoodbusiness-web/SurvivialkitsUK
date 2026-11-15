@@ -170,18 +170,9 @@ export function resolveAffiliateLink(
   /** The product record is verified (see isProductVerified). Defaults to false: fail closed. */
   productVerified = false,
 ): ResolvedLink {
-  if (!productMatched) return noLink('exact_product_not_confirmed');
-  if (!productVerified) return noLink('product_unverified');
-  const id = offer.affiliate_programme_id ?? null;
-  if (id === null) return noLink('no_programme');
-  const programme = programmes.find((p) => p.programme_id === id);
-  if (!programme) return noLink('no_programme');
-  if (programme.status === 'pending') return noLink('programme_pending');
-  if (programme.status === 'rejected') return noLink('programme_rejected');
-  if (programme.status === 'suspended') return noLink('programme_suspended');
-  if (programme.approved_on === null || programme.approved_on > londonDateKey(offer.captured_at)) {
-    return noLink('programme_pending');
-  }
+  const gate = linkGate(offer, productMatched, productVerified, programmes);
+  if (typeof gate === 'string') return noLink(gate);
+  const programme = gate;
 
   const amazon = isAmazonOffer(offer);
   let candidate: string;
@@ -191,6 +182,7 @@ export function resolveAffiliateLink(
     if (!amazon) return noLink('no_programme');
     if (hasNonUkAmazonUrl(offer)) return noLink('marketplace_not_supported');
     if (!isProductionLinkBuild(buildEnv)) return noLink('non_production_build');
+    // Production only from here: this is the ONLY place the tracking id env var is read.
     const envName = programme.tracking_id_env;
     const raw = envName ? buildEnv[envName] : undefined;
     const tag = raw?.trim();
@@ -217,6 +209,74 @@ export function resolveAffiliateLink(
     no_link_reason: null,
     disclosure_text: programme.disclosure_text,
   };
+}
+
+/**
+ * Gates shared by the production link and the preview URL (S1-8c): exact match, verified
+ * product, and an approved programme in force on the offer's capture date. Returns the
+ * programme, or the no-link reason. Never reads the build env.
+ */
+function linkGate(
+  offer: Offer,
+  productMatched: boolean,
+  productVerified: boolean,
+  programmes: AffiliateProgrammeRecord[],
+): AffiliateProgrammeRecord | NoLinkReason {
+  if (!productMatched) return 'exact_product_not_confirmed';
+  if (!productVerified) return 'product_unverified';
+  const id = offer.affiliate_programme_id ?? null;
+  if (id === null) return 'no_programme';
+  const programme = programmes.find((p) => p.programme_id === id);
+  if (!programme) return 'no_programme';
+  if (programme.status === 'pending') return 'programme_pending';
+  if (programme.status === 'rejected') return 'programme_rejected';
+  if (programme.status === 'suspended') return 'programme_suspended';
+  if (programme.approved_on === null || programme.approved_on > londonDateKey(offer.captured_at)) {
+    return 'programme_pending';
+  }
+  return programme;
+}
+
+/* ---------- S1-8c: preview link (tagless) ---------- */
+
+/**
+ * Preview build for the tagless preview URL: strictly SITE_ENV === 'preview'. A Cloudflare
+ * Pages branch preview with SITE_ENV unset does NOT count (no preview URL, and no production
+ * link either): preview builds must set SITE_ENV=preview explicitly.
+ */
+export function isPreviewLinkBuild(env: BuildEnv): boolean {
+  return env.SITE_ENV === 'preview';
+}
+
+/** The tagless Amazon UK product URL: exactly https://www.amazon.co.uk/dp/{ASIN}. */
+export function amazonUkPreviewUrl(asin: string): string {
+  if (!ASIN_PATTERN.test(asin)) throw new RangeError('Invalid ASIN');
+  return `https://${AMAZON_UK_HOST}/dp/${asin}`;
+}
+
+/**
+ * S1-8c: the tagless preview URL, so preview builds can show the button without the tag.
+ * Non-null only when ALL hold: preview build (SITE_ENV === 'preview'); the same gates as a
+ * production link (exact match, verified product, approved programme in force); the offer is
+ * an Amazon UK offer (no non-UK Amazon URL) on a derive_from_asin programme that allows
+ * www.amazon.co.uk; and the ASIN is valid. Built from the ASIN only, never from stored URLs.
+ * Reads only SITE_ENV from the env: the tracking id env var is never read here.
+ */
+export function resolvePreviewLinkUrl(
+  offer: Offer,
+  productMatched: boolean,
+  programmes: AffiliateProgrammeRecord[],
+  buildEnv: BuildEnv = defaultEnv(),
+  productVerified = false,
+): string | null {
+  if (!isPreviewLinkBuild(buildEnv)) return null;
+  const gate = linkGate(offer, productMatched, productVerified, programmes);
+  if (typeof gate === 'string') return null;
+  if (gate.link_mode !== 'derive_from_asin' || !gate.allowed_hosts.includes(AMAZON_UK_HOST)) return null;
+  if (!isAmazonOffer(offer) || hasNonUkAmazonUrl(offer)) return null;
+  if (offer.asin_marketplace !== undefined && offer.asin_marketplace !== null && offer.asin_marketplace !== 'amazon.co.uk') return null;
+  if (!offer.asin || !ASIN_PATTERN.test(offer.asin)) return null;
+  return amazonUkPreviewUrl(offer.asin);
 }
 
 /* ---------- Price display rule ---------- */
@@ -262,7 +322,10 @@ export function toAffiliateDisplayOffer(
   const delivery = priceAllowed && isMoney(offer.delivery_cost_gbp) ? offer.delivery_cost_gbp : null;
   const total = modelMatch ? deliveredTotal({ price_gbp_inc_vat: price, delivery_cost_gbp: delivery }) : null;
   const verified = isProductVerified(product);
-  const link = resolveAffiliateLink(offer, modelMatch, programmes, options.buildEnv ?? defaultEnv(), verified);
+  const env = options.buildEnv ?? defaultEnv();
+  const link = resolveAffiliateLink(offer, modelMatch, programmes, env, verified);
+  // S1-8c: only computed when there is no production link (preview builds); never reads the tag.
+  const previewUrl = link.link_url === null ? resolvePreviewLinkUrl(offer, modelMatch, programmes, env, verified) : null;
 
   const labels: CatalogueOfferLabel[] = [];
   if (!modelMatch) labels.push('model_unconfirmed');
@@ -307,8 +370,9 @@ export function toAffiliateDisplayOffer(
     price_disclaimer: price !== null ? priceDisclaimer(offer) : null,
     retailer_price_disclaimer: price !== null && isAmazonOffer(offer) ? AMAZON_PRICE_DISCLAIMER : null,
     link_url: link.link_url,
-    link_rel: link.link_rel,
+    link_rel: link.link_rel ?? (previewUrl !== null ? 'sponsored nofollow' : null),
     is_affiliate_link: link.link_url !== null,
+    preview_link_url: previewUrl,
     no_link_reason: link.no_link_reason,
     no_link_text:
       link.link_url !== null

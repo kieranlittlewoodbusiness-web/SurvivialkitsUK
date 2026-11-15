@@ -568,9 +568,24 @@ export interface AffiliateDisplayOffer {
   retailer_price_disclaimer: string | null;
   /** Approved affiliate URL or null. NEVER a plain retailer URL. */
   link_url: string | null;
+  /**
+   * 'sponsored nofollow' whenever link_url OR preview_link_url is set (S1-8c: so the preview
+   * button renders exactly like the production button); otherwise null.
+   */
   link_rel: 'sponsored nofollow' | null;
-  /** === (link_url !== null). */
+  /** === (link_url !== null). Stays false for a preview_link_url (it is not an affiliate link). */
   is_affiliate_link: boolean;
+  /**
+   * S1-8c (for Web): tagless preview URL, exactly `https://www.amazon.co.uk/dp/{ASIN}` (no query
+   * string, no tag). Non-null ONLY in a preview build (SITE_ENV === 'preview', strict: a
+   * Cloudflare branch preview with SITE_ENV unset gets null) for an Amazon UK offer that would
+   * get a production link: exact match, verified product, approved derive_from_asin programme,
+   * valid ASIN. In preview, link_url stays null (no_link_reason 'non_production_build'),
+   * is_affiliate_link false and disclosure_text null. Always null in production, unset or any
+   * other SITE_ENV. Render it with link_rel. Built without reading AMAZON_ASSOCIATES_UK_TAG.
+   * Optional in the type for compatibility; toAffiliateDisplayOffer always sets it.
+   */
+  preview_link_url?: string | null;
   no_link_reason: NoLinkReason | null;
   no_link_text: string | null;
   /** Programme disclosure, set whenever link_url is set. */
