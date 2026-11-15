@@ -18,11 +18,12 @@ import {
   parseCatalogueProduct,
   parseCatalogueProductsFile,
   parseOffer,
+  SIZED_CATEGORIES,
   validateDisplayName,
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { HI_VIS_SIZE_CHILDREN, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
   CATEGORY_LABELS,
@@ -458,7 +459,7 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    expect(n).toBe(30);
+    expect(n).toBe(31);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
@@ -537,6 +538,64 @@ describe('S1-10 verified-set invariants (committed data)', () => {
       expect(p.display_name).toMatch(/\((men's|women's), [A-Z0-9-]+\)$/);
     }
   });
+
+  it('hi-vis size children point at their parent canonical and name their size', () => {
+    for (const [child, parent] of Object.entries(HI_VIS_SIZE_CHILDREN)) {
+      const p = catalogueProducts.find((x) => x.asin_uk === child)!;
+      expect(p.category).toBe('hi_vis');
+      expect(p.verification).toBe('verified');
+      expect(p.size_child_of).toBe(parent);
+      expect(p.verification_evidence!.canonical_asin).toBe(parent);
+      expect(p.verification_evidence!.checks_matched).toContain('size');
+      const size = (p.specs as { size_label?: { value: string } }).size_label?.value;
+      expect(size).toBeTruthy();
+      expect(p.display_name).toMatch(new RegExp(`\\(${size}\\)$`));
+      expect(p.display_name).not.toMatch(/20471|EN ?ISO|class ?\d/i);
+    }
+  });
+
+  it('only thermal_clothing and hi_vis records use size_child_of', () => {
+    for (const p of catalogueProducts.filter((x) => x.size_child_of)) expect(['thermal_clothing', 'hi_vis']).toContain(p.category);
+  });
+});
+
+/* ---------- size_child_of for hi_vis (PM ruling: same conditions as thermals) ---------- */
+
+describe('S1-10 size_child_of (hi-vis size children)', () => {
+  const s = (v: unknown) => ({ value: v, source: src('B005DEW1K0'), captured_at: T });
+  const child = (over: Record<string, unknown> = {}, ev: Record<string, unknown> = {}) =>
+    raw({
+      category: 'hi_vis',
+      asin_uk: 'B005DEW1K0',
+      model_code: '8010003',
+      mpn: '8010003',
+      brand: 'Blackrock',
+      display_name: 'Blackrock long-sleeve hi-vis vest (S)',
+      size_child_of: 'B0GZ3CPMWB',
+      specs: { size_label: s('S') },
+      verification_evidence: { ...evidence('B005DEW1K0', 'hi_vis'), canonical_asin: 'B0GZ3CPMWB', ...ev },
+      ...over,
+    });
+
+  it('a hi-vis size child verifies when canonical == size_child_of and size_label is set', () => {
+    expect(() => parseCatalogueProduct(child())).not.toThrow();
+    expect(isProductVerified(parseCatalogueProduct(child()))).toBe(true);
+  });
+
+  it('rejects a verified hi-vis size child whose evidence does not record the parent canonical', () => {
+    expect(() => parseCatalogueProduct(child({}, { canonical_asin: undefined }))).toThrow(/canonical_asin equal to size_child_of/);
+    expect(() => parseCatalogueProduct(child({}, { canonical_asin: 'B005DEW1K0' }))).toThrow(/canonical_asin equal to size_child_of/);
+  });
+
+  it('rejects a hi-vis size child without size_label, or pointing at itself', () => {
+    expect(() => parseCatalogueProduct(child({ specs: {} }))).toThrow(/size_label/);
+    expect(() => parseCatalogueProduct(child({ size_child_of: 'B005DEW1K0' }, { canonical_asin: 'B005DEW1K0' }))).toThrow(/must differ/);
+  });
+
+  it('a hi-vis record without size_child_of still needs canonical == asin_uk', () => {
+    expect(() => parseCatalogueProduct(child({ size_child_of: null }))).toThrow(/canonical_asin must equal asin_uk/);
+    expect(() => parseCatalogueProduct(child({ size_child_of: null }, { canonical_asin: 'B005DEW1K0' }))).not.toThrow();
+  });
 });
 
 /* ---------- size_child_of (PM ruling, option b) ---------- */
@@ -578,9 +637,13 @@ describe('S1-10 size_child_of (thermal size children)', () => {
     expect(() => parseCatalogueProduct(child({ size_child_of: 'parent-tbd' }))).toThrow();
   });
 
-  it.each(PRODUCT_CATEGORIES.filter((c) => c !== 'kit' && c !== 'thermal_clothing'))('rejects size_child_of on %s', (category) => {
+  it('SIZED_CATEGORIES is exactly thermal_clothing and hi_vis', () => {
+    expect([...SIZED_CATEGORIES].sort()).toEqual(['hi_vis', 'thermal_clothing']);
+  });
+
+  it.each(PRODUCT_CATEGORIES.filter((c) => c !== 'kit' && !SIZED_CATEGORIES.includes(c)))('rejects size_child_of on %s', (category) => {
     const r = raw({ category, size_child_of: 'B0DMT14LGZ', specs: {}, verification: 'unverified', display_name: null });
-    expect(() => parseCatalogueProduct(r)).toThrow(/only allowed for thermal_clothing/);
+    expect(() => parseCatalogueProduct(r)).toThrow(/only allowed for thermal_clothing and hi_vis/);
   });
 
   it('every other category keeps canonical == asin_uk', () => {
@@ -593,6 +656,7 @@ describe('S1-10 size_child_of (thermal size children)', () => {
   });
 
   it('size_child_of is null-safe and optional', () => {
+    expect(() => parseCatalogueProduct(raw({ category: 'hi_vis', specs: {}, size_child_of: null, verification: 'unverified', display_name: null }))).not.toThrow();
     expect(() => parseCatalogueProduct(raw({ size_child_of: null }))).not.toThrow();
     expect(() => parseCatalogueProduct(raw())).not.toThrow();
   });

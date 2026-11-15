@@ -89,15 +89,15 @@ function refineVerification(
   },
   ctx: z.RefinementCtx,
 ): void {
-  // S1-10: canonical identity. Every category: canonical == asin_uk. Thermal size child: canonical == size_child_of.
+  // S1-10: canonical identity. Every category: canonical == asin_uk. Size child (thermals, hi-vis): canonical == size_child_of.
   const canonical = p.verification_evidence?.canonical_asin;
-  const sizeChild = p.category === 'thermal_clothing' && p.size_child_of ? p.size_child_of : null;
+  const sizeChild = p.category !== undefined && SIZED_CATEGORIES.includes(p.category) && p.size_child_of ? p.size_child_of : null;
   if (sizeChild !== null) {
     if (p.verification === 'verified' && canonical !== sizeChild) {
       ctx.addIssue({ code: 'custom', path: ['verification_evidence', 'canonical_asin'], message: 'a verified size child needs verification_evidence.canonical_asin equal to size_child_of (the parent canonical)' });
     }
   } else if (canonical !== undefined && canonical !== p.asin_uk) {
-    ctx.addIssue({ code: 'custom', path: ['verification_evidence', 'canonical_asin'], message: 'canonical_asin must equal asin_uk (only a thermal_clothing size child may point at its parent)' });
+    ctx.addIssue({ code: 'custom', path: ['verification_evidence', 'canonical_asin'], message: 'canonical_asin must equal asin_uk (only a thermal_clothing or hi_vis size child may point at its parent)' });
   }
   const verified = p.verification === 'verified';
   const ev = p.verification_evidence;
@@ -619,7 +619,7 @@ const productBase = {
   /** S1-10: required when verified; rules in validateDisplayName. */
   display_name: z.string().nullable().optional(),
   display_rank: z.number().int().min(1).max(3).nullable().optional(),
-  /** S1-10: thermal_clothing only; the parent ASIN of a per-size child listing. */
+  /** S1-10: sized categories only (thermal_clothing, hi_vis); the parent ASIN of a per-size child listing. */
   size_child_of: asin.nullable().optional(),
   image_url: z.string().nullable().optional(),
   image_width: imageDimension,
@@ -667,13 +667,13 @@ const catalogueProductUnion = z
       // A listing-only number must not double as an identity key.
       ctx.addIssue({ code: 'custom', path: ['listing_mpn'], message: 'listing_mpn is listing-only and must not equal mpn, manufacturer_sku or model_code' });
     }
-    // S1-10 (PM ruling b): size_child_of is for thermal_clothing size children only.
+    // S1-10 (PM rulings): size_child_of is for size children in sized categories only (thermal_clothing, hi_vis).
     if (p.size_child_of !== undefined && p.size_child_of !== null) {
-      if (p.category !== 'thermal_clothing') {
-        ctx.addIssue({ code: 'custom', path: ['size_child_of'], message: 'size_child_of is only allowed for thermal_clothing' });
+      if (!SIZED_CATEGORIES.includes(p.category)) {
+        ctx.addIssue({ code: 'custom', path: ['size_child_of'], message: `size_child_of is only allowed for ${SIZED_CATEGORIES.join(' and ')}` });
       } else if (p.size_child_of === p.asin_uk) {
         ctx.addIssue({ code: 'custom', path: ['size_child_of'], message: 'size_child_of is the parent ASIN and must differ from asin_uk' });
-      } else if (!p.specs.size_label) {
+      } else if (!(p.specs as { size_label?: unknown }).size_label) {
         ctx.addIssue({ code: 'custom', path: ['specs', 'size_label'], message: 'a size child needs size_label' });
       }
     }
