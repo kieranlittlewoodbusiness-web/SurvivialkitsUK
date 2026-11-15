@@ -132,6 +132,24 @@ describe('checkContent', () => {
     );
     expect(r.failures).toEqual([]);
   });
+  it('production: fails canonical, og:url or sitemap URLs on www or pages.dev', () => {
+    const r = checkContent(
+      site({
+        'index.html': page('<p>x</p>').replace(
+          '</head>',
+          '<link rel="canonical" href="https://www.uksurvivalkits.uk/"><meta property="og:url" content="https://uksurvivalkits.pages.dev/"></head>',
+        ),
+        'robots.txt': 'User-agent: *\nAllow: /\n',
+        '_headers': 'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n\nhttps://:version.uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
+        'sitemap-0.xml': '<?xml version="1.0"?><urlset><url><loc>https://www.uksurvivalkits.uk/start-here</loc></url></urlset>',
+      }),
+      { production: true },
+    );
+    const reasons = r.failures.map((f) => `${f.file}: ${f.reason}`);
+    expect(reasons.some((x) => x.includes('canonical') && x.includes('www.uksurvivalkits.uk'))).toBe(true);
+    expect(reasons.some((x) => x.includes('og:url') && x.includes('pages.dev'))).toBe(true);
+    expect(reasons.some((x) => x.includes('sitemap loc') && x.includes('www.uksurvivalkits.uk'))).toBe(true);
+  });
 });
 
 describe('verify:dist (production build with a dummy tag)', () => {

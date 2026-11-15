@@ -15,6 +15,8 @@
  *   - production: no noindex on any page except 404.html; robots.txt allows crawling;
  *     _headers must exist and send X-Robots-Tag: noindex for the production
  *     pages.dev alias and preview subdomains, never for uksurvivalkits.uk.
+ *     Canonical, og:url and sitemap URLs must use the apex https://uksurvivalkits.uk
+ *     and must not contain www.uksurvivalkits.uk or pages.dev.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -238,6 +240,34 @@ function headersNoindexApplies(rules, url) {
   return noindexRules(rules).some((r) => headersPatternMatches(r.pattern, url));
 }
 
+
+const APEX_ORIGIN = 'https://uksurvivalkits.uk';
+
+function listedUrls(html, kind) {
+  if (kind === 'canonical') {
+    return [...html.matchAll(/<link\b[^>]*>/gi)]
+      .filter((m) => /\brel\s*=\s*["']canonical["']/i.test(m[0]))
+      .map((m) => attr(m[0], 'href') ?? '');
+  }
+  if (kind === 'og:url') {
+    return [...html.matchAll(/<meta\b[^>]*>/gi)]
+      .filter((m) => /\bproperty\s*=\s*["']og:url["']/i.test(m[0]))
+      .map((m) => attr(m[0], 'content') ?? '');
+  }
+  return [...html.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map((m) => m[1].trim());
+}
+
+function assertApexUrl(file, field, url, failures) {
+  if (!url) return;
+  if (!url.startsWith(`${APEX_ORIGIN}/`) && url !== APEX_ORIGIN && url !== `${APEX_ORIGIN}/`) {
+    failures.push({ file, reason: `${field} "${url}" is not on the apex host ${APEX_ORIGIN}` });
+    return;
+  }
+  if (/www\.uksurvivalkits\.uk/i.test(url) || /pages\.dev/i.test(url)) {
+    failures.push({ file, reason: `${field} "${url}" must not contain www.uksurvivalkits.uk or pages.dev` });
+  }
+}
+
 export function checkContent(dist, { production = false, banned = DEFAULT_BANNED } = {}) {
   const files = htmlFiles(dist);
   const failures = [];
@@ -299,6 +329,19 @@ export function checkContent(dist, { production = false, banned = DEFAULT_BANNED
             failures.push({ file: '_headers', reason: `X-Robots-Tag noindex must not apply to ${url}` });
           }
         }
+      }
+    }
+    for (const file of files) {
+      const rel = path.relative(dist, file);
+      const html = fs.readFileSync(file, 'utf8');
+      for (const url of listedUrls(html, 'canonical')) assertApexUrl(rel, 'canonical', url, failures);
+      for (const url of listedUrls(html, 'og:url')) assertApexUrl(rel, 'og:url', url, failures);
+    }
+    if (fs.existsSync(dist)) {
+      for (const name of fs.readdirSync(dist)) {
+        if (!/^sitemap.*\.xml$/i.test(name)) continue;
+        const xml = fs.readFileSync(path.join(dist, name), 'utf8');
+        for (const url of listedUrls(xml, 'sitemap')) assertApexUrl(name, 'sitemap loc', url, failures);
       }
     }
   }
