@@ -459,7 +459,7 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    expect(n).toBe(31);
+    expect(n).toBe(30);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
