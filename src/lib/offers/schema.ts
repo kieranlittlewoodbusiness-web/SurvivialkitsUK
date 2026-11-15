@@ -337,8 +337,26 @@ function assertNotFuture(offers: Offer[], options: ParseOptions): void {
   }
 }
 
-export function parseVariantsFile(raw: unknown): VariantsFile {
-  return variantsFileSchema.parse(raw) as VariantsFile;
+/**
+ * S1-8b L1: verification_evidence.checked_on may not be later than today (Europe/London)
+ * per `options.now` (defaults to the current time).
+ */
+function assertEvidenceNotFuture(records: { variant_id: string; verification_evidence?: { checked_on: string } }[], options: ParseOptions): void {
+  const now = options.now === undefined ? Date.now() : new Date(options.now).getTime();
+  if (Number.isNaN(now)) throw new RangeError('Invalid `now`');
+  const today = londonDateKey(now);
+  for (const r of records) {
+    const d = r.verification_evidence?.checked_on;
+    if (d !== undefined && d > today) {
+      throw new Error(`${r.variant_id}: verification_evidence.checked_on ${d} is in the future (today is ${today}, Europe/London)`);
+    }
+  }
+}
+
+export function parseVariantsFile(raw: unknown, options: ParseOptions = {}): VariantsFile {
+  const file = variantsFileSchema.parse(raw) as VariantsFile;
+  assertEvidenceNotFuture(file.variants, options);
+  return file;
 }
 
 /** Validates the file and rejects captured_at/last_checked later than `now`. */
@@ -355,8 +373,10 @@ export function parseOffer(raw: unknown, options: ParseOptions = {}): Offer {
   return offer;
 }
 
-export function parseVariant(raw: unknown): KitVariant {
-  return kitVariantSchema.parse(raw) as KitVariant;
+export function parseVariant(raw: unknown, options: ParseOptions = {}): KitVariant {
+  const v = kitVariantSchema.parse(raw) as KitVariant;
+  assertEvidenceNotFuture([v], options);
+  return v;
 }
 
 /* ---------- S1-8: catalogue products ---------- */
@@ -526,12 +546,16 @@ export const affiliateProgrammesFileSchema = z
     }
   });
 
-export function parseCatalogueProduct(raw: unknown): CatalogueProduct {
-  return catalogueProductSchema.parse(raw) as CatalogueProduct;
+export function parseCatalogueProduct(raw: unknown, options: ParseOptions = {}): CatalogueProduct {
+  const p = catalogueProductSchema.parse(raw) as CatalogueProduct;
+  assertEvidenceNotFuture([p], options);
+  return p;
 }
 
-export function parseCatalogueProductsFile(raw: unknown): CatalogueProductsFile {
-  return catalogueProductsFileSchema.parse(raw) as CatalogueProductsFile;
+export function parseCatalogueProductsFile(raw: unknown, options: ParseOptions = {}): CatalogueProductsFile {
+  const file = catalogueProductsFileSchema.parse(raw) as CatalogueProductsFile;
+  assertEvidenceNotFuture(file.products, options);
+  return file;
 }
 
 export function parseAffiliateProgramme(raw: unknown): AffiliateProgrammeRecord {

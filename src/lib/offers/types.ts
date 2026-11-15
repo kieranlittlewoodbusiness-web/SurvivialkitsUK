@@ -502,6 +502,11 @@ export interface CatalogueExcludedOffer {
  * - marketplace_not_supported: an Amazon offer whose URLs point at a non-UK Amazon
  *   marketplace or an Amazon short link (amzn.to, a.co, ...). Only amazon.co.uk links
  *   are built. New in PR #12 review r2.
+ * - non_production_build: an Amazon (ASIN-derived) link in a build that is not production:
+ *   SITE_ENV is unset, 'preview' or anything other than 'production', or the build is a
+ *   Cloudflare Pages branch preview (CF_PAGES=1, CF_PAGES_BRANCH != PRODUCTION_BRANCH/'main').
+ *   Checked before the tracking id, so previews never read it. Render as the generic no-link
+ *   text (NO_LINK_TEXT). New in S1-8b (PR #13 review M1).
  */
 export type NoLinkReason =
   | 'no_programme'
@@ -515,7 +520,8 @@ export type NoLinkReason =
   | 'host_not_allowed'
   | 'exact_product_not_confirmed'
   | 'product_unverified'
-  | 'marketplace_not_supported';
+  | 'marketplace_not_supported'
+  | 'non_production_build';
 
 /**
  * S1-8 render-safe offer. The ONLY outbound URL is `link_url`, and it is an approved

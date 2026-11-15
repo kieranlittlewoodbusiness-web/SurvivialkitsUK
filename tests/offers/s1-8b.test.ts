@@ -4,7 +4,7 @@
  * Only the fake tag TESTONLY-21 is used here.
  */
 import { describe, expect, it } from 'vitest';
-import { buildCatalogueComparisons, compareProduct, isProductVerified, toAffiliateDisplayOffer } from '../../src/lib/offers/affiliate';
+import { buildCatalogueComparisons, compareProduct, isProductionLinkBuild, isProductVerified, resolveAffiliateLink, toAffiliateDisplayOffer } from '../../src/lib/offers/affiliate';
 import {
   assertCatalogueReferences,
   parseAffiliateProgrammesFile,
@@ -146,7 +146,7 @@ describe('verification_evidence schema', () => {
 
 describe('seed link counts with the committed (approved) programme', () => {
   it('fake tag set => exactly 9 sponsored nofollow amazon.co.uk/dp links, one per verified model-matched product', () => {
-    const linked = run({ AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
+    const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
     expect(linked).toHaveLength(EXPECTED_VERIFIED.length);
     const asins = linked.map((o) => new URL(o.link_url!).pathname.replace('/dp/', '')).sort();
     expect(asins).toEqual(EXPECTED_VERIFIED);
@@ -163,11 +163,11 @@ describe('seed link counts with the committed (approved) programme', () => {
     }
   });
   it('every other row has a reason: product_unverified or exact_product_not_confirmed', () => {
-    const rest = run({ AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url === null);
+    const rest = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url === null);
     expect(rest.map((o) => o.no_link_reason).every((r) => r === 'product_unverified' || r === 'exact_product_not_confirmed')).toBe(true);
   });
   it('tag unset, empty or malformed => 0 links', () => {
-    for (const env of [{}, { AMAZON_ASSOCIATES_UK_TAG: '' }, { AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY' }]) {
+    for (const env of [{ SITE_ENV: 'production' }, { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: '' }, { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY' }]) {
       expect(run(env).filter((o) => o.link_url !== null)).toHaveLength(0);
     }
   });
@@ -216,5 +216,87 @@ describe('parse time: a non-Amazon offer cannot reference the ASIN-derived (Amaz
     expect(() =>
       assertCatalogueReferences([shop({ affiliate_programme_id: 'shop-direct' })], [programme({ programme_id: 'shop-direct', link_mode: 'stored_exact_url', tracking_id_env: null, allowed_hosts: ['example.test'] })]),
     ).not.toThrow();
+  });
+});
+
+/* ---------- PR #13 review M1: links only in production builds ---------- */
+
+describe('M1: Amazon links only in a production build (SITE_ENV=production, not a Cloudflare preview)', () => {
+  const T = { AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG };
+  const count = (env: Record<string, string | undefined>) => run(env).filter((o) => o.link_url !== null).length;
+
+  it('real seed + fake tag + SITE_ENV=production => exactly 9 links', () => {
+    expect(count({ ...T, SITE_ENV: 'production' })).toBe(9);
+  });
+  it('real seed + fake tag + SITE_ENV=preview => 0 links', () => {
+    expect(count({ ...T, SITE_ENV: 'preview' })).toBe(0);
+  });
+  it.each([
+    ['SITE_ENV unset', { ...T }],
+    ['SITE_ENV empty', { ...T, SITE_ENV: '' }],
+    ['SITE_ENV=preview', { ...T, SITE_ENV: 'preview' }],
+    ['SITE_ENV=bogus', { ...T, SITE_ENV: 'bogus' }],
+    ['SITE_ENV=Production (wrong case)', { ...T, SITE_ENV: 'Production' }],
+    ['CF preview branch + SITE_ENV=production', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'feature-x' }],
+    ['CF preview branch, SITE_ENV unset', { ...T, CF_PAGES: '1', CF_PAGES_BRANCH: 'feature-x' }],
+    ['CF branch main but PRODUCTION_BRANCH=release', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'main', PRODUCTION_BRANCH: 'release' }],
+  ])('%s (fake tag set) => 0 links, reason non_production_build', (_k, env) => {
+    expect(count(env)).toBe(0);
+    const amazonMatched = run(env).filter((o) => o.retailer === 'Amazon UK' && o.no_link_reason !== 'product_unverified' && o.no_link_reason !== 'exact_product_not_confirmed');
+    expect(amazonMatched).toHaveLength(9);
+    expect(amazonMatched.every((o) => o.no_link_reason === 'non_production_build' && o.disclosure_text === null)).toBe(true);
+  });
+  it.each([
+    ['local production build', { ...T, SITE_ENV: 'production' }],
+    ['CF production branch (main)', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'main' }],
+    ['CF production branch via PRODUCTION_BRANCH', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'release', PRODUCTION_BRANCH: 'release' }],
+  ])('%s + fake tag => 9 links', (_k, env) => {
+    expect(isProductionLinkBuild(env)).toBe(true);
+    expect(count(env)).toBe(9);
+  });
+  it('the build check runs before the tag is read (a preview with a malformed tag still says non_production_build)', () => {
+    const r = run({ SITE_ENV: 'preview', AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY' }).filter((o) => o.no_link_reason === 'non_production_build');
+    expect(r).toHaveLength(9);
+  });
+  it('isProductionLinkBuild never throws on a bogus SITE_ENV (fails closed)', () => {
+    expect(() => isProductionLinkBuild({ SITE_ENV: 'bogus' })).not.toThrow();
+    expect(isProductionLinkBuild({ SITE_ENV: 'bogus' })).toBe(false);
+    expect(isProductionLinkBuild({})).toBe(false);
+  });
+  it('resolveAffiliateLink with only a tag (no SITE_ENV) gives no link', () => {
+    const o = catalogueOffers.find((x) => x.asin === 'B0CZ9LH53B')!;
+    expect(resolveAffiliateLink(o, true, affiliateProgrammes, { ...T }, true).no_link_reason).toBe('non_production_build');
+    expect(resolveAffiliateLink(o, true, affiliateProgrammes, { ...T, SITE_ENV: 'production' }, true).link_url).not.toBeNull();
+  });
+});
+
+/* ---------- PR #13 review L1: no future checked_on ---------- */
+
+describe('L1: verification_evidence.checked_on cannot be in the future (Europe/London)', () => {
+  const base = catalogueProducts.find((p) => p.asin_uk === 'B0CZ9LH53B')! as CatalogueProduct;
+  const withDate = (d: string) => ({ ...base, verification_evidence: { ...base.verification_evidence!, checked_on: d } });
+  it('rejects 2030-01-01 and tomorrow; accepts today and earlier', () => {
+    const now = '2026-11-15T12:00:00+00:00';
+    expect(() => parseCatalogueProduct(withDate('2030-01-01'), { now })).toThrow(/in the future/);
+    expect(() => parseCatalogueProduct(withDate('2026-11-16'), { now })).toThrow(/in the future/);
+    expect(() => parseCatalogueProduct(withDate('2026-11-15'), { now })).not.toThrow();
+    expect(() => parseCatalogueProduct(withDate('2026-11-01'), { now })).not.toThrow();
+  });
+  it('uses the London calendar day (23:30 GMT on the 15th is still the 15th)', () => {
+    expect(() => parseCatalogueProduct(withDate('2026-11-16'), { now: '2026-11-15T23:30:00+00:00' })).toThrow(/in the future/);
+    expect(() => parseCatalogueProduct(withDate('2026-11-16'), { now: '2026-11-16T00:05:00+00:00' })).not.toThrow();
+  });
+  it('defaults to the real clock: 2030-01-01 is rejected with no injected now', () => {
+    expect(() => parseCatalogueProduct(withDate('2030-01-01'))).toThrow(/in the future/);
+  });
+  it('applies to the products file, kit variants file and single kit variants', () => {
+    const file = { ...(rawProducts as object), products: [withDate('2030-01-01')] };
+    expect(() => parseCatalogueProductsFile(file, { now: NOW })).toThrow(/in the future/);
+    const kit = (rawVariants as { variants: object[] }).variants[0] as { verification_evidence: object };
+    const kitFuture = { ...kit, verification_evidence: { ...kit.verification_evidence, checked_on: '2030-01-01' } };
+    expect(() => parseVariant(kitFuture, { now: NOW })).toThrow(/in the future/);
+    expect(() => parseVariantsFile({ ...(rawVariants as object), variants: [kitFuture] }, { now: NOW })).toThrow(/in the future/);
+    expect(() => parseVariantsFile(rawVariants, { now: NOW })).not.toThrow();
+    expect(() => parseCatalogueProductsFile(rawProducts, { now: NOW })).not.toThrow();
   });
 });

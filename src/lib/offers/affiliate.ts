@@ -3,8 +3,9 @@
  * and catalogue comparisons.
  *
  * Render rule: `link_url` is non-null ONLY when the offer matches its product
- * exactly, the product record is verified, its programme is `approved`, the tracking id env var is present at
- * build time (Amazon), and the URL is https on one of the programme's
+ * exactly, the product record is verified, its programme is `approved`, the build is a
+ * production build (SITE_ENV=production, not a Cloudflare preview; Amazon), the tracking id
+ * env var is present at build time (Amazon), and the URL is https on one of the programme's
  * allowed hosts. There is no fallback to product_url, ever.
  */
 import {
@@ -40,6 +41,7 @@ import {
 } from './compare';
 import { ASIN_PATTERN, hasNonUkAmazonUrl, isAmazonOffer } from './schema';
 import { londonDateKey } from './time';
+import { isPreviewBuild } from '../../data/site';
 
 export interface AffiliateOptions extends CompareOptions {
   /** Programme records (src/data/affiliate/programmes.json). */
@@ -55,6 +57,18 @@ export const TRACKING_ID_PATTERN = /^[A-Za-z0-9][A-Za-z0-9-]{0,60}-21$/;
 
 const money = (n: number) => Math.round(n * 100) / 100;
 const isMoney = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && n >= 0;
+
+/**
+ * S1-8b M1: affiliate links are built only in a production build: SITE_ENV must be exactly
+ * 'production' AND the build must not be a preview per isPreviewBuild (src/data/site.ts), which
+ * also catches Cloudflare Pages branch previews (CF_PAGES=1 with CF_PAGES_BRANCH other than
+ * PRODUCTION_BRANCH, default 'main'). Unset, 'preview' or any other SITE_ENV => no links.
+ * Unlike indexability, the default here is fail-closed.
+ */
+export function isProductionLinkBuild(env: BuildEnv): boolean {
+  if (env.SITE_ENV !== 'production') return false;
+  return !isPreviewBuild(env);
+}
 
 function defaultEnv(): BuildEnv {
   const p = (globalThis as { process?: { env?: BuildEnv } }).process;
@@ -176,6 +190,7 @@ export function resolveAffiliateLink(
     // A derive_from_asin programme does not apply to non-Amazon offers.
     if (!amazon) return noLink('no_programme');
     if (hasNonUkAmazonUrl(offer)) return noLink('marketplace_not_supported');
+    if (!isProductionLinkBuild(buildEnv)) return noLink('non_production_build');
     const envName = programme.tracking_id_env;
     const raw = envName ? buildEnv[envName] : undefined;
     const tag = raw?.trim();

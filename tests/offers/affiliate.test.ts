@@ -153,7 +153,9 @@ function shopOffer(over: Partial<Offer> = {}): Offer {
   });
 }
 
-const withTag = { AMAZON_ASSOCIATES_UK_TAG: TAG };
+/** S1-8b M1: links need a production build too (SITE_ENV=production, not a CF preview). */
+const PROD = { SITE_ENV: 'production' };
+const withTag = { ...PROD, AMAZON_ASSOCIATES_UK_TAG: TAG };
 const opts = (over: object = {}) => ({ now: NOW, programmes: [programme()], buildEnv: withTag, ...over });
 
 describe('render rule: link only for an approved affiliate link', () => {
@@ -174,7 +176,7 @@ describe('render rule: link only for an approved affiliate link', () => {
   });
 
   it('no tag in the build env => no link (tracking_id_missing)', () => {
-    for (const env of [{}, { AMAZON_ASSOCIATES_UK_TAG: '' }, { AMAZON_ASSOCIATES_UK_TAG: '  ' }]) {
+    for (const env of [PROD, { ...PROD, AMAZON_ASSOCIATES_UK_TAG: '' }, { ...PROD, AMAZON_ASSOCIATES_UK_TAG: '  ' }]) {
       const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: env }));
       expect(d.link_url).toBeNull();
       expect(d.no_link_reason).toBe('tracking_id_missing');
@@ -530,7 +532,7 @@ describe('L3: UK tracking id must end in -21', () => {
   it.each(['x', 'probe-20', 'TESTONLY', 'TESTONLY-22', '-21', 'bad tag-21', 'a?b=c-21', 'x&y-21', '\u00e9-21', 'a'.repeat(70) + '-21'])(
     'tag %j => no link, tracking_id_invalid',
     (tag) => {
-      const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: { AMAZON_ASSOCIATES_UK_TAG: tag } }));
+      const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: { ...PROD, AMAZON_ASSOCIATES_UK_TAG: tag } }));
       expect(d.link_url).toBeNull();
       expect(d.no_link_reason).toBe('tracking_id_invalid');
       expect(d.labels).toContain('no_affiliate_link');
@@ -539,7 +541,7 @@ describe('L3: UK tracking id must end in -21', () => {
   );
   it('valid -21 tags (trimmed) produce a link', () => {
     for (const tag of ['TESTONLY-21', ' TESTONLY-21 ', 'a-b-c-21']) {
-      const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: { AMAZON_ASSOCIATES_UK_TAG: tag } }));
+      const d = toAffiliateDisplayOffer(amazonOffer(), product(), opts({ buildEnv: { ...PROD, AMAZON_ASSOCIATES_UK_TAG: tag } }));
       expect(d.link_url).toBe(`https://www.amazon.co.uk/dp/${ASIN}?tag=${tag.trim()}`);
     }
     expect(TRACKING_ID_PATTERN.test('TESTONLY-21')).toBe(true);
@@ -615,7 +617,7 @@ describe('M2: links only for verified products', () => {
     buildCatalogueComparisons(products, allOffers, {
       now: '2026-11-15T12:00:00+00:00',
       programmes: approvedProgrammes(),
-      buildEnv: { AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY-21' },
+      buildEnv: { ...PROD, AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY-21' },
     }).comparisons.flatMap((c) => c.offers);
 
   it('seed with every product set unverified + approved Amazon programme + TESTONLY-21 => 0 links', () => {
