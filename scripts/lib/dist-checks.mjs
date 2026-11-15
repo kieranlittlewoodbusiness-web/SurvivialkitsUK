@@ -13,7 +13,10 @@
  *     contains an <a rel="sponsored …"> link. A legend badge must opt out with data-badge-legend.
  *   - Exactly one <meta name="robots"> per page.
  *   - production: no noindex on any page except 404.html; robots.txt allows crawling;
- *     _headers sends X-Robots-Tag: noindex only for *.pages.dev host rules.
+ *     _headers must exist and send X-Robots-Tag: noindex for the production
+ *     pages.dev alias and preview subdomains, never for uksurvivalkits.uk.
+ *     Canonical, og:url and sitemap URLs must use the apex https://uksurvivalkits.uk
+ *     and must not contain www.uksurvivalkits.uk or pages.dev.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -164,6 +167,107 @@ export function orphanAdBadges(html) {
   return orphans;
 }
 
+
+/** Hosts that production HTML must stay indexable on. */
+export const CANONICAL_HOSTS = ['uksurvivalkits.uk', 'www.uksurvivalkits.uk'];
+/** Production Cloudflare Pages alias that must be noindexed. */
+export const PAGES_DEV_ALIAS = 'uksurvivalkits.pages.dev';
+
+/**
+ * Parse a Cloudflare Pages `_headers` file into `{ pattern, headers }[]` rules.
+ * Comments and blank lines are ignored. Header lines must be indented.
+ */
+export function parseHeadersFile(text) {
+  const rules = [];
+  let pattern = null;
+  let headers = [];
+  const flush = () => {
+    if (pattern && headers.length) rules.push({ pattern, headers });
+    pattern = null;
+    headers = [];
+  };
+  for (const raw of text.split(/\r?\n/)) {
+    if (!raw.trim() || raw.trim().startsWith('#')) continue;
+    if (!/^\s/.test(raw)) {
+      flush();
+      pattern = raw.trim();
+      continue;
+    }
+    const m = raw.trim().match(/^([^:]+):\s*(.*)$/);
+    if (m && pattern) headers.push({ name: m[1], value: m[2] });
+  }
+  flush();
+  return rules;
+}
+
+/**
+ * Match a Pages `_headers` URL pattern against a request URL.
+ * Path-only patterns match any host. Placeholders (`:name`) match one host or
+ * path segment (host segments stop at `.` or `/`). A single splat (`*`) matches
+ * the remainder. Protocol and port are ignored, per Pages docs.
+ */
+export function headersPatternMatches(pattern, url) {
+  const u = new URL(url);
+  const request = pattern.startsWith('/') ? u.pathname : `https://${u.hostname}${u.pathname}`;
+  let i = 0;
+  let re = '^';
+  const slashesIn = (s) => (s.match(/\//g) || []).length;
+  while (i < pattern.length) {
+    if (pattern[i] === '*') {
+      re += '.*';
+      i += 1;
+      continue;
+    }
+    if (pattern[i] === ':' && i + 1 < pattern.length && /[A-Za-z]/.test(pattern[i + 1])) {
+      const m = pattern.slice(i).match(/^:([A-Za-z]\w*)/);
+      const inHost = pattern.startsWith('https://') && slashesIn(pattern.slice(0, i)) < 3;
+      re += inHost ? '[^./]+' : '[^/]+';
+      i += m[0].length;
+      continue;
+    }
+    re += pattern[i].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    i += 1;
+  }
+  re += '$';
+  return new RegExp(re).test(request);
+}
+
+function noindexRules(rules) {
+  return rules.filter((r) => r.headers.some((h) => /^X-Robots-Tag$/i.test(h.name) && /noindex/i.test(h.value)));
+}
+
+function headersNoindexApplies(rules, url) {
+  return noindexRules(rules).some((r) => headersPatternMatches(r.pattern, url));
+}
+
+
+const APEX_ORIGIN = 'https://uksurvivalkits.uk';
+
+function listedUrls(html, kind) {
+  if (kind === 'canonical') {
+    return [...html.matchAll(/<link\b[^>]*>/gi)]
+      .filter((m) => /\brel\s*=\s*["']canonical["']/i.test(m[0]))
+      .map((m) => attr(m[0], 'href') ?? '');
+  }
+  if (kind === 'og:url') {
+    return [...html.matchAll(/<meta\b[^>]*>/gi)]
+      .filter((m) => /\bproperty\s*=\s*["']og:url["']/i.test(m[0]))
+      .map((m) => attr(m[0], 'content') ?? '');
+  }
+  return [...html.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/gi)].map((m) => m[1].trim());
+}
+
+function assertApexUrl(file, field, url, failures) {
+  if (!url) return;
+  if (!url.startsWith(`${APEX_ORIGIN}/`) && url !== APEX_ORIGIN && url !== `${APEX_ORIGIN}/`) {
+    failures.push({ file, reason: `${field} "${url}" is not on the apex host ${APEX_ORIGIN}` });
+    return;
+  }
+  if (/www\.uksurvivalkits\.uk/i.test(url) || /pages\.dev/i.test(url)) {
+    failures.push({ file, reason: `${field} "${url}" must not contain www.uksurvivalkits.uk or pages.dev` });
+  }
+}
+
 export function checkContent(dist, { production = false, banned = DEFAULT_BANNED } = {}) {
   const files = htmlFiles(dist);
   const failures = [];
@@ -198,14 +302,46 @@ export function checkContent(dist, { production = false, banned = DEFAULT_BANNED
       if (/^\s*Disallow:\s*\/\s*$/im.test(t)) failures.push({ file: 'robots.txt', reason: 'contains "Disallow: /"' });
     }
     const headers = path.join(dist, '_headers');
-    if (fs.existsSync(headers)) {
-      let rule = null;
-      for (const line of fs.readFileSync(headers, 'utf8').split('\n')) {
-        if (!line.trim() || line.trim().startsWith('#')) continue;
-        if (!/^\s/.test(line)) { rule = line.trim(); continue; }
-        if (/^\s*X-Robots-Tag:.*noindex/i.test(line) && !/^https:\/\/[^/]*\.pages\.dev\//.test(rule ?? '')) {
-          failures.push({ file: '_headers', reason: `X-Robots-Tag noindex applies to "${rule}", which can match the production host` });
+    if (!fs.existsSync(headers)) {
+      failures.push({ file: '_headers', reason: 'missing' });
+    } else {
+      const rules = parseHeadersFile(fs.readFileSync(headers, 'utf8'));
+      for (const r of noindexRules(rules)) {
+        if (!/^https:\/\/[^/]*\.pages\.dev\//.test(r.pattern)) {
+          failures.push({ file: '_headers', reason: `X-Robots-Tag noindex applies to "${r.pattern}", which can match the production host` });
         }
+      }
+      const mustNoindex = [
+        `https://${PAGES_DEV_ALIAS}/`,
+        `https://${PAGES_DEV_ALIAS}/scenarios/leave-home-bag/`,
+        `https://preview-sha.${PAGES_DEV_ALIAS}/`,
+        `https://preview-sha.${PAGES_DEV_ALIAS}/scenarios/leave-home-bag/`,
+      ];
+      for (const url of mustNoindex) {
+        if (!headersNoindexApplies(rules, url)) {
+          failures.push({ file: '_headers', reason: `X-Robots-Tag noindex does not apply to ${url}` });
+        }
+      }
+      for (const host of CANONICAL_HOSTS) {
+        for (const pathName of ['/', '/scenarios/leave-home-bag/']) {
+          const url = `https://${host}${pathName}`;
+          if (headersNoindexApplies(rules, url)) {
+            failures.push({ file: '_headers', reason: `X-Robots-Tag noindex must not apply to ${url}` });
+          }
+        }
+      }
+    }
+    for (const file of files) {
+      const rel = path.relative(dist, file);
+      const html = fs.readFileSync(file, 'utf8');
+      for (const url of listedUrls(html, 'canonical')) assertApexUrl(rel, 'canonical', url, failures);
+      for (const url of listedUrls(html, 'og:url')) assertApexUrl(rel, 'og:url', url, failures);
+    }
+    if (fs.existsSync(dist)) {
+      for (const name of fs.readdirSync(dist)) {
+        if (!/^sitemap.*\.xml$/i.test(name)) continue;
+        const xml = fs.readFileSync(path.join(dist, name), 'utf8');
+        for (const url of listedUrls(xml, 'sitemap')) assertApexUrl(name, 'sitemap loc', url, failures);
       }
     }
   }

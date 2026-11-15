@@ -20,11 +20,17 @@ sources:
     url: https://ready.campaign.gov.scot/emergency-kit
   - label: GOV.UK – Help during a flood
     url: https://www.gov.uk/help-during-flood
-  - label: GOV.UK – Fire safety in the home
+  - label: GOV.UK – Fire safety in the home (England)
     url: https://www.gov.uk/government/publications/make-your-home-safe-from-fire/fire-safety-in-the-home-accessible-version
+  - label: Scottish Fire and Rescue Service – Escape plan
+    url: https://www.firescotland.gov.uk/at-home/escape-plan/
+  - label: South Wales Fire and Rescue Service – Checklists and escape plans
+    url: https://www.southwales-fire.gov.uk/prevention-and-protection/prevention/at-home/checklists-and-escape-plans/
+  - label: Northern Ireland Fire & Rescue Service – Home fire safety
+    url: https://www.nifrs.org/home/staying-safe/community-safety/home-fire-safety/
 ---
 
-A grab bag is for **temporary** leave when authorities advise it—not an off-grid lifestyle. If there is a **fire**, don’t waste time rescuing valuables: get out, stay out and call 999.
+A grab bag is for **temporary** leave when authorities advise it—not an off-grid lifestyle. If there is a **fire**, don’t waste time rescuing valuables: get out, stay out and call 999. GOV.UK guidance for England, the Scottish Fire and Rescue Service, South Wales Fire and Rescue Service and the Northern Ireland Fire & Rescue Service all advise getting out, staying out and calling 999.
 
 ## What belongs in a leave-home bag
 

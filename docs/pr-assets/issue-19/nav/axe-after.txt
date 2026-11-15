@@ -1,0 +1,11 @@
+after 1280 light: 0 violations, 15 passes
+  CTA "Get prepared here" 182x44 href=/compare/72-hour-emergency-kits/ class=site-nav__cta
+
+after 1280 dark: 0 violations, 15 passes
+  CTA "Get prepared here" 182x44 href=/compare/72-hour-emergency-kits/ class=site-nav__cta
+
+after 390 light menu-open: 0 violations, 17 passes
+  CTA "Get prepared here" 340x52 href=/compare/72-hour-emergency-kits/ class=site-nav__cta
+
+after 390 dark menu-open: 0 violations, 17 passes
+  CTA "Get prepared here" 340x52 href=/compare/72-hour-emergency-kits/ class=site-nav__cta

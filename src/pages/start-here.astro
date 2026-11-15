@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EvidenceBadge from '../components/EvidenceBadge.astro';
+import GetPreparedCta from '../components/GetPreparedCta.astro';
 import { getPublishedScenarios } from '../lib/content';
 
 const scenarios = await getPublishedScenarios();
@@ -8,13 +9,13 @@ const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
 ---
 
 <BaseLayout
-  title="Start Here"
+  title="Start here"
   description="Begin UK household preparedness: check what you own, complete the 72-hour checklist, then read calm scenario guides."
   canonicalPath="/start-here"
 >
   <section class="section">
     <div class="wrap wrap--narrow">
-      <p class="eyebrow">Start Here</p>
+      <p class="eyebrow">Start here</p>
       <h1>Start with what you already own</h1>
       <p class="lede">
         Practical readiness for UK homes: outages, severe weather, temporary evacuation and winter
@@ -32,10 +33,10 @@ const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
     <div class="wrap">
       <ol class="start-steps">
         <li>
-          <h2>1. Inventory the house</h2>
+          <h2>1. Check what you already have</h2>
           <p>
-            Open cupboards and drawers. Note torches, water, food, medication, radio and blankets you
-            already have.
+            Look through your cupboards and drawers and note any torches, water, food, medicines, radios
+            and blankets you already own.
           </p>
         </li>
         <li>
@@ -64,12 +65,11 @@ const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
           </ul>
         </li>
         <li>
-          <h2>4. Compare kit only for real gaps</h2>
-          <p>
-            Use gear criteria and product comparison cards after the guidance. Buying links are
-            labelled Ad and sit below the criteria they support.
-          </p>
-          <p><a href="/gear">Browse gear criteria →</a></p>
+          <h2>4. Buy only what you’re missing</h2>
+          <p>Once you know what you are missing, use the 72-hour kit guide to fill those gaps only.</p>
+          <div class="btn-row">
+            <GetPreparedCta />
+          </div>
         </li>
       </ol>
     </div>
