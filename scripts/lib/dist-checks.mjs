@@ -3,8 +3,10 @@
  *
  * checkLinks(dist, cfg, { expectAffiliate })
  *   Every external URL in href/src/action/srcset must be an own host, an allowlisted https
- *   citation host, or an affiliate link: an <a> to https://www.amazon.co.uk/dp/<ASIN>?tag=<id>-21
- *   with every rel token in cfg.affiliate.required_rel ("sponsored" and "nofollow").
+ *   citation host, an allowlisted product image (https on cfg.image_hosts, which is only
+ *   m.media-amazon.com, and only on <img> or <source>), or an affiliate link: an <a> to
+ *   https://www.amazon.co.uk/dp/<ASIN>?tag=<id>-21 with every rel token in cfg.affiliate.required_rel
+ *   ("sponsored" and "nofollow").
  *
  * checkContent(dist, { production, banned })
  *   - No banned string (pre-publication copy, placeholder copy, old brand, non-Amazon retailers)
@@ -67,6 +69,7 @@ export function checkLinks(dist, cfg, { expectAffiliate = null } = {}) {
   const citations = new Set(cfg.citation_hosts);
   const aff = cfg.affiliate;
   const affHosts = new Set(aff.hosts);
+  const imageHosts = new Set(cfg.image_hosts ?? []);
   const pathRe = new RegExp(aff.path_pattern);
   const tagRe = new RegExp(aff.tag_pattern);
   const tagRx = /<(a|link|script|img|iframe|source|form|area)\b([^>]*)>/gi;
@@ -99,6 +102,14 @@ export function checkLinks(dist, cfg, { expectAffiliate = null } = {}) {
           if (citations.has(url.hostname)) {
             counts.citation++;
             if (url.protocol !== 'https:') failures.push({ file: rel, url: v, reason: 'citation link is not https' });
+            continue;
+          }
+          if (imageHosts.has(url.hostname)) {
+            const problems = [];
+            if (url.protocol !== 'https:') problems.push('image is not https');
+            if (!['img', 'source'].includes(tag.toLowerCase())) problems.push(`image host in <${tag}>`);
+            if (url.hostname !== 'm.media-amazon.com') problems.push('image host must be m.media-amazon.com');
+            if (problems.length) failures.push({ file: rel, url: redactTag(v), reason: problems.join('; ') });
             continue;
           }
           if (affHosts.has(url.hostname)) {

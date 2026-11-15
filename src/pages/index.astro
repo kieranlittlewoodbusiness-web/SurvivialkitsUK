@@ -84,7 +84,7 @@ const jsonLd = {
           </p>
           <ul class="chips" aria-label="About this comparison">
             <li class="chip chip--static">{catalogue.stats.cards} products</li>
-            <li class="chip chip--static">7 categories</li>
+            <li class="chip chip--static">{catalogue.sections.filter((s) => s.category !== 'kit').length} categories</li>
             <li class="chip chip--static">Researched from listings, not tested</li>
           </ul>
           <div class="btn-row">

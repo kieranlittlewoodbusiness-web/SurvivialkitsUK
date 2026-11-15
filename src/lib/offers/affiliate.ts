@@ -11,6 +11,8 @@
 import {
   AMAZON_PRICE_DISCLAIMER,
   CATALOGUE_LABEL_TEXT,
+  CATEGORY_LABELS,
+  PRODUCT_CATEGORIES,
   NO_LINK_TEXT,
   NO_LINK_TEXT_EXACT_PRODUCT,
   NO_LINK_TEXT_PRODUCT_UNVERIFIED,
@@ -22,6 +24,7 @@ import {
   type CatalogueExclusionReason,
   type CatalogueOfferLabel,
   type CatalogueProduct,
+  type CategoryComparisonGroup,
   type KitVariant,
   type NoLinkReason,
   type Offer,
@@ -124,16 +127,30 @@ export function matchOfferToProduct(offer: Offer, product: ProductRecord): Catal
   return null;
 }
 
+/** Spec value from a stored record ({ value, source, ... }) or a public summary (plain value). */
+function specValue(specs: unknown, key: string): unknown {
+  const v = (specs as Record<string, unknown> | undefined)?.[key];
+  if (v !== null && typeof v === 'object' && !Array.isArray(v) && 'value' in v) return (v as { value: unknown }).value;
+  return v;
+}
+
 /**
  * Link gate on the product record: only `verification: 'verified'` products may carry
  * affiliate links. Kit variants without a verification field are unverified. Verified
- * thermal_clothing must also name its exact size (belt and braces; the schema enforces it).
+ * thermal_clothing and hi_vis must also name their exact size, and a verified warning_triangle
+ * must be e_marked or ece_r27 (belt and braces; the schema enforces both).
+ * S1-10: also accepts a PublicProductSummary, so the same gate runs on comparisons.
  */
-export function isProductVerified(product: ProductRecord): boolean {
+export function isProductVerified(product: ProductRecord | PublicProductSummary): boolean {
   if ((product as { verification?: string }).verification !== 'verified') return false;
-  if (productCategory(product) === 'thermal_clothing') {
-    const size = (product as CatalogueProduct & { category: 'thermal_clothing' }).specs.size_label;
-    if (!size || typeof size.value !== 'string' || !size.value.trim()) return false;
+  const category = (product as { category?: ProductCategory }).category ?? 'kit';
+  const specs = (product as { specs?: unknown }).specs;
+  if (category === 'thermal_clothing' || category === 'hi_vis') {
+    const size = specValue(specs, 'size_label');
+    if (typeof size !== 'string' || !size.trim()) return false;
+  }
+  if (category === 'warning_triangle') {
+    if (specValue(specs, 'e_marked') !== true && specValue(specs, 'ece_r27') !== true) return false;
   }
   return true;
 }
@@ -349,6 +366,12 @@ export function toPublicProductSummary(product: ProductRecord): PublicProductSum
       },
       source_name: k.source.name,
       captured_at: k.contents_captured_at,
+      display_name: null,
+      display_rank: null,
+      image_url: null,
+      image_width: null,
+      image_height: null,
+      image_source: null,
     };
   }
   const p = product as CatalogueProduct;
@@ -370,6 +393,12 @@ export function toPublicProductSummary(product: ProductRecord): PublicProductSum
     specs,
     source_name: p.source.name,
     captured_at: p.captured_at,
+    display_name: p.display_name ?? null,
+    display_rank: p.display_rank ?? null,
+    image_url: p.image_url ?? null,
+    image_width: p.image_width ?? null,
+    image_height: p.image_height ?? null,
+    image_source: p.image_source ?? null,
   };
 }
 
@@ -448,4 +477,50 @@ export function buildCatalogueComparisons(
   });
   const unknown = offers.filter((o) => !counts.has(o.variant_id)).map((o) => exclusion(o, 'unknown_variant'));
   return { comparisons, unknown };
+}
+
+/* ---------- S1-10: three per category ---------- */
+
+export interface GroupOptions {
+  /** Maximum comparisons per category. Default 3. */
+  perCategory?: number;
+}
+
+/**
+ * S1-10 shortlist gate: the product summary is `verification: 'verified'`, passes
+ * isProductVerified, and at least one offer is an exact model match (model_match_confirmed).
+ */
+export function isShortlistable(c: CatalogueComparison): boolean {
+  return (
+    c.product.verification === 'verified' &&
+    isProductVerified(c.product) &&
+    c.offers.some((o) => o.model_match_confirmed === true)
+  );
+}
+
+/**
+ * S1-10: groups comparisons by category for rendering. Accepts buildCatalogueComparisons()'s
+ * result or its `comparisons` array. Keeps only isShortlistable comparisons, sorts each category
+ * by display_rank ascending (unranked after ranked; ties in source order), caps at perCategory,
+ * drops empty categories and returns categories in PRODUCT_CATEGORIES order.
+ */
+export function groupComparisonsByCategory(
+  input: CatalogueComparison[] | { comparisons: CatalogueComparison[] },
+  options: GroupOptions = {},
+): CategoryComparisonGroup[] {
+  const perCategory = options.perCategory ?? 3;
+  if (!Number.isInteger(perCategory) || perCategory < 1) throw new RangeError('perCategory must be a positive integer');
+  const comparisons = Array.isArray(input) ? input : input.comparisons;
+  const rank = (c: CatalogueComparison) => c.product.display_rank ?? Number.POSITIVE_INFINITY;
+  const groups: CategoryComparisonGroup[] = [];
+  for (const category of PRODUCT_CATEGORIES) {
+    const picked = comparisons
+      .map((c, i) => ({ c, i }))
+      .filter(({ c }) => c.category === category && c.product.category === category && isShortlistable(c))
+      .sort((a, b) => rank(a.c) - rank(b.c) || a.i - b.i)
+      .slice(0, perCategory)
+      .map(({ c }) => c);
+    if (picked.length > 0) groups.push({ category, category_label: CATEGORY_LABELS[category], comparisons: picked });
+  }
+  return groups;
 }
