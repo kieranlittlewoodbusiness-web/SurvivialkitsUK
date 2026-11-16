@@ -37,4 +37,4 @@ Ready Scotland and Prepare-style guidance commonly include:
 - Compact shovel, map, snacks and a warm drink in a flask
 - First-aid kit
 
-Inventory coats, scrapers and torches you already own first. Then use [winter travel criteria](/gear/winter-travel)—retailer links come after the guidance.
+Inventory coats, scrapers and torches you already own first. Then use [winter travel criteria](/gear/winter-travel/)—retailer links come after the guidance.

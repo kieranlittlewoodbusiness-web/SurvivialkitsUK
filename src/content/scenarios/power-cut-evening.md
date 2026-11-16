@@ -37,4 +37,4 @@ Keep bottled water and ready-to-eat food that does not need cooking. Unplug TVs 
 
 ## Before you buy anything
 
-Use the [72-hour checklist](/checklist) to inventory what you own. Only then consider gaps against our [torch](/gear/torches), [radio](/gear/radios) and [power bank](/gear/power-banks) criteria.
+Use the [72-hour checklist](/checklist/) to inventory what you own. Only then consider gaps against our [torch](/gear/torches/), [radio](/gear/radios/) and [power bank](/gear/power-banks/) criteria.

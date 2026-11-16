@@ -11,7 +11,7 @@ const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
 <BaseLayout
   title="Start here"
   description="Begin UK household preparedness: check what you own, complete the 72-hour checklist, then read calm scenario guides."
-  canonicalPath="/start-here"
+  canonicalPath="/start-here/"
 >
   <section class="section">
     <div class="wrap wrap--narrow">
@@ -46,7 +46,7 @@ const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
             household-specific needs. Ticks save on this device only.
           </p>
           <div class="btn-row">
-            <a class="btn" href="/checklist">Open the checklist</a>
+            <a class="btn" href="/checklist/">Open the checklist</a>
           </div>
         </li>
         <li>
@@ -55,7 +55,7 @@ const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
             {
               core.map((entry) => (
                 <li>
-                  <a href={`/scenarios/${entry.id}`}>
+                  <a href={`/scenarios/${entry.id}/`}>
                     {entry.data.title}
                     <span>{entry.data.scenario}</span>
                   </a>

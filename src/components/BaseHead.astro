@@ -13,7 +13,8 @@ interface Props {
 const {
   title,
   description = site.description,
-  canonicalPath = Astro.url.pathname.replace(/\/$/, '') || '/',
+  // SEO-2: keep the trailing slash (trailingSlash 'always'); Pages serves `/path/` with a 200.
+  canonicalPath = Astro.url.pathname,
   noindex = false,
   ogType = 'website',
 } = Astro.props;
@@ -21,7 +22,7 @@ const {
 // Preview builds are never indexable, whatever the page asks for.
 const robots = noindex || isPreviewBuild() ? 'noindex, nofollow' : 'index, follow';
 const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
-const canonical = new URL(canonicalPath === '/' ? '/' : canonicalPath, site.siteUrl).href;
+const canonical = new URL(canonicalPath, site.siteUrl).href;
 // Absolute on the apex so crawlers and chat apps can fetch it from any host (S1-11).
 const ogImage = new URL(site.ogImage.path, site.siteUrl).href;
 ---
