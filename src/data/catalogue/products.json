@@ -1998,9 +1998,9 @@
         "url": "https://www.amazon.co.uk/dp/B005DEW1K0"
       },
       "captured_at": "2026-11-15T09:45:00+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Blackrock long-sleeve hi-vis vest (S)",
-      "display_rank": 3,
+      "display_rank": null,
       "size_child_of": "B0GZ3CPMWB",
       "image_url": null,
       "image_width": null,
@@ -2010,15 +2010,15 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B005DEW1K0",
         "checked_on": "2026-11-15",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0GZ3CPMWB",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis). dp_title_checked 2026-11-16T17:26Z; brand on page \"Blackrock\"; title \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\"."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis). dp_title_checked 2026-11-16T17:26Z; brand on page \"Blackrock\"; title \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Unverified (QA, re-checked 16 Nov 2026 18:00 UK): Buy Box seller fails the 12-month bar: Image To Suit You Ltd, 51% positive in the last 12 months (43 ratings; needs >=85% and >=20). The Buy Box rotates between this seller and Alive Safety & Rescue Limited (93% of 95), so the link cannot be relied on to reach a passing seller (PM ruling 16 Nov: unverify, hi-vis ships with 2). Evidence: featured offer yes; in stock yes; Add to Basket yes; QA 17:43 and 17:49 UK: Buy Box seller Image To Suit You Ltd (amazon.co.uk/sp?seller=A29DDNLTYJ9Q0G, GB), 51% positive in the last 12 months (43 ratings); seller page re-checked 18:00 UK: 51% (43). At 18:00 UK the Buy Box had rotated to Alive Safety & Rescue Limited (A3G6FEALXWKUET, GB, 93% of 95 in the last 12 months), so the featured seller is not stable; availability text seen \"Only 6 left in stock.\"; delivery shown Friday, 20 November; outcome fail."
       },
       "notes": [
         "Identity from the tagless public child listing (fetched by Backend 15 Nov 2026 09:45 GMT, Firefox UA). No price, availability or image stored.",
         "One exact size per ASIN: S, colour Yellow. Parent ASIN B0GZ3CPMWB.",
-        "Why picked: A different product from #1 and #2: long-sleeve class 3 hi-vis from a recognised UK hi-vis brand (more coverage than the class 2 vests)."
+        "Unverified (QA, re-checked 16 Nov 2026 18:00 UK): Buy Box seller fails the 12-month bar: Image To Suit You Ltd, 51% positive in the last 12 months (43 ratings; needs >=85% and >=20). The Buy Box rotates between this seller and Alive Safety & Rescue Limited (93% of 95), so the link cannot be relied on to reach a passing seller (PM ruling 16 Nov: unverify, hi-vis ships with 2). Data kept (size_child_of and parent canonical unchanged)."
       ]
     },
     {

@@ -23,7 +23,7 @@ import {
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { HI_VIS_SIZE_CHILDREN, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { HI_VIS_SIZE_CHILDREN, THERMAL_SIZE_CHILDREN, UNVERIFIED_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
   CATEGORY_LABELS,
@@ -461,8 +461,9 @@ describe('S1-10 production-link probe (fake tag)', () => {
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
     // S1-10: 30. S1-10c hotfix (16 Nov): 10 failed buyability (incl. Sangean, strict 12-month rule), 8 added = 28; then Duronic
-    // B002XNGTOI unverified (ASIN now shows a car tool) and Sony + Panasonic radios added = 29 (emergency_blanket has 2).
-    expect(n).toBe(29);
+    // B002XNGTOI unverified (ASIN now shows a car tool) and Sony + Panasonic radios added = 29; then hi-vis
+    // B005DEW1K0 unverified (Buy Box seller 51% in 12 months) = 28 (emergency_blanket and hi_vis have 2).
+    expect(n).toBe(28);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
@@ -560,6 +561,24 @@ describe('S1-10 verified-set invariants (committed data)', () => {
 
   it('only thermal_clothing and hi_vis records use size_child_of', () => {
     for (const p of catalogueProducts.filter((x) => x.size_child_of)) expect(['thermal_clothing', 'hi_vis']).toContain(p.category);
+  });
+
+  it('the size children are exactly the listed verified and unverified ones', () => {
+    const verified = Object.fromEntries(catalogueProducts.filter((x) => x.size_child_of && x.verification === 'verified').map((x) => [x.asin_uk, x.size_child_of]));
+    const unverified = Object.fromEntries(catalogueProducts.filter((x) => x.size_child_of && x.verification !== 'verified').map((x) => [x.asin_uk, x.size_child_of]));
+    expect(verified).toEqual({ ...THERMAL_SIZE_CHILDREN, ...HI_VIS_SIZE_CHILDREN });
+    expect(unverified).toEqual(UNVERIFIED_SIZE_CHILDREN);
+  });
+
+  it('an unverified size child keeps its parent link and parent canonical (data kept), and is not ranked', () => {
+    for (const [child, parent] of Object.entries(UNVERIFIED_SIZE_CHILDREN)) {
+      const p = catalogueProducts.find((x) => x.asin_uk === child)!;
+      expect(p.verification).toBe('unverified');
+      expect(p.display_rank ?? null).toBeNull();
+      expect(p.size_child_of).toBe(parent);
+      expect(p.verification_evidence!.canonical_asin).toBe(parent);
+      expect(p.verification_evidence!.outcome).toBe('not_verified');
+    }
   });
 });
 
