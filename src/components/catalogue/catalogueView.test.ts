@@ -283,9 +283,13 @@ describe('S1-10b rendering: order, labels, notes and chips', () => {
   it('category copy is plain English with no codes, model numbers or jargon, and guides point at real pages', async () => {
     const fs = await import('node:fs');
     const pageExists = (href: string) => {
-      const [, kind, slug] = href.split('/');
+      const path = href.replace(/\/+$/, '') || '/';
+      const [, kind, slug] = path.split('/');
       if (kind === 'gear' || kind === 'scenarios') return fs.existsSync(`src/content/${kind}/${slug}.md`);
-      return fs.existsSync(`src/pages${href}.astro`);
+      if (path === '/') {
+        return fs.existsSync('src/pages/index.astro') || fs.existsSync('src/pages.astro');
+      }
+      return fs.existsSync(`src/pages${path}.astro`) || fs.existsSync(`src/pages${path}/index.astro`);
     };
     for (const c of CATEGORY_ORDER) {
       const m = CATEGORY_META[c];
