@@ -2,15 +2,13 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY
-  Permissions-Policy: interest-cohort=()
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), usb=()
 
-# Keep Cloudflare Pages hosts out of search. These absolute-URL rules follow
-# https://developers.cloudflare.com/pages/configuration/headers/ (host placeholders
-# and a single path splat). They are written against this project's hostnames, not
-# a generic :project placeholder: curl of the live production alias
-# https://uksurvivalkits.pages.dev/ on 15 Nov 2026 (Europe/London) returned no
-# X-Robots-Tag, and other custom headers from this file were also absent.
-# Explicit hosts cannot match https://uksurvivalkits.uk or www.uksurvivalkits.uk.
+# Keep Cloudflare Pages hosts out of search. Host-specific rules follow
+# https://developers.cloudflare.com/pages/configuration/headers/
+# The production alias uksurvivalkits.pages.dev is not a preview URL, so it does
+# not receive Pages' default X-Robots-Tag: noindex (versioned preview aliases do).
+# These patterns cannot match uksurvivalkits.uk or www.uksurvivalkits.uk.
 https://uksurvivalkits.pages.dev/*
   X-Robots-Tag: noindex
 
