@@ -1,9 +1,10 @@
 /**
- * S1-12: ASINs that must never enter a basket. These 7 S1-10 products failed the QA #24 buyability
- * rule on 16 Nov 2026 (no Buy Box / not in stock / Buy Box seller not Amazon or a well-rated UK
- * seller). Hotfix s1-10c unverifies them on main; until it lands they may still be verified there,
- * so both baskets drop them explicitly. Safe to delete once s1-10c is on main (they then fail the
- * verified gate anyway).
+ * S1-12: ASINs that must never enter a basket. This list matches the removals in hotfix #28
+ * (S1-10c) exactly: products that failed the buyability rule on 16 Nov 2026 (no Buy Box / not in
+ * stock / earliest delivery more than 10 days out / Buy Box seller not Amazon or a GB seller with
+ * >=85% positive and >=20 ratings in the last 12 months). #28 unverifies them on main; until it
+ * lands some are still verified there, so both baskets drop them explicitly.
+ * DELETE THIS FILE once #28 is on main (they then fail the verified gate anyway).
  */
 export const BASKET_EXCLUDED_ASINS: readonly string[] = [
   'B09VBFQNKK', // PRUNUS wind-up radio: Buy Box seller CN-registered
@@ -13,4 +14,7 @@ export const BASKET_EXCLUDED_ASINS: readonly string[] = [
   'B0DCZ82MGG', // INIU power bank: Buy Box seller CN-registered, 7 ratings
   'B005AQK6V2', // Reliance Medical first aid kit: seller 83% positive
   'B013P5S1KC', // Energizer head torch: no featured offer
+  'B0896Q8JXD', // Cano 500ml water: earliest delivery 12 Dec
+  'B001FIQ7XU', // HypaGuard foil blankets: earliest delivery 6 Dec
+  'B09SZB8Y4R', // Sangean radio: seller has 0 ratings in the last 12 months
 ];

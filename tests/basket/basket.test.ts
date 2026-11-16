@@ -66,7 +66,7 @@ describe('production gate', () => {
     expect(basketTag(PROD)).toBe(FAKE_TAG);
     const link = basketLink(['B07L142XSN'], PROD)!;
     expect(params(link.url).get('AssociateTag')).toBe(FAKE_TAG);
-    expect(link.rel).toBe('sponsored nofollow');
+    expect(link.rel).toBe('sponsored nofollow noopener');
     expect(link.target).toBe('_blank');
     expect(link.disclosure_text).toMatch(/Amazon Associate/);
   });
@@ -77,7 +77,7 @@ describe('production gate', () => {
       expect(starterKitBasketLink(env)).toBeNull();
     });
   }
-  it('rel is "sponsored nofollow"', () => expect(BASKET_LINK_REL).toBe('sponsored nofollow'));
+  it('rel is "sponsored nofollow noopener" (same as the product buttons)', () => expect(BASKET_LINK_REL).toBe('sponsored nofollow noopener'));
 });
 
 describe('starter kit basket', () => {
@@ -117,6 +117,14 @@ describe('starter kit basket', () => {
   });
 });
 
+describe('s1-10c exclusions', () => {
+  it('match hotfix #28 removals exactly', () => {
+    expect([...BASKET_EXCLUDED_ASINS].sort()).toEqual(
+      ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R'].sort(),
+    );
+  });
+});
+
 describe('home picks basket (derived from homeView)', () => {
   it('equals the homepage top picks that get a buy link, in homepage order', async () => {
     const themes = homeThemes(await loadCatalogue(PROD, NOW));
@@ -126,13 +134,14 @@ describe('home picks basket (derived from homeView)', () => {
       .filter((h): h is string => !!h)
       .map((h) => /\/dp\/([A-Z0-9]{10})\?/.exec(h)![1]!)
       .filter((a) => !BASKET_EXCLUDED_ASINS.includes(a));
-    expect(expected.length).toBeGreaterThan(0);
+    // Main today: 11 home picks; 3 are #28 removals (Philips radio, Cano 500ml, HypaGuard) and are dropped until #28 lands.
+    expect(expected).toHaveLength(8);
     expect(homeBasketAsins(themes)).toEqual(expected);
     const link = homeBasketLink(themes, PROD)!;
     expect(numberedAsins(link.url)).toEqual(expected);
     expect(new Set(expected).size).toBe(expected.length);
     expect(link.url.length).toBeLessThanOrEqual(MAX_BASKET_URL_LENGTH);
-    expect(link.rel).toBe('sponsored nofollow');
+    expect(link.rel).toBe('sponsored nofollow noopener');
     for (const a of BASKET_EXCLUDED_ASINS) expect(link.asins).not.toContain(a);
   });
   it('is null in preview (top picks have no links there)', async () => {

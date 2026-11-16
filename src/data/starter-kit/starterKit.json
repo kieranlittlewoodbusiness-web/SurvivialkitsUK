@@ -4,7 +4,7 @@
   "title": "Emergency starter kit",
   "list_owner": "Kieran (17-item list, S1-12)",
   "rules": {
-    "buyability": "Featured offer, in stock, Add to Basket; Buy Box seller is Amazon or a GB-registered seller with at least 85% positive feedback over 12 months and at least 20 ratings (lifetime figures only when Amazon shows no 12-month figure); earliest delivery quote within 10 days of the check.",
+    "buyability": "Featured offer, in stock, Add to Basket; Buy Box seller is Amazon or a GB-registered seller with at least 85% positive feedback AND at least 20 ratings, both over the last 12 months (lifetime figures do not count; no fallback); earliest delivery quote within 10 days of the check.",
     "availability_text": "availability_text_seen and delivery_quote_seen are an audit trail of what the page said at checked_at. They are never displayed.",
     "no_prices_or_images": true
   },
@@ -12,11 +12,11 @@
     {
       "position": 1,
       "item": "Survival bag",
-      "asin": "B000TGORT0",
-      "brand": "BCB",
-      "model": "CL044",
-      "display_name": "BCB emergency survival bivi bag",
-      "product_name": "BCB CL044 Emergency Hi-Vis Heavy Duty Polythene Printed Survival Sleeping Bivi Bag",
+      "asin": "B000WXX0JS",
+      "brand": "SOL (Survive Outdoors Longer)",
+      "model": "0140-1138",
+      "display_name": "SOL emergency bivvy bag",
+      "product_name": "Adventure Medical Kits Emergency Bivvy Heatsheets Material Reflects 90% Body Heat Quiet Material Rip Resistant Recyclable (LDPE-4) Weight 99 g 907 mm x 2117 mm Expect the Unexpected Shelter",
       "source": "s1-12_research",
       "source_pick": null,
       "image_url": null,
@@ -25,27 +25,27 @@
       "image_source": null,
       "verification": "verified",
       "verification_evidence": {
-        "source_url": "https://www.amazon.co.uk/dp/B000TGORT0",
+        "source_url": "https://www.amazon.co.uk/dp/B000WXX0JS",
         "checked_on": "2026-11-16",
-        "canonical_asin": "B000TGORT0",
+        "canonical_asin": "B000WXX0JS",
         "checks_matched": [
           "brand",
           "model",
           "canonical_page",
           "display_name_plain"
         ],
-        "note": "Brand BCB and model CL044 on the page. Lifesystems 2090 (B000P9CSGU) had no featured offer; SOL bivvy (B00S523K84) shows no model number."
+        "note": "Brand Name \"survive outdoors longer\" (SOL), manufacturer Adventure Medical Kits, Model Number / Manufacturer Part Number 0140-1138 (SOL Emergency Bivvy, 84 x 36 in, one bivvy). Canonical B000WXX0JS; Add to Basket posts this ASIN. Replaces BCB CL044 (B000TGORT0), which failed the strict 12-month seller rule at 17:13 (BCB International LTD: 4 ratings in the last 12 months; lifetime 97%/592 does not count). Also checked 17:19: Highlander B01E9QVEBY (camping-online, 84% / 178 in 12 months: fail), Lifesystems Heatshield B01MS6SYHJ (canonical is parent B0C3G4LBB1: fail), Lifesystems 2090 B000P9CSGU (no featured offer)."
       },
       "buyability": {
-        "checked_at": "2026-11-16T16:54:00Z",
+        "checked_at": "2026-11-16T17:19:00Z",
         "featured_offer": true,
         "in_stock": true,
         "add_to_basket": true,
-        "seller_name": "BCB International LTD",
+        "seller_name": "UK Outdoor Store",
         "ships_from": "Amazon",
         "seller_class": "uk_third_party",
-        "seller_rating_note": "BCB International LTD, GB-registered; 97% positive, 592 lifetime ratings (no 12-month figure shown; lifetime used, same fallback as #24)",
-        "availability_text_seen": "Only 12 left in stock.",
+        "seller_rating_note": "SPC Marketing, GB-registered; 98% positive, 83 ratings in the last 12 months",
+        "availability_text_seen": "(none shown; Add to Basket present)",
         "delivery_quote_seen": "Thursday, 19 November",
         "delivery_reasonable": true,
         "outcome": "pass",

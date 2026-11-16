@@ -13,7 +13,7 @@ import { isProductionLinkBuild, TRACKING_ID_PATTERN } from '../offers/affiliate'
 import type { BuildEnv } from '../offers/types';
 
 export const AMAZON_UK_CART_ADD_URL = 'https://www.amazon.co.uk/gp/aws/cart/add.html';
-export const BASKET_LINK_REL = 'sponsored nofollow' as const;
+export const BASKET_LINK_REL = 'sponsored nofollow noopener' as const;
 export const AMAZON_UK_PROGRAMME_ID = 'amazon-associates-uk';
 /** Conservative cap for a GET URL (well under the ~8 KB limits of browsers, CDNs and Amazon's edge). */
 export const MAX_BASKET_URL_LENGTH = 2000;
