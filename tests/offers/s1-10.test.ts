@@ -482,7 +482,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
     // S1-10c (16 Nov): - 2 delivery failures (Cano 500ml, HypaGuard) + 7 replacements = 54.
     // CR strict 12-month seller rule: - Sangean, - OverBoard = 52. QA: - Duronic (ASIN reused), + Sony, + Panasonic = 53.
     // QA 18:00: - Blackrock hi-vis B005DEW1K0 (seller 51%), - OXO B000079XW2 (no delivery date) = 51.
-    expect(n).toBe(51);
+    // Kieran approved (via PM) 18:14: + Blackrock XL B0BZ4ZNTJD, + Kuhn Rikon B000I7GST2 = 53.
+    expect(n).toBe(53);
     const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });

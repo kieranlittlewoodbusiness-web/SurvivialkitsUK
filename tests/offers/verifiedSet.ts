@@ -14,7 +14,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
   emergency_blanket: ['B0CDBYT9WW', 'B0H761VV55'],
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
-  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D'], // Blackrock long-sleeve B005DEW1K0 unverified (QA: Buy Box seller 51% in 12 months); PM: hi-vis ships with 2
+  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B0BZ4ZNTJD'], // B005DEW1K0 unverified (QA: seller 51% in 12 months); Blackrock XL B0BZ4ZNTJD approved by Kieran (via PM)
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
   warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z'],
   // S1-10b (16 Nov 2026)
@@ -22,7 +22,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   rainwater_storage: ['B00ZUTJAHA', 'B0CVL4W8CQ'],
   gravity_filter: ['B0DWTDW914'],
   flask: ['B00JOV3YDG', 'B000T21JFE', 'B00JOV3Z6W'],
-  tin_opener: ['B00004OCJW', 'B07NJHB97Y'], // OXO smooth edge B000079XW2 unverified (QA: no delivery date shown, Amazon Global Store)
+  tin_opener: ['B00004OCJW', 'B07NJHB97Y', 'B000I7GST2'], // OXO B000079XW2 unverified (QA: no delivery date); Kuhn Rikon B000I7GST2 approved by Kieran (via PM)
   electric_lighter: ['B088HF3TYP'],
   two_way_radio: ['B07DYGD8CH', 'B078C7TD7Z', 'B01FDI6OKS'],
   multi_tool: ['B079MJBP21', 'B007ERHM5S', 'B0CX32Q354'],
@@ -42,8 +42,8 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
 export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEGORY).flat().sort();
 export const VERIFIED_COUNT = VERIFIED_ASINS.length;
 
-/** S1-10c hotfix (16 Nov 2026): records whose evidence was checked 16 Nov (replacements; Sangean since unverified). */
-export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC', 'B0713X4484', 'B06XXGK7GT'];
+/** S1-10c hotfix (16 Nov 2026): records whose evidence was checked 16 Nov (replacements, incl. the two Kieran-approved QA replacements; Sangean and Duronic since unverified). */
+export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC', 'B0713X4484', 'B06XXGK7GT', 'B0BZ4ZNTJD', 'B000I7GST2'];
 
 /**
  * S1-10b (CR M1): what renders = VERIFIED_BY_CATEGORY minus RENDER_GATED_CATEGORIES (derived, never

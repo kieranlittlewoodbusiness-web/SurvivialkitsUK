@@ -254,7 +254,7 @@ describe('S1-10b fake-tag library probe (counts only)', () => {
     .flatMap(([, a]) => a as readonly string[]);
   it('production = every verified, non-gated product, each linked once (derived; nothing gated after S1-10b-web)', () => {
     const l = links(PROD);
-    expect(VERIFIED_COUNT).toBe(51); // 67 - 19 (QA #24 sweep) + 1 Duronic = 49; S1-10c: - 2 (delivery) + 7 = 54; CR 12-month rule: - Sangean - OverBoard = 52; QA: - Duronic + Sony + Panasonic = 53; QA 18:00: - Blackrock hi-vis - OXO = 51
+    expect(VERIFIED_COUNT).toBe(53); // 67 - 19 (QA #24 sweep) + 1 Duronic = 49; S1-10c: - 2 (delivery) + 7 = 54; CR 12-month rule: - Sangean - OverBoard = 52; QA: - Duronic + Sony + Panasonic = 53; QA 18:00: - Blackrock hi-vis - OXO = 51; approved + Blackrock XL + Kuhn Rikon = 53
     expect(RENDERED).toHaveLength(VERIFIED_COUNT);
     expect(l).toHaveLength(RENDERED.length);
     expect(new Set(l.map((o) => o.link_url)).size).toBe(RENDERED.length);

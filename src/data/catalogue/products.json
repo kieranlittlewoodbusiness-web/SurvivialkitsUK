@@ -6403,6 +6403,149 @@
         "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
         "Why picked: Panasonic is an established electronics brand; battery pocket AM/FM radio from a UK seller that meets the 12-month rating bar, fulfilled by Amazon. Replaces the Duronic ASIN that now shows a different product."
       ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0bz4zntjd",
+      "category": "hi_vis",
+      "product_name": "Blackrock Yellow & Black Premium Hi Vis Vest, With Pockets, Size XL",
+      "brand": "Blackrock",
+      "asin_uk": "B0BZ4ZNTJD",
+      "gtin": null,
+      "mpn": "80302306",
+      "model_code": "80302306",
+      "pack_quantity": null,
+      "specs": {
+        "garment_type": {
+          "value": "vest",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Hi Vis Vest\"",
+            "url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD"
+          },
+          "captured_at": "2026-11-16T18:14:00+00:00"
+        },
+        "colour": {
+          "value": "Yellow & Black",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Yellow & Black\"",
+            "url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD"
+          },
+          "captured_at": "2026-11-16T18:14:00+00:00"
+        },
+        "standard": {
+          "value": "EN 20471 (as shown)",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): bullet \"Certified to the EN20471 international standard for hi-vis clothing\"",
+            "url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD"
+          },
+          "captured_at": "2026-11-16T18:14:00+00:00"
+        },
+        "size_label": {
+          "value": "XL",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Size XL\"",
+            "url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD"
+          },
+          "captured_at": "2026-11-16T18:14:00+00:00"
+        },
+        "pack_count": {
+          "value": 1,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Product details \"Number of Items: 1\"",
+            "url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD"
+          },
+          "captured_at": "2026-11-16T18:14:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD"
+      },
+      "captured_at": "2026-11-16T18:14:00+00:00",
+      "verification": "verified",
+      "display_name": "Blackrock hi-vis vest with pockets (XL)",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0BZ4ZNTJD",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Blackrock Yellow & Black Premium Hi Vis Vest, With Pockets, Size XL\". Brand Name \"Blackrock\" (byline \"Visit the Blackrock Store\"), Manufacturer \"Rodo Ltd\", Model Number / Part Number \"80302306\"; Included Components \"Blackrock Premium Hi-Vis Yellow & Black Sleeveless Vest Waistcoat\"; size XL from the title; one vest (Number of Items 1). The page offers other colours/sizes, but its own parentAsin is B0BZ4ZNTJD and canonical is this ASIN, so it is not a size child (no size_child_of). Canonical is the dp ASIN B0BZ4ZNTJD; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. Delivery location Glasgow G43. Approved by Kieran (via PM), 16 Nov 2026. dp_title_checked 2026-11-16T18:14Z; brand on page \"Blackrock\"; title \"Blackrock Yellow & Black Premium Hi Vis Vest, With Pockets, Size XL\".",
+        "canonical_asin": "B0BZ4ZNTJD",
+        "buyability": {
+          "checked_at": "2026-11-16T18:14:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10b, re-checked 16 Nov 2026 18:14 UK, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Recognised UK hi-vis brand, sold by Amazon. Proposed after the Blackrock long-sleeve size child B005DEW1K0 failed the seller bar; approved by Kieran (via PM) 16 Nov."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b000i7gst2",
+      "category": "tin_opener",
+      "product_name": "Kuhn Rikon Can Opener, Lid-Lifting Pincers, Stainless Steel Blade, Black",
+      "brand": "Kuhn Rikon",
+      "asin_uk": "B000I7GST2",
+      "gtin": null,
+      "mpn": "22329",
+      "model_code": "2240",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B000I7GST2"
+      },
+      "captured_at": "2026-11-16T18:14:00+00:00",
+      "verification": "verified",
+      "display_name": "Kuhn Rikon tin opener with lid lifter",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B000I7GST2",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Kuhn Rikon Can Opener, Lid-Lifting Pincers, Stainless Steel Blade, Black\". Brand Name \"Kuhn Rikon\", Manufacturer \"Kuhn Rikon\", Model Number \"2240\", Manufacturer Part Number \"22329\"; one opener (Number of Items 1, Number of Packs 1). Part of a colour family (parentAsin B09FYHDJ4M), but canonical is this ASIN and Add to Basket posts this ASIN. Canonical is the dp ASIN B000I7GST2; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. Delivery location Glasgow G43. Approved by Kieran (via PM), 16 Nov 2026. dp_title_checked 2026-11-16T18:14Z; brand on page \"Kuhn Rikon\"; title \"Kuhn Rikon Can Opener, Lid-Lifting Pincers, Stainless Steel Blade, Black\".",
+        "canonical_asin": "B000I7GST2",
+        "buyability": {
+          "checked_at": "2026-11-16T18:14:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10b, re-checked 16 Nov 2026 18:14 UK, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Recognised Swiss kitchenware brand, sold by Amazon. Proposed after OXO B000079XW2 showed no delivery date; approved by Kieran (via PM) 16 Nov."
+      ]
     }
   ]
 }
