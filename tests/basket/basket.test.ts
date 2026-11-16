@@ -100,7 +100,7 @@ describe('starter kit basket', () => {
     for (let i = 1; i <= asins.length; i++) expect(params(url).get(`Quantity.${i}`)).toBe('1');
     expect(new Set(asins).size).toBe(asins.length);
   });
-  it('excludes the 7 s1-10c products', () => {
+  it('excludes the s1-10c (#28) removals', () => {
     for (const a of BASKET_EXCLUDED_ASINS) expect(asins).not.toContain(a);
   });
   it('schema rejects a duplicate, an excluded ASIN and a missing position', () => {
@@ -120,7 +120,7 @@ describe('starter kit basket', () => {
 describe('s1-10c exclusions', () => {
   it('match hotfix #28 removals exactly', () => {
     expect([...BASKET_EXCLUDED_ASINS].sort()).toEqual(
-      ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R'].sort(),
+      ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R', 'B002XNGTOI'].sort(),
     );
   });
 });
