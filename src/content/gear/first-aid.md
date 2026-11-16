@@ -1,5 +1,6 @@
 ---
 title: First-aid kits
+crumb: "First aid kits"
 seoTitle: "First aid kit criteria for UK homes"
 heading: "First aid kit criteria for UK homes and cars"
 description: "Household first-aid kit criteria for UK readiness—contents, expiry tracking and limits of kit versus training."

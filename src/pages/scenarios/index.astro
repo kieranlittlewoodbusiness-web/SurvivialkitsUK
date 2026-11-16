@@ -1,19 +1,45 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedScenarios } from '../../lib/content';
+import { breadcrumbList, crumbsForPage, itemList, pageUrl, webPage } from '../../lib/seo/jsonld';
 
 const scenarios = await getPublishedScenarios();
+const title = 'UK emergency scenario guides';
+const heading = 'Household emergency scenario guides';
+const description =
+  'Household scenario guides for UK emergencies, including power cuts, Met Office weather warnings, flood alerts, water interruptions and temporary evacuation.';
+const canonicalPath = '/scenarios/';
+const url = pageUrl(canonicalPath);
+const jsonLd = [
+  webPage({
+    url,
+    name: heading,
+    description,
+    type: 'CollectionPage',
+    breadcrumb: true,
+    mainEntity: `${url}#guides`,
+  }),
+  breadcrumbList(url, crumbsForPage(canonicalPath, 'Scenarios')),
+  itemList({
+    id: `${url}#guides`,
+    items: scenarios.map((entry) => ({
+      name: entry.data.heading ?? entry.data.title,
+      url: pageUrl(`/scenarios/${entry.id}/`),
+    })),
+  }),
+];
 ---
 
 <BaseLayout
-  title="UK emergency scenario guides"
-  description="Household scenario guides for UK emergencies, including power cuts, Met Office weather warnings, flood alerts, water interruptions and temporary evacuation."
-  canonicalPath="/scenarios/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap">
       <p class="eyebrow">Articles</p>
-      <h1>Household emergency scenario guides</h1>
+      <h1>{heading}</h1>
       <p class="lede">
         Each guide starts with inventory and official advice before any product criteria.
       </p>

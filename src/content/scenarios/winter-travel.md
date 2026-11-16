@@ -1,5 +1,6 @@
 ---
 title: "Winter car kit checklist for UK travel"
+crumb: "Winter car kit"
 description: "A modest winter car kit checklist for short UK delays, drawing on Ready Scotland's kit advice rather than expedition lists. Check official warnings first."
 scenario: Short winter delay or immobilisation on a UK road
 pubDate: 2026-11-14

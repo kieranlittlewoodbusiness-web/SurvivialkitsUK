@@ -1,17 +1,33 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
+import { standardPageNodes } from '../lib/seo/jsonld';
+
+const title = 'About our UK preparedness guides';
+const heading = site.name;
+const description =
+  'Independent UK guides to household readiness, grounded in official advice and practical product criteria. We avoid panic-buying language and weapons content.';
+const canonicalPath = '/about/';
+const jsonLd = standardPageNodes({
+  canonicalPath,
+  heading,
+  description,
+  crumb: 'About',
+  type: 'AboutPage',
+  about: true,
+});
 ---
 
 <BaseLayout
-  title="About our UK preparedness guides"
-  description="Independent UK guides to household readiness, grounded in official advice and practical product criteria. We avoid panic-buying language and weapons content."
-  canonicalPath="/about/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap wrap--narrow prose">
       <p class="eyebrow">About</p>
-      <h1>{site.name}</h1>
+      <h1>{heading}</h1>
       <p class="lede">{site.description}</p>
       <p>
         We write for UK householders who want calm, sourced planning for power cuts, severe weather,

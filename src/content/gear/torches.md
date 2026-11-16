@@ -1,5 +1,6 @@
 ---
 title: Torches
+crumb: "Torches"
 seoTitle: "Torch and head torch criteria UK"
 heading: "Torch and head torch criteria for UK power cuts"
 description: "Comparison criteria for household torches and headlamps for UK power cuts—runtime, batteries and indoor usability."

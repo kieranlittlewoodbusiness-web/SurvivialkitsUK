@@ -3,20 +3,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EvidenceBadge from '../components/EvidenceBadge.astro';
 import GetPreparedCta from '../components/GetPreparedCta.astro';
 import { getPublishedScenarios } from '../lib/content';
+import { standardPageNodes } from '../lib/seo/jsonld';
 
 const scenarios = await getPublishedScenarios();
 const core = scenarios.filter((s) => s.data.startHere).slice(0, 4);
+const title = 'Start here: a UK emergency kit plan';
+const heading = 'Start with what you already own';
+const description =
+  'Start a UK emergency kit by checking what you already own, working through the 3-day emergency kit checklist, then reading calm scenario guides.';
+const canonicalPath = '/start-here/';
+const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Start here' });
 ---
 
 <BaseLayout
-  title="Start here: a UK emergency kit plan"
-  description="Start a UK emergency kit by checking what you already own, working through the 3-day emergency kit checklist, then reading calm scenario guides."
-  canonicalPath="/start-here/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap wrap--narrow">
       <p class="eyebrow">Start here</p>
-      <h1>Start with what you already own</h1>
+      <h1>{heading}</h1>
       <p class="lede">
         Practical readiness for UK homes: outages, severe weather, temporary evacuation and winter
         travel—without panic buying.

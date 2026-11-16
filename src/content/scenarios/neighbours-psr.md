@@ -1,5 +1,6 @@
 ---
 title: "Neighbours and the Priority Services Register"
+crumb: "Priority Services Register"
 seoTitle: "Priority Services Register and neighbours"
 description: "How the UK Priority Services Register and a simple neighbour check-in can help households that need extra support during a power cut or other outage."
 scenario: Household includes or supports someone who needs extra help

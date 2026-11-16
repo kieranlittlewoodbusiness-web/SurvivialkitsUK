@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GetPreparedCta from '../components/GetPreparedCta.astro';
-import { site, comparePath } from '../data/site';
+import { comparePath } from '../data/site';
+import { pageUrl, webPage } from '../lib/seo/jsonld';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
 import { loadCatalogue, productSections } from '../components/catalogue/catalogueView';
 import { buyLabel, homeThemes, topPickLink } from '../components/home/homeView';
@@ -38,34 +39,34 @@ const CARD = [450, 900];
 const heroDesktopSizes = '(min-width: 1280px) 1216px, calc(100vw - 64px)';
 const cardSizes = '(min-width: 1100px) 380px, (min-width: 768px) 46vw, calc(100vw - 32px)';
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: site.name,
-  alternateName: 'UK Survival Kits.uk',
-  url: `${site.siteUrl}/`,
-  inLanguage: 'en-GB',
-  publisher: {
-    '@type': 'Organization',
-    name: site.name,
-    url: site.siteUrl,
-    logo: { '@type': 'ImageObject', url: `${site.siteUrl}/icon-192.png`, width: 192, height: 192 },
-  },
-};
+const title = 'UK emergency kit guides: home and car';
+const heading = 'UK emergency kit guides for home, car and travel';
+const description =
+  'Plan for 3 days of disruption in a UK home: a free emergency kit checklist, scenario guides, and Amazon UK essentials compared by what their listings state.';
+const canonicalPath = '/';
+const jsonLd = [
+  webPage({
+    url: pageUrl(canonicalPath),
+    name: heading,
+    description,
+    about: true,
+    primaryImage: true,
+  }),
+];
 ---
 
 <BaseLayout
-  title="UK emergency kit guides: home and car"
-  description="Plan for 3 days of disruption in a UK home: a free emergency kit checklist, scenario guides, and Amazon UK essentials compared by what their listings state."
-  canonicalPath="/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <div class="wrap">
     <section class="hero" aria-labelledby="hero-h">
       <div class="hero__copy">
         <p class="eyebrow">Ready for the unexpected.</p>
-        <h1 id="hero-h">UK emergency kit guides for home, car and travel</h1>
+        <h1 id="hero-h">{heading}</h1>
         <p class="hero__lede">Checklists and kit comparisons for power cuts, storms and grab bags.</p>
         <div class="btn-row hero__actions">
           <GetPreparedCta size="lg" />

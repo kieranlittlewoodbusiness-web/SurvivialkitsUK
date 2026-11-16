@@ -15,6 +15,8 @@ const scenarios = defineCollection({
     seoTitle: z.string().optional(),
     /** Visible H1; falls back to title. */
     heading: z.string().optional(),
+    /** Short breadcrumb label (SEO-6 JSON-LD; visible crumbs land in SEO-8). Falls back to title. */
+    crumb: z.string().optional(),
     description: z.string(),
     scenario: z.string(),
     pubDate: z.coerce.date(),
@@ -56,6 +58,8 @@ const gear = defineCollection({
     seoTitle: z.string().optional(),
     /** Visible H1; falls back to title. */
     heading: z.string().optional(),
+    /** Short breadcrumb label (SEO-6 JSON-LD; visible crumbs land in SEO-8). Falls back to title. */
+    crumb: z.string().optional(),
     description: z.string(),
     /** Meta description; falls back to description so listing ledes stay unchanged. */
     seoDescription: z.string().optional(),

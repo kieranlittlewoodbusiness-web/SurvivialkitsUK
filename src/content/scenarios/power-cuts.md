@@ -1,5 +1,6 @@
 ---
 title: "Power cut kit for UK homes: what to have ready"
+crumb: "Power cut kit"
 seoTitle: "Power cut kit for UK homes"
 description: "A UK power cut kit for a multi-hour outage at home: torch, radio, warmth, the 105 number on paper, and the Priority Services Register if you need extra help."
 scenario: Multi-hour or overnight electricity outage at home

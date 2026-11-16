@@ -3,6 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import CompareLinks from '../../components/catalogue/CompareLinks.astro';
 import { getPublishedGear } from '../../lib/content';
+import {
+  article,
+  breadcrumbList,
+  crumbsForPage,
+  dateModifiedOf,
+  isoDate,
+  pageUrl,
+  webPage,
+} from '../../lib/seo/jsonld';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,6 +24,24 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+const heading = entry.data.heading ?? entry.data.title;
+const description = entry.data.seoDescription ?? entry.data.description;
+const canonicalPath = `/gear/${entry.id}/`;
+const url = pageUrl(canonicalPath);
+const crumb = entry.data.crumb ?? entry.data.title;
+const datePublished = isoDate(entry.data.pubDate);
+const dateModified = dateModifiedOf(entry.data.updated, entry.data.lastReviewed, entry.data.pubDate);
+const jsonLd = [
+  webPage({
+    url,
+    name: heading,
+    description,
+    breadcrumb: true,
+    mainEntity: `${url}#article`,
+  }),
+  article({ url, headline: heading, description, datePublished, dateModified }),
+  breadcrumbList(url, crumbsForPage(canonicalPath, crumb, { label: 'Gear criteria', href: '/gear/' })),
+];
 const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate).toLocaleDateString(
   'en-GB',
   { day: 'numeric', month: 'long', year: 'numeric' },
@@ -23,13 +50,14 @@ const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pu
 
 <BaseLayout
   title={entry.data.seoTitle ?? entry.data.title}
-  description={entry.data.seoDescription ?? entry.data.description}
-  canonicalPath={`/gear/${entry.id}/`}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <article class="section">
     <div class="wrap wrap--narrow">
       <p class="eyebrow">Gear criteria</p>
-      <h1>{entry.data.heading ?? entry.data.title}</h1>
+      <h1>{heading}</h1>
       <p class="lede">{entry.data.description}</p>
       <p class="meta">
         <EvidenceBadge kind="desk-research" />

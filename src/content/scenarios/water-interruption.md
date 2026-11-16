@@ -1,5 +1,6 @@
 ---
 title: "Water interruption and boil-water notices"
+crumb: "Water interruption"
 seoTitle: "Water interruption and boil notices UK"
 description: "Practical steps for a UK household water interruption or boil-water notice, including storage, hygiene, and where to find official alerts."
 scenario: Burst main, treatment issue, or boil-water advice

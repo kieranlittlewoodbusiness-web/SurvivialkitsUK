@@ -1,5 +1,6 @@
 ---
 title: Water storage
+crumb: "Water storage"
 seoTitle: "Emergency water storage criteria UK"
 heading: "Emergency water storage criteria"
 description: "Food-grade water storage criteria for UK households—quantity, seals, stackability and hygiene."

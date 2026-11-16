@@ -1,17 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
+import { standardPageNodes } from '../lib/seo/jsonld';
+
+const title = 'Privacy notice';
+const heading = 'Privacy';
+const description =
+  'Privacy notice for UK Survival Kits: no third-party analytics or tracking scripts, what arrives if you email us, and how hosting logs are used.';
+const canonicalPath = '/privacy/';
+const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Privacy' });
 ---
 
 <BaseLayout
-  title="Privacy notice"
-  description="Privacy notice for UK Survival Kits: no third-party analytics or tracking scripts, what arrives if you email us, and how hosting logs are used."
-  canonicalPath="/privacy/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap wrap--narrow prose">
       <p class="eyebrow">Privacy</p>
-      <h1>Privacy</h1>
+      <h1>{heading}</h1>
       <p>
         {site.name} is published as a static site. This launch build does not include third-party
         analytics, advertising pixels or social tracking scripts.
