@@ -485,3 +485,24 @@ export function checkAffiliatePlacement(byPage, expected, files = { compare: COM
   const compareLinks = [...compare.values()].reduce((s, n) => s + n, 0);
   return { ok: failures.length === 0, failures, compareLinks, homeLinks };
 }
+
+/* ---------- S1-10b (CR M1): rainwater drinking-water note guard ---------- */
+
+const decodeEntities = (s) =>
+  s.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))).replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&quot;/g, '"').replace(/&apos;|&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
+
+/**
+ * Whenever the compare page renders any rainwater_storage content (a data-category="rainwater_storage"
+ * section or any rainwater ASIN), it must also show the exact drinking-water note as text.
+ * Returns { rainwater: number of signals found, ok, reason }.
+ */
+export function checkRainwaterNote(html, { asins, note }) {
+  const section = (html.match(/data-category\s*=\s*["']rainwater_storage["']/g) ?? []).length;
+  const asinHits = asins.filter((a) => html.includes(a)).length;
+  const rainwater = section + asinHits;
+  if (rainwater === 0) return { rainwater, ok: true, reason: 'no rainwater content rendered' };
+  const text = decodeEntities(html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ');
+  const ok = text.includes(note);
+  return { rainwater, ok, reason: ok ? 'drinking-water note present' : 'rainwater content rendered without RAINWATER_DRINKING_WATER_NOTE' };
+}

@@ -8,15 +8,17 @@
  * - S1-10b (CR L1, K55 ruling): the exact ASIN set. Every expected ASIN is linked exactly once on the
  *   compare page; the homepage may add at most one link per category, and only to that category's
  *   first-ranked verified product; no other page has affiliate links;
- * - the compare-page and homepage card rules, including the rainwater drinking-water note (CR M1):
- *   the rainwater section and every rainwater card must show the note from the product data.
+ * - Backend's rainwater guard (CR M1, checkRainwaterNote): whenever rainwater content renders on the
+ *   compare page, RAINWATER_DRINKING_WATER_NOTE must be on the page; Web extends it (checkRainwaterNotes):
+ *   the rainwater section AND every rainwater card (and the homepage rainwater pick) carry the note;
+ * - the compare-page and homepage card rules.
  * Usage:
  *   npm run verify:dist [-- --expect-affiliate N]
  */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
-import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml, rainwaterNoteFromData } from './lib/s1-10-card-rules.mjs';
-import { affiliateAsins, affiliateAsinsByPage, checkAffiliatePlacement, compareAsinSets } from './lib/dist-checks.mjs';
+import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
+import { affiliateAsins, affiliateAsinsByPage, checkAffiliatePlacement, checkRainwaterNote, compareAsinSets } from './lib/dist-checks.mjs';
 
 const OUT = process.env.VERIFY_OUT_DIR || '.verify-dist';
 const DUMMY_TAG = 'verifydist-21';
@@ -30,8 +32,8 @@ const run = (cmd, a) => {
   return r;
 };
 
-function derivedExpect() {
-  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts', '--json'], {
+function derive(flag) {
+  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts', flag], {
     env,
     encoding: 'utf8',
   });
@@ -39,13 +41,16 @@ function derivedExpect() {
     console.error(r.stderr || r.stdout || 'derive-affiliate-count failed');
     process.exit(r.status ?? 1);
   }
-  let parsed;
   try {
-    parsed = JSON.parse((r.stdout || '').trim());
+    return JSON.parse((r.stdout || '').trim());
   } catch {
-    console.error('derive-affiliate-count did not print JSON');
+    console.error(`derive-affiliate-count ${flag} did not print JSON`);
     process.exit(1);
   }
+}
+
+function derivedExpect() {
+  const parsed = derive('--json');
   for (const k of ['compare', 'home', 'total']) {
     if (!Number.isInteger(parsed[k]) || parsed[k] < 0) {
       console.error(`derive-affiliate-count: ${k} is not a valid integer`);
@@ -93,8 +98,21 @@ console.log(
     `${placement.homeLinks} homepage top picks, each its category's first-ranked product, at most once).`,
 );
 
-const rainwaterNote = rainwaterNoteFromData();
 const html = readCompareHtml(OUT);
+
+// S1-10b (CR M1, Backend's guard): rainwater content may only render together with the exact note.
+const rw = derive('--rainwater');
+if (!rw || !Array.isArray(rw.asins) || typeof rw.note !== 'string' || !rw.note) {
+  console.error('derive-affiliate-count --rainwater did not print { asins, note }');
+  process.exit(1);
+}
+const guard = checkRainwaterNote(html, rw);
+if (!guard.ok) {
+  console.error(`FAIL: rainwater guard: ${guard.reason}`);
+  process.exit(1);
+}
+console.log(`PASS: rainwater guard: ${guard.reason} (${guard.rainwater} rainwater signals on the compare page).`);
+const rainwaterNote = rw.note;
 const rules = checkComparePage(html, {
   expectedButtons: derived.compare,
   expectedCategories: derived.categories,

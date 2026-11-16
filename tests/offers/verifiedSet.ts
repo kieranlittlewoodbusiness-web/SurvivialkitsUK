@@ -3,6 +3,7 @@
  * Tests that depend on which products are verified import from here.
  */
 import type { ProductCategory } from '../../src/lib/offers/types';
+import { RENDER_GATED_CATEGORIES } from '../../src/lib/offers/types.ts';
 
 export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly string[]>> = {
   emergency_water: ['B0896Q8JXD', 'B07L142XSN'],
@@ -29,13 +30,27 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   hygiene: ['B08DDY4GCS', 'B06XYH6966', 'B009A6VM1G'],
   baby_care: ['B097JVCVMK', 'B08MXSBRSB', 'B0FFTNGFM9'],
   document_pouch: ['B0065ISDR8', 'B07B19M6DB', 'B0HF7LWYV9'],
-  home_kit: ['B00MCN9AJ0'],
+  home_kit: [], // Ready America B00MCN9AJ0 unverified 16 Nov (N1: not UK-sold)
   grab_bag_kit: ['B005GGMBI2', 'B09VTM8P2Z'],
 };
 
-/** Every verified ASIN, sorted. */
+/**
+ * Every verified ASIN, sorted. NOTE (S1-10b, CR M1): categories in RENDER_GATED_CATEGORIES
+ * (src/lib/offers/types.ts) stay verified here but do not render; rendered expectations subtract them
+ * in code (scripts/derive-affiliate-count.ts, tests).
+ */
 export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEGORY).flat().sort();
 export const VERIFIED_COUNT = VERIFIED_ASINS.length;
+
+/**
+ * S1-10b (CR M1): what renders = VERIFIED_BY_CATEGORY minus RENDER_GATED_CATEGORIES (derived, never
+ * hard-coded). Use these for anything that inspects rendered output (cards, links, dist).
+ */
+export const RENDERED_BY_CATEGORY: Partial<Record<ProductCategory, readonly string[]>> = Object.fromEntries(
+  Object.entries(VERIFIED_BY_CATEGORY).filter(([c]) => !RENDER_GATED_CATEGORIES.includes(c as ProductCategory)),
+);
+export const RENDERED_ASINS: readonly string[] = Object.values(RENDERED_BY_CATEGORY).flat().sort();
+export const RENDERED_COUNT = RENDERED_ASINS.length;
 
 /** Thermal size children (PM ruling b): child ASIN -> parent canonical (size_child_of). */
 export const THERMAL_SIZE_CHILDREN: Readonly<Record<string, string>> = {
@@ -66,4 +81,5 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B0CMY1GRTZ', // LifeStraw Peak green (S1-10b): no Add to Basket on 16 Nov re-check
   'B004LWWFQ0', // Highlander 10L carrier (S1-10b): no Add to Basket on 16 Nov re-check
   'B0CHVPBJ29', // First My Family 1-person (S1-10b): pack-count conflict (36 vs 30)
+  'B00MCN9AJ0', // Ready America 70510 (S1-10b N1): only offer is a US third-party seller, not UK-sold
 ];

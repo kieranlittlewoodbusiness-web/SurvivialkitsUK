@@ -107,21 +107,9 @@ export function drinkingWaterNotes(html) {
 }
 
 /**
- * The note every rainwater section and card must show, read from the committed product data
- * (verified rainwater_storage specs.drinking_water_note). Null when no rainwater product is verified.
- * Throws if verified records disagree or one is missing the note.
- */
-export function rainwaterNoteFromData(file = new URL('../../src/data/catalogue/products.json', import.meta.url)) {
-  const raw = JSON.parse(fs.readFileSync(file, 'utf8'));
-  const rows = (Array.isArray(raw) ? raw : raw.products).filter((p) => p.category === RAINWATER_CATEGORY && p.verification === 'verified');
-  if (rows.length === 0) return null;
-  const notes = new Set(rows.map((p) => norm(p.specs?.drinking_water_note?.value)));
-  if (notes.has('') || notes.size !== 1) throw new Error('verified rainwater_storage records must share one non-empty specs.drinking_water_note');
-  return [...notes][0];
-}
-
-/**
- * Fails when the rainwater section, or any rainwater card, ships without the exact note.
+ * Extends Backend's page-level guard (dist-checks.mjs checkRainwaterNote, CR M1): fails when the
+ * rainwater section, or any rainwater card, ships without the exact note (RAINWATER_DRINKING_WATER_NOTE,
+ * passed in by verify:dist from derive-affiliate-count --rainwater).
  * `sections` / `cards` come from extractSections / extractCards.
  */
 export function checkRainwaterNotes(sections, cards, note) {

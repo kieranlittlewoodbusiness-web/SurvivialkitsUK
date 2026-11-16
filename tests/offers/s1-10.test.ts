@@ -23,9 +23,10 @@ import {
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { HI_VIS_SIZE_CHILDREN, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { HI_VIS_SIZE_CHILDREN, RENDERED_BY_CATEGORY, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
+  RENDER_GATED_CATEGORIES,
   CATEGORY_LABELS,
   LEGACY_CATEGORY_WIND_UP_TORCH_RADIO,
   PRODUCT_CATEGORIES,
@@ -440,7 +441,7 @@ describe('S1-10 groupComparisonsByCategory', () => {
     const built = buildCatalogueComparisons(allProducts, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: {} });
     const out = groupComparisonsByCategory(built, { perCategory: 3 });
     expect(out).toEqual(groupComparisonsByCategory(built.comparisons, { perCategory: 3 }));
-    const expected = PRODUCT_CATEGORIES.filter((c) => VERIFIED_BY_CATEGORY[c]?.length).map((c) => [c, [...VERIFIED_BY_CATEGORY[c]!]]);
+    const expected = PRODUCT_CATEGORIES.filter((c) => RENDERED_BY_CATEGORY[c]?.length).map((c) => [c, [...RENDERED_BY_CATEGORY[c]!]]);
     expect(out.map((g) => [g.category, g.comparisons.map((c) => c.product.asin_uk)])).toEqual(expected);
     for (const g of out) {
       for (const c of g.comparisons) {
@@ -474,9 +475,11 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    // S1-10: 30; S1-10b adds 38 (14 categories). Derived from verifiedSet.ts.
-    expect(n).toBe(68);
-    expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
+    // S1-10: 30; S1-10b adds 37 verified (14 categories) = 67. Rainwater (3) is render-gated (CR M1), so 64 render.
+    expect(n).toBe(67);
+    const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
+    expect(r).toBe(64);
+    expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });
 
   it.each([

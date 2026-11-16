@@ -18,7 +18,8 @@ import type { AffiliateDisplayOffer } from '../../lib/offers';
 import { affiliateProgrammes } from '../../lib/offers/data';
 import { isProductVerified, isShortlistable, PRODUCT_CATEGORIES } from '../../lib/offers';
 import { catalogueProducts } from '../../lib/offers/data';
-import { VERIFIED_BY_CATEGORY, VERIFIED_ASINS, VERIFIED_COUNT } from '../../../tests/offers/verifiedSet';
+// S1-10b (Backend, CR M1): rendered expectations use RENDERED_BY_CATEGORY (verified minus render-gated categories).
+import { RENDERED_BY_CATEGORY as VERIFIED_BY_CATEGORY, VERIFIED_ASINS, VERIFIED_COUNT } from '../../../tests/offers/verifiedSet';
 
 const NOW = new Date('2026-11-15T12:00:00Z');
 const base = {
