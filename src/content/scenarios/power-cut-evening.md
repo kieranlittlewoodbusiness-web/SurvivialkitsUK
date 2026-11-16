@@ -1,5 +1,6 @@
 ---
 title: "Power cut at night: light, warmth and updates without draining your phone"
+crumb: "Power cut at night"
 seoTitle: "Power cut at night: what to do"
 description: "A long evening or overnight power cut at home: keep 105 written down, save your phone battery with a radio, and use torches rather than candles."
 scenario: Multi-hour or overnight electricity outage at home

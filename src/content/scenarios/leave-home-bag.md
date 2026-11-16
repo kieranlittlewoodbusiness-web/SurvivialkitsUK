@@ -1,5 +1,6 @@
 ---
 title: "A UK grab bag for temporary evacuation"
+crumb: "Grab bag"
 seoTitle: "Grab bag UK: a leave-home bag"
 description: "What to pack in a UK grab bag if you have to leave home for a short time: documents, medication and essentials. In a fire, get out, stay out and call 999."
 scenario: Asked to leave home for flooding, gas incident or similar

@@ -2,7 +2,9 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import JsonLd from '../components/JsonLd.astro';
 import { site } from '../data/site';
+import type { JsonLdNode } from '../lib/seo/jsonld';
 
 interface Props {
   title: string;
@@ -11,6 +13,8 @@ interface Props {
   canonical?: boolean;
   noindex?: boolean;
   ogType?: 'website' | 'article';
+  /** Page-specific JSON-LD nodes. When set, the layout emits one @graph (plus #organization and #website). Omit on the 404. */
+  jsonLd?: JsonLdNode[];
   /** @deprecated S1-7: the Amazon disclosure is a single site-wide footer line. Ignored. */
   showAmazonNotice?: boolean;
 }
@@ -22,6 +26,7 @@ const {
   canonical,
   noindex = false,
   ogType = 'website',
+  jsonLd,
 } = Astro.props;
 ---
 
@@ -36,6 +41,7 @@ const {
       noindex={noindex}
       ogType={ogType}
     />
+    {jsonLd && <JsonLd nodes={jsonLd} />}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { HOME_THEMES, homeButtonCount, homeThemes, topPickLink } from './homeView';
-import { loadCatalogue, productSections, type CatalogueSection, type ProductCardModel } from '../catalogue/catalogueView';
+import { loadCatalogue, PRICE_BUTTON_LABEL, priceButtonAriaLabel, productSections, type CatalogueSection, type ProductCardModel } from '../catalogue/catalogueView';
 import { VERIFIED_BY_CATEGORY } from '../../../tests/offers/verifiedSet';
 
 const NOW = new Date('2026-11-15T12:00:00Z');
@@ -12,7 +12,8 @@ const card = (id: string, category: string, link = true): ProductCardModel => ({
   category: category as ProductCardModel['category'],
   name: `Name ${id}`,
   brand: 'Brand',
-  buttonLabel: `Check Name ${id} on Amazon`,
+  buttonLabel: PRICE_BUTTON_LABEL,
+  ariaLabel: priceButtonAriaLabel(`Name ${id}`),
   facts: [],
   safetyNote: null,
   image: null,
@@ -82,9 +83,9 @@ describe('homeThemes over the committed catalogue', () => {
 });
 
 describe('S1-10b homepage additions', () => {
-  it('buy button accessible name has no space before the colon (CR N1 on #25)', async () => {
+  it('price button accessible name has no space before the colon (S1-13a)', async () => {
     const { buyLabel } = await import('./homeView');
-    expect(buyLabel('Leatherman Wave+ multi-tool')).toBe('Buy on Amazon: Leatherman Wave+ multi-tool (affiliate link)');
+    expect(buyLabel('Leatherman Wave+ multi-tool')).toBe("See today's price on Amazon: Leatherman Wave+ multi-tool (affiliate link)");
     expect(buyLabel(' Name ')).not.toMatch(/\s:/);
   });
   it('each category sits in at most one photo theme', () => {

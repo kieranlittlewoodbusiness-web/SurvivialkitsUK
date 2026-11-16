@@ -17,8 +17,9 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:content": "node scripts/check-content.mjs dist",
     "check:slash": "node scripts/check-trailing-slash.mjs dist",
-    "check:dist": "npm run -s check:links && npm run -s check:content && npm run -s check:slash",
-    "verify:dist": "node scripts/verify-dist.mjs"
+    "check:dist": "npm run -s check:links && npm run -s check:content && npm run -s check:slash && npm run -s check:jsonld",
+    "verify:dist": "node scripts/verify-dist.mjs",
+    "check:jsonld": "node scripts/check-jsonld.mjs dist"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",

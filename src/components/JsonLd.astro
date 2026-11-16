@@ -1,0 +1,11 @@
+---
+import { buildGraph, type JsonLdNode } from '../lib/seo/jsonld';
+
+interface Props {
+  nodes: JsonLdNode[];
+}
+
+const graph = buildGraph(Astro.props.nodes);
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(graph)} />

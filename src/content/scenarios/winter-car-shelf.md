@@ -1,5 +1,6 @@
 ---
 title: "Stuck on a UK road in snow or ice: what to keep in the car"
+crumb: "Stuck in snow"
 seoTitle: "Stuck in snow in your car: what to carry"
 description: "What to carry in case you are stuck on a snowy or icy UK road: warm layers, a torch, a charger and a shovel. Check Met Office warnings before you set off."
 scenario: Short winter delay or immobilisation on a UK road

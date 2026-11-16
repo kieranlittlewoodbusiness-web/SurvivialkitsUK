@@ -263,7 +263,7 @@ export function checkHomePage(html, opts) {
     const models = modelNumberTokens(p.text);
     if (models.length) failures.push(`pick ${p.category} visible text contains model/SKU-like token "${models[0]}"`);
     if (p.text.includes(DISCLOSURE)) failures.push(`pick ${p.category} repeats the disclosure`);
-    // CR N1 on #25: the buy button's accessible name is "Buy on Amazon: <name>", no space before the colon.
+    // S1-13a / CR N1: accessible name is "See today's price on Amazon: <name> (affiliate link)", no space before the colon.
     for (const name of p.ctaNames) {
       if (/\s[:;,.]/.test(name)) failures.push(`pick ${p.category} button name has a space before punctuation: "${name}"`);
     }
