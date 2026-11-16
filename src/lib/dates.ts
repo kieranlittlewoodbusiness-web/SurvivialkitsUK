@@ -19,3 +19,26 @@ const londonLongDate = new Intl.DateTimeFormat('en-GB', {
 export function formatLondonDate(day: Date | string): string {
   return londonLongDate.format(new Date(`${isoDate(day)}T12:00:00Z`));
 }
+
+const londonShortDate = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/London',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+const londonMonthYear = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/London',
+  month: 'short',
+  year: 'numeric',
+});
+
+/** SEO-6d: short visible date, e.g. "15 Nov 2026" (Europe/London, TZ-independent). */
+export function formatLondonShortDate(day: Date | string): string {
+  return londonShortDate.format(new Date(`${isoDate(day)}T12:00:00Z`));
+}
+
+/** SEO-6d: visible month and year, e.g. "Nov 2026" (Europe/London, TZ-independent). */
+export function formatLondonMonthYear(day: Date | string): string {
+  return londonMonthYear.format(new Date(`${isoDate(day)}T12:00:00Z`));
+}
