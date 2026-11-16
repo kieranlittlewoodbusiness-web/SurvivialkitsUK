@@ -1,0 +1,683 @@
+{
+  "schema_version": 1,
+  "basket_id": "emergency-starter-kit",
+  "title": "Emergency starter kit",
+  "list_owner": "Kieran (17-item list, S1-12)",
+  "rules": {
+    "buyability": "Featured offer, in stock, Add to Basket; Buy Box seller is Amazon or a GB-registered seller with at least 85% positive feedback AND at least 20 ratings, both over the last 12 months (lifetime figures do not count; no fallback); earliest delivery quote within 10 days of the check.",
+    "availability_text": "availability_text_seen and delivery_quote_seen are an audit trail of what the page said at checked_at. They are never displayed.",
+    "no_prices_or_images": true
+  },
+  "items": [
+    {
+      "position": 1,
+      "item": "Survival bag",
+      "asin": "B000WXX0JS",
+      "brand": "SOL (Survive Outdoors Longer)",
+      "model": "0140-1138",
+      "display_name": "SOL emergency bivvy bag",
+      "product_name": "Adventure Medical Kits Emergency Bivvy Heatsheets Material Reflects 90% Body Heat Quiet Material Rip Resistant Recyclable (LDPE-4) Weight 99 g 907 mm x 2117 mm Expect the Unexpected Shelter",
+      "source": "s1-12_research",
+      "source_pick": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B000WXX0JS",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B000WXX0JS",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Brand Name \"survive outdoors longer\" (SOL), manufacturer Adventure Medical Kits, Model Number / Manufacturer Part Number 0140-1138 (SOL Emergency Bivvy, 84 x 36 in, one bivvy). Canonical B000WXX0JS; Add to Basket posts this ASIN. Replaces BCB CL044 (B000TGORT0), which failed the strict 12-month seller rule at 17:13 (BCB International LTD: 4 ratings in the last 12 months; lifetime 97%/592 does not count). Also checked 17:19: Highlander B01E9QVEBY (camping-online, 84% / 178 in 12 months: fail), Lifesystems Heatshield B01MS6SYHJ (canonical is parent B0C3G4LBB1: fail), Lifesystems 2090 B000P9CSGU (no featured offer). dp_title_checked 2026-11-16T17:29Z; brand on page \"survive outdoors longer\"; title \"Adventure Medical Kits Emergency Bivvy Heatsheets Material Reflects 90% Body Heat Quiet Material Rip Resistant Recyclable (LDPE-4) Weight 99 g 907 mm x 2117 mm Expect the Unexpected Shelter\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T17:19:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "UK Outdoor Store",
+        "ships_from": "Amazon",
+        "seller_class": "uk_third_party",
+        "seller_rating_note": "SPC Marketing, GB-registered; 98% positive, 83 ratings in the last 12 months",
+        "availability_text_seen": "(none shown; Add to Basket present)",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 2,
+      "item": "Canned water",
+      "asin": "B07L142XSN",
+      "brand": "Cano Water",
+      "model": "STRP330",
+      "display_name": "Cano still spring water cans (24 x 330ml)",
+      "product_name": "Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "emergency_water#2",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B07L142XSN",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B07L142XSN",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "#24 pick 1 (Cano STXO500, B0896Q8JXD) fails on delivery: 12 December to 22 January. dp_title_checked 2026-11-16T17:25Z; brand on page \"Cano Water\"; title \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:49:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 3,
+      "item": "Motorola walkie-talkies",
+      "asin": "B07DYGD8CH",
+      "brand": "Motorola",
+      "model": "T42",
+      "display_name": "Motorola Talkabout two-way radios, 3 pack",
+      "product_name": "Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "two_way_radio#1",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B07DYGD8CH",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B07DYGD8CH",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "dp_title_checked 2026-11-16T17:27Z; brand on page \"Motorola\"; title \"Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio’s (One Pack of 3), Green, Blue and Orange\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:50:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "liGo",
+        "ships_from": "liGo",
+        "seller_class": "uk_third_party",
+        "seller_rating_note": "Ligo Electronics Limited, GB-registered; 97% positive, 464 ratings in 12 months",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Wednesday, 18 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 4,
+      "item": "Water filter",
+      "asin": "B0DWTDW914",
+      "brand": "Katadyn",
+      "model": "8020471",
+      "display_name": "Katadyn BeFree gravity water filter, 3L",
+      "product_name": "Katadyn Water Filter's Befree Gravity 3.0 Liter",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "gravity_filter#1",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B0DWTDW914",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B0DWTDW914",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Sold and dispatched by Amazon EU; low stock. dp_title_checked 2026-11-16T17:27Z; brand on page \"Katadyn\"; title \"Katadyn Water Filter's Befree Gravity 3.0 Liter\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:50:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon EU",
+        "ships_from": "Amazon EU",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "Only 3 left in stock.",
+        "delivery_quote_seen": "Tuesday, 24 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 5,
+      "item": "Antibacterial wipes",
+      "asin": "B06XYH6966",
+      "brand": "Dettol",
+      "model": "3075819",
+      "display_name": "Dettol antibacterial hand wipes, 9 packs of 15",
+      "product_name": "Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "hygiene#2",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B06XYH6966",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B06XYH6966",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "dp_title_checked 2026-11-16T17:28Z; brand on page \"Dettol\"; title \"Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:50:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 6,
+      "item": "First aid kit",
+      "asin": "B008XI72FC",
+      "brand": "St John Ambulance",
+      "model": "F30557",
+      "display_name": "St John Ambulance universal first aid kit",
+      "product_name": "St John Ambulance Supplies Universal First Aid Kit",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "first_aid_kit",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B008XI72FC",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B008XI72FC",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "#24 pick 1 (St John F30801, B00L7S9LU4) fails now: Buy Box moved to BUEN INTERNATIONAL LTD (GB, 93%, 15 ratings in 12 months, under 20). Low stock on F30557. dp_title_checked 2026-11-16T17:25Z; brand on page \"St John Ambulance\"; title \"St John Ambulance Supplies Universal First Aid Kit\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:54:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Safelincs",
+        "ships_from": "Safelincs",
+        "seller_class": "uk_third_party",
+        "seller_rating_note": "Safelincs Ltd., GB-registered; 97% positive, 2,356 ratings in 12 months",
+        "availability_text_seen": "Only 1 left in stock.",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 7,
+      "item": "AA batteries",
+      "asin": "B093C9B1HK",
+      "brand": "Duracell",
+      "model": "LR06",
+      "display_name": "Duracell Plus AA batteries, 24 pack",
+      "product_name": "DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "batteries",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B093C9B1HK",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B093C9B1HK",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "dp_title_checked 2026-11-16T17:26Z; brand on page \"Duracell\"; title \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:50:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 8,
+      "item": "AAA batteries",
+      "asin": "B07WSS27QT",
+      "brand": "Energizer",
+      "model": "E301658100",
+      "display_name": "Energizer AAA batteries, 32 pack",
+      "product_name": "Energizer Alkaline Power - AAA Batteries (32 Pack)",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "batteries",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B07WSS27QT",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B07WSS27QT",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "dp_title_checked 2026-11-16T17:26Z; brand on page \"Energizer\"; title \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:50:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 10,
+      "item": "Wind-up torch",
+      "asin": "B004QP7JR2",
+      "brand": "VARTA",
+      "model": "17680101401",
+      "display_name": "VARTA hand crank LED torch",
+      "product_name": "VARTA Hand Crank LED Torch Rechargeable, IPX4 Waterproof",
+      "source": "s1-12_research",
+      "source_pick": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B004QP7JR2",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B004QP7JR2",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "No #24 torch pick is wind-up (Ledlenser are battery torches). Brand VARTA and model 17680101401 on the page. dp_title_checked 2026-11-16T17:30Z; brand on page \"VARTA\"; title \"VARTA Hand Crank LED Torch Rechargeable, IPX4 Waterproof\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:51:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon EU",
+        "ships_from": "Amazon EU",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Tuesday, 24 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 11,
+      "item": "Electrolytes",
+      "asin": "B003AIF4Q4",
+      "brand": "HIGH5",
+      "model": "H5-ZBER",
+      "display_name": "HIGH5 Zero electrolyte tablets, berry, 20 tablets",
+      "product_name": "HIGH5 Zero Electrolyte Tablets for Hydration, Berry, 20 Tablets",
+      "source": "s1-12_research",
+      "source_pick": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B003AIF4Q4",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B003AIF4Q4",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Adult sports electrolyte tablets, not an infant or medical oral rehydration product. SiS Hydro (B008AGN01C, Pattern UK) also passed. dp_title_checked 2026-11-16T17:30Z; brand on page \"HIGH5\"; title \"HIGH5 Zero Electrolyte Tablets for Hydration, Berry, 20 Tablets\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:51:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 12,
+      "item": "Camping stove",
+      "asin": "B000PKLAVS",
+      "brand": "Campingaz",
+      "model": "203403",
+      "display_name": "Campingaz Party Grill camping stove",
+      "product_name": "Campingaz Party Grill, Camping Stove and Grill, All-in-One Portable",
+      "source": "s1-12_research",
+      "source_pick": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B000PKLAVS",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B000PKLAVS",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Gas cartridge not included. The Campingaz CV 470 Plus cartridge 4-pack (B0BFHYRM8W) was not in stock at check time and the CP250 4-pack (B00OLPWHTC) had no featured offer, so no gas is in the basket. dp_title_checked 2026-11-16T17:30Z; brand on page \"Campingaz\"; title \"Campingaz Party Grill, Camping Stove and Grill, All-in-One Portable Camping BBQ, with Griddle, Grid and Pan Support, Black\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:53:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "Available to ship in 1-2 days",
+        "delivery_quote_seen": "Friday, 20 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 13,
+      "item": "Waterless hand wash",
+      "asin": "B08DDY4GCS",
+      "brand": "Cussons Carex",
+      "model": "05000101507083_100108726",
+      "display_name": "Carex antibacterial hand sanitiser gel, 12 x 50ml",
+      "product_name": "CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "hygiene#1",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B08DDY4GCS",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B08DDY4GCS",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Buy Box seller changed since #24 (was SM WAREHOUSE); new seller also passes. Model is the manufacturer reference shown on the page. dp_title_checked 2026-11-16T17:28Z; brand on page \"Cussons Carex\"; title \"CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12, with Anti Viral action* Hand Gel and 70 Percent Alcohol that Cleans, Cares and Protects, 50 ml\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:51:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "SoForward",
+        "ships_from": "Amazon",
+        "seller_class": "uk_third_party",
+        "seller_rating_note": "So Forward Limited, GB-registered; 96% positive, 50 ratings in 12 months",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 14,
+      "item": "Multi-tool",
+      "asin": "B079MJBP21",
+      "brand": "Leatherman",
+      "model": "832524",
+      "display_name": "Leatherman Wave+ multi-tool",
+      "product_name": "Leatherman Wave+ Multi-Tool, Stainless Steel",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "multi_tool#1",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B079MJBP21",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B079MJBP21",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "dp_title_checked 2026-11-16T17:27Z; brand on page \"Leatherman\"; title \"Leatherman Wave+ Multi-Tool, Stainless Steel\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:51:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Pattern UK",
+        "ships_from": "Amazon",
+        "seller_class": "uk_third_party",
+        "seller_rating_note": "Pattern Trading Ltd, GB-registered; 100% positive, 4,369 ratings in 12 months",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Thursday, 19 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 16,
+      "item": "Warm blankets",
+      "asin": "B0CDBYT9WW",
+      "brand": "Reliance Medical",
+      "model": "LP760-PACK OF 3",
+      "display_name": "Reliance Medical adult foil blankets, pack of 3",
+      "product_name": "Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "emergency_blanket#2",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B0CDBYT9WW",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B0CDBYT9WW",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Foil emergency blankets, not wool or fleece: Kieran to confirm. #24 pick 1 (HypaGuard, B001FIQ7XU) fails on delivery (6 December to 13 January). Not the Reliance first aid kit excluded by s1-10c. dp_title_checked 2026-11-16T17:26Z; brand on page \"Reliance Medical\"; title \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:51:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "First Aid Specialist",
+        "ships_from": "First Aid Specialist",
+        "seller_class": "uk_third_party",
+        "seller_rating_note": "Nice Products Ltd, GB-registered; 90% positive, 41 ratings in 12 months",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Friday, 20 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    },
+    {
+      "position": 17,
+      "item": "Sleeping bag",
+      "asin": "B0GQ4SQC9P",
+      "brand": "Vango",
+      "model": "SBPCADAIRAB5163",
+      "display_name": "Vango Cadair single sleeping bag",
+      "product_name": "Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy",
+      "source": "s1-10b_verified_pick",
+      "source_pick": "sleeping_bag#2",
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification": "verified",
+      "verification_evidence": {
+        "source_url": "https://www.amazon.co.uk/dp/B0GQ4SQC9P",
+        "checked_on": "2026-11-16",
+        "canonical_asin": "B0GQ4SQC9P",
+        "checks_matched": [
+          "brand",
+          "model",
+          "canonical_page",
+          "display_name_plain"
+        ],
+        "note": "Chosen over #24 pick 1 (Snugpak, B0CLY3FR44), which also passes (Wowooo Ltd, GB, 100%, 66) but has only 1 left; Vango is sold by Amazon and in stock. dp_title_checked 2026-11-16T17:29Z; brand on page \"Vango\"; title \"Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy Design Holds Insulation, Breathable, Cosy Lining Fabric, Smaller Pack Size for Camping Trips, Backpacking, Hiking\"."
+      },
+      "buyability": {
+        "checked_at": "2026-11-16T16:51:00Z",
+        "featured_offer": true,
+        "in_stock": true,
+        "add_to_basket": true,
+        "seller_name": "Amazon",
+        "ships_from": "Amazon",
+        "seller_class": "amazon",
+        "seller_rating_note": "Sold by Amazon",
+        "availability_text_seen": "In stock",
+        "delivery_quote_seen": "Friday, 20 November",
+        "delivery_reasonable": true,
+        "outcome": "pass",
+        "reason": null
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "position": 9,
+      "item": "Wind-up radio",
+      "reason": "No wind-up radio passed on 16 Nov 2026. Duronic Apex (B002XNGTOI): the ASIN now shows a Duronic CT51 emergency car tool (title \"Duronic CT51 Emergency Car Tool...\", canonical B0GWJ4Y9B3; QA 17:13 and 17:17 UK, confirmed 17:22 and 17:25 UK). Sangean MMR-99 (B09SZB8Y4R): seller has 0 ratings in the last 12 months. Philips TAR1609 (B0DFVRT79C): dispatched within 1 to 2 months. PRUNUS (B09VBFQNKK) and ROCAM (B0987MCGXT): Buy Box sellers CN/HK-registered. Battery (not wind-up) radios that pass on #28/#24: Roberts PLAY20 B091YFB8N2, Sony ICF506 B0713X4484, Panasonic RF-P50DEG-S B06XXGK7GT.",
+      "candidates_checked": [
+        "B002XNGTOI",
+        "B09SZB8Y4R",
+        "B0DFVRT79C",
+        "B09VBFQNKK",
+        "B0987MCGXT"
+      ]
+    },
+    {
+      "position": 15,
+      "item": "Solar phone charger",
+      "reason": "No candidate passed on 16 Nov 2026. Anker SOLIX PS30 (B0C5CLB94D): Buy Box seller Anker Solix Technology Deutschland GmbH, DE-registered, 7 ratings. BigBlue 28W (B01EXWCPLC): delivery 12 to 13 January and seller CN-registered. BigBlue 35W (B0FP2LS4N7): no model number on the page, seller CN-registered. FlexSolar 15W (B09H6FWSZ6): no featured offer.",
+      "candidates_checked": [
+        "B0C5CLB94D",
+        "B01EXWCPLC",
+        "B0FP2LS4N7",
+        "B09H6FWSZ6"
+      ]
+    }
+  ]
+}
