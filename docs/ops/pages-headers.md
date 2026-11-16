@@ -15,16 +15,11 @@ Cloudflare Pages always adds `Access-Control-Allow-Origin: *`, `Referrer-Policy:
 
 ## Findings on 16 Nov 2026
 
-At 12:22 GMT (Europe/London), after production deployment `90c790a8` of `92d317f` (Direct Upload, `_headers` passed as a form field, deploy ended 12:13:22 GMT / Europe/London):
+At 16:01 GMT (Europe/London), current production deployment `b439afaf` applies `_headers` correctly. Apex and `uksurvivalkits.pages.dev` both serve `X-Frame-Options: DENY` and `permissions-policy: interest-cohort=()`. `uksurvivalkits.pages.dev` also serves `x-robots-tag: noindex`, and the apex doesn't. `/_astro/BaseLayout.DHex1clx.css` returns `Cache-Control: public, max-age=31536000, immutable` on both hosts. Our Direct Upload sends `_headers` as its own form field, which is correct. There is no deploy fault.
 
-- Apex, www and `uksurvivalkits.pages.dev` had the Pages default headers only.
-- `X-Frame-Options`, `Permissions-Policy` and `X-Robots-Tag` were absent on the apex and on the production alias.
-- `https://uksurvivalkits.pages.dev/_astro/BaseLayout.DHex1clx.css` and the same file on `https://90c790a8.uksurvivalkits.pages.dev/` still sent `Cache-Control: public, max-age=0, must-revalidate` (the Pages default), not `max-age=31536000, immutable`.
-- The host-specific noindex patterns in the repo already match the [Pages `_headers` docs](https://developers.cloudflare.com/pages/configuration/headers/). This is not a pattern-syntax bug.
+An earlier check at 12:22 GMT (Europe/London) saw only the Pages defaults. That reading was taken against an older deployment and is superseded by the 16:01 check above.
 
-The repo has no `functions/` directory or `_worker.js`, and the site is static, so a Pages Function intercept is unlikely unless an advanced-mode worker was uploaded outside the repo.
-
-Direct Upload must attach the file as the multipart field `_headers` ([create deployment](https://developers.cloudflare.com/api/resources/pages/subresources/projects/subresources/deployments/methods/create/)). If that field is omitted, sent as a non-file text part, or dropped when retrying a failed `manifest` encoding, the deployment succeeds but the rules never run. Prefer `wrangler pages deploy dist` (it uploads `_headers` itself) or confirm the API request includes `_headers` as a file part.
+The only repo change needed is the Permissions-Policy. `interest-cohort=()` is obsolete, so this branch replaces it with a restrictive policy. `verify:dist` now asserts that policy, `X-Frame-Options` and the pages.dev-only noindex rules in `dist/_headers`.
 
 ## Post-deploy curl checks
 
