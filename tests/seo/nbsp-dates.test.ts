@@ -63,7 +63,8 @@ describe('check:jsonld visible-date parsing with U+00A0', () => {
     const dateReasons = (r: string[]) => r.filter((x) => /visible|not shown/.test(x));
     expect(dateReasons(run('2026-11-15T00:00:00+00:00'))).toEqual([]);
     expect(dateReasons(run('2026-11-16T00:00:00+00:00'))).toEqual([
-      'Article.dateModified date 2026-11-16 does not match the visible date (2026-11-14, 2026-11-15)',
+      // SEO-6e: compared against the Updated day only, not the Published day.
+      'Article.dateModified date 2026-11-16 does not match the visible date (Last reviewed / Updated / Last checked: 2026-11-15)',
     ]);
   });
 });
