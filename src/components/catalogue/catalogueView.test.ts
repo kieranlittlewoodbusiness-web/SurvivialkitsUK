@@ -8,6 +8,8 @@ import {
   productImage,
   FALLBACK_IMAGE_SIZE,
   loadCatalogue,
+  PRICE_BUTTON_LABEL,
+  priceButtonAriaLabel,
   CATEGORY_ORDER,
   CATEGORY_META,
   KNIFE_CHIP,
@@ -233,8 +235,11 @@ describe('catalogue grouping (groupComparisonsByCategory, cap 3)', () => {
         expect(card.name).not.toMatch(/\bBS\s?\d|\bEN\s?\d|ISO\s?\d/);
         expect(card.facts.join(' ')).not.toMatch(/\bBS\s?\d|\bEN\s?\d|ISO\s?\d/);
         expect(card.facts.join(' ')).not.toMatch(/size_child_of/i);
-        expect(card.buttonLabel).toContain(card.name);
-        expect(card.buttonLabel).not.toMatch(/B0[A-Z0-9]{8}/);
+        expect(card.buttonLabel).toBe(PRICE_BUTTON_LABEL);
+        expect(card.ariaLabel).toBe(priceButtonAriaLabel(card.name));
+        expect(card.ariaLabel).toContain(card.name);
+        expect(card.buttonLabel).not.toMatch(/Buy on Amazon/);
+        expect(card.ariaLabel).not.toMatch(/B0[A-Z0-9]{8}/);
         const record = [...records.values()].find((p) => p.variant_id === card.id);
         expect(record).toBeTruthy();
         if (record?.display_name) expect(card.name).toBe(record.display_name);
@@ -268,6 +273,21 @@ describe('catalogue grouping (groupComparisonsByCategory, cap 3)', () => {
     expect(VERIFIED_COUNT).toBe(VERIFIED_ASINS.length);
     expect(m.asins.every((id) => VERIFIED_ASINS.includes(id))).toBe(true);
     expect(isShortlistable).toEqual(expect.any(Function));
+  });
+
+  it('S1-13a: every verified card uses the shared price-button label and a name-specific aria-label', async () => {
+    const prod = await loadCatalogue(PROD_ENV, NOW);
+    const preview = await loadCatalogue({ SITE_ENV: 'preview' }, NOW);
+    const linked = prod.sections.flatMap((s) => s.cards).filter((c) => c.offers.some((o) => o.link));
+    expect(linked).toHaveLength(prod.stats.withButton);
+    expect(linked).toHaveLength(prod.stats.cards);
+    for (const card of linked) {
+      expect(card.buttonLabel).toBe(PRICE_BUTTON_LABEL);
+      expect(card.ariaLabel).toBe(`See today's price on Amazon: ${card.name} (affiliate link)`);
+    }
+    // Preview builds have the same visible label string on the model, but no href to render.
+    expect(preview.stats.withButton).toBe(0);
+    expect(preview.sections.flatMap((s) => s.cards).every((c) => c.offers.every((o) => o.link === null))).toBe(true);
   });
 });
 

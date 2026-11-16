@@ -399,12 +399,22 @@ export interface CardOffer {
   link: ButtonLink | null;
 }
 
+/** Visible label on every verified-product affiliate button (S1-13a). */
+export const PRICE_BUTTON_LABEL = "See today's price on Amazon";
+
+/** Accessible name of the button: visible label, product name, affiliate disclosure. No space before the colon. */
+export function priceButtonAriaLabel(name: string): string {
+  return `${PRICE_BUTTON_LABEL}: ${name.trim()} (affiliate link)`;
+}
+
 export interface ProductCardModel {
   id: string;
   category: ProductCategory;
   name: string;
   brand: string;
   buttonLabel: string;
+  /** Accessible name, including the product name and affiliate disclosure. */
+  ariaLabel: string;
   facts: string[];
   /** Plain-text safety note from the data (rainwater drinking-water note), or null. */
   safetyNote: string | null;
@@ -440,7 +450,8 @@ export function toCardModel(c: CatalogueComparison, env: Env, now: Date): Produc
     category: c.category,
     name,
     brand: c.product.brand,
-    buttonLabel: `Check ${name} on Amazon`,
+    buttonLabel: PRICE_BUTTON_LABEL,
+    ariaLabel: priceButtonAriaLabel(name),
     facts: specFacts(c),
     safetyNote: safetyNote(c),
     image: productImage(c.product),
@@ -472,14 +483,6 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
     // Web's section order only; the products in each section are untouched.
     .sort((a, b) => orderIndex(a.category) - orderIndex(b.category));
   const cards = sections.flatMap((s) => s.cards);
-  // Distinct visible labels without putting a marketplace id in the button text.
-  const seen = new Map<string, number>();
-  for (const card of cards) seen.set(card.buttonLabel, (seen.get(card.buttonLabel) ?? 0) + 1);
-  for (const card of cards) {
-    if ((seen.get(card.buttonLabel) ?? 0) > 1) {
-      card.buttonLabel = `Check ${card.brand}: ${card.name} on Amazon`;
-    }
-  }
   const withButton = cards.filter((c) => c.offers.some((o) => o.link)).length;
   const asinOf = new Map(groups.flatMap((g) => g.comparisons.map((c) => [c.variant_id, c.product.asin_uk ?? c.variant_id] as const)));
   return {

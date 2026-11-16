@@ -53,8 +53,8 @@ const img = card.image;
           {o.link && (
             <p class="pcard__cta">
               <span class="badge badge--ad">Ad</span>
-              <a class="btn" href={o.link.href} rel={`${o.link.rel} noopener`} data-affiliate="amazon">
-                {card.buttonLabel}<span class="visually-hidden"> (affiliate link)</span>
+              <a class="btn btn--cta" href={o.link.href} rel={`${o.link.rel} noopener`} data-affiliate="amazon" aria-label={card.ariaLabel}>
+                {card.buttonLabel}
               </a>
             </p>
           )}

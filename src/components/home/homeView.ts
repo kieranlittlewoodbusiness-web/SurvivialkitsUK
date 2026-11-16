@@ -5,7 +5,7 @@
  * with. It never re-sorts, never reads a URL other than the card's contract link, and never
  * invents a card for an empty category.
  */
-import { CATEGORY_META, productSections, type CatalogueModel, type ProductCardModel } from '../catalogue/catalogueView';
+import { CATEGORY_META, priceButtonAriaLabel, productSections, type CatalogueModel, type ProductCardModel } from '../catalogue/catalogueView';
 import { comparePath } from '../../data/site';
 
 export interface ThemeImage {
@@ -111,9 +111,9 @@ export function homeButtonCount(themes: HomeThemeModel[]): number {
   return themes.reduce((n, t) => n + t.picks.filter((p) => p.card.offers.some((o) => o.link)).length, 0);
 }
 
-/** Accessible name of a homepage buy button (CR N1 on #25: no space before the colon). */
+/** Accessible name of a homepage price button (S1-13a; no space before the colon). */
 export function buyLabel(name: string): string {
-  return `Buy on Amazon: ${name.trim()} (affiliate link)`;
+  return priceButtonAriaLabel(name);
 }
 
 /** First contract link of a card (cards carry Amazon-only, model-matched offers). */
