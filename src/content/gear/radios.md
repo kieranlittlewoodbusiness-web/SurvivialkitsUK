@@ -15,8 +15,8 @@ criteria:
   - "Reminder to write station frequencies on your paper plan"
   - "Car radio fallback with severe-weather stay-indoors caveat"
 sources:
-  - label: Prepare – Power cuts
-    url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
+  - label: Be Ready – Power cuts
+    url: https://beready.campaign.gov.uk/be-informed-about-hazards/power-cuts/
   - label: Ready Scotland – Emergency plan
     url: https://ready.campaign.gov.scot/emergency-plan
 ---

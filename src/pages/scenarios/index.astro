@@ -8,7 +8,7 @@ const scenarios = await getPublishedScenarios();
 <BaseLayout
   title="Scenarios"
   description="Household scenario guides for UK power cuts, weather warnings, floods, water interruption and temporary evacuation."
-  canonicalPath="/scenarios"
+  canonicalPath="/scenarios/"
 >
   <section class="section">
     <div class="wrap">
@@ -21,7 +21,7 @@ const scenarios = await getPublishedScenarios();
         {
           scenarios.map((entry) => (
             <li>
-              <a href={`/scenarios/${entry.id}`}>
+              <a href={`/scenarios/${entry.id}/`}>
                 {entry.data.title}
                 <span>{entry.data.scenario}</span>
               </a>

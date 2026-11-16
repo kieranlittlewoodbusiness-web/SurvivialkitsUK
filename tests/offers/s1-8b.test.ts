@@ -316,6 +316,7 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
   });
   it('S1-10b QA #24: now unverified (Buy Box seller is HK-registered) and not linked; the verified set is derived', () => {
     expect(ug().verification).toBe('unverified');
+    expect(ug().verification_evidence!.outcome).toBe('not_verified'); // #28 (S1-10c) assertion kept
     expect(ug().verification_evidence!.buyability).toMatchObject({ outcome: 'fail', seller_class: 'other' });
     expect(isProductVerified(ug())).toBe(false);
     expect(catalogueProducts.filter((p) => p.verification === 'verified')).toHaveLength(VERIFIED_COUNT);

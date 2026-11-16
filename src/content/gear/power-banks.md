@@ -15,10 +15,10 @@ criteria:
   - "Medical devices require manufacturer confirmation—never assume compatibility"
   - "Airline Wh limits noted only when travel storage is relevant"
 sources:
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
-  - label: Prepare – Power cuts
-    url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
+  - label: Be Ready – Power cuts
+    url: https://beready.campaign.gov.uk/be-informed-about-hazards/power-cuts/
 ---
 
 A charged power bank helps keep a phone available for essential calls. It is not a substitute for asking device makers how medical equipment should be powered in an outage.

@@ -11,8 +11,8 @@ order: 3
 gearCategories: [water-storage]
 evidence: [official-guidance]
 sources:
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Ready Scotland – Find and share information
     url: https://ready.campaign.gov.scot/find-share-information-emergency
   - label: National Resilience / Be Ready checklist (PDF)
@@ -31,4 +31,4 @@ In Scotland, Ready Scotland points to free text alerts from Scottish Water for s
 
 ## Storage without drama
 
-If you need dedicated carriers, choose food-grade containers you can lift and stack in a flat. See our [water storage criteria](/gear/water-storage). Rotate stored water on your six-month kit review.
+If you need dedicated carriers, choose food-grade containers you can lift and stack in a flat. See our [water storage criteria](/gear/water-storage/). Rotate stored water on your six-month kit review.

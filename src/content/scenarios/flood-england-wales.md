@@ -19,7 +19,7 @@ sources:
     url: https://weather.metoffice.gov.uk/warnings-and-advice/seasonal-advice/stay-safe-in-heavy-rain
 ---
 
-This page covers **England and Wales** Environment Agency messaging. Scotland uses SEPA Floodline—see our [Scottish flood kit article](/scenarios/flood-scotland-kit).
+This page covers **England and Wales** Environment Agency messaging. Scotland uses SEPA Floodline—see our [Scottish flood kit article](/scenarios/flood-scotland-kit/).
 
 ## Know the levels
 
@@ -31,4 +31,4 @@ Never walk, cycle or drive through floodwater. Call Floodline on **0345 988 1188
 
 ## Household actions
 
-Keep a personal flood plan. Charge phones. Store documents and medicines high. If you keep a waterproof grab bag for temporary evacuation, see [the leave-home bag](/scenarios/leave-home-bag). Property protection products are optional extras—people and pets come first.
+Keep a personal flood plan. Charge phones. Store documents and medicines high. If you keep a waterproof grab bag for temporary evacuation, see [the leave-home bag](/scenarios/leave-home-bag/). Property protection products are optional extras—people and pets come first.

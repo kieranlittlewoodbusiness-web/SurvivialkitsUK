@@ -12,10 +12,10 @@ order: 1
 gearCategories: [torches, power-banks, radios]
 evidence: [official-guidance]
 sources:
-  - label: Prepare – Power cuts
-    url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Power cuts
+    url: https://beready.campaign.gov.uk/be-informed-about-hazards/power-cuts/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
 startHere: false
@@ -37,4 +37,4 @@ Keep bottled water and ready-to-eat food that does not need cooking. Unplug TVs 
 
 ## Before you buy anything
 
-Use the [72-hour checklist](/checklist) to inventory what you own. Only then consider gaps against our [torch](/gear/torches), [radio](/gear/radios) and [power bank](/gear/power-banks) criteria.
+Use the [72-hour checklist](/checklist/) to inventory what you own. Only then consider gaps against our [torch](/gear/torches/), [radio](/gear/radios/) and [power bank](/gear/power-banks/) criteria.
