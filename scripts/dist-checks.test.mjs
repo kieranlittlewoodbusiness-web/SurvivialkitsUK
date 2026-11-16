@@ -3,9 +3,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
-import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
+import { affiliateAsins, affiliateAsinsByPage, checkAffiliatePlacement, checkRainwaterNote, COMPARE_PAGE_FILE, HOME_PAGE_FILE, compareAsinSets, checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
+import { checkComparePage, checkHomePage, checkRainwaterNotes, extractCards, extractSections, modelNumberTokens, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
 import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
+import { RAINWATER_DRINKING_WATER_NOTE, RENDER_GATED_CATEGORIES } from '../src/lib/offers/types.ts';
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
 const ROBOTS = '<meta name="robots" content="index, follow">';
@@ -263,16 +264,21 @@ describe('checkContent', () => {
 });
 
 const PER_CATEGORY = 3;
-const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
+/** S1-10b (CR M1): render-gated categories stay verified but are not expected in dist. */
+const RENDERED_BY_CATEGORY = Object.fromEntries(
+  Object.entries(VERIFIED_BY_CATEGORY).filter(([cat]) => !RENDER_GATED_CATEGORIES.includes(cat)),
+); // same derivation as verifiedSet.ts RENDERED_BY_CATEGORY
+const expectedCategories = Object.entries(RENDERED_BY_CATEGORY)
   .filter(([cat, asins]) => cat !== 'kit' && asins.length > 0)
   .map(([cat]) => cat);
 const expectedCompare = expectedCategories.reduce(
-  (n, cat) => n + Math.min(VERIFIED_BY_CATEGORY[cat].length, PER_CATEGORY),
+  (n, cat) => n + Math.min(RENDERED_BY_CATEGORY[cat].length, PER_CATEGORY),
   0,
 );
 // S1-11: the homepage adds one top-pick button per compare category.
 const expectedHome = expectedCategories.length;
 const expectedAffiliate = expectedCompare + expectedHome;
+const RAINWATER_ASINS = VERIFIED_BY_CATEGORY.rainwater_storage ?? [];
 
 describe('verify:dist (production build with a dummy tag)', () => {
   it('builds production and passes links (derived affiliate count, sponsored + nofollow) and content (indexable) checks', () => {
@@ -286,7 +292,23 @@ describe('verify:dist (production build with a dummy tag)', () => {
     expect(log).toMatch(new RegExp(`affiliate ${expectedAffiliate}\\)`));
     expect(log).toMatch(new RegExp(`exactly ${expectedAffiliate} affiliate links`));
     expect(log).toMatch(/robots\.txt allows crawling/);
+    // S1-10b (CR L1): exact ASIN set, not just the count.
+    expect(log).toMatch(new RegExp(`affiliate ASIN set equals verifiedSet\\.ts exactly \\(${expectedCompare} ASINs, each linked once on the compare page; ${expectedHome} homepage top picks`));
     expect(r.status).toBe(0);
+    expect(affiliateAsins(out).asins).toEqual(Object.values(RENDERED_BY_CATEGORY).flatMap((a) => a.slice(0, PER_CATEGORY)).sort());
+    // S1-10b (CR M1): rainwater guard ran; while gated, no rainwater ASIN anywhere in dist and no rainwater section.
+    expect(log).toMatch(/PASS: rainwater guard: /);
+    if (RENDER_GATED_CATEGORIES.includes('rainwater_storage')) {
+      const all = fs.readdirSync(out, { recursive: true }).filter((f) => String(f).endsWith('.html')).map((f) => fs.readFileSync(path.join(out, String(f)), 'utf8')).join('\n');
+      for (const a of RAINWATER_ASINS) expect(all.includes(a), a).toBe(false);
+      const cmp = readCompareHtml(out);
+      expect(cmp).not.toMatch(/data-category="rainwater_storage"/);
+      expect(cmp).not.toMatch(/Rainwater storage/);
+      expect(checkRainwaterNote(cmp, { asins: RAINWATER_ASINS, note: RAINWATER_DRINKING_WATER_NOTE }).rainwater).toBe(0);
+    } else if (RAINWATER_ASINS.length > 0) {
+      // Un-gated (S1-10b-web): the section and every rainwater card carry the note.
+      expect(log).toMatch(/PASS: rainwater drinking-water note on the rainwater section and every rainwater card/);
+    }
     const realTag = process.env.AMAZON_ASSOCIATES_UK_TAG;
     if (realTag) expect(log.includes(realTag)).toBe(false);
     const compare = readCompareHtml(out);
@@ -295,7 +317,7 @@ describe('verify:dist (production build with a dummy tag)', () => {
     const home = readHomeHtml(out);
     expect(home.match(/data-affiliate="amazon"/g)).toHaveLength(expectedHome);
     if (realTag) expect(home.includes(realTag)).toBe(false);
-    const homeRules = checkHomePage(home, { expectedButtons: expectedHome, expectedCategories, compareHtml: compare });
+    const homeRules = checkHomePage(home, { expectedButtons: expectedHome, expectedCategories, compareHtml: compare, rainwaterNote: RAINWATER_DRINKING_WATER_NOTE });
     expect(homeRules.failures).toEqual([]);
     expect(homeRules.picks).toHaveLength(expectedCategories.length);
     const rules = checkComparePage(compare, {
@@ -303,15 +325,17 @@ describe('verify:dist (production build with a dummy tag)', () => {
       expectedCategories,
       maxPerCategory: PER_CATEGORY,
       expectNoImages: true,
+      rainwaterNote: RAINWATER_DRINKING_WATER_NOTE,
     });
     expect(rules.failures).toEqual([]);
+    expect(rules.rainwaterCards).toBe(Math.min(RENDERED_BY_CATEGORY.rainwater_storage?.length ?? 0, PER_CATEGORY));
     const headersText = fs.readFileSync(path.join(out, '_headers'), 'utf8');
     const headerRules = parseHeadersFile(headersText);
     expect(headersText).toContain('https://uksurvivalkits.pages.dev/*');
     expect(headersText).toContain('https://:version.uksurvivalkits.pages.dev/*');
     expect(checkStarRuleSecurityHeaders(headerRules)).toEqual([]);
     expect(REQUIRED_PERMISSIONS_POLICY.length).toBeGreaterThan(0);
-    for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
+    for (const [cat, asins] of Object.entries(RENDERED_BY_CATEGORY)) {
       if (asins.length > 0 && asins.length < PER_CATEGORY) {
         expect(rules.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
       }
@@ -390,6 +414,27 @@ describe('pages.dev _headers patterns', () => {
   });
 });
 
+describe('S1-10b (CR L1): exact affiliate ASIN set', () => {
+  const dist = (pages) => {
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'asin-set-'));
+    pages.forEach((html, i) => fs.writeFileSync(path.join(d, `p${i}.html`), html));
+    return d;
+  };
+  const a = (asin) => `<a href="https://www.amazon.co.uk/dp/${asin}?tag=TESTONLY-21" rel="sponsored nofollow">x</a>`;
+
+  it('collects tagged dp ASINs across pages and ignores untagged or other links', () => {
+    const d = dist([a('B000000001') + a('B000000002'), a('B000000002') + '<a href="https://www.amazon.co.uk/dp/B000000003">plain</a>']);
+    const r = affiliateAsins(d);
+    expect(r.asins).toEqual(['B000000001', 'B000000002']);
+    expect(r.counts.get('B000000002')).toBe(2);
+  });
+
+  it('same count but a different ASIN fails; identical sets pass', () => {
+    expect(compareAsinSets(['A000000001', 'A000000002'], ['A000000001', 'A000000003'])).toEqual({ ok: false, missing: ['A000000003'], extra: ['A000000002'] });
+    expect(compareAsinSets(['A000000002', 'A000000001'], ['A000000001', 'A000000002']).ok).toBe(true);
+  });
+});
+
 describe('S1-11 homepage rules (checkHomePage)', () => {
   const LINK = 'https://www.amazon.co.uk/dp/B075F3FBTB?tag=verifydist-21';
   const pick = (cat, { href = `/compare/72-hour-emergency-kits/#${cat}`, button = true, name = 'Plain torch' } = {}) =>
@@ -429,5 +474,121 @@ describe('S1-11 homepage rules (checkHomePage)', () => {
     expect(text).toMatch(/hero image is lazy-loaded/);
     expect(text).toMatch(/grab-bags-900\.jpg is not lazy-loaded/);
     expect(text).toMatch(/exactly 1 disclosure line/);
+  });
+});
+
+describe('S1-10b: A3 paper sizes, link placement rule, rainwater note, buy-button names', () => {
+  it('modelNumberTokens allows ISO paper sizes A0 to A10 but still flags model codes', () => {
+    expect(modelNumberTokens('OverBoard A3 waterproof pouch, Size A4, A0 or A10')).toEqual([]);
+    expect(modelNumberTokens('Pouch A11 T42 XT500')).toEqual(['A11', 'T42', 'XT500']);
+  });
+
+  // Derived from verifiedSet, the same way verify:dist does it.
+  const byCategory = Object.fromEntries(expectedCategories.map((c) => [c, RENDERED_BY_CATEGORY[c].slice(0, PER_CATEGORY)]));
+  const topPicks = Object.fromEntries(expectedCategories.map((c) => [c, RENDERED_BY_CATEGORY[c][0]]));
+  const counts = (list) => list.reduce((m, a) => m.set(a, (m.get(a) ?? 0) + 1), new Map());
+  const pages = (compareList, homeList, extra = {}) => {
+    const m = new Map([[COMPARE_PAGE_FILE, counts(compareList)]]);
+    if (homeList.length) m.set(HOME_PAGE_FILE, counts(homeList));
+    for (const [f, l] of Object.entries(extra)) m.set(f, counts(l));
+    return m;
+  };
+  const compareAll = Object.values(byCategory).flat();
+  const homeAll = Object.values(topPicks);
+
+  it('passes with no homepage links (pre-S1-11) and with one top pick per category (S1-11)', () => {
+    expect(checkAffiliatePlacement(pages(compareAll, []), { byCategory, topPicks })).toMatchObject({ ok: true, homeLinks: 0, compareLinks: compareAll.length });
+    expect(checkAffiliatePlacement(pages(compareAll, homeAll), { byCategory, topPicks })).toMatchObject({ ok: true, homeLinks: expectedCategories.length });
+  });
+  it('fails a duplicate on the compare page', () => {
+    const r = checkAffiliatePlacement(pages([...compareAll, compareAll[0]], homeAll), { byCategory, topPicks });
+    expect(r.ok).toBe(false);
+    expect(r.failures.join('\n')).toMatch(new RegExp(`compare page: ${compareAll[0]} linked 2 times`));
+  });
+  it('fails a non-top pick on the homepage', () => {
+    const cat = expectedCategories.find((c) => byCategory[c].length > 1);
+    const second = byCategory[cat][1];
+    const r = checkAffiliatePlacement(pages(compareAll, [...homeAll.filter((a) => a !== topPicks[cat]), second]), { byCategory, topPicks });
+    expect(r.ok).toBe(false);
+    expect(r.failures.join('\n')).toMatch(new RegExp(`homepage: ${second} is not the top-ranked verified pick`));
+  });
+  it('fails a duplicated homepage link, a missing compare ASIN and links on other pages', () => {
+    const r = checkAffiliatePlacement(pages(compareAll.slice(1), [...homeAll, homeAll[0]], { 'gear/torches/index.html': [compareAll[1]] }), { byCategory, topPicks });
+    const text = r.failures.join('\n');
+    expect(text).toMatch(new RegExp(`homepage: ${homeAll[0]} linked 2 times`));
+    expect(text).toMatch(new RegExp(`compare page: missing ${compareAll[0]}`));
+    expect(text).toMatch(/gear\/torches\/index\.html: affiliate links are only allowed/);
+  });
+  it('affiliateAsinsByPage reads per-page counts from a dist folder', () => {
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'placement-'));
+    fs.mkdirSync(path.join(d, 'compare/72-hour-emergency-kits'), { recursive: true });
+    const a = (asin) => `<a href="https://www.amazon.co.uk/dp/${asin}?tag=verifydist-21" rel="sponsored nofollow">x</a>`;
+    fs.writeFileSync(path.join(d, COMPARE_PAGE_FILE), compareAll.map(a).join(''));
+    fs.writeFileSync(path.join(d, HOME_PAGE_FILE), homeAll.map(a).join(''));
+    fs.writeFileSync(path.join(d, 'about.html'), '<a href="https://www.amazon.co.uk/dp/B000000001">untagged</a>');
+    const byPage = affiliateAsinsByPage(d);
+    expect([...byPage.keys()].sort()).toEqual([COMPARE_PAGE_FILE, HOME_PAGE_FILE].sort());
+    expect(checkAffiliatePlacement(byPage, { byCategory, topPicks }).ok).toBe(true);
+    fs.rmSync(d, { recursive: true, force: true });
+  });
+
+  const NOTE = 'Rainwater note from the data.';
+  const note = (t = NOTE) => `<p class="notice notice--info" data-safety-note="drinking-water">${t}</p>`;
+  const rcard = (id, withNote = true) => `<article class="pcard" id="${id}" data-category="rainwater_storage"><h3>Water butt</h3>${withNote ? note() : ''}</article>`;
+  const rsection = (sectionNote, cards) =>
+    `<section class="cat-section" id="rainwater" data-category="rainwater_storage"><h2>Rainwater storage</h2>${sectionNote ? note() : ''}<div class="pgrid">${cards}</div></section>`;
+
+  it('rainwater: passes with the section note and a note on every card', () => {
+    const r = checkRainwaterNotes(extractSections(rsection(true, rcard('a') + rcard('b'))), extractCards(rsection(true, rcard('a') + rcard('b'))), NOTE);
+    expect(r).toEqual({ failures: [], rainwaterCards: 2 });
+  });
+  it('rainwater: fails a section without its note, a card without its note, and different wording', () => {
+    const h1 = rsection(false, rcard('a'));
+    expect(checkRainwaterNotes(extractSections(h1), extractCards(h1), NOTE).failures).toEqual(['rainwater section has no section-level drinking-water note']);
+    const h2 = rsection(true, rcard('a') + rcard('b', false));
+    expect(checkRainwaterNotes(extractSections(h2), extractCards(h2), NOTE).failures).toEqual(['rainwater card b has no drinking-water note']);
+    const h3 = rsection(true, rcard('a'));
+    expect(checkRainwaterNotes(extractSections(h3), extractCards(h3), 'Different wording.').failures).toHaveLength(2);
+  });
+  it('rainwater: checkComparePage applies the rule when given the note', () => {
+    const html = `<html><body>${rsection(true, rcard('a', false))}<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
+    const r = checkComparePage(html, { expectedButtons: 0, rainwaterNote: NOTE });
+    expect(r.failures).toContain('rainwater card a has no drinking-water note');
+  });
+
+  const LINK = 'https://www.amazon.co.uk/dp/B075F3FBTB?tag=verifydist-21';
+  const homePick = (btn, extra = '') =>
+    `<html><body><a class="btn btn--cta btn--lg" href="/compare/72-hour-emergency-kits/" data-cta="get-prepared">Get prepared here</a>` +
+    `<li><article class="pick" data-category="rainwater_storage"><a class="pick__cat" href="/compare/72-hour-emergency-kits/#rainwater"><span>Rainwater</span></a><p class="pick__name">Water butt</p>${extra}` +
+    `<p class="pick__cta"><span class="badge badge--ad">Ad</span>${btn}</p></article></li>` +
+    `<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
+  const opts = { expectedButtons: 1, expectedCategories: ['rainwater_storage'], rainwaterNote: NOTE };
+
+  it('home: fails "Buy on Amazon : name" (CR N1) and passes "Buy on Amazon: name"', () => {
+    const bad = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">Buy on Amazon<span class="visually-hidden">: Water butt</span></a>`;
+    expect(checkHomePage(homePick(bad, note()), opts).failures.join('\n')).toMatch(/space before punctuation: "Buy on Amazon : Water butt"/);
+    const good = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="Buy on Amazon: Water butt (affiliate link)">Buy on Amazon</a>`;
+    expect(checkHomePage(homePick(good, note()), opts).failures).toEqual([]);
+  });
+  it('home: fails a rainwater pick without its note', () => {
+    const good = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="Buy on Amazon: Water butt (affiliate link)">Buy on Amazon</a>`;
+    expect(checkHomePage(homePick(good), opts).failures).toContain('rainwater homepage pick has no drinking-water note');
+  });
+});
+
+describe('S1-10b (CR M1): rainwater drinking-water note guard', () => {
+  const opts = { asins: ['B00ZUTJAHA'], note: RAINWATER_DRINKING_WATER_NOTE };
+  const section = (inner) => `<section class="cat-section" id="rainwater" data-category="rainwater_storage"><h2>Rainwater storage</h2>${inner}</section>`;
+  it('no rainwater content => passes with 0 signals', () => {
+    expect(checkRainwaterNote('<section data-category="flask"></section>', opts)).toMatchObject({ ok: true, rainwater: 0 });
+  });
+  it('a rainwater section or card without the exact note fails (forces the Web follow-up to render it)', () => {
+    expect(checkRainwaterNote(section('<a href="https://www.amazon.co.uk/dp/B00ZUTJAHA?tag=TESTONLY-21">x</a>'), opts).ok).toBe(false);
+    expect(checkRainwaterNote('<div data-asin="B00ZUTJAHA">card</div>', opts).ok).toBe(false);
+    expect(checkRainwaterNote(section('<p>Do not drink rainwater.</p>'), opts).ok).toBe(false);
+  });
+  it('the exact note as text (entities and line breaks allowed) passes', () => {
+    const p = `<p>${RAINWATER_DRINKING_WATER_NOTE.replace(':', '&#58;').replace('Use it', 'Use\n  it')}</p>`;
+    expect(checkRainwaterNote(section(p), opts)).toMatchObject({ ok: true });
   });
 });

@@ -3,7 +3,8 @@
  * Amazon-only product card (S1-10). Renders a ProductCardModel built from
  * groupComparisonsByCategory. Price only when shownPrice allows it; button only when buttonLink
  * returns the contract link; image only when productImage allows it. Otherwise none of those,
- * and no placeholder text or empty image frame.
+ * and no placeholder text or empty image frame. A safety note (S1-10b rainwater) shows as plain text
+ * when the data carries one.
  */
 import CategoryIcon from './CategoryIcon.astro';
 import { CATEGORY_META, type ProductCardModel } from './catalogueView';
@@ -27,6 +28,7 @@ const img = card.image;
       </ul>
     )
   }
+  {card.safetyNote && <p class="notice notice--info" data-safety-note="drinking-water">{card.safetyNote}</p>}
   {
     img && (
       img.fixedAspect ? (

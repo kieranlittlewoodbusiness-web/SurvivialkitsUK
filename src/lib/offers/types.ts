@@ -45,6 +45,20 @@ export type VerificationCheck = (typeof VERIFICATION_CHECKS)[number];
  * S1-8b: evidence for a product's `verification` value. Never holds prices,
  * images or tagged URLs: `source_url` is the tagless https://www.amazon.co.uk/dp/{ASIN}.
  */
+export interface BuyabilityCheck {
+  checked_at: LondonIsoDateTime;
+  featured_offer: boolean;
+  in_stock: boolean;
+  add_to_basket: boolean;
+  seller_name: string | null;
+  ships_from: string | null;
+  seller_class: 'amazon' | 'uk_seller_well_rated' | 'other';
+  seller_rating_note: string | null;
+  availability_text_seen: string;
+  outcome: 'pass' | 'fail';
+  reason: string | null;
+}
+
 export interface VerificationEvidence {
   method: 'public_listing';
   /** https://www.amazon.co.uk/dp/{ASIN} with no query string or fragment. */
@@ -60,6 +74,8 @@ export interface VerificationEvidence {
    */
   canonical_asin?: string;
   note: string;
+  /** S1-10b (QA #24): Buy Box check. Required (and passing) on a verified catalogue product. */
+  buyability?: BuyabilityCheck;
 }
 
 /** One exact kit variant. variant_id is unique per exact model code
@@ -331,7 +347,22 @@ export type ProductCategory =
   | 'thermal_clothing'
   | 'hi_vis'
   | 'jump_leads'
-  | 'warning_triangle';
+  | 'warning_triangle'
+  // S1-10b (issue #11 contract, 16 Nov 2026)
+  | 'water_container'
+  | 'rainwater_storage'
+  | 'gravity_filter'
+  | 'flask'
+  | 'tin_opener'
+  | 'electric_lighter'
+  | 'two_way_radio'
+  | 'multi_tool'
+  | 'sleeping_bag'
+  | 'hygiene'
+  | 'baby_care'
+  | 'document_pouch'
+  | 'home_kit'
+  | 'grab_bag_kit';
 
 /**
  * S1-10: canonical category order (also the order groupComparisonsByCategory returns).
@@ -350,7 +381,61 @@ export const PRODUCT_CATEGORIES: readonly ProductCategory[] = [
   'hi_vis',
   'jump_leads',
   'warning_triangle',
+  'water_container',
+  'rainwater_storage',
+  'gravity_filter',
+  'flask',
+  'tin_opener',
+  'electric_lighter',
+  'two_way_radio',
+  'multi_tool',
+  'sleeping_bag',
+  'hygiene',
+  'baby_care',
+  'document_pouch',
+  'home_kit',
+  'grab_bag_kit',
 ];
+
+/**
+ * S1-10b (issue #11 amendment): the legacy 'kit' category (KitVariant rows, EVAQ8 seed data in
+ * src/data/kits) is kept in the repo but must NEVER render. Every catalogue/comparison output drops
+ * it (buildCatalogueComparisons, groupComparisonsByCategory). Pre-packed kits sold on Amazon UK use
+ * the ordinary 'home_kit' and 'grab_bag_kit' catalogue categories instead.
+ */
+export const LEGACY_KIT_CATEGORY = 'kit' as const;
+
+/**
+ * S1-10b RENDER GATE (Code Reviewer M1 on PR #24, PM-approved 16 Nov 2026): categories kept in the
+ * data (records stay verified) but excluded from EVERY rendered output (buildCatalogueComparisons,
+ * groupComparisonsByCategory, RENDERABLE_CATEGORIES) so no card, section or affiliate link reaches dist.
+ * - rainwater_storage: gated until Web renders specs.drinking_water_note on the compare page
+ *   (Web follow-up PR s1-10b-rendering removes it from this list). verify:dist then requires the note
+ *   whenever a rainwater card renders, and its expected ASIN set drops gated categories automatically.
+ */
+export const RENDER_GATED_CATEGORIES: readonly ProductCategory[] = [];
+
+/** S1-10b: every category that may appear in rendered output (PRODUCT_CATEGORIES minus legacy 'kit' and RENDER_GATED_CATEGORIES). */
+export const RENDERABLE_CATEGORIES: readonly ProductCategory[] = PRODUCT_CATEGORIES.filter(
+  (c) => c !== LEGACY_KIT_CATEGORY && !RENDER_GATED_CATEGORIES.includes(c),
+);
+
+/** S1-10b: pre-packed kit categories (ordinary CatalogueProducts with KitSpecs). */
+export const KIT_CATEGORIES: readonly ProductCategory[] = ['home_kit', 'grab_bag_kit'];
+
+/**
+ * S1-10b: rainwater_storage carries this in specs.drinking_water_note (required when verified).
+ * Wording matches the cited source exactly (CR M2): rain-butt water is not for drinking. Never suggest
+ * that filtering or treating makes it drinkable. Web renders the value as plain text.
+ */
+export const RAINWATER_DRINKING_WATER_NOTE =
+  'Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.';
+/** Source for RAINWATER_DRINKING_WATER_NOTE (UK government Prepare campaign: "Do not drink this water as it could contain bacteria or disease"). */
+export const RAINWATER_DRINKING_WATER_SOURCE = {
+  name: 'Be Ready (UK government): water supply interruptions or outages',
+  url: 'https://beready.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/',
+} as const;
+
 
 /**
  * S1-10: pre-split slug. Still accepted when parsing (backward compatible) and migrated on
@@ -374,6 +459,20 @@ export const CATEGORY_LABELS: Readonly<Record<ProductCategory, string>> = {
   hi_vis: 'Hi-vis vests',
   jump_leads: 'Jump leads',
   warning_triangle: 'Warning triangles',
+  water_container: 'Water containers',
+  rainwater_storage: 'Rainwater storage',
+  gravity_filter: 'Gravity water filters',
+  flask: 'Flasks',
+  tin_opener: 'Tin openers',
+  electric_lighter: 'Windproof lighters',
+  two_way_radio: 'Two-way radios',
+  multi_tool: 'Multi-tools',
+  sleeping_bag: 'Sleeping bags',
+  hygiene: 'Hygiene',
+  baby_care: 'Baby care',
+  document_pouch: 'Document pouches',
+  home_kit: 'Home emergency kits',
+  grab_bag_kit: 'Grab bag kits',
 };
 
 export type PriceOrigin = 'none' | 'manual_capture' | 'amazon_product_api' | 'affiliate_feed';
@@ -466,6 +565,60 @@ export interface WarningTriangleSpecs {
   pack_count?: Sourced<number>;
 }
 
+/* ---------- S1-10b spec shapes (issue #11). Absent = not stated on the listing. ---------- */
+
+/** water_container, flask, gravity_filter, rainwater_storage. */
+export interface CapacitySpecs {
+  /** Capacity in litres as listed (470 ml => 0.47). */
+  capacity_l?: Sourced<number>;
+}
+export type WaterContainerSpecs = CapacitySpecs;
+export type FlaskSpecs = CapacitySpecs;
+export type GravityFilterSpecs = CapacitySpecs;
+export interface RainwaterStorageSpecs extends CapacitySpecs {
+  /** REQUIRED when verified; value === RAINWATER_DRINKING_WATER_NOTE. Render as plain text near the card. */
+  drinking_water_note?: Sourced<string>;
+}
+/** No category-specific specs (identity and display_name only). */
+export type TinOpenerSpecs = Record<string, never>;
+export interface ElectricLighterSpecs {
+  rechargeable?: Sourced<boolean>;
+}
+export interface TwoWayRadioSpecs {
+  channels?: Sourced<number>;
+  /** Listing states PMR446 (licence-free in the UK). Evidence/spec only; never in display_name. */
+  pmr446_stated?: Sourced<boolean>;
+  pack_count?: Sourced<number>;
+}
+export interface MultiToolSpecs {
+  locking_blade?: Sourced<boolean>;
+}
+export interface SleepingBagSpecs {
+  size_label?: Sourced<string>;
+}
+export interface HygieneSpecs {
+  pack_count?: Sourced<number>;
+}
+export interface BabyCareSpecs {
+  pack_count?: Sourced<number>;
+  /** Nappy size as listed, e.g. 'Size 4'. */
+  size?: Sourced<string>;
+}
+export interface DocumentPouchSpecs {
+  size_label?: Sourced<string>;
+}
+/** home_kit and grab_bag_kit. people, stated_contents, contains_blade, contains_food_water are REQUIRED when verified. */
+export interface KitSpecs {
+  people?: Sourced<number>;
+  /** Only what the listing itself states, one entry per stated item. */
+  stated_contents?: Sourced<string[]>;
+  /** true => Web shows a plain 'Includes a knife' chip. No age-restriction copy (Amazon handles age). */
+  contains_blade?: Sourced<boolean>;
+  contains_food_water?: Sourced<boolean>;
+  /** Shelf life of the food/water as listed; null = the listing states none. */
+  food_water_shelf_life_years?: Sourced<number | null>;
+}
+
 /**
  * S1-10: image source. 'paapi' = Amazon's Creators API (formerly the Product Advertising API,
  * PA-API); the literal is kept as 'paapi'. No downloaded, rehosted, scraped or tag-bearing images.
@@ -535,7 +688,21 @@ export type CatalogueProduct =
   | (CatalogueProductBase & { category: 'batteries'; specs: BatterySpecs })
   | (CatalogueProductBase & { category: 'hi_vis'; specs: HiVisSpecs })
   | (CatalogueProductBase & { category: 'jump_leads'; specs: JumpLeadsSpecs })
-  | (CatalogueProductBase & { category: 'warning_triangle'; specs: WarningTriangleSpecs });
+  | (CatalogueProductBase & { category: 'warning_triangle'; specs: WarningTriangleSpecs })
+  | (CatalogueProductBase & { category: 'water_container'; specs: WaterContainerSpecs })
+  | (CatalogueProductBase & { category: 'rainwater_storage'; specs: RainwaterStorageSpecs })
+  | (CatalogueProductBase & { category: 'gravity_filter'; specs: GravityFilterSpecs })
+  | (CatalogueProductBase & { category: 'flask'; specs: FlaskSpecs })
+  | (CatalogueProductBase & { category: 'tin_opener'; specs: TinOpenerSpecs })
+  | (CatalogueProductBase & { category: 'electric_lighter'; specs: ElectricLighterSpecs })
+  | (CatalogueProductBase & { category: 'two_way_radio'; specs: TwoWayRadioSpecs })
+  | (CatalogueProductBase & { category: 'multi_tool'; specs: MultiToolSpecs })
+  | (CatalogueProductBase & { category: 'sleeping_bag'; specs: SleepingBagSpecs })
+  | (CatalogueProductBase & { category: 'hygiene'; specs: HygieneSpecs })
+  | (CatalogueProductBase & { category: 'baby_care'; specs: BabyCareSpecs })
+  | (CatalogueProductBase & { category: 'document_pouch'; specs: DocumentPouchSpecs })
+  | (CatalogueProductBase & { category: 'home_kit'; specs: KitSpecs })
+  | (CatalogueProductBase & { category: 'grab_bag_kit'; specs: KitSpecs });
 
 export type ProductRecord = KitVariant | CatalogueProduct;
 

@@ -10,6 +10,8 @@ export const STANDARDS_RE = /\bBS\s?\d|\bEN\s?\d|ISO\s?\d/i;
 export const AFFILIATE_RE = /^https:\/\/www\.amazon\.co\.uk\/dp\/[A-Z0-9]{10}\?tag=[A-Za-z0-9][A-Za-z0-9-]{0,60}-21$/;
 const MEASUREMENT_TOKEN = /^\d+(?:[.,]\d+)*(?:mAh|Ah|Wh|W|kW|V|ml|cl|L|m|cm|mm|mm²|kg|g|lm|A|x)$/i;
 const COUNT_TOKEN = /^\d+-(?:pack|piece|person|litre|metre|year)s?$/i;
+/** ISO 216 paper sizes (A0 to A10) are plain sizes, not model codes ("A3 document pouch"). */
+export const PAPER_SIZE_TOKEN = /^A(?:10|[0-9])$/i;
 
 const attr = (attrs, name) => {
   const m = attrs.match(new RegExp(`\\b${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, 'i'));
@@ -35,7 +37,7 @@ export function modelNumberTokens(text) {
   for (const raw of text.split(/\s+/)) {
     const t = raw.replace(/^[("'[]+|[)"'\],.;:!?]+$/g, '');
     if (!t) continue;
-    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t)) flagged.push(t);
+    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t) && !PAPER_SIZE_TOKEN.test(t)) flagged.push(t);
     else if (/^\d{5,}$/.test(t)) flagged.push(t);
   }
   return flagged;
@@ -66,6 +68,7 @@ export function extractSections(html) {
     sections.push({
       category: attr(attrs, 'data-category'),
       id: attr(attrs, 'id'),
+      html: inner,
       cards,
     });
   }
@@ -88,6 +91,40 @@ export function extractCtAs(html) {
     });
   }
   return links;
+}
+
+/* ---------- S1-10b (CR M1 on #24): rainwater drinking-water note ---------- */
+
+export const RAINWATER_CATEGORY = 'rainwater_storage';
+const norm = (t) => String(t ?? '').replace(/\s+/g, ' ').trim();
+
+/** Visible texts of every data-safety-note="drinking-water" element in `html`. */
+export function drinkingWaterNotes(html) {
+  const out = [];
+  const re = /<(p|div|span)\b([^>]*\bdata-safety-note="drinking-water"[^>]*)>([\s\S]*?)<\/\1>/gi;
+  for (const m of html.matchAll(re)) out.push(visibleText(m[3]));
+  return out;
+}
+
+/**
+ * Extends Backend's page-level guard (dist-checks.mjs checkRainwaterNote, CR M1): fails when the
+ * rainwater section, or any rainwater card, ships without the exact note (RAINWATER_DRINKING_WATER_NOTE,
+ * passed in by verify:dist from derive-affiliate-count --rainwater).
+ * `sections` / `cards` come from extractSections / extractCards.
+ */
+export function checkRainwaterNotes(sections, cards, note) {
+  const failures = [];
+  const expected = norm(note);
+  const rainCards = cards.filter((c) => c.category === RAINWATER_CATEGORY);
+  for (const s of sections.filter((x) => x.category === RAINWATER_CATEGORY)) {
+    const outsideCards = s.html.replace(/<article\b[\s\S]*?<\/article>/gi, ' ');
+    if (!drinkingWaterNotes(outsideCards).some((t) => t === expected)) failures.push('rainwater section has no section-level drinking-water note');
+  }
+  if (rainCards.length && !sections.some((x) => x.category === RAINWATER_CATEGORY)) failures.push('rainwater cards render outside a rainwater section');
+  for (const c of rainCards) {
+    if (!drinkingWaterNotes(c.html).some((t) => t === expected)) failures.push(`rainwater card ${c.id} has no drinking-water note`);
+  }
+  return { failures, rainwaterCards: rainCards.length };
 }
 
 /**
@@ -155,7 +192,16 @@ export function checkComparePage(html, opts) {
     }
   }
 
-  return { failures, sections, cards, ctas, disclosureCount };
+  let rainwaterCards = cards.filter((c) => c.category === RAINWATER_CATEGORY).length;
+  if (opts.rainwaterNote) {
+    const r = checkRainwaterNotes(sections, cards, opts.rainwaterNote);
+    failures.push(...r.failures);
+    rainwaterCards = r.rainwaterCards;
+  } else if (rainwaterCards > 0 && opts.rainwaterNote !== undefined) {
+    failures.push('rainwater cards rendered but no verified rainwater product has a note');
+  }
+
+  return { failures, sections, cards, ctas, disclosureCount, rainwaterCards };
 }
 
 /* ---------- S1-11 homepage: top pick per category ---------- */
@@ -175,6 +221,10 @@ export function extractPicks(html) {
       catHref: catLink ? attr(catLink[0], 'href') : null,
       ctas: extractCtAs(m[0]),
       adBadges: (m[0].match(/\bbadge--ad\b/g) || []).length,
+      ctaNames: [...m[0].matchAll(/<a\b([^>]*\bdata-affiliate="amazon"[^>]*)>([\s\S]*?)<\/a>/gi)].map((a) =>
+        // Without aria-label, browsers may put a space around a visually-hidden span, so tags count as spaces.
+        norm(attr(a[1], 'aria-label') ?? visibleText(a[2])),
+      ),
     });
   }
   return picks;
@@ -213,6 +263,13 @@ export function checkHomePage(html, opts) {
     const models = modelNumberTokens(p.text);
     if (models.length) failures.push(`pick ${p.category} visible text contains model/SKU-like token "${models[0]}"`);
     if (p.text.includes(DISCLOSURE)) failures.push(`pick ${p.category} repeats the disclosure`);
+    // CR N1 on #25: the buy button's accessible name is "Buy on Amazon: <name>", no space before the colon.
+    for (const name of p.ctaNames) {
+      if (/\s[:;,.]/.test(name)) failures.push(`pick ${p.category} button name has a space before punctuation: "${name}"`);
+    }
+    if (opts.rainwaterNote && p.category === RAINWATER_CATEGORY && !drinkingWaterNotes(p.html).some((t) => t === norm(opts.rainwaterNote))) {
+      failures.push('rainwater homepage pick has no drinking-water note');
+    }
   }
   if ((html.match(/class="pcard__amount"/g) || []).length > 0 || /£\s?\d/.test(picks.map((p) => p.text).join(' '))) {
     failures.push('homepage shows a price');

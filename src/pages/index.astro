@@ -4,7 +4,7 @@ import GetPreparedCta from '../components/GetPreparedCta.astro';
 import { site, comparePath } from '../data/site';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
 import { loadCatalogue, productSections } from '../components/catalogue/catalogueView';
-import { homeThemes, topPickLink } from '../components/home/homeView';
+import { buyLabel, homeThemes, topPickLink } from '../components/home/homeView';
 
 const scenarios = await getPublishedScenarios();
 const featured = scenarios.filter((s) => s.data.featured).slice(0, 6);
@@ -134,11 +134,12 @@ const jsonLd = {
                               <span class="pick__count">{p.count === 1 ? 'See the pick' : `See all ${p.count} picks`}</span>
                             </a>
                             <p class="pick__name">{p.card.name}</p>
+                            {p.card.safetyNote && <p class="notice notice--info pick__note" data-safety-note="drinking-water">{p.card.safetyNote}</p>}
                             {link && (
                               <p class="pick__cta">
                                 <span class="badge badge--ad">Ad</span>
-                                <a class="btn pick__btn" href={link.href} rel={`${link.rel} noopener`} data-affiliate="amazon">
-                                  Buy on Amazon<span class="visually-hidden">: {p.card.name} (affiliate link)</span>
+                                <a class="btn pick__btn" href={link.href} rel={`${link.rel} noopener`} data-affiliate="amazon" aria-label={buyLabel(p.card.name)}>
+                                  Buy on Amazon
                                 </a>
                               </p>
                             )}
@@ -306,6 +307,7 @@ const jsonLd = {
   .pick__cat:hover { color: var(--ink); text-decoration: underline; }
   .pick__count { color: var(--accent); font-size: var(--step--1); font-weight: 600; text-decoration: underline; text-underline-offset: 0.18em; }
   .pick__name { margin: 0; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.45; }
+  .pick__note { padding: var(--s-3); font-size: 0.9375rem; line-height: 1.45; }
   .pick__cta { display: flex; align-items: center; gap: var(--s-2); margin: 0; max-width: none; }
   .pick__btn { flex: 1 1 auto; justify-content: center; white-space: nowrap; }
   @media (min-width: 768px) {

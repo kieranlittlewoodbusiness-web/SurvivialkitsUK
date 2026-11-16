@@ -12,7 +12,9 @@ import {
   AMAZON_PRICE_DISCLAIMER,
   CATALOGUE_LABEL_TEXT,
   CATEGORY_LABELS,
-  PRODUCT_CATEGORIES,
+  RAINWATER_DRINKING_WATER_NOTE,
+  RENDERABLE_CATEGORIES,
+  RENDER_GATED_CATEGORIES,
   NO_LINK_TEXT,
   NO_LINK_TEXT_EXACT_PRODUCT,
   NO_LINK_TEXT_PRODUCT_UNVERIFIED,
@@ -152,6 +154,8 @@ export function isProductVerified(product: ProductRecord | PublicProductSummary)
   if (category === 'warning_triangle') {
     if (specValue(specs, 'e_marked') !== true && specValue(specs, 'ece_r27') !== true) return false;
   }
+  // S1-10b: rainwater is never shown without its drinking-water note (the schema enforces it too).
+  if (category === 'rainwater_storage' && specValue(specs, 'drinking_water_note') !== RAINWATER_DRINKING_WATER_NOTE) return false;
   return true;
 }
 
@@ -447,15 +451,29 @@ export function compareProduct(
   };
 }
 
+/** S1-10b: legacy 'kit' rows (KitVariant / EVAQ8 seed in src/data/kits) never reach rendered output. */
+export function isLegacyKitRecord(p: ProductRecord): boolean {
+  return isKitProduct(p) || /\bevaq8\b/i.test(`${p.brand} ${p.variant_id}`);
+}
+
 /**
- * S1-8 entry point for every category (kits included). Duplicate variant ids
- * produce empty comparisons with every offer excluded.
+ * S1-8 entry point for every category. Duplicate variant ids produce empty comparisons with every
+ * offer excluded. S1-10b (issue #11 amendment): legacy 'kit' records (KitVariant, EVAQ8) and their
+ * offers are dropped before anything is built, so they can never render. Pre-packed Amazon kits use
+ * 'home_kit' / 'grab_bag_kit'. S1-10b (CR M1): RENDER_GATED_CATEGORIES (rainwater_storage until Web
+ * renders its drinking-water note) are dropped the same way; their records stay verified in the data.
  */
 export function buildCatalogueComparisons(
-  products: ProductRecord[],
-  offers: Offer[],
+  allInputProducts: ProductRecord[],
+  allInputOffers: Offer[],
   options: AffiliateOptions = {},
 ): { comparisons: CatalogueComparison[]; unknown: CatalogueExcludedOffer[] } {
+  const hidden = (p: ProductRecord) => isLegacyKitRecord(p) || RENDER_GATED_CATEGORIES.includes(productCategory(p));
+  const legacyIds = new Set(allInputProducts.filter(hidden).map((p) => p.variant_id));
+  const products = allInputProducts.filter((p) => !hidden(p));
+  const offers = allInputOffers.filter(
+    (o) => !legacyIds.has(o.variant_id) && (o.category ?? 'kit') !== 'kit' && !RENDER_GATED_CATEGORIES.includes(o.category ?? 'kit'),
+  );
   const counts = new Map<string, number>();
   for (const p of products) counts.set(p.variant_id, (counts.get(p.variant_id) ?? 0) + 1);
   const comparisons = products.map((p) => {
@@ -502,7 +520,8 @@ export function isShortlistable(c: CatalogueComparison): boolean {
  * S1-10: groups comparisons by category for rendering. Accepts buildCatalogueComparisons()'s
  * result or its `comparisons` array. Keeps only isShortlistable comparisons, sorts each category
  * by display_rank ascending (unranked after ranked; ties in source order), caps at perCategory,
- * drops empty categories and returns categories in PRODUCT_CATEGORIES order.
+ * drops empty categories and returns categories in PRODUCT_CATEGORIES order. S1-10b: the legacy
+ * 'kit' category and RENDER_GATED_CATEGORIES are never returned (RENDERABLE_CATEGORIES).
  */
 export function groupComparisonsByCategory(
   input: CatalogueComparison[] | { comparisons: CatalogueComparison[] },
@@ -513,7 +532,7 @@ export function groupComparisonsByCategory(
   const comparisons = Array.isArray(input) ? input : input.comparisons;
   const rank = (c: CatalogueComparison) => c.product.display_rank ?? Number.POSITIVE_INFINITY;
   const groups: CategoryComparisonGroup[] = [];
-  for (const category of PRODUCT_CATEGORIES) {
+  for (const category of RENDERABLE_CATEGORIES) {
     const picked = comparisons
       .map((c, i) => ({ c, i }))
       .filter(({ c }) => c.category === category && c.product.category === category && isShortlistable(c))

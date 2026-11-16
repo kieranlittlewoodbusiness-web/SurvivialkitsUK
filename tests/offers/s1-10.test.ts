@@ -23,9 +23,10 @@ import {
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { HI_VIS_SIZE_CHILDREN, THERMAL_SIZE_CHILDREN, UNVERIFIED_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { HI_VIS_SIZE_CHILDREN, RENDERED_BY_CATEGORY, TEST_BUYABILITY, THERMAL_SIZE_CHILDREN, UNVERIFIED_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
+  RENDER_GATED_CATEGORIES,
   CATEGORY_LABELS,
   LEGACY_CATEGORY_WIND_UP_TORCH_RADIO,
   PRODUCT_CATEGORIES,
@@ -59,6 +60,7 @@ function evidence(asin: string, category: string) {
       | 'size'
     )[],
     note: 'TEST',
+    buyability: TEST_BUYABILITY,
   };
 }
 
@@ -105,6 +107,21 @@ describe('S1-10 categories', () => {
       'hi_vis',
       'jump_leads',
       'warning_triangle',
+      // S1-10b
+      'water_container',
+      'rainwater_storage',
+      'gravity_filter',
+      'flask',
+      'tin_opener',
+      'electric_lighter',
+      'two_way_radio',
+      'multi_tool',
+      'sleeping_bag',
+      'hygiene',
+      'baby_care',
+      'document_pouch',
+      'home_kit',
+      'grab_bag_kit',
     ]);
     expect(PRODUCT_CATEGORIES).not.toContain(LEGACY_CATEGORY_WIND_UP_TORCH_RADIO);
   });
@@ -169,7 +186,7 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
   it('migrated the three wind-up torch radios to radio, data otherwise preserved', () => {
     const migrated = ['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK'];
     const torchRadios = catalogueProducts.filter((p) => (p.specs as { device_type?: { value: string } }).device_type?.value === 'torch_radio');
-    // S1-10c hotfix: Duronic Apex (B002XNGTOI) is a torch_radio added 16 Nov (since unverified), not a migrated record.
+    // S1-10b: Duronic Apex (B002XNGTOI) is a torch_radio added 16 Nov (since unverified), not a migrated record.
     expect(torchRadios.map((p) => p.asin_uk).filter((a) => a !== 'B002XNGTOI').sort()).toEqual(migrated);
     for (const p of torchRadios) expect(p.category).toBe('radio');
     for (const a of migrated) expect(catalogueOffers.find((o) => o.asin === a)!.category).toBe('radio');
@@ -192,7 +209,7 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
 
   it('the pre-migration products file still parses, with identical records apart from category', () => {
     const legacyFile = JSON.parse(JSON.stringify(rawProducts).replaceAll('"category":"radio"', `"category":"${LEGACY_CATEGORY_WIND_UP_TORCH_RADIO}"`));
-    const parsed = parseCatalogueProductsFile(legacyFile, { now: '2026-11-16T12:00:00+00:00' }); // S1-10c evidence is dated 16 Nov
+    const parsed = parseCatalogueProductsFile(legacyFile, { now: '2026-11-16T12:00:00+00:00' }); // S1-10b evidence is dated 16 Nov
     expect(parsed.products).toEqual(catalogueProducts);
   });
 
@@ -426,7 +443,7 @@ describe('S1-10 groupComparisonsByCategory', () => {
     const built = buildCatalogueComparisons(allProducts, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: {} });
     const out = groupComparisonsByCategory(built, { perCategory: 3 });
     expect(out).toEqual(groupComparisonsByCategory(built.comparisons, { perCategory: 3 }));
-    const expected = PRODUCT_CATEGORIES.filter((c) => VERIFIED_BY_CATEGORY[c]?.length).map((c) => [c, [...VERIFIED_BY_CATEGORY[c]!]]);
+    const expected = PRODUCT_CATEGORIES.filter((c) => RENDERED_BY_CATEGORY[c]?.length).map((c) => [c, [...RENDERED_BY_CATEGORY[c]!]]);
     expect(out.map((g) => [g.category, g.comparisons.map((c) => c.product.asin_uk)])).toEqual(expected);
     for (const g of out) {
       for (const c of g.comparisons) {
@@ -460,11 +477,15 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    // S1-10: 30. S1-10c hotfix (16 Nov): 10 failed buyability (incl. Sangean, strict 12-month rule), 8 added = 28; then Duronic
-    // B002XNGTOI unverified (ASIN now shows a car tool) and Sony + Panasonic radios added = 29; then hi-vis
-    // B005DEW1K0 unverified (Buy Box seller 51% in 12 months) = 28 (emergency_blanket and hi_vis have 2).
-    expect(n).toBe(28);
-    expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
+    // S1-10: 30; S1-10b adds 37 verified (14 categories) = 67; the QA #24 buyability sweep (16 Nov) unverified 19
+    // and added 1 (Duronic radio) = 49. The rendered count is derived from the gate list.
+    // S1-10c (16 Nov): - 2 delivery failures (Cano 500ml, HypaGuard) + 7 replacements = 54.
+    // CR strict 12-month seller rule: - Sangean, - OverBoard = 52. QA: - Duronic (ASIN reused), + Sony, + Panasonic = 53.
+    // QA 18:00: - Blackrock hi-vis B005DEW1K0 (seller 51%), - OXO B000079XW2 (no delivery date) = 51.
+    // Kieran approved (via PM) 18:14: + Blackrock XL B0BZ4ZNTJD, + Kuhn Rikon B000I7GST2 = 53.
+    expect(n).toBe(53);
+    const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
+    expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });
 
   it.each([
@@ -514,7 +535,7 @@ describe('S1-10 verified-set invariants (committed data)', () => {
         expect(o.price_origin).toBe('none');
         expect(o.affiliate_url).toBe('');
       }
-      // S1-10 research 15 Nov; S1-10c hotfix replacements 16 Nov.
+      // S1-10 research 15 Nov; S1-10b research 16 Nov.
       expect(['2026-11-15', '2026-11-16']).toContain(p.verification_evidence!.checked_on);
       expect(p.verification_evidence!.canonical_asin).toBe(p.size_child_of ?? p.asin_uk);
     }

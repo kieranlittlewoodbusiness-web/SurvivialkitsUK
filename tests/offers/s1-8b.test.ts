@@ -20,13 +20,17 @@ import rawVariants from '../../src/data/kits/variants.json';
 import rawProgrammes from '../../src/data/affiliate/programmes.json';
 import type { AffiliateProgrammeRecord, CatalogueProduct, Offer } from '../../src/lib/offers/types';
 import { offer, variant } from './fixtures';
-import { KNOWN_UNVERIFIED, S1_10C_REPLACEMENTS, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
+import { KNOWN_UNVERIFIED, RENDERED_ASINS, S1_10C_REPLACEMENTS, TEST_BUYABILITY, RENDERED_COUNT, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
 
 const FAKE_TAG = 'TESTONLY-21';
 const NOW = '2026-11-15T12:00:00+00:00';
+/** S1-10b categories (evidence checked 16 Nov 2026). */
+const S1_10B_CATEGORIES: string[] = ['water_container', 'rainwater_storage', 'gravity_filter', 'flask', 'tin_opener', 'electric_lighter', 'two_way_radio', 'multi_tool', 'sleeping_bag', 'hygiene', 'baby_care', 'document_pouch', 'home_kit', 'grab_bag_kit'];
 
 /** S1-10: the verified set lives in one place (tests/offers/verifiedSet.ts). */
 const EXPECTED_VERIFIED = [...VERIFIED_ASINS];
+/** S1-10b (CR M1): rendered output = verified minus render-gated categories. */
+const EXPECTED_RENDERED = [...RENDERED_ASINS];
 
 const run = (env: Record<string, string | undefined>, products = allProducts) =>
   buildCatalogueComparisons(products, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: env }).comparisons.flatMap((c) => c.offers);
@@ -60,12 +64,13 @@ describe('verification pass (public amazon.co.uk listings, 15 Nov 2026)', () => 
     }
   });
 
-  it('every record carries tagless evidence dated 2026-11-15, with no price or image stored', () => {
+  it('every record carries tagless evidence dated 2026-11-15 (S1-10b: 2026-11-16), with no price or image stored', () => {
     for (const p of catalogueProducts) {
       const ev = p.verification_evidence!;
       expect(ev.method).toBe('public_listing');
-      // S1-10c hotfix: the buyability replacements were checked on 16 Nov.
-      expect(ev.checked_on).toBe(S1_10C_REPLACEMENTS.includes(p.asin_uk!) ? '2026-11-16' : '2026-11-15');
+      // S1-10b: Duronic radio B002XNGTOI was added 16 Nov (QA #24 replacement).
+      // S1-10c: buyability replacements (incl. Duronic) were checked 16 Nov.
+      expect(ev.checked_on).toBe(S1_10B_CATEGORIES.includes(p.category) || S1_10C_REPLACEMENTS.includes(p.asin_uk!) ? '2026-11-16' : '2026-11-15');
       expect(ev.source_url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
       expect(new URL(ev.source_url).search).toBe('');
       if (p.verification === 'verified') expect([...ev.checks_matched].sort()).toEqual([...requiredVerificationChecks(p.category)].sort());
@@ -125,13 +130,13 @@ describe('verification_evidence schema', () => {
     const th = catalogueProducts.find((p) => p.category === 'thermal_clothing')! as CatalogueProduct;
     const src = { name: 'TEST', url: `https://www.amazon.co.uk/dp/${th.asin_uk}` };
     const sized = { ...th, verification: 'verified', display_name: 'Heatwave thermal top (medium)', specs: { ...th.specs, size_label: { value: 'M', source: src, captured_at: th.captured_at } } };
-    const ev = { ...th.verification_evidence!, outcome: 'verified', checks_matched: ['title', 'brand', 'model', 'pack_contents'] };
+    const ev = { ...th.verification_evidence!, outcome: 'verified', checks_matched: ['title', 'brand', 'model', 'pack_contents'], buyability: TEST_BUYABILITY };
     expect(() => parseCatalogueProduct({ ...sized, verification_evidence: ev })).toThrow(/size/);
     expect(() => parseCatalogueProduct({ ...sized, verification_evidence: { ...ev, checks_matched: [...ev.checks_matched, 'size'] } })).not.toThrow();
   });
   it('kits: verified needs evidence for the kit\'s own asin_uk', () => {
     expect(() => parseVariant(variant({ verification: 'verified' }))).toThrow(/verification_evidence/);
-    const ev = { method: 'public_listing' as const, source_url: 'https://www.amazon.co.uk/dp/B075LHXZ55', checked_on: '2026-11-15', outcome: 'verified' as const, checks_matched: ['title', 'brand', 'model', 'pack_contents'] as ('title' | 'brand' | 'model' | 'pack_contents')[], note: 'TEST' };
+    const ev = { method: 'public_listing' as const, source_url: 'https://www.amazon.co.uk/dp/B075LHXZ55', checked_on: '2026-11-15', outcome: 'verified' as const, checks_matched: ['title', 'brand', 'model', 'pack_contents'] as ('title' | 'brand' | 'model' | 'pack_contents')[], note: 'TEST', buyability: TEST_BUYABILITY };
     expect(() => parseVariant(variant({ verification: 'verified', verification_evidence: ev }))).toThrow(/asin_uk/);
     expect(() => parseVariant(variant({ verification: 'verified', asin_uk: 'B075LHXZ55', verification_evidence: ev }))).not.toThrow();
   });
@@ -140,9 +145,9 @@ describe('verification_evidence schema', () => {
 describe('seed link counts with the committed (approved) programme', () => {
   it('fake tag set => exactly one sponsored nofollow amazon.co.uk/dp link per verified model-matched product (amazon.co.uk/dp)', () => {
     const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
-    expect(linked).toHaveLength(EXPECTED_VERIFIED.length);
+    expect(linked).toHaveLength(EXPECTED_RENDERED.length);
     const asins = linked.map((o) => new URL(o.link_url!).pathname.replace('/dp/', '')).sort();
-    expect(asins).toEqual(EXPECTED_VERIFIED);
+    expect(asins).toEqual(EXPECTED_RENDERED);
     for (const o of linked) {
       const u = new URL(o.link_url!);
       expect(u.origin).toBe('https://www.amazon.co.uk');
@@ -218,8 +223,8 @@ describe('M1: Amazon links only in a production build (SITE_ENV=production, not 
   const T = { AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG };
   const count = (env: Record<string, string | undefined>) => run(env).filter((o) => o.link_url !== null).length;
 
-  it('real seed + fake tag + SITE_ENV=production => exactly VERIFIED_COUNT links', () => {
-    expect(count({ ...T, SITE_ENV: 'production' })).toBe(VERIFIED_COUNT);
+  it('real seed + fake tag + SITE_ENV=production => exactly RENDERED_COUNT links', () => {
+    expect(count({ ...T, SITE_ENV: 'production' })).toBe(RENDERED_COUNT);
   });
   it('real seed + fake tag + SITE_ENV=preview => 0 links', () => {
     expect(count({ ...T, SITE_ENV: 'preview' })).toBe(0);
@@ -236,20 +241,20 @@ describe('M1: Amazon links only in a production build (SITE_ENV=production, not 
   ])('%s (fake tag set) => 0 links, reason non_production_build', (_k, env) => {
     expect(count(env)).toBe(0);
     const amazonMatched = run(env).filter((o) => o.retailer === 'Amazon UK' && o.no_link_reason !== 'product_unverified' && o.no_link_reason !== 'exact_product_not_confirmed');
-    expect(amazonMatched).toHaveLength(VERIFIED_COUNT);
+    expect(amazonMatched).toHaveLength(RENDERED_COUNT);
     expect(amazonMatched.every((o) => o.no_link_reason === 'non_production_build' && o.disclosure_text === null)).toBe(true);
   });
   it.each([
     ['local production build', { ...T, SITE_ENV: 'production' }],
     ['CF production branch (main)', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'main' }],
     ['CF production branch via PRODUCTION_BRANCH', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'release', PRODUCTION_BRANCH: 'release' }],
-  ])('%s + fake tag => VERIFIED_COUNT links', (_k, env) => {
+  ])('%s + fake tag => RENDERED_COUNT links', (_k, env) => {
     expect(isProductionLinkBuild(env)).toBe(true);
-    expect(count(env)).toBe(VERIFIED_COUNT);
+    expect(count(env)).toBe(RENDERED_COUNT);
   });
   it('the build check runs before the tag is read (a preview with a malformed tag still says non_production_build)', () => {
     const r = run({ SITE_ENV: 'preview', AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY' }).filter((o) => o.no_link_reason === 'non_production_build');
-    expect(r).toHaveLength(VERIFIED_COUNT);
+    expect(r).toHaveLength(RENDERED_COUNT);
   });
   it('isProductionLinkBuild never throws on a bogus SITE_ENV (fails closed)', () => {
     expect(() => isProductionLinkBuild({ SITE_ENV: 'bogus' })).not.toThrow();
@@ -309,13 +314,14 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
     expect(o.mpn).toBeNull();
     expect(o.model_match_confirmed).toBe(true);
   });
-  it('S1-10c hotfix: now unverified (Buy Box seller is HK-registered) and not linked; the verified set is derived', () => {
+  it('S1-10b QA #24: now unverified (Buy Box seller is HK-registered) and not linked; the verified set is derived', () => {
     expect(ug().verification).toBe('unverified');
-    expect(ug().verification_evidence!.outcome).toBe('not_verified');
+    expect(ug().verification_evidence!.outcome).toBe('not_verified'); // #28 (S1-10c) assertion kept
+    expect(ug().verification_evidence!.buyability).toMatchObject({ outcome: 'fail', seller_class: 'other' });
     expect(isProductVerified(ug())).toBe(false);
     expect(catalogueProducts.filter((p) => p.verification === 'verified')).toHaveLength(VERIFIED_COUNT);
     const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
-    expect(linked).toHaveLength(VERIFIED_COUNT);
+    expect(linked).toHaveLength(RENDERED_COUNT);
     expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(false);
   });
   it('schema: listing_mpn may not double as an identity key; blank values are rejected; both fields optional', () => {
@@ -331,7 +337,7 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
   });
   it('a different offer MPN does not break the ASIN match once the product mpn is null (listing MPN is ignored for identity)', () => {
     const o = { ...catalogueOffers.find((x) => x.asin === 'B0CSSRD4NT')!, mpn: 'TSADF7G5634' };
-    const verifiedCopy = { ...ug(), verification: 'verified' as const, verification_evidence: { ...ug().verification_evidence!, outcome: 'verified' as const } };
+    const verifiedCopy = { ...ug(), verification: 'verified' as const, verification_evidence: { ...ug().verification_evidence!, outcome: 'verified' as const, buyability: TEST_BUYABILITY } };
     const d = toAffiliateDisplayOffer(o, verifiedCopy, { now: NOW, programmes: affiliateProgrammes, buildEnv: { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG } });
     expect(d.model_match_confirmed).toBe(true);
     expect(d.link_url).not.toBeNull();
