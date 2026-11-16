@@ -6,13 +6,13 @@ import { comparePath } from '../data/site';
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
 const links = [
-  { href: '/start-here', label: 'Start here' },
-  { href: '/checklist', label: 'Checklist' },
+  { href: '/start-here/', label: 'Start here' },
+  { href: '/checklist/', label: 'Checklist' },
   { href: comparePath, label: 'Get prepared here', cta: true },
-  { href: '/scenarios', label: 'Scenarios' },
-  { href: '/gear', label: 'Gear criteria' },
-  { href: '/method', label: 'Method' },
-  { href: '/about', label: 'About' },
+  { href: '/scenarios/', label: 'Scenarios' },
+  { href: '/gear/', label: 'Gear criteria' },
+  { href: '/method/', label: 'Method' },
+  { href: '/about/', label: 'About' },
 ];
 
 function isActive(rawHref: string) {

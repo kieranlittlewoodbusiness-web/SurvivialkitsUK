@@ -15,8 +15,8 @@ criteria:
   - "Face masks included where Scottish guidance lists them as optional kit items"
   - "Kits do not replace first-aid training"
 sources:
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
 ---

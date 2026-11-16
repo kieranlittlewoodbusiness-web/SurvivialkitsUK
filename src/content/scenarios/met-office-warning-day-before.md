@@ -15,8 +15,8 @@ sources:
     url: https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings
   - label: Met Office – Heavy rain safety
     url: https://weather.metoffice.gov.uk/warnings-and-advice/seasonal-advice/stay-safe-in-heavy-rain
-  - label: Prepare – Campaign toolkit
-    url: https://prepare.campaign.gov.uk/campaign-resources/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
 startHere: false
 ---
 
@@ -27,7 +27,7 @@ A weather warning is information, not a cue to empty the shops. Read the **impac
 - Charge phones and power banks.
 - Check travel plans; delay non-essential journeys if advised.
 - If flooding is possible, check long-term flood risk and move vehicles out of known flood zones when safe.
-- Review your [checklist](/checklist) and paper contact numbers.
+- Review your [checklist](/checklist/) and paper contact numbers.
 - Sign up for Met Office warnings if you have not already.
 
 Yellow warnings cover a range of situations—always read which weather is meant. Amber means increased likelihood of disruption. Red means dangerous weather and action to protect life and property.

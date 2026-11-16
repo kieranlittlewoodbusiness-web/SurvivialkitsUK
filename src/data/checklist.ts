@@ -20,7 +20,7 @@ export interface ChecklistGroup {
   items: ChecklistItem[];
 }
 
-/** Inventory-first 72-hour checklist aligned with Prepare / Ready Scotland / Be Ready. */
+/** Inventory-first 72-hour checklist aligned with Be Ready and Ready Scotland. */
 export const checklistGroups: ChecklistGroup[] = [
   {
     id: 'inventory',

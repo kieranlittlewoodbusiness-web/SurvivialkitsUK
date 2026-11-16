@@ -20,7 +20,7 @@ import rawVariants from '../../src/data/kits/variants.json';
 import rawProgrammes from '../../src/data/affiliate/programmes.json';
 import type { AffiliateProgrammeRecord, CatalogueProduct, Offer } from '../../src/lib/offers/types';
 import { offer, variant } from './fixtures';
-import { KNOWN_UNVERIFIED, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
+import { KNOWN_UNVERIFIED, S1_10C_REPLACEMENTS, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
 
 const FAKE_TAG = 'TESTONLY-21';
 const NOW = '2026-11-15T12:00:00+00:00';
@@ -64,7 +64,8 @@ describe('verification pass (public amazon.co.uk listings, 15 Nov 2026)', () => 
     for (const p of catalogueProducts) {
       const ev = p.verification_evidence!;
       expect(ev.method).toBe('public_listing');
-      expect(ev.checked_on).toBe('2026-11-15');
+      // S1-10c hotfix: the buyability replacements were checked on 16 Nov.
+      expect(ev.checked_on).toBe(S1_10C_REPLACEMENTS.includes(p.asin_uk!) ? '2026-11-16' : '2026-11-15');
       expect(ev.source_url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
       expect(new URL(ev.source_url).search).toBe('');
       if (p.verification === 'verified') expect([...ev.checks_matched].sort()).toEqual([...requiredVerificationChecks(p.category)].sort());
@@ -289,7 +290,8 @@ describe('L1: verification_evidence.checked_on cannot be in the future (Europe/L
     expect(() => parseVariant(kitFuture, { now: NOW })).toThrow(/in the future/);
     expect(() => parseVariantsFile({ ...(rawVariants as object), variants: [kitFuture] }, { now: NOW })).toThrow(/in the future/);
     expect(() => parseVariantsFile(rawVariants, { now: NOW })).not.toThrow();
-    expect(() => parseCatalogueProductsFile(rawProducts, { now: NOW })).not.toThrow();
+    expect(() => parseCatalogueProductsFile(rawProducts, { now: '2026-11-16T12:00:00+00:00' })).not.toThrow();
+    expect(() => parseCatalogueProductsFile(rawProducts, { now: NOW })).toThrow(/2026-11-16 is in the future/);
   });
 });
 
@@ -307,12 +309,14 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
     expect(o.mpn).toBeNull();
     expect(o.model_match_confirmed).toBe(true);
   });
-  it('still verified and still linked in a production build; the verified set is unchanged', () => {
-    expect(isProductVerified(ug())).toBe(true);
+  it('S1-10c hotfix: now unverified (Buy Box seller is HK-registered) and not linked; the verified set is derived', () => {
+    expect(ug().verification).toBe('unverified');
+    expect(ug().verification_evidence!.outcome).toBe('not_verified');
+    expect(isProductVerified(ug())).toBe(false);
     expect(catalogueProducts.filter((p) => p.verification === 'verified')).toHaveLength(VERIFIED_COUNT);
     const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
     expect(linked).toHaveLength(VERIFIED_COUNT);
-    expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(true);
+    expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(false);
   });
   it('schema: listing_mpn may not double as an identity key; blank values are rejected; both fields optional', () => {
     const p = ug();
@@ -327,7 +331,8 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
   });
   it('a different offer MPN does not break the ASIN match once the product mpn is null (listing MPN is ignored for identity)', () => {
     const o = { ...catalogueOffers.find((x) => x.asin === 'B0CSSRD4NT')!, mpn: 'TSADF7G5634' };
-    const d = toAffiliateDisplayOffer(o, ug(), { now: NOW, programmes: affiliateProgrammes, buildEnv: { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG } });
+    const verifiedCopy = { ...ug(), verification: 'verified' as const, verification_evidence: { ...ug().verification_evidence!, outcome: 'verified' as const } };
+    const d = toAffiliateDisplayOffer(o, verifiedCopy, { now: NOW, programmes: affiliateProgrammes, buildEnv: { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG } });
     expect(d.model_match_confirmed).toBe(true);
     expect(d.link_url).not.toBeNull();
   });

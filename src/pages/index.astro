@@ -67,7 +67,7 @@ const jsonLd = {
         <p class="hero__lede">Compare emergency kits for home, car and travel.</p>
         <div class="btn-row hero__actions">
           <GetPreparedCta size="lg" />
-          <a class="btn btn--band-outline btn--lg" href="/start-here">Start here</a>
+          <a class="btn btn--band-outline btn--lg" href="/start-here/">Start here</a>
         </div>
       </div>
       <picture class="hero__media">
@@ -163,7 +163,7 @@ const jsonLd = {
           <li>Most of what you need is already in your cupboards, drawers and car.</li>
           <li>Water is the gap most households have: plan 3 litres per person per day.</li>
         </ol>
-        <p><a href="/method">How we label evidence</a></p>
+        <p><a href="/method/">How we label evidence</a></p>
       </aside>
       <div class="feature card">
         <div class="feature__media" aria-hidden="true"><div class="art art--kit"></div></div>
@@ -189,7 +189,7 @@ const jsonLd = {
     <section class="section" aria-labelledby="scen-h">
       <div class="section-head">
         <h2 id="scen-h">Household scenarios</h2>
-        <a href="/scenarios">All scenarios</a>
+        <a href="/scenarios/">All scenarios</a>
       </div>
       <div class="grid grid--3">
         {
@@ -198,7 +198,7 @@ const jsonLd = {
               <div class="story__media" aria-hidden="true"><div class={`art art--${artFor(entry.id)}`} /></div>
               <div class="story__body">
                 <p class="kicker">{kickerFor(entry.id)}</p>
-                <h3 class="story__title"><a href={`/scenarios/${entry.id}`}>{entry.data.title}</a></h3>
+                <h3 class="story__title"><a href={`/scenarios/${entry.id}/`}>{entry.data.title}</a></h3>
                 <p class="story__dek">{entry.data.scenario}</p>
               </div>
             </article>
@@ -210,7 +210,7 @@ const jsonLd = {
     <section class="section section--flush" aria-labelledby="steps-h">
       <div class="section-head">
         <h2 id="steps-h">72-hour checklist in three steps</h2>
-        <a href="/checklist">Open the checklist</a>
+        <a href="/checklist/">Open the checklist</a>
       </div>
       <ol class="steps grid grid--3">
         <li class="card card-pad"><span class="steps__n" aria-hidden="true">1</span><h3>Check what you already own</h3><p>Cupboards, drawers and the car first.</p></li>
@@ -222,13 +222,13 @@ const jsonLd = {
     <section class="section" aria-labelledby="gear-h">
       <div class="section-head">
         <h2 id="gear-h">Gear criteria</h2>
-        <a href="/gear">All criteria</a>
+        <a href="/gear/">All criteria</a>
       </div>
       <ul class="link-list link-list--grid">
         {
           gear.map((entry) => (
             <li>
-              <a href={`/gear/${entry.id}`}>
+              <a href={`/gear/${entry.id}/`}>
                 {entry.data.title}
                 <span>{entry.data.description}</span>
               </a>
@@ -242,9 +242,9 @@ const jsonLd = {
       <h2 id="gov-h" class="notice__title">Official guidance first</h2>
       <p>
         We separate official advice, desk research, firsthand tests and advertising. See
-        <a href="https://prepare.campaign.gov.uk/get-prepared-for-emergencies/" rel="noopener noreferrer">Prepare</a>,
+        <a href="https://beready.campaign.gov.uk/be-ready-for-emergencies/" rel="noopener noreferrer">Be Ready</a>,
         <a href="https://ready.campaign.gov.scot/" rel="noopener noreferrer">Ready Scotland</a> and our
-        <a href="/sources">sources list</a>.
+        <a href="/sources/">sources list</a>.
       </p>
     </aside>
   </div>
