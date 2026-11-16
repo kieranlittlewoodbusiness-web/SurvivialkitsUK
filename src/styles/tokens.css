@@ -1,14 +1,35 @@
-/* U.K. Survival Kit Brief design tokens (S1-7, approved direction: accent A, all-sans).
+/* UK Survival Kits design tokens (S1-11 rebrand, approved by Kieran 16 Nov 2026).
+   Brand palette: Forest #183329, Pine #30483C, Limestone #f4efe5, Amber #e8ad50, Ink #19231e.
    Every text/background pair is measured by scripts/check-contrast.mjs (light and dark).
-   Keep each colour token on its own line as `--name: #rrggbb;` so the script can parse it. */
+   Keep each colour token on its own line as `--name: #rrggbb;` so the script can parse it.
+   Fonts are self-hosted from @fontsource (OFL 1.1, licences in public/fonts). No font CDN. */
 
 @font-face {
-  font-family: 'Schibsted Grotesk Variable';
+  font-family: 'Barlow Condensed';
   font-style: normal;
   font-display: swap;
-  font-weight: 400 900;
-  src: url('/fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2-variations'),
-    url('/fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2');
+  font-weight: 700;
+  src: url('/fonts/barlow-condensed-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/inter-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url('/fonts/inter-latin-600-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
     U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -16,22 +37,37 @@
 /* @tokens light */
 :root {
   color-scheme: light dark;
-  --canvas: #f5f3ee;
-  --surface: #ffffff;
-  --surface-2: #eeebe4;
-  --band: #10201c;
-  --line: #ddd8ce;
-  --line-strong: #858a8e;
-  --ink: #14181b;
-  --ink-2: #434b51;
-  --ink-3: #5a6268;
-  --on-band: #f5f3ee;
-  --on-band-2: #c3cdc9;
-  --band-accent: #7fd6b8;
-  --accent: #0b5d4b;
-  --accent-hover: #07463a;
-  --accent-soft: #e2f1ec;
-  --on-accent: #ffffff;
+  /* Brand */
+  --forest: #183329;
+  --pine: #30483c;
+  --limestone: #f4efe5;
+  --amber: #e8ad50;
+  --brand-ink: #19231e;
+  /* Surfaces */
+  --canvas: #f4efe5;
+  --surface: #fffdf8;
+  --surface-2: #ebe4d6;
+  --band: #183329;
+  --band-2: #30483c;
+  --line: #ddd4c3;
+  --line-strong: #7b8178;
+  /* Text */
+  --ink: #19231e;
+  --ink-2: #3d4842;
+  --ink-3: #545f58;
+  --on-band: #f4efe5;
+  --on-band-2: #cdd6cd;
+  --band-accent: #e8ad50;
+  /* Links, kickers and standard buttons */
+  --accent: #183329;
+  --accent-hover: #30483c;
+  --accent-soft: #e2e8de;
+  --on-accent: #f4efe5;
+  /* Main CTA (Get prepared here): Amber fill, Ink label */
+  --cta: #e8ad50;
+  --cta-hover: #f0c06f;
+  --on-cta: #19231e;
+  /* Status */
   --success: #13592b;
   --success-soft: #e3f3e7;
   --warning: #7a4100;
@@ -41,33 +77,38 @@
   --info: #1b4a85;
   --info-soft: #e5edf8;
   --ad: #3a3e42;
-  --ad-soft: #ebe7de;
+  --ad-soft: #e6dfd1;
   --focus: #1a55c9;
-  --header-bg: rgb(245 243 238 / 0.9);
-  --shadow-1: 0 1px 2px rgb(20 24 27 / 0.06), 0 2px 8px rgb(20 24 27 / 0.04);
-  --shadow-2: 0 2px 4px rgb(20 24 27 / 0.06), 0 12px 28px rgb(20 24 27 / 0.08);
+  --focus-on-band: #e8ad50;
+  --header-bg: rgb(244 239 229 / 0.92);
+  --shadow-1: 0 1px 2px rgb(25 35 30 / 0.06), 0 2px 8px rgb(25 35 30 / 0.04);
+  --shadow-2: 0 2px 4px rgb(25 35 30 / 0.06), 0 12px 28px rgb(25 35 30 / 0.08);
 }
 /* @end */
 
 @media (prefers-color-scheme: dark) {
   /* @tokens dark */
   :root {
-    --canvas: #0e1312;
-    --surface: #161d1b;
-    --surface-2: #1d2523;
-    --band: #08100e;
-    --line: #2b3532;
-    --line-strong: #7a8682;
-    --ink: #edf1ef;
-    --ink-2: #bcc5c1;
-    --ink-3: #9da7a3;
-    --on-band: #edf1ef;
-    --on-band-2: #bcc5c1;
-    --band-accent: #7fd6b8;
-    --accent: #6fd0ae;
-    --accent-hover: #8fdcc0;
-    --accent-soft: #143229;
-    --on-accent: #062219;
+    --canvas: #0f211a;
+    --surface: #183329;
+    --surface-2: #30483c;
+    --band: #0a1712;
+    --band-2: #183329;
+    --line: #2f4a3d;
+    --line-strong: #7f948a;
+    --ink: #f4efe5;
+    --ink-2: #d2d9d1;
+    --ink-3: #b0bcb3;
+    --on-band: #f4efe5;
+    --on-band-2: #cdd6cd;
+    --band-accent: #e8ad50;
+    --accent: #e8ad50;
+    --accent-hover: #f0c06f;
+    --accent-soft: #30483c;
+    --on-accent: #19231e;
+    --cta: #e8ad50;
+    --cta-hover: #f0c06f;
+    --on-cta: #19231e;
     --success: #86d9a1;
     --success-soft: #12301d;
     --warning: #f1c46e;
@@ -76,10 +117,11 @@
     --error-soft: #3a1614;
     --info: #a3c4ff;
     --info-soft: #14253f;
-    --ad: #d8d3c8;
-    --ad-soft: #2a2924;
+    --ad: #f4efe5;
+    --ad-soft: #30483c;
     --focus: #8cb4ff;
-    --header-bg: rgb(14 19 18 / 0.88);
+    --focus-on-band: #e8ad50;
+    --header-bg: rgb(15 33 26 / 0.9);
     --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
     --shadow-2: 0 2px 4px rgb(0 0 0 / 0.4), 0 12px 28px rgb(0 0 0 / 0.35);
   }
@@ -88,7 +130,8 @@
 
 :root {
   /* Type */
-  --font-sans: 'Schibsted Grotesk Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display-face: 'Barlow Condensed', 'Arial Narrow', 'Roboto Condensed', system-ui, sans-serif;
   --step--1: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
   --step-0: clamp(1rem, 0.98rem + 0.1vw, 1.0625rem);
   --step-1: clamp(1.125rem, 1.08rem + 0.21vw, 1.25rem);
@@ -96,6 +139,9 @@
   --step-3: clamp(1.625rem, 1.46rem + 0.83vw, 2.125rem);
   --step-4: clamp(2rem, 1.67rem + 1.67vw, 3rem);
   --step-5: clamp(2.375rem, 1.83rem + 2.71vw, 4rem);
+  /* Display sizes (brand guide: H1 40-72 px, H2 28-40 px) */
+  --display-1: clamp(2.5rem, 1.9rem + 3vw, 4.5rem);
+  --display-2: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);
 
   /* Shape */
   --r-xs: 8px;
@@ -128,6 +174,6 @@
   --warn: var(--warning);
   --ad-bg: var(--ad-soft);
   --ink-muted: var(--ink-2);
-  --font-display: var(--font-sans);
+  --font-display: var(--font-display-face);
   --font-body: var(--font-sans);
 }
