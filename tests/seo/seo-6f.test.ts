@@ -129,4 +129,12 @@ describe('built site (TZ=UTC)', () => {
     expect(html).not.toContain('&nbsp;');
     for (const t of linkTexts(html, 'Retrieved for this build')) expect(t, t).not.toMatch(YEAR_AFTER_PLAIN_SPACE);
   });
+
+  it('sources: page <style> still comes before the layout stylesheet link (head order as on main)', () => {
+    const html = page('sources/index.html');
+    const style = html.indexOf('<style>.url[data-astro-cid-');
+    const link = html.indexOf('<link rel="stylesheet" href="/_astro/BaseLayout.');
+    expect(style).toBeGreaterThan(0);
+    expect(link).toBeGreaterThan(style);
+  });
 });
