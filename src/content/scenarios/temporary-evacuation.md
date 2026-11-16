@@ -1,6 +1,7 @@
 ---
-title: "Temporary evacuation: a calm leave-home bag"
-description: "UK grab-bag guidance for short evacuations—documents, medication and essentials. In a fire, get out, stay out and call 999."
+title: "Temporary evacuation: calm steps if you are asked to leave home"
+seoTitle: "Temporary evacuation steps for UK homes"
+description: "Asked to leave home for a flood or gas incident? Agree a meeting point and take medication and documents. In a fire, get out, stay out and call 999."
 scenario: Asked to leave home for flooding, gas incident or similar
 pubDate: 2026-11-14
 updated: 2026-11-14

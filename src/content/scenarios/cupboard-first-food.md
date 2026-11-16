@@ -1,6 +1,7 @@
 ---
-title: "Checking the cupboard first: three days of food without a speciality shop"
-description: "Build a calm three-day food buffer from what you already eat—no panic bulk buying."
+title: "Emergency food: three days from your cupboard, not a speciality shop"
+seoTitle: "Emergency food: a 3-day cupboard list"
+description: "How to build a calm three-day emergency food buffer from what you already eat at home, without a speciality shop or panic bulk buying."
 scenario: Stay-home disruption when shops or cooking are limited
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

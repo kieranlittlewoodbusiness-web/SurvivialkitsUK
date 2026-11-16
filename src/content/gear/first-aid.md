@@ -1,6 +1,9 @@
 ---
 title: First-aid kits
+seoTitle: "First aid kit criteria for UK homes"
+heading: "First aid kit criteria for UK homes and cars"
 description: "Household first-aid kit criteria for UK readiness—contents, expiry tracking and limits of kit versus training."
+seoDescription: "What to look for in a home or car first aid kit for UK households: everyday contents, expiry-date tracking, and the limits of a kit versus first-aid training."
 category: first-aid
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

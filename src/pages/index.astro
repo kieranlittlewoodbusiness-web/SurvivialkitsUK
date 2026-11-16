@@ -54,8 +54,8 @@ const jsonLd = {
 ---
 
 <BaseLayout
-  title="Emergency kits for UK homes, cars and travel"
-  description="Plan for 3 days of disruption in a UK home: a free 72-hour checklist, scenario guides, and emergency essentials on Amazon UK compared by what their listings state."
+  title="UK emergency kit guides: home and car"
+  description="Plan for 3 days of disruption in a UK home: a free emergency kit checklist, scenario guides, and Amazon UK essentials compared by what their listings state."
   canonicalPath="/"
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -63,7 +63,8 @@ const jsonLd = {
   <div class="wrap">
     <section class="hero" aria-labelledby="hero-h">
       <div class="hero__copy">
-        <h1 id="hero-h">Ready for the unexpected.</h1>
+        <p class="eyebrow">Ready for the unexpected.</p>
+        <h1 id="hero-h">UK emergency kit guides for home, car and travel</h1>
         <p class="hero__lede">Compare emergency kits for home, car and travel.</p>
         <div class="btn-row hero__actions">
           <GetPreparedCta size="lg" />
@@ -255,7 +256,8 @@ const jsonLd = {
   /* ---------- Hero (brand guide: desktop copy left over a dark gradient; mobile copy above the image on Forest) ---------- */
   .hero { position: relative; isolation: isolate; overflow: hidden; margin-top: var(--s-4); border-radius: var(--r-lg); background: var(--band); color: var(--on-band); display: grid; }
   .hero__copy { padding: var(--s-6) var(--s-5) var(--s-5); }
-  .hero h1 { color: var(--on-band); max-width: 12ch; margin: 0 0 var(--s-3); }
+  .hero .eyebrow { color: var(--band-accent); }
+  .hero h1 { color: var(--on-band); max-width: 20ch; margin: 0 0 var(--s-3); }
   .hero__lede { color: var(--on-band); font-size: var(--step-1); line-height: 1.45; max-width: 30ch; margin: 0; }
   .hero__actions { margin-top: var(--s-5); }
   .hero :focus-visible { outline-color: var(--focus-on-band); }

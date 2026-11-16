@@ -10,7 +10,14 @@ import { RAINWATER_DRINKING_WATER_NOTE, RENDER_GATED_CATEGORIES } from '../src/l
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
 const ROBOTS = '<meta name="robots" content="index, follow">';
-const page = (body, robots = ROBOTS) => `<!doctype html><html><head>${robots}</head><body>${body}</body></html>`;
+const NOINDEX = '<meta name="robots" content="noindex, nofollow">';
+const SEO_TITLE = 'A valid page title';
+const SEO_DESC = 'A unique meta description that is long enough to satisfy the one hundred and twenty character minimum for indexable pages on this site.';
+const page = (body, robots = ROBOTS, seo = {}) => {
+  const title = seo.title ?? SEO_TITLE;
+  const description = seo.description ?? SEO_DESC;
+  return `<!doctype html><html><head>${robots}<title>${title}</title><meta name="description" content="${description}"></head><body>${body}</body></html>`;
+};
 function site(files) {
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'distcheck-'));
   for (const [rel, html] of Object.entries(files)) {
@@ -95,6 +102,70 @@ describe('checkContent', () => {
   it('requires exactly one robots meta per page', () => {
     const r = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS + ROBOTS) }));
     expect(r.failures.map((f) => f.reason)).toContain('expected exactly 1 robots meta, found 2');
+  });
+  it('fails an indexable title longer than 60 characters, including the suffix', () => {
+    const title = 'Emergency kits for UK homes, cars and travel · UK Survival Kits';
+    expect(title.length).toBe(63);
+    const r = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { title }) }));
+    expect(r.failures.map((f) => f.reason)).toContain('title is 63 characters (max 60)');
+  });
+  it('passes a 60-character indexable title and a 120-character unique meta', () => {
+    const title = 'UK emergency kit guides: home and car · UK Survival Kits';
+    const description = 'x'.repeat(120);
+    expect(title.length).toBe(56);
+    const r = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { title, description }) }));
+    expect(r.failures).toEqual([]);
+    const edge = 'x'.repeat(60);
+    const r60 = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { title: edge, description }) }));
+    expect(r60.failures).toEqual([]);
+  });
+  it('fails indexable metas shorter than 120 or longer than 160 characters', () => {
+    const short = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { description: 'x'.repeat(119) }) }));
+    expect(short.failures.map((f) => f.reason)).toContain('meta description is 119 characters (must be 120–160)');
+    const long = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { description: 'x'.repeat(161) }) }));
+    expect(long.failures.map((f) => f.reason)).toContain('meta description is 161 characters (must be 120–160)');
+    const lo = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { description: 'x'.repeat(120) }) }));
+    expect(lo.failures).toEqual([]);
+    const hi = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { description: 'x'.repeat(160) }) }));
+    expect(hi.failures).toEqual([]);
+  });
+  it('fails when two indexable pages share a meta description', () => {
+    const description = 'x'.repeat(140);
+    const r = checkContent(
+      site({
+        'index.html': page('<p>home</p>', ROBOTS, { title: 'Home title', description }),
+        'about/index.html': page('<p>about</p>', ROBOTS, { title: 'About title', description }),
+      }),
+    );
+    const reasons = r.failures.map((f) => `${f.file}: ${f.reason}`);
+    expect(reasons).toContain('index.html: meta description is not unique (also on about/index.html)');
+    expect(reasons).toContain('about/index.html: meta description is not unique (also on index.html)');
+  });
+  it('exempts noindex pages from title, meta length and uniqueness rules', () => {
+    const shared = 'x'.repeat(140);
+    const r = checkContent(
+      site({
+        'index.html': page('<p>home</p>', ROBOTS, { description: shared }),
+        '404.html': page('<p>missing</p>', NOINDEX, { title: 'Page not found · UK Survival Kits', description: 'Short 404 meta.' }),
+        'preview/index.html': page('<p>preview</p>', NOINDEX, { title: 'A'.repeat(80), description: shared }),
+      }),
+    );
+    expect(r.failures).toEqual([]);
+  });
+  it('fails an indexable page with no title or no meta description', () => {
+    const missingTitle = `<!doctype html><html><head>${ROBOTS}<meta name="description" content="${'x'.repeat(140)}"></head><body><p>x</p></body></html>`;
+    const missingMeta = `<!doctype html><html><head>${ROBOTS}<title>A valid page title</title></head><body><p>x</p></body></html>`;
+    const t = checkContent(site({ 'index.html': missingTitle }));
+    expect(t.failures.map((f) => f.reason)).toContain('indexable page is missing a title');
+    const m = checkContent(site({ 'index.html': missingMeta }));
+    expect(m.failures.map((f) => f.reason)).toContain('expected exactly 1 meta description, found 0');
+  });
+  it('decodes entities when measuring title and meta length', () => {
+    const longTitle = 'Emergency kits for UK homes, cars &amp; travel · UK Survival Kits';
+    // decoded: 'Emergency kits for UK homes, cars & travel · UK Survival Kits' = 61
+    expect('Emergency kits for UK homes, cars & travel · UK Survival Kits'.length).toBe(61);
+    const r = checkContent(site({ 'index.html': page('<p>x</p>', ROBOTS, { title: longTitle }) }));
+    expect(r.failures.map((f) => f.reason)).toContain('title is 61 characters (max 60)');
   });
   it('production: fails noindex pages (except 404), robots.txt Disallow and a catch-all noindex header', () => {
     const noindex = '<meta name="robots" content="noindex, nofollow">';
