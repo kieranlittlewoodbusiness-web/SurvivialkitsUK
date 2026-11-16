@@ -5,7 +5,7 @@
  */
 import { z } from 'zod';
 import { ASIN_PATTERN } from '../offers/schema';
-import { PRICE_SOURCES, SAVING_BASIS_TYPES, type PriceRecord } from './types';
+import { AVAILABILITY_TYPES, PRICE_SOURCES, SAVING_BASIS_TYPES, type PriceRecord } from './types';
 
 /** Strict ISO 8601 UTC instant, e.g. 2026-11-16T18:20:00Z or 2026-11-16T18:20:00.123Z. */
 export const UTC_ISO_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/;
@@ -43,6 +43,8 @@ export const priceRecordSchema = z
       })
       .strict()
       .optional(),
+    /** Missing or any value outside the documented enum => record rejected. */
+    availability: z.enum(AVAILABILITY_TYPES),
     source: z.enum(PRICE_SOURCES),
     fetchedAt: z.string().refine(isUtcIso, { message: 'fetchedAt must be ISO 8601 UTC (Z)' }),
   })
@@ -58,6 +60,12 @@ export const priceRecordSchema = z
     if (r.savings && r.savingBasis) {
       if (r.savingBasis.amountMinor - r.amountMinor !== r.savings.amountMinor) {
         ctx.addIssue({ code: 'custom', message: 'savings must equal savingBasis - price' });
+        return;
+      }
+      // CR L2: the API percentage must agree with the amounts to within 1 point (rounding).
+      const expectedPct = Math.round((r.savings.amountMinor * 100) / r.savingBasis.amountMinor);
+      if (Math.abs(expectedPct - r.savings.percentage) > 1) {
+        ctx.addIssue({ code: 'custom', message: 'savings.percentage must be within 1 of round(savings * 100 / savingBasis)' });
       }
     }
   });

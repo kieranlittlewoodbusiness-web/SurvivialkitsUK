@@ -20,6 +20,37 @@ export type PriceSource = (typeof PRICE_SOURCES)[number];
 export const SAVING_BASIS_TYPES = ['LIST_PRICE', 'LOWEST_PRICE', 'LOWEST_PRICE_STRIKETHROUGH', 'WAS_PRICE'] as const;
 export type SavingBasisType = (typeof SAVING_BASIS_TYPES)[number];
 
+/**
+ * OffersV2 listings[].availability.type values (Creators API docs, resources/offersV2,
+ * "More detail on Availability Types"):
+ *   AVAILABLE_DATE    not available, will be available on a future date
+ *   IN_STOCK          in stock
+ *   IN_STOCK_SCARCE   in stock, but stock levels are limited
+ *   LEADTIME          only available after some lead time (order received to shipped)
+ *   OUT_OF_STOCK      currently out of stock
+ *   PREORDER          not yet available, can be pre-ordered
+ *   UNAVAILABLE       not available
+ *   UNKNOWN           unknown availability
+ */
+export const AVAILABILITY_TYPES = [
+  'AVAILABLE_DATE',
+  'IN_STOCK',
+  'IN_STOCK_SCARCE',
+  'LEADTIME',
+  'OUT_OF_STOCK',
+  'PREORDER',
+  'UNAVAILABLE',
+  'UNKNOWN',
+] as const;
+export type AvailabilityType = (typeof AVAILABILITY_TYPES)[number];
+
+/**
+ * S1-13b stock gate (PM ruling): a price may display only for these. IN_STOCK_SCARCE is still in
+ * stock. LEADTIME (backorder-like), PREORDER, AVAILABLE_DATE, OUT_OF_STOCK, UNAVAILABLE and
+ * UNKNOWN never display a price.
+ */
+export const DISPLAYABLE_AVAILABILITY: readonly AvailabilityType[] = ['IN_STOCK', 'IN_STOCK_SCARCE'];
+
 /** ISO 4217 code. The site only displays GBP (amazon.co.uk). */
 export type CurrencyCode = string;
 
@@ -54,6 +85,8 @@ export interface PriceRecord {
   currency: CurrencyCode;
   savings?: PriceSavings;
   savingBasis?: PriceSavingBasis;
+  /** offersV2.listings[].availability.type of the same (buy-box) listing. Required. */
+  availability: AvailabilityType;
   source: PriceSource;
   /** When the API call returned, ISO 8601 UTC ("...Z"). Set by the fetcher, never by hand. */
   fetchedAt: string;

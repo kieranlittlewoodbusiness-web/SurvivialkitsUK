@@ -6,14 +6,15 @@
  *   2. the store holds a record for the ASIN that passes priceRecordSchema (API source,
  *      UTC fetchedAt, integer pence, consistent savings);
  *   3. the currency is GBP and the marketplace is www.amazon.co.uk;
- *   4. the price is fresh: 0 <= now - fetchedAt <= 24h.
+ *   4. the price is fresh: 0 <= now - fetchedAt <= 24h;
+ *   5. the listing is in stock (availability IN_STOCK or IN_STOCK_SCARCE).
  */
 import { AMAZON_PRICE_DISCLAIMER, type BuildEnv } from '../offers/types';
 import { formatLondonDateTime, londonOffset } from '../offers/time';
 import { isPriceDisplayEnabled } from './flag';
 import { validatePriceRecord } from './schema';
 import { isPriceVisible, priceExpiresAt, toMs, type Clock } from './staleness';
-import type { DisplayPrice, PriceRecord } from './types';
+import { DISPLAYABLE_AVAILABILITY, type DisplayPrice, type PriceRecord } from './types';
 
 export { AMAZON_PRICE_DISCLAIMER };
 
@@ -21,10 +22,24 @@ export const PRICE_SOURCE_LABEL = 'Amazon.co.uk price';
 
 /**
  * Licence (xi) notice for sites that display Product Advertising Content consisting of text.
- * Web must show it in plain view (e.g. footer) on any page that renders a price. UK wording.
+ * PM ruling: compact, in the site footer, rendered only when the flag is on (use
+ * amazonContentNotice / shouldShowAmazonPriceNotice below). UK wording.
  */
 export const AMAZON_CONTENT_NOTICE =
   "CERTAIN CONTENT THAT APPEARS ON THIS SITE COMES FROM AMAZON EUROPE CORE S.à r.l. THIS CONTENT IS PROVIDED 'AS IS' AND IS SUBJECT TO CHANGE OR REMOVAL AT ANY TIME.";
+
+/**
+ * Footer helper for Web (PM ruling): the compact clause (xi) notice renders in the site footer
+ * ONLY when the price flag is on. Flag off => false / null, so production output is unchanged.
+ */
+export function shouldShowAmazonPriceNotice(env?: BuildEnv): boolean {
+  return isPriceDisplayEnabled(env);
+}
+
+/** The notice text to render in the footer, or null when it must not render. */
+export function amazonContentNotice(env?: BuildEnv): string | null {
+  return shouldShowAmazonPriceNotice(env) ? AMAZON_CONTENT_NOTICE : null;
+}
 
 /** Read-only lookup of fetched prices. The default store is empty: the repo holds no prices. */
 export interface PriceStore {
@@ -66,6 +81,7 @@ export function getDisplayPrice(asin: string, now: Clock, options: DisplayPriceO
   if (!v.ok) return null;
   const r = v.record;
   if (r.asin !== asin || r.currency !== 'GBP' || r.marketplace !== 'www.amazon.co.uk') return null;
+  if (!DISPLAYABLE_AVAILABILITY.includes(r.availability)) return null;
   if (!isPriceVisible(r.fetchedAt, now)) return null;
 
   const out: DisplayPrice = {

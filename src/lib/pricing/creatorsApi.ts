@@ -120,13 +120,16 @@ export const RETRY_POLICY = { maxAttempts: 3, baseDelayMs: 1_000, maxDelayMs: 30
 
 /**
  * Delay before retry number `attempt` (1-based), or null to stop. Exponential backoff
- * (1s, 2s, ...) capped at maxDelayMs, honouring Retry-After when larger. Deterministic (no
- * jitter) so it is testable; the live fetcher may add jitter.
+ * (1s, 2s, ...) capped at maxDelayMs. A server Retry-After is honoured when larger than the
+ * backoff; if Retry-After exceeds maxDelayMs we do NOT retry (return null) rather than retry
+ * early against the server's instruction. Deterministic (no jitter) so it is testable; the
+ * live fetcher may add jitter.
  */
 export function nextRetryDelayMs(error: PriceFetchError, attempt: number, policy = RETRY_POLICY): number | null {
   if (!error.retryable || attempt >= policy.maxAttempts) return null;
+  if (error.retryAfterMs !== undefined && error.retryAfterMs > policy.maxDelayMs) return null;
   const backoff = Math.min(policy.baseDelayMs * 2 ** (attempt - 1), policy.maxDelayMs);
-  return Math.min(Math.max(backoff, error.retryAfterMs ?? 0), policy.maxDelayMs);
+  return Math.max(backoff, error.retryAfterMs ?? 0);
 }
 
 /** Which env var NAMES are missing. Never returns or logs values. */
@@ -157,6 +160,7 @@ const obj = (v: unknown): Json | null => (v && typeof v === 'object' && !Array.i
  *     .price.savingBasis.savingBasisType             -> savingBasis.type
  *     .price.savingBasis.savingBasisTypeLabel        -> savingBasis.label
  *     .price.savings.money.amount / .percentage      -> savings.amountMinor / percentage
+ *     .availability.type                             -> availability (missing/unknown => null)
  *   (fetcher clock at response time)                 -> fetchedAt (ISO UTC)
  * Savings are dropped (price kept) unless savings, savingBasis and price are all present, in the
  * same currency, and consistent to the penny.
@@ -177,6 +181,7 @@ export function mapGetItemsItem(item: unknown, fetchedAt: string, source: PriceS
     marketplace: CREATORS_API.marketplace,
     amountMinor,
     currency,
+    availability: obj(listing?.availability)?.type,
     source,
     fetchedAt,
   };

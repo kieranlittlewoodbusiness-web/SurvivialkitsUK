@@ -19,6 +19,7 @@ export function fakeRecord(over: Partial<PriceRecord> & Record<string, unknown> 
     marketplace: 'www.amazon.co.uk',
     amountMinor: 1234,
     currency: 'GBP',
+    availability: 'IN_STOCK',
     source: 'amazon-creators-api',
     fetchedAt: FETCHED_AT,
     ...over,

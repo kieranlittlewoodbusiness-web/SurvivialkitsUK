@@ -4,7 +4,12 @@
  */
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  AMAZON_CONTENT_NOTICE,
   AMAZON_PRICE_DISCLAIMER,
+  AVAILABILITY_TYPES,
+  DISPLAYABLE_AVAILABILITY,
+  amazonContentNotice,
+  shouldShowAmazonPriceNotice,
   CREATORS_API_ENV,
   CreatorsApiStubFetcher,
   EMPTY_PRICE_STORE,
@@ -268,7 +273,10 @@ describe('Creators API fetcher stub', () => {
     const t = priceFetchError('transient');
     expect([1, 2, 3].map((a) => nextRetryDelayMs(t, a))).toEqual([1000, 2000, null]);
     expect(nextRetryDelayMs(priceFetchError('throttled', 10_000), 1)).toBe(10_000);
-    expect(nextRetryDelayMs(priceFetchError('throttled', 120_000), 1)).toBe(30_000);
+    expect(nextRetryDelayMs(priceFetchError('throttled', 30_000), 1)).toBe(30_000); // boundary: = cap retries
+    expect(nextRetryDelayMs(priceFetchError('throttled', 30_001), 1)).toBeNull(); // CR L1: > cap => stop
+    expect(nextRetryDelayMs(priceFetchError('throttled', 120_000), 1)).toBeNull();
+    expect(nextRetryDelayMs(priceFetchError('throttled', 500), 2)).toBe(2_000); // backoff wins when larger
     expect(nextRetryDelayMs(priceFetchError('auth'), 1)).toBeNull();
     expect(nextRetryDelayMs(priceFetchError('unavailable'), 1)).toBeNull();
   });
@@ -307,5 +315,124 @@ describe('OffersV2 mapping (fake API shape)', () => {
     expect(toMinorUnits(-1)).toBeNull();
     expect(toMinorUnits('5')).toBeNull();
     expect(toMinorUnits(Number.NaN)).toBeNull();
+  });
+});
+
+describe('stock gate (PM ruling): price only when the listing is in stock', () => {
+  it('displayable set is exactly IN_STOCK and IN_STOCK_SCARCE', () => {
+    expect([...DISPLAYABLE_AVAILABILITY]).toEqual(['IN_STOCK', 'IN_STOCK_SCARCE']);
+  });
+
+  it('IN_STOCK and IN_STOCK_SCARCE => shows (flag on)', () => {
+    expect(show(fakeRecord({ availability: 'IN_STOCK' }))).not.toBeNull();
+    expect(show(fakeDiscounted({ availability: 'IN_STOCK_SCARCE' }))).not.toBeNull();
+  });
+
+  for (const a of ['OUT_OF_STOCK', 'UNAVAILABLE', 'UNKNOWN', 'PREORDER', 'LEADTIME', 'AVAILABLE_DATE'] as const) {
+    it(`${a} => valid record but null (not in stock)`, () => {
+      const r = fakeRecord({ availability: a });
+      expect(validatePriceRecord(r).ok).toBe(true);
+      expect(show(r)).toBeNull();
+    });
+  }
+
+  it('every documented type is either displayable or null; nothing else', () => {
+    for (const a of AVAILABILITY_TYPES) {
+      expect(show(fakeRecord({ availability: a })) !== null).toBe(DISPLAYABLE_AVAILABILITY.includes(a));
+    }
+  });
+
+  it('missing or undocumented availability => rejected and null', () => {
+    const missing = { ...fakeRecord() } as Record<string, unknown>;
+    delete missing.availability;
+    for (const r of [missing, fakeRecord({ availability: 'BACKORDER' as never }), fakeRecord({ availability: 'in_stock' as never }), fakeRecord({ availability: '' as never })]) {
+      expect(validatePriceRecord(r).ok).toBe(false);
+      expect(show(r)).toBeNull();
+      expect(getDisplayPrice(FAKE_ASIN, NOW, { env: ON_ENV, store: rawStore(r) })).toBeNull();
+    }
+  });
+
+  it('in stock but flag off => null', () => {
+    for (const env of [{ SITE_ENV: 'production' }, { SITE_ENV: 'production', PRICE_DISPLAY_ENABLED: 'false' }, { PRICE_DISPLAY_ENABLED: 'true', SITE_ENV: 'preview' }]) {
+      expect(show(fakeRecord({ availability: 'IN_STOCK' }), env)).toBeNull();
+      expect(show(fakeRecord({ availability: 'IN_STOCK_SCARCE' }), env)).toBeNull();
+    }
+  });
+
+  it('mapping takes availability.type from the buy-box listing; out of stock, missing or unknown => null record or no display', () => {
+    expect(mapGetItemsItem(fakeApiItem(), FETCHED_AT)?.availability).toBe('IN_STOCK');
+    const oos = fakeApiItem();
+    oos.offersV2.listings[0]!.availability.type = 'OUT_OF_STOCK';
+    const mapped = mapGetItemsItem(oos, FETCHED_AT);
+    expect(mapped?.availability).toBe('OUT_OF_STOCK');
+    expect(show(mapped)).toBeNull();
+    const unknownType = fakeApiItem();
+    unknownType.offersV2.listings[0]!.availability.type = 'SOMETHING_NEW';
+    expect(mapGetItemsItem(unknownType, FETCHED_AT)).toBeNull();
+    const noAvail = fakeApiItem();
+    delete (noAvail.offersV2.listings[0] as Record<string, unknown>).availability;
+    expect(mapGetItemsItem(noAvail, FETCHED_AT)).toBeNull();
+  });
+});
+
+describe('Amazon content notice (clause xi) footer helper', () => {
+  it('flag off / dev / preview => false and null', () => {
+    for (const env of [{}, { SITE_ENV: 'production' }, { SITE_ENV: 'production', PRICE_DISPLAY_ENABLED: 'TRUE' }, { PRICE_DISPLAY_ENABLED: 'true' }, { PRICE_DISPLAY_ENABLED: 'true', SITE_ENV: 'preview' }, { ...ON_ENV, CF_PAGES: '1', CF_PAGES_BRANCH: 'feature' }]) {
+      expect(shouldShowAmazonPriceNotice(env)).toBe(false);
+      expect(amazonContentNotice(env)).toBeNull();
+    }
+  });
+
+  it('default env in the test runner => false', () => {
+    expect(shouldShowAmazonPriceNotice()).toBe(false);
+    expect(amazonContentNotice()).toBeNull();
+  });
+
+  it('flag on + production => the licence (xi) wording', () => {
+    expect(shouldShowAmazonPriceNotice(ON_ENV)).toBe(true);
+    expect(amazonContentNotice(ON_ENV)).toBe(AMAZON_CONTENT_NOTICE);
+    expect(AMAZON_CONTENT_NOTICE).toBe(
+      "CERTAIN CONTENT THAT APPEARS ON THIS SITE COMES FROM AMAZON EUROPE CORE S.\u00e0 r.l. THIS CONTENT IS PROVIDED 'AS IS' AND IS SUBJECT TO CHANGE OR REMOVAL AT ANY TIME.",
+    );
+  });
+});
+
+describe('CR L2: savings.percentage cross-check (|round(savings*100/basis) - pct| <= 1)', () => {
+  // basis 2000, price 1500, savings 500 => exact 25%
+  const rec = (pct: number, basis = 2000, price = 1500) =>
+    fakeRecord({
+      amountMinor: price,
+      savingBasis: { amountMinor: basis, type: 'LIST_PRICE', label: 'List Price' },
+      savings: { amountMinor: basis - price, percentage: pct },
+    });
+
+  it('exact percentage passes and displays', () => {
+    expect(validatePriceRecord(rec(25)).ok).toBe(true);
+    expect(show(rec(25))?.formattedSavings).toBe('Save £5.00 (25%)');
+  });
+
+  it('boundary: off by exactly 1 passes (24, 26)', () => {
+    expect(validatePriceRecord(rec(24)).ok).toBe(true);
+    expect(validatePriceRecord(rec(26)).ok).toBe(true);
+  });
+
+  it('rounding case: 333/999 = 33.33% => 33 and 34 pass, 35 fails', () => {
+    expect(validatePriceRecord(rec(33, 999, 666)).ok).toBe(true);
+    expect(validatePriceRecord(rec(34, 999, 666)).ok).toBe(true);
+    expect(validatePriceRecord(rec(35, 999, 666)).ok).toBe(false);
+  });
+
+  it('off by 2 or more fails, and nothing displays', () => {
+    for (const pct of [23, 27, 50, 1]) {
+      expect(validatePriceRecord(rec(pct)).ok).toBe(false);
+      expect(show(rec(pct))).toBeNull();
+      expect(getDisplayPrice(FAKE_ASIN, NOW, { env: ON_ENV, store: rawStore(rec(pct)) })).toBeNull();
+    }
+  });
+
+  it('mapping drops inconsistent API savings but keeps the price', () => {
+    const item = fakeApiItem();
+    item.offersV2.listings[0]!.price.savings.percentage = 40;
+    expect(mapGetItemsItem(item, FETCHED_AT)).toEqual(fakeRecord({ amountMinor: 1500 }));
   });
 });

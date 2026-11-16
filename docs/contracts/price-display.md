@@ -16,6 +16,9 @@ timestamped. So:
 - **24-hour maximum age.** A price shows only while `0 <= now - fetchedAt <= 24h`. Exactly 24h
   still shows; 24h + 1 ms does not. A future-dated, missing or non-UTC `fetchedAt` never shows.
   This matches `max_price_age_hours: 24` in `src/data/affiliate/programmes.json`.
+- **In stock only.** A price shows only when the buy-box listing's API availability is
+  `IN_STOCK` or `IN_STOCK_SCARCE`. Missing, undocumented and every other value means no price
+  (section 5a).
 - **Flag defaults OFF.** See section 4.
 
 ## 2. API: `getDisplayPrice(asin, now, options?)`
@@ -39,9 +42,12 @@ const price = getDisplayPrice(product.asin_uk, buildTime, { store }); // Display
 2. There is no record for the ASIN, or the record fails validation. Validation rejects: a
    source other than the two API sources, a missing or invalid `fetchedAt`, non-integer or zero
    pence, a bad currency or ASIN, a non-UK marketplace, unknown fields, or savings that don't
-   equal `savingBasis - price` to the penny.
+   equal `savingBasis - price` to the penny, or a `savings.percentage` more than 1 point away
+   from `round(savings × 100 / savingBasis)`.
 3. The currency is not `GBP`.
 4. The price is stale (older than 24h), future-dated, or `now` is invalid.
+5. The listing is not in stock: `availability` is anything other than `IN_STOCK` or
+   `IN_STOCK_SCARCE`. A missing or undocumented value already fails validation.
 
 When it returns `null`, Web keeps rendering exactly what it renders today: the card, the
 "View on Amazon" link if one is allowed, and no price, savings, timestamp or disclaimer.
@@ -124,13 +130,27 @@ consisting of text is displayed. It is exported as `AMAZON_CONTENT_NOTICE`:
    and keyboards. The text must be in the HTML, not loaded later.
 3. **Savings** (`formattedSavings`, `formattedSavingBasis`) appear only when present, in the
    same block as the price, and they share its timestamp. Never compute your own savings.
-4. **`AMAZON_CONTENT_NOTICE`** must be in plain view (the footer is fine) on any page that
-   renders at least one `DisplayPrice`. Show it only when a price renders.
-5. **Nothing older than 24 hours may show.** The site is static, so the HTML outlives the
-   build. Web must emit `data-price-expires="{expiresAt}"` on the price block and include a
-   small inline script that removes price blocks once `Date.now() > expiresAt`. Release must
-   also schedule a rebuild with a fresh fetch at least every 24h (see section 7). Without both,
-   prices must stay OFF.
+   The default wording is `Save £5.00 (25%)` plus Amazon's `savingBasisTypeLabel`, e.g.
+   `List Price: £20.00`. **PENDING Kieran sign-off before the flag is turned on.**
+4. **Amazon content notice (clause xi): decided (PM, 16 Nov 2026).** It goes in the **site
+   footer**, compact (small text, one line where it fits), and renders **only when the flag is
+   on**. Web owns the footer and calls the helper; this PR edits no rendering files:
+   ```astro
+   ---
+   import { amazonContentNotice } from '../lib/pricing';
+   const notice = amazonContentNotice(); // string | null; null whenever the flag is off
+   ---
+   {notice && <p class="amazon-content-notice">{notice}</p>}
+   ```
+   `shouldShowAmazonPriceNotice(env?)` returns the same decision as a boolean. Tests prove both
+   are false or null when the flag is off and in dev or preview, so the footer is unchanged today.
+5. **Nothing older than 24 hours may show: decided (PM, 16 Nov 2026).** The pages stay
+   **static** and there is **no edge function**. Web must emit
+   `data-price-expires="{expiresAt}"` on every price block, plus a small inline script that
+   removes those blocks once `Date.now() > Date.parse(expiresAt)`. Release must also rebuild,
+   with a fresh fetch, **at least every 24h**. That scheduler is a follow-up, part of S1-13c.
+   The flag must stay OFF until the hide script, the scheduler and the fetcher are all in
+   place.
 6. **No price text or images may be cached anywhere else** (no stored images, no JSON in
    `public/`).
 7. **Order of precedence:** the card's affiliate-link rules are unchanged. A price never makes
@@ -146,6 +166,7 @@ consisting of text is displayed. It is exported as `AMAZON_CONTENT_NOTICE`:
 | `marketplace` | `'www.amazon.co.uk'` | request marketplace |
 | `amountMinor` | integer pence > 0 | `listings[buy box, New].price.money.amount` × 100 |
 | `currency` | ISO 4217 (GBP displayable) | `price.money.currency` |
+| `availability` | `AvailabilityType` (in-stock values displayable) | `listings[buy box, New].availability.type` |
 | `savingBasis?` | `{amountMinor, type, label}` | `price.savingBasis.money.amount`, `.savingBasisType`, `.savingBasisTypeLabel` |
 | `savings?` | `{amountMinor > 0, percentage 1–99}` | `price.savings.money.amount`, `.percentage` |
 | `source` | `'amazon-creators-api' \| 'amazon-paapi'` | set by the fetcher |
@@ -153,7 +174,8 @@ consisting of text is displayed. It is exported as `AMAZON_CONTENT_NOTICE`:
 
 **Money** is stored as integer minor units. The API returns decimals; `toMinorUnits` converts
 them once and rejects anything that isn't a whole number of pence. Savings are kept only when
-`savingBasis - price === savings`, all in the same currency; otherwise the price stays and the
+`savingBasis - price === savings`, the percentage is within 1 point of
+`round(savings × 100 / savingBasis)`, and all amounts are in the same currency; otherwise the price stays and the
 savings are dropped.
 
 **Only the buy-box listing counts.** The mapping uses only the listing with
@@ -162,6 +184,29 @@ the buyability rule.
 
 There are no new fields in `products.json`, `offers.json` or `verifiedSet.ts`. The existing
 `price_origin` and `price_*` offer fields are untouched; Amazon offers keep them null or `none`.
+
+## 5a. Availability mapping (stock gate)
+
+Source: the "More detail on Availability Types" section of
+[Creators API OffersV2](https://affiliate-program.amazon.co.uk/creatorsapi/docs/en-us/api-reference/resources/offersV2)
+(read 16 Nov 2026). Mapped from `offersV2.listings[buy box, New].availability.type` to
+`PriceRecord.availability`. The field is required, and a value outside the enum rejects the
+record.
+
+| API `availability.type` | Amazon description | Price shown? |
+| --- | --- | --- |
+| `IN_STOCK` | The item is in stock. | **Yes** |
+| `IN_STOCK_SCARCE` | In stock, but stock levels are limited. | **Yes** (still in stock) |
+| `LEADTIME` | Only available after some lead time (order received to order shipped). | No (treated as backorder) |
+| `PREORDER` | Not yet available, but can be pre-ordered. | No |
+| `AVAILABLE_DATE` | Not available, but will be on a future date. | No |
+| `OUT_OF_STOCK` | Currently out of stock. | No |
+| `UNAVAILABLE` | Not available. | No |
+| `UNKNOWN` | Unknown availability. | No |
+| missing or any other string | n/a | No (record rejected) |
+
+The default is null: only the two in-stock values ever display. Add `offersV2.listings.availability`
+to the requested resources (it is in `CREATORS_API.resources`).
 
 ## 6. Env vars (names only; values are server-side secrets in Cloudflare Pages production)
 
@@ -196,15 +241,26 @@ The live fetcher, once #19 clears, should:
 - Handle failures with the typed errors: `auth` (401/403), `throttled` (429, honours
   Retry-After), `transient` (5xx/408/network), `invalid_response`, `not_configured`,
   `unavailable`. Only `throttled` and `transient` are retried (`nextRetryDelayMs`: 1 s then 2 s,
-  3 attempts max, 30 s cap). On any failure no price renders, and the build must not fail
+  3 attempts max, 30 s cap; a Retry-After over 30 s means no retry). On any failure no price renders, and the build must not fail
   because of prices.
 - Never log credentials, tokens, the tag or response bodies. Error messages are fixed strings.
 
-**Integration point (not built; needs PM, Web and Release):** a build step runs the fetcher
-server-side, builds a `PriceStore`, and passes it to pages through `getDisplayPrice`. This PR
-wires nothing, by PM constraint (new files only, no rendering or data files).
+**Integration point: ticket S1-13c, ON HOLD until #19 (PM, 16 Nov 2026).** S1-13c covers the
+live fetcher, the build step that runs it server-side and builds a `PriceStore` for
+`getDisplayPrice`, and the rebuild scheduler (at least every 24h). This PR wires nothing, by PM
+constraint (new files only, no rendering or data files).
 
-## 8. Migration and rollback
+## 8. Decision log
+
+| # | Decision | Status |
+| --- | --- | --- |
+| 1 | Static pages, a `data-price-expires` hide script and a rebuild at least every 24h; no edge function. The scheduler is a follow-up (S1-13c). | Decided (PM, 16 Nov 2026) |
+| 2 | Clause (xi) notice in the site footer, compact, only when the flag is on, via `amazonContentNotice()`. | Decided (PM, 16 Nov 2026) |
+| 3 | Savings wording `Save £5.00 (25%)` plus `List Price: £20.00` as the default. | **PENDING Kieran sign-off** before the flag goes on |
+| 4 | Stock gate: only `IN_STOCK` and `IN_STOCK_SCARCE` display. | Decided (PM, 16 Nov 2026); mapping in section 5a |
+| 5 | Fetcher wiring is ticket S1-13c. | ON HOLD until #19 |
+
+## 9. Migration and rollback
 
 - Migration: none. The change is additive, with new files only. There are no data changes and
   no new env vars are required.
