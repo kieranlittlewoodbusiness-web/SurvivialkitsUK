@@ -432,8 +432,8 @@ export const RAINWATER_DRINKING_WATER_NOTE =
   'Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.';
 /** Source for RAINWATER_DRINKING_WATER_NOTE (UK government Prepare campaign: "Do not drink this water as it could contain bacteria or disease"). */
 export const RAINWATER_DRINKING_WATER_SOURCE = {
-  name: 'Prepare (UK government): water supply interruptions or outages',
-  url: 'https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/',
+  name: 'Be Ready (UK government): water supply interruptions or outages',
+  url: 'https://beready.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/',
 } as const;
 
 

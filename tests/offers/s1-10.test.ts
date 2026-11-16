@@ -186,7 +186,7 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
   it('migrated the three wind-up torch radios to radio, data otherwise preserved', () => {
     const migrated = ['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK'];
     const torchRadios = catalogueProducts.filter((p) => (p.specs as { device_type?: { value: string } }).device_type?.value === 'torch_radio');
-    // S1-10b: Duronic Apex (B002XNGTOI) is a new torch_radio added 16 Nov, not a migrated record.
+    // S1-10b: Duronic Apex (B002XNGTOI) is a torch_radio added 16 Nov (since unverified), not a migrated record.
     expect(torchRadios.map((p) => p.asin_uk).filter((a) => a !== 'B002XNGTOI').sort()).toEqual(migrated);
     for (const p of torchRadios) expect(p.category).toBe('radio');
     for (const a of migrated) expect(catalogueOffers.find((o) => o.asin === a)!.category).toBe('radio');
@@ -480,8 +480,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
     // S1-10: 30; S1-10b adds 37 verified (14 categories) = 67; the QA #24 buyability sweep (16 Nov) unverified 19
     // and added 1 (Duronic radio) = 49. The rendered count is derived from the gate list.
     // S1-10c (16 Nov): - 2 delivery failures (Cano 500ml, HypaGuard) + 7 replacements = 54.
-    // CR strict 12-month seller rule: - Sangean, - OverBoard = 52.
-    expect(n).toBe(52);
+    // CR strict 12-month seller rule: - Sangean, - OverBoard = 52. QA: - Duronic (ASIN reused), + Sony, + Panasonic = 53.
+    expect(n).toBe(53);
     const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });

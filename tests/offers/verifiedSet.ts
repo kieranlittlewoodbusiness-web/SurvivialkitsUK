@@ -9,7 +9,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   emergency_water: ['B07L142XSN', 'B0BBSP1QVC'],
   first_aid_kit: ['B00L7S9LU4', 'B008XI72FC', 'B001MG6WJ4'],
   torch: ['B075F3FBTB', 'B016P27MGG', 'B0BV7HHSMX'],
-  radio: ['B002XNGTOI', 'B091YFB8N2'], // Sangean B09SZB8Y4R unverified (CR: 0 seller ratings in 12 months); no third radio passed
+  radio: ['B091YFB8N2', 'B0713X4484', 'B06XXGK7GT'], // Duronic B002XNGTOI now shows a car tool (QA); Sangean B09SZB8Y4R failed the 12-month seller rule
   power_bank: ['B0CZ9LH53B', 'B0CNWT16R8', 'B09NTNTVRJ'],
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
   emergency_blanket: ['B0CDBYT9WW', 'B0H761VV55'],
@@ -43,7 +43,7 @@ export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEG
 export const VERIFIED_COUNT = VERIFIED_ASINS.length;
 
 /** S1-10c hotfix (16 Nov 2026): records whose evidence was checked 16 Nov (replacements; Sangean since unverified). */
-export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC'];
+export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC', 'B0713X4484', 'B06XXGK7GT'];
 
 /**
  * S1-10b (CR M1): what renders = VERIFIED_BY_CATEGORY minus RENDER_GATED_CATEGORIES (derived, never
@@ -91,6 +91,7 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B00MCN9AJ0', // Ready America 70510 (S1-10b N1): only offer is a US third-party seller, not UK-sold
   'B0896Q8JXD', 'B001FIQ7XU', // S1-10c (16 Nov 17:05): earliest delivery 12 Dec / 6 Dec, more than 10 days out
   'B09SZB8Y4R', 'B07B19M6DB', // CR strict 12-month seller rule (16 Nov 17:13): fewer than 20 ratings in the last 12 months
+  'B002XNGTOI', // Duronic: the ASIN now shows a Duronic CT51 car tool (canonical B0GWJ4Y9B3), not the Apex radio (QA, 16 Nov)
 ];
 
 /** S1-10b (QA #24): a passing Buy Box check for synthetic verified fixtures in tests. */

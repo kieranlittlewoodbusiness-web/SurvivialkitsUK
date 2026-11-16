@@ -313,7 +313,7 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed. S1-10 recheck 15 Nov 2026: Title, brand, model F30801 and kit match. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:06 UK (S1-10c): still passes; delivery date shown Tomorrow, 17 November.",
+        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed. S1-10 recheck 15 Nov 2026: Title, brand, model F30801 and kit match. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:06 UK (S1-10c): still passes; delivery date shown Tomorrow, 17 November. dp_title_checked 2026-11-16T17:25Z; brand on page \"St John Ambulance\"; title \"St John Ambulance BS 8599-2:2014 Medium Motor Vehicle First Aid Kit\".",
         "canonical_asin": "B00L7S9LU4",
         "buyability": {
           "checked_at": "2026-11-16T17:06:00+00:00",
@@ -544,9 +544,9 @@
         "url": "https://www.amazon.co.uk/dp/B002XNGTOI"
       },
       "captured_at": "2026-11-16T16:39:00+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Duronic wind-up solar AM/FM radio with torch",
-      "display_rank": 1,
+      "display_rank": null,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -555,27 +555,27 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B002XNGTOI",
         "checked_on": "2026-11-16",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Duronic Solar Radio Apex, Wind Up Radio, ...\". Brand Name \"Duronic\", Manufacturer \"Duronic\", Model Number \"APEX\", Manufacturer Part Number \"Apex\". One radio. Add to Basket present; canonical B002XNGTOI. Re-checked 16 Nov 2026 16:52 UK (S1-10c): still passes; delivery date shown Saturday, 21 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Duronic Solar Radio Apex, Wind Up Radio, ...\". Brand Name \"Duronic\", Manufacturer \"Duronic\", Model Number \"APEX\", Manufacturer Part Number \"Apex\". One radio. Add to Basket present; canonical B002XNGTOI. Re-checked 16 Nov 2026 16:52 UK (S1-10c): still passes; delivery date shown Saturday, 21 November. Unverified (QA, re-checked 16 Nov 2026 17:25 UK): the dp page now shows a different product: title \"Duronic CT51 Emergency Car Tool, Multifunctional Seatbelt Cutter with Pin Hammer, Car Escape Tool with Window Breaker, SOS Alarm and Magnetic Flashlight\", canonical B0GWJ4Y9B3 (QA 17:13 and 17:17 UK; confirmed 17:22 and 17:25 UK). The ASIN no longer resolves to the Duronic Apex wind-up radio.",
         "canonical_asin": "B002XNGTOI",
         "buyability": {
-          "checked_at": "2026-11-16T16:52:00+00:00",
+          "checked_at": "2026-11-16T17:25:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
           "seller_name": "DURONIC",
           "ships_from": "DURONIC",
-          "seller_class": "uk_seller_well_rated",
-          "seller_rating_note": "Seller page amazon.co.uk/sp?seller=APLJ5AXPSKRV0: business Shine-Mart Ltd, country GB; 91% positive, 1016 ratings (last 12 months).",
-          "availability_text_seen": "Only 1 left in stock.",
-          "outcome": "pass",
-          "reason": null
+          "seller_class": "other",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "fail",
+          "reason": "listing now shows a different product (Duronic CT51 car tool, canonical B0GWJ4Y9B3)"
         }
       },
       "notes": [
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
-        "Why picked: Duronic is an established UK electronics brand; replaces the radios that failed the QA #24 buyability rule."
+        "Unverified (QA, re-checked 16 Nov 2026 17:25 UK): the dp page now shows a different product: title \"Duronic CT51 Emergency Car Tool, Multifunctional Seatbelt Cutter with Pin Hammer, Car Escape Tool with Window Breaker, SOS Alarm and Magnetic Flashlight\", canonical B0GWJ4Y9B3 (QA 17:13 and 17:17 UK; confirmed 17:22 and 17:25 UK). The ASIN no longer resolves to the Duronic Apex wind-up radio. Data kept."
       ]
     },
     {
@@ -790,7 +790,7 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand Anker; Model Number A1689 and Manufacturer Part Number A1689011 match; one power bank (Number of Items 1). S1-10 recheck 15 Nov 2026: Title, brand and model A1689 match. In stock. Canonical is the dp ASIN.",
+        "note": "Title matches exactly; brand Anker; Model Number A1689 and Manufacturer Part Number A1689011 match; one power bank (Number of Items 1). S1-10 recheck 15 Nov 2026: Title, brand and model A1689 match. In stock. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:25Z; brand on page \"Anker\"; title \"Anker Zolo Power Bank, 20,000mAh 30W Portable Charger with Built-in USB-C\".",
         "canonical_asin": "B0CZ9LH53B",
         "buyability": {
           "checked_at": "2026-11-16T16:25:00+00:00",
@@ -1294,7 +1294,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07L142XSN",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\". Brand Cano Water, model STRP330 and pack (24 x 330 ml) match the listing. The title omits the brand, but the byline and Product details show Cano Water. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:01 UK (S1-10c): still passes; delivery date shown Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\". Brand Cano Water, model STRP330 and pack (24 x 330 ml) match the listing. The title omits the brand, but the byline and Product details show Cano Water. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:01 UK (S1-10c): still passes; delivery date shown Thursday, 19 November. dp_title_checked 2026-11-16T17:25Z; brand on page \"Cano Water\"; title \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\".",
         "buyability": {
           "checked_at": "2026-11-16T17:01:00+00:00",
           "featured_offer": true,
@@ -1408,7 +1408,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B008XI72FC",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"St John Ambulance Supplies Universal First Aid Kit\". Title, brand, model F30557 (Model and MPN agree) and 23 pieces match. Listing shows \"Only 2 left in stock\". Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"St John Ambulance Supplies Universal First Aid Kit\". Title, brand, model F30557 (Model and MPN agree) and 23 pieces match. Listing shows \"Only 2 left in stock\". Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Thursday, 19 November. dp_title_checked 2026-11-16T17:25Z; brand on page \"St John Ambulance\"; title \"St John Ambulance Supplies Universal First Aid Kit\".",
         "buyability": {
           "checked_at": "2026-11-16T17:02:00+00:00",
           "featured_offer": true,
@@ -1487,7 +1487,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B075F3FBTB",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Torch, 450lm, 300m Beam, AAA Battery Powered, Lightweight\". Title, brand and model 501046 match. NOTE: the Product details battery fields contradict each other (\"Lithium Ion\" and \"Alkaline\"); these are not identity checks. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Torch, 450lm, 300m Beam, AAA Battery Powered, Lightweight\". Title, brand and model 501046 match. NOTE: the Product details battery fields contradict each other (\"Lithium Ion\" and \"Alkaline\"); these are not identity checks. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Ledlenser\"; title \"Ledlenser P7 Torch, 450lm, 300m Beam, AAA Battery Powered, Lightweight\".",
         "buyability": {
           "checked_at": "2026-11-16T16:26:00+00:00",
           "featured_offer": true,
@@ -1644,7 +1644,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B016P27MGG",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Rechargeable LED Torch, 1000lm, 210m Beam, up to 40h Run Time\". Title (P7R), brand and model 9408-R match. Listing shows \"Only 1 left in stock\". Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Rechargeable LED Torch, 1000lm, 210m Beam, up to 40h Run Time\". Title (P7R), brand and model 9408-R match. Listing shows \"Only 1 left in stock\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Ledlenser\"; title \"Ledlenser P7 Rechargeable LED Torch, 1000lm, 210m Beam, up to 40h Run Time\".",
         "buyability": {
           "checked_at": "2026-11-16T16:26:00+00:00",
           "featured_offer": true,
@@ -1798,7 +1798,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0CDBYT9WW",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\". Title, brand, model LP760-PACK OF 3 and pack (3, matching Number of Items and Unit Count) match. NOTE: Product details colour says \"Pink\" for a foil blanket; not an identity check. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Friday, 20 November.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\". Title, brand, model LP760-PACK OF 3 and pack (3, matching Number of Items and Unit Count) match. NOTE: Product details colour says \"Pink\" for a foil blanket; not an identity check. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Friday, 20 November. dp_title_checked 2026-11-16T17:26Z; brand on page \"Reliance Medical\"; title \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\".",
         "buyability": {
           "checked_at": "2026-11-16T17:02:00+00:00",
           "featured_offer": true,
@@ -1878,7 +1878,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0H761VV55",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\". Title, brand, model 1805, pack (1) and size (130 x 210 cm) match. NOTE: Material Type says \"Cotton\", while the filling says metallised polyester film; not an identity check. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Friday, 20 November.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\". Title, brand, model 1805, pack (1) and size (130 x 210 cm) match. NOTE: Material Type says \"Cotton\", while the filling says metallised polyester film; not an identity check. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Friday, 20 November. dp_title_checked 2026-11-16T17:26Z; brand on page \"Steroplast\"; title \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\".",
         "buyability": {
           "checked_at": "2026-11-16T17:02:00+00:00",
           "featured_offer": true,
@@ -1963,7 +1963,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B093C9B1HK",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\". Title, brand, model LR06 and pack (24) match. The listing gives up to 10 years of storage life. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\". Title, brand, model LR06 and pack (24) match. The listing gives up to 10 years of storage life. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Duracell\"; title \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2039,7 +2039,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07L49RDJH",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AA Batteries (24 Pack) Up To 50% Long Lasting\". Title, brand, model E301594100 and pack (24) match. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AA Batteries (24 Pack) Up To 50% Long Lasting\". Title, brand, model E301594100 and pack (24) match. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Energizer\"; title \"Energizer Alkaline Power - AA Batteries (24 Pack) Up To 50% Long Lasting\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2115,7 +2115,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07WSS27QT",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\". Title, brand, model E301658100 and pack (32) match. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\". Title, brand, model E301658100 and pack (32) match. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Energizer\"; title \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2199,7 +2199,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B00KHN3DZE",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Portwest C474 Hi-Vis Safety Vest Dual Band High Visibility Waistcoat\". Title, brand, model C474YERS/M and size S-M match. The listing states EN ISO 20471 Class 2. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Portwest C474 Hi-Vis Safety Vest Dual Band High Visibility Waistcoat\". Title, brand, model C474YERS/M and size S-M match. The listing states EN ISO 20471 Class 2. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Portwest\"; title \"Portwest C474 Hi-Vis Safety Vest Dual Band High Visibility Waistcoat\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2291,7 +2291,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B09V5JXY6D",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Yellow & Orange Premium Hi Vis Vest With Pockets, Size Large\". Title (Size Large), brand, model 80302105 and size L match. The listing states EN20471:2013+A1:2016 class 2. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Yellow & Orange Premium Hi Vis Vest With Pockets, Size Large\". Title (Size Large), brand, model 80302105 and size L match. The listing states EN20471:2013+A1:2016 class 2. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Blackrock\"; title \"Blackrock Yellow & Orange Premium Hi Vis Vest With Pockets, Size Large\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2384,7 +2384,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0GZ3CPMWB",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis).",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis). dp_title_checked 2026-11-16T17:26Z; brand on page \"Blackrock\"; title \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2461,7 +2461,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B008RXAX0E",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc\". Title, brand and model MP3525 (MPN agrees) match. 3 m, 25 mm² and 450 A peak are stated. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc\". Title, brand and model MP3525 (MPN agrees) match. 3 m, 25 mm² and 450 A peak are stated. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Maypole\"; title \"Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2529,7 +2529,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B000UZGUFE",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING 300A Booster Cables, Suitable For Vehicles up to 3.5L\". Title, brand and model RBC160 match. 300 A is stated. Listing shows \"Only 1 left in stock (more on the way)\". Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING 300A Booster Cables, Suitable For Vehicles up to 3.5L\". Title, brand and model RBC160 match. 300 A is stated. Listing shows \"Only 1 left in stock (more on the way)\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:27Z; brand on page \"RING\"; title \"RING 300A Booster Cables, Suitable For Vehicles up to 3.5L\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2653,7 +2653,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B001NLVA6S",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Breakdown E-Approved Warning Triangle\". Title, brand, model 120 / part MP120 and pack (1) match. The listing title says \"E-Approved\" and a bullet says \"Fully E Approved\". Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Breakdown E-Approved Warning Triangle\". Title, brand, model 120 / part MP120 and pack (1) match. The listing title says \"E-Approved\" and a bullet says \"Fully E Approved\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:27Z; brand on page \"Maypole\"; title \"Maypole Breakdown E-Approved Warning Triangle\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2721,7 +2721,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0DHW4RF9Z",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING E Approved Emergency Warning Triangle with Case\". Title, brand and model RCT1370 match. The title says \"E Approved\". Listing shows \"Only 7 left in stock (more on the way)\". Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING E Approved Emergency Warning Triangle with Case\". Title, brand and model RCT1370 match. The title says \"E Approved\". Listing shows \"Only 7 left in stock (more on the way)\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:27Z; brand on page \"RING\"; title \"RING E Approved Emergency Warning Triangle with Case\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2862,7 +2862,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0DMT14LGZ",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Regatta Mens Long-Sleeve Thermal Baselayer Top\". Size child ASIN B004KMGZG2: its own page shows Brand Regatta (byline \"Visit the Regatta Store\"; Brand Name Regatta); Model Number / Item model number TRU112, Model Name \"L/S Thermal Vest\", Manufacturer Part Number Rg289/Tru112; selected size M, colour Blue, Department Men's; Number of Items 1. Add to basket present; listing showed \"Only 2 left in stock (more on the way)\". Canonical link points to the parent /dp/B0DMT14LGZ (recorded as size_child_of and canonical_asin, PM ruling option b).",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Regatta Mens Long-Sleeve Thermal Baselayer Top\". Size child ASIN B004KMGZG2: its own page shows Brand Regatta (byline \"Visit the Regatta Store\"; Brand Name Regatta); Model Number / Item model number TRU112, Model Name \"L/S Thermal Vest\", Manufacturer Part Number Rg289/Tru112; selected size M, colour Blue, Department Men's; Number of Items 1. Add to basket present; listing showed \"Only 2 left in stock (more on the way)\". Canonical link points to the parent /dp/B0DMT14LGZ (recorded as size_child_of and canonical_asin, PM ruling option b). dp_title_checked 2026-11-16T17:27Z; brand on page \"Regatta\"; title \"Regatta Mens Long-Sleeve Thermal Baselayer Top\".",
         "buyability": {
           "checked_at": "2026-11-16T16:27:00+00:00",
           "featured_offer": true,
@@ -2948,7 +2948,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0CKXG19WH",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Helly Hansen Men's Lifa Active Crew Base Layer\". Size child ASIN B0887LWT53: its own page shows Brand Helly Hansen (Brand Name, Manufacturer); Model Number / Manufacturer Part Number / Item model number 49389, Model Name and Style Name \"Lifa Active Crew\"; selected size M (Garment Size Country Great Britain), colour Black, Department Men's; Number of Items 1. Add to basket present; \"In stock\". Canonical link points to the parent /dp/B0CKXG19WH (recorded as size_child_of and canonical_asin, PM ruling option b).",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Helly Hansen Men's Lifa Active Crew Base Layer\". Size child ASIN B0887LWT53: its own page shows Brand Helly Hansen (Brand Name, Manufacturer); Model Number / Manufacturer Part Number / Item model number 49389, Model Name and Style Name \"Lifa Active Crew\"; selected size M (Garment Size Country Great Britain), colour Black, Department Men's; Number of Items 1. Add to basket present; \"In stock\". Canonical link points to the parent /dp/B0CKXG19WH (recorded as size_child_of and canonical_asin, PM ruling option b). dp_title_checked 2026-11-16T17:27Z; brand on page \"Helly Hansen\"; title \"Helly Hansen Men's Lifa Active Crew Base Layer\".",
         "buyability": {
           "checked_at": "2026-11-16T16:28:00+00:00",
           "featured_offer": true,
@@ -3035,7 +3035,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0DZ8DXDGP",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Mountain Warehouse Talus Mens IsoTherm Base Layer Top\". Size child ASIN B013LFW3WS: its own page shows Brand Mountain Warehouse (byline \"Visit the Mountain Warehouse Store\"; Brand Name); style name \"Talus\" (IsoTherm) in the title; Model Name and Model Number both 023196005005 (Manufacturer Part Number 23196005005); selected size L, colour Black (Round Neck), Department Men's; Number of Items 1. Add to basket present; \"In stock\". QA: the model number is a long numeric code; identity rests on the title style name plus the agreeing model fields. Canonical link points to the parent /dp/B0DZ8DXDGP (recorded as size_child_of and canonical_asin, PM ruling option b).",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Mountain Warehouse Talus Mens IsoTherm Base Layer Top\". Size child ASIN B013LFW3WS: its own page shows Brand Mountain Warehouse (byline \"Visit the Mountain Warehouse Store\"; Brand Name); style name \"Talus\" (IsoTherm) in the title; Model Name and Model Number both 023196005005 (Manufacturer Part Number 23196005005); selected size L, colour Black (Round Neck), Department Men's; Number of Items 1. Add to basket present; \"In stock\". QA: the model number is a long numeric code; identity rests on the title style name plus the agreeing model fields. Canonical link points to the parent /dp/B0DZ8DXDGP (recorded as size_child_of and canonical_asin, PM ruling option b). dp_title_checked 2026-11-16T17:27Z; brand on page \"Mountain Warehouse\"; title \"Mountain Warehouse Talus Mens IsoTherm Base Layer Top\".",
         "buyability": {
           "checked_at": "2026-11-16T16:28:00+00:00",
           "featured_offer": true,
@@ -3216,7 +3216,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B088HF3TYP",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Zippo - Stick Lighter, Rose Gold, Rechargeable, with Long Flexible Neck, Plasma Arc, Ideal Lighter for Candles\". Brand \"Zippo\", model \"2006828\". Pack: 1 lighter with USB charging. Add to Basket present; canonical B088HF3TYP.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Zippo - Stick Lighter, Rose Gold, Rechargeable, with Long Flexible Neck, Plasma Arc, Ideal Lighter for Candles\". Brand \"Zippo\", model \"2006828\". Pack: 1 lighter with USB charging. Add to Basket present; canonical B088HF3TYP. dp_title_checked 2026-11-16T17:27Z; brand on page \"Zippo\"; title \"Zippo - Stick Lighter, Rose Gold, Rechargeable, with Long Flexible Neck, Plasma Arc, Ideal Lighter for Candles\".",
         "buyability": {
           "checked_at": "2026-11-16T16:28:00+00:00",
           "featured_offer": true,
@@ -3513,7 +3513,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0DWTDW914",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Katadyn Water Filter's Befree Gravity 3.0 Liter\". Brand \"Katadyn\", model \"8020471\". Pack: BeFree Gravity 3.0 litre system. Add to Basket present; canonical B0DWTDW914.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Katadyn Water Filter's Befree Gravity 3.0 Liter\". Brand \"Katadyn\", model \"8020471\". Pack: BeFree Gravity 3.0 litre system. Add to Basket present; canonical B0DWTDW914. dp_title_checked 2026-11-16T17:27Z; brand on page \"Katadyn\"; title \"Katadyn Water Filter's Befree Gravity 3.0 Liter\".",
         "buyability": {
           "checked_at": "2026-11-16T16:28:00+00:00",
           "featured_offer": true,
@@ -3582,7 +3582,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07DYGD8CH",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio’s (One Pack of 3), Green, Blue and Orange\". Brand \"Motorola\", model \"T42\" (listing MPN \"PNI-MTAT42-3\"). Pack: 3 radios (green, blue, orange). Add to Basket present; canonical B07DYGD8CH.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio’s (One Pack of 3), Green, Blue and Orange\". Brand \"Motorola\", model \"T42\" (listing MPN \"PNI-MTAT42-3\"). Pack: 3 radios (green, blue, orange). Add to Basket present; canonical B07DYGD8CH. dp_title_checked 2026-11-16T17:27Z; brand on page \"Motorola\"; title \"Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio’s (One Pack of 3), Green, Blue and Orange\".",
         "buyability": {
           "checked_at": "2026-11-16T16:28:00+00:00",
           "featured_offer": true,
@@ -3650,7 +3650,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B078C7TD7Z",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola TALKABOUT T82 Extreme Two-Way Radios\". Brand \"Motorola Solutions\", model \"B8P00810YDEMAG\". Pack: 2 radios (pair per listing). Add to Basket present; canonical B078C7TD7Z.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola TALKABOUT T82 Extreme Two-Way Radios\". Brand \"Motorola Solutions\", model \"B8P00810YDEMAG\". Pack: 2 radios (pair per listing). Add to Basket present; canonical B078C7TD7Z. dp_title_checked 2026-11-16T17:27Z; brand on page \"Motorola Solutions\"; title \"Motorola TALKABOUT T82 Extreme Two-Way Radios\".",
         "buyability": {
           "checked_at": "2026-11-16T16:28:00+00:00",
           "featured_offer": true,
@@ -3718,7 +3718,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B01FDI6OKS",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola Tlkr T92 H2O PMR446 2-Way Walkie Talkie Waterproof Radio Twin Pack with Travel Case\". Brand \"Motorola Solutions\", model \"A9P00811YWCMAG\". Pack: 2 radios with travel case. Add to Basket present; canonical B01FDI6OKS.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola Tlkr T92 H2O PMR446 2-Way Walkie Talkie Waterproof Radio Twin Pack with Travel Case\". Brand \"Motorola Solutions\", model \"A9P00811YWCMAG\". Pack: 2 radios with travel case. Add to Basket present; canonical B01FDI6OKS. dp_title_checked 2026-11-16T17:27Z; brand on page \"Motorola Solutions\"; title \"Motorola Tlkr T92 H2O PMR446 2-Way Walkie Talkie Waterproof Radio Twin Pack with Travel Case\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -3778,7 +3778,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B079MJBP21",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Wave+ Multi-Tool, Stainless Steel\". Brand \"Leatherman\", model \"832524\". Pack: 1 multi-tool. Add to Basket present; canonical B079MJBP21.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Wave+ Multi-Tool, Stainless Steel\". Brand \"Leatherman\", model \"832524\". Pack: 1 multi-tool. Add to Basket present; canonical B079MJBP21. dp_title_checked 2026-11-16T17:27Z; brand on page \"Leatherman\"; title \"Leatherman Wave+ Multi-Tool, Stainless Steel\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -3838,7 +3838,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B007ERHM5S",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Rebar Multi-Tool, Black Stainless Steel, Silver.\". Brand \"Leatherman\", model \"831557\". Pack: 1 multi-tool. Add to Basket present; canonical B007ERHM5S.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Rebar Multi-Tool, Black Stainless Steel, Silver.\". Brand \"Leatherman\", model \"831557\". Pack: 1 multi-tool. Add to Basket present; canonical B007ERHM5S. dp_title_checked 2026-11-16T17:28Z; brand on page \"Leatherman\"; title \"Leatherman Rebar Multi-Tool, Black Stainless Steel, Silver.\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -3898,7 +3898,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0CX32Q354",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Skeletool CX, Stainless Steel, Onyx\". Brand \"Leatherman\", model \"LEAT-833131\". Pack: 1 multi-tool. Add to Basket present; canonical B0CX32Q354.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Skeletool CX, Stainless Steel, Onyx\". Brand \"Leatherman\", model \"LEAT-833131\". Pack: 1 multi-tool. Add to Basket present; canonical B0CX32Q354. dp_title_checked 2026-11-16T17:28Z; brand on page \"Leatherman\"; title \"Leatherman Skeletool CX, Stainless Steel, Onyx\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -4265,7 +4265,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0036OW40Q",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Vango 8L Collapsible Water Container, Foldable Water Carrier with Tap, Household Storage Water Bucket Lightweight Portable Water Carrier with Handle for Camping BBQ Picnic Outdoor Use\". Brand \"Vango\", model \"ACXWATERC3OIZ01\". Pack: 1 carrier. Add to Basket present; canonical B0036OW40Q.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Vango 8L Collapsible Water Container, Foldable Water Carrier with Tap, Household Storage Water Bucket Lightweight Portable Water Carrier with Handle for Camping BBQ Picnic Outdoor Use\". Brand \"Vango\", model \"ACXWATERC3OIZ01\". Pack: 1 carrier. Add to Basket present; canonical B0036OW40Q. dp_title_checked 2026-11-16T17:28Z; brand on page \"Vango\"; title \"Vango 8L Collapsible Water Container, Foldable Water Carrier with Tap, Household Storage Water Bucket Lightweight Portable Water Carrier with Handle for Camping BBQ Picnic Outdoor Use\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -4325,7 +4325,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B003QAD4KY",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Vango 12L Expandable Camping Water Container with Tap, Compact Portable Water Bottle Carrier for Camping Hiking Outdoor\". Brand \"Vango\", model \"ACXWATERC3OCZ01\". Pack: 1 carrier. Add to Basket present; canonical B003QAD4KY.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Vango 12L Expandable Camping Water Container with Tap, Compact Portable Water Bottle Carrier for Camping Hiking Outdoor\". Brand \"Vango\", model \"ACXWATERC3OCZ01\". Pack: 1 carrier. Add to Basket present; canonical B003QAD4KY. dp_title_checked 2026-11-16T17:28Z; brand on page \"Vango\"; title \"Vango 12L Expandable Camping Water Container with Tap, Compact Portable Water Bottle Carrier for Camping Hiking Outdoor\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -4385,7 +4385,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B00JOV3YDG",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Thermos Stainless King Matt Black Drinks Flask (1.2L) 24h Hot | 24h Cold\". Brand \"Thermos\", model \"190754\". Pack: 1 flask with cup. Add to Basket present; canonical B00JOV3YDG.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Thermos Stainless King Matt Black Drinks Flask (1.2L) 24h Hot | 24h Cold\". Brand \"Thermos\", model \"190754\". Pack: 1 flask with cup. Add to Basket present; canonical B00JOV3YDG. dp_title_checked 2026-11-16T17:28Z; brand on page \"Thermos\"; title \"Thermos Stainless King Matt Black Drinks Flask (1.2L) 24h Hot | 24h Cold\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -4446,7 +4446,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B000T21JFE",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Stanley 1913 Classic Legendary Thermal Flask 1.0L - Hammertone Green\". Brand \"STANLEY\", model \"100000129575\" (listing MPN \"10-01254-038\"). Pack: 1 flask. Add to Basket present; canonical B000T21JFE.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Stanley 1913 Classic Legendary Thermal Flask 1.0L - Hammertone Green\". Brand \"STANLEY\", model \"100000129575\" (listing MPN \"10-01254-038\"). Pack: 1 flask. Add to Basket present; canonical B000T21JFE. dp_title_checked 2026-11-16T17:28Z; brand on page \"STANLEY\"; title \"Stanley 1913 Classic Legendary Thermal Flask 1.0L - Hammertone Green\".",
         "buyability": {
           "checked_at": "2026-11-16T16:29:00+00:00",
           "featured_offer": true,
@@ -4506,7 +4506,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B00JOV3Z6W",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Thermos Stainless King Matt Black Drinks Flask (470ml) 18h Hot | 24h Cold\". Brand \"Thermos\", model \"190755\". Pack: 1 flask with cup. Add to Basket present; canonical B00JOV3Z6W.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Thermos Stainless King Matt Black Drinks Flask (470ml) 18h Hot | 24h Cold\". Brand \"Thermos\", model \"190755\". Pack: 1 flask with cup. Add to Basket present; canonical B00JOV3Z6W. dp_title_checked 2026-11-16T17:28Z; brand on page \"Thermos\"; title \"Thermos Stainless King Matt Black Drinks Flask (470ml) 18h Hot | 24h Cold\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -4558,7 +4558,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B00004OCJW",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"OXO Good Grips Soft Handled Tin Opener\". Brand \"OXO\", model \"28081\" (listing MPN \"28081V5\"). Pack: 1 can opener. Add to Basket present; canonical B00004OCJW.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"OXO Good Grips Soft Handled Tin Opener\". Brand \"OXO\", model \"28081\" (listing MPN \"28081V5\"). Pack: 1 can opener. Add to Basket present; canonical B00004OCJW. dp_title_checked 2026-11-16T17:28Z; brand on page \"OXO\"; title \"OXO Good Grips Soft Handled Tin Opener\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -4610,7 +4610,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B000079XW2",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Oxo Can Opener Smooth Edge in black, Nylon, 6.22 x 16.89 x 27.31 cm\". Brand \"OXO\", model \"1049953\" (listing MPN \"1049953V2\"). Pack: 1 can opener. Add to Basket present; canonical B000079XW2.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Oxo Can Opener Smooth Edge in black, Nylon, 6.22 x 16.89 x 27.31 cm\". Brand \"OXO\", model \"1049953\" (listing MPN \"1049953V2\"). Pack: 1 can opener. Add to Basket present; canonical B000079XW2. dp_title_checked 2026-11-16T17:28Z; brand on page \"OXO\"; title \"Oxo Can Opener Smooth Edge in black, Nylon, 6.22 x 16.89 x 27.31 cm\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -4661,7 +4661,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07NJHB97Y",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Brabantia Tasty+ Can & Bottle Opener, Ergonomic Design, Dark Grey\". Brand \"Brabantia\", model \"121869\". Pack: 1 can opener. Add to Basket present; canonical B07NJHB97Y.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Brabantia Tasty+ Can & Bottle Opener, Ergonomic Design, Dark Grey\". Brand \"Brabantia\", model \"121869\". Pack: 1 can opener. Add to Basket present; canonical B07NJHB97Y. dp_title_checked 2026-11-16T17:28Z; brand on page \"Brabantia\"; title \"Brabantia Tasty+ Can & Bottle Opener, Ergonomic Design, Dark Grey\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -4721,7 +4721,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B08DDY4GCS",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12, with Anti Viral action* Hand Gel and 70 Percent Alcohol that Cleans, Cares and Protects, 50 ml\". Brand \"Cussons Carex\", model \"05000101507083_100108726\". Pack: 12 x 50 ml gel. Add to Basket present; canonical B08DDY4GCS.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12, with Anti Viral action* Hand Gel and 70 Percent Alcohol that Cleans, Cares and Protects, 50 ml\". Brand \"Cussons Carex\", model \"05000101507083_100108726\". Pack: 12 x 50 ml gel. Add to Basket present; canonical B08DDY4GCS. dp_title_checked 2026-11-16T17:28Z; brand on page \"Cussons Carex\"; title \"CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12, with Anti Viral action* Hand Gel and 70 Percent Alcohol that Cleans, Cares and Protects, 50 ml\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -4781,7 +4781,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B06XYH6966",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135\". Brand \"Dettol\", model \"3075819\". Pack: 9 x 15 wipes (135). Add to Basket present; canonical B06XYH6966.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135\". Brand \"Dettol\", model \"3075819\". Pack: 9 x 15 wipes (135). Add to Basket present; canonical B06XYH6966. dp_title_checked 2026-11-16T17:28Z; brand on page \"Dettol\"; title \"Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -4971,7 +4971,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B08MXSBRSB",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"WaterWipes Sensitive+ Newborn & Baby Wipes, 99.9% Water, Unscented, 12 Pack\". Brand \"WaterWipes\", model \"440001\". Pack: 12 packs, 720 wipes. Add to Basket present; canonical B08MXSBRSB.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"WaterWipes Sensitive+ Newborn & Baby Wipes, 99.9% Water, Unscented, 12 Pack\". Brand \"WaterWipes\", model \"440001\". Pack: 12 packs, 720 wipes. Add to Basket present; canonical B08MXSBRSB. dp_title_checked 2026-11-16T17:29Z; brand on page \"WaterWipes\"; title \"WaterWipes Sensitive+ Newborn & Baby Wipes, 99.9% Water, Unscented, 12 Pack\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -5031,7 +5031,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0FFTNGFM9",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Huggies Pure Plastic Free Baby Wipes - Pack of 18 (864 Wipes) - 99% Water Wet Wipes, Fragrance Free, Hypoallergenic, Better Cleaning, Soft and Gentle on Babies' Delicate Skin\". Brand \"HUGGIES\", model \"02434915\". Pack: 18 x 48 wipes (864). Add to Basket present; canonical B0FFTNGFM9.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Huggies Pure Plastic Free Baby Wipes - Pack of 18 (864 Wipes) - 99% Water Wet Wipes, Fragrance Free, Hypoallergenic, Better Cleaning, Soft and Gentle on Babies' Delicate Skin\". Brand \"HUGGIES\", model \"02434915\". Pack: 18 x 48 wipes (864). Add to Basket present; canonical B0FFTNGFM9. dp_title_checked 2026-11-16T17:29Z; brand on page \"HUGGIES\"; title \"Huggies Pure Plastic Free Baby Wipes - Pack of 18 (864 Wipes) - 99% Water Wet Wipes, Fragrance Free, Hypoallergenic, Better Cleaning, Soft and Gentle on Babies' Delicate Skin\".",
         "buyability": {
           "checked_at": "2026-11-16T16:30:00+00:00",
           "featured_offer": true,
@@ -5143,7 +5143,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0CLY3FR44",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Snugpak The Sleeping Bag WGTE with Isofibre Insulation, Cold Weather Rated\". Brand \"Snugpak\", model \"10107700209WGTE\". Pack: 1 sleeping bag with compression sack. Add to Basket present; canonical B0CLY3FR44.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Snugpak The Sleeping Bag WGTE with Isofibre Insulation, Cold Weather Rated\". Brand \"Snugpak\", model \"10107700209WGTE\". Pack: 1 sleeping bag with compression sack. Add to Basket present; canonical B0CLY3FR44. dp_title_checked 2026-11-16T17:29Z; brand on page \"Snugpak\"; title \"Snugpak The Sleeping Bag WGTE with Isofibre Insulation, Cold Weather Rated\".",
         "buyability": {
           "checked_at": "2026-11-16T16:31:00+00:00",
           "featured_offer": true,
@@ -5194,7 +5194,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0GQ4SQC9P",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy Design Holds Insulation, Breathable, Cosy Lining Fabric, Smaller Pack Size for Camping Trips, Backpacking, Hiking\". Brand \"Vango\", model \"SBPCADAIRAB5163\". Pack: Sleeping bag, carry bag. Add to Basket present; canonical B0GQ4SQC9P.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy Design Holds Insulation, Breathable, Cosy Lining Fabric, Smaller Pack Size for Camping Trips, Backpacking, Hiking\". Brand \"Vango\", model \"SBPCADAIRAB5163\". Pack: Sleeping bag, carry bag. Add to Basket present; canonical B0GQ4SQC9P. dp_title_checked 2026-11-16T17:29Z; brand on page \"Vango\"; title \"Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy Design Holds Insulation, Breathable, Cosy Lining Fabric, Smaller Pack Size for Camping Trips, Backpacking, Hiking\".",
         "buyability": {
           "checked_at": "2026-11-16T16:31:00+00:00",
           "featured_offer": true,
@@ -5420,8 +5420,8 @@
         "drinking_water_note": {
           "value": "Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.",
           "source": {
-            "name": "Prepare (UK government): water supply interruptions or outages",
-            "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
+            "name": "Be Ready (UK government): water supply interruptions or outages",
+            "url": "https://beready.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
           },
           "captured_at": "2026-11-16T12:24:00+00:00"
         }
@@ -5445,7 +5445,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B00ZUTJAHA",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"168 litre Water Butt + Raintrap Diverter + Stand\". Brand \"Harcostar\", model \"HS168WBKIT\". Pack: 168L water butt, stand, hose connector tap, Universal Rain Trap. Add to Basket present; canonical B00ZUTJAHA.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"168 litre Water Butt + Raintrap Diverter + Stand\". Brand \"Harcostar\", model \"HS168WBKIT\". Pack: 168L water butt, stand, hose connector tap, Universal Rain Trap. Add to Basket present; canonical B00ZUTJAHA. dp_title_checked 2026-11-16T17:29Z; brand on page \"Harcostar\"; title \"168 litre Water Butt + Raintrap Diverter + Stand\".",
         "buyability": {
           "checked_at": "2026-11-16T16:31:00+00:00",
           "featured_offer": true,
@@ -5490,8 +5490,8 @@
         "drinking_water_note": {
           "value": "Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.",
           "source": {
-            "name": "Prepare (UK government): water supply interruptions or outages",
-            "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
+            "name": "Be Ready (UK government): water supply interruptions or outages",
+            "url": "https://beready.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
           },
           "captured_at": "2026-11-16T12:24:00+00:00"
         }
@@ -5560,8 +5560,8 @@
         "drinking_water_note": {
           "value": "Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.",
           "source": {
-            "name": "Prepare (UK government): water supply interruptions or outages",
-            "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
+            "name": "Be Ready (UK government): water supply interruptions or outages",
+            "url": "https://beready.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
           },
           "captured_at": "2026-11-16T12:24:00+00:00"
         }
@@ -5585,7 +5585,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0CVL4W8CQ",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Stewart 238976 235 L Oak Effect Water Butt, Size Diameter Widest Point x H: 66x86 cm, Black/Brown\". Brand \"Stewart\", model \"238976\". Pack: 1 water butt with child safety lid and drain-off tap. Add to Basket present; canonical B0CVL4W8CQ.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Stewart 238976 235 L Oak Effect Water Butt, Size Diameter Widest Point x H: 66x86 cm, Black/Brown\". Brand \"Stewart\", model \"238976\". Pack: 1 water butt with child safety lid and drain-off tap. Add to Basket present; canonical B0CVL4W8CQ. dp_title_checked 2026-11-16T17:29Z; brand on page \"Stewart\"; title \"Stewart 238976 235 L Oak Effect Water Butt, Size Diameter Widest Point x H: 66x86 cm, Black/Brown\".",
         "buyability": {
           "checked_at": "2026-11-16T16:31:00+00:00",
           "featured_offer": true,
@@ -5842,7 +5842,7 @@
       "captured_at": "2026-11-16T16:55:00+00:00",
       "verification": "verified",
       "display_name": "Roberts portable DAB and FM radio",
-      "display_rank": 2,
+      "display_rank": 1,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -5853,7 +5853,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\". Brand Name \"Roberts\", Manufacturer \"Roberts\", Model Number / Manufacturer Part Number \"PLAY20BK\" (PLAY20, black). One radio (Number of Items 1); bullet \"Portable battery power or mains plug in\". Canonical is the dp ASIN B091YFB8N2; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\". Brand Name \"Roberts\", Manufacturer \"Roberts\", Model Number / Manufacturer Part Number \"PLAY20BK\" (PLAY20, black). One radio (Number of Items 1); bullet \"Portable battery power or mains plug in\". Canonical is the dp ASIN B091YFB8N2; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. dp_title_checked 2026-11-16T17:29Z; brand on page \"Roberts\"; title \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\".",
         "canonical_asin": "B091YFB8N2",
         "buyability": {
           "checked_at": "2026-11-16T16:55:00+00:00",
@@ -5921,7 +5921,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\". Brand Name \"Samsung\", Manufacturer \"Samsung\", Model Number / Manufacturer Part Number \"EB-P4520XUEGEU\". One power bank with a USB-C cable. Canonical is the dp ASIN B0CNWT16R8; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\". Brand Name \"Samsung\", Manufacturer \"Samsung\", Model Number / Manufacturer Part Number \"EB-P4520XUEGEU\". One power bank with a USB-C cable. Canonical is the dp ASIN B0CNWT16R8; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. dp_title_checked 2026-11-16T17:29Z; brand on page \"Samsung\"; title \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\".",
         "canonical_asin": "B0CNWT16R8",
         "buyability": {
           "checked_at": "2026-11-16T16:53:00+00:00",
@@ -6001,7 +6001,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\". Brand Name \"Belkin\", Manufacturer \"Belkin\", Model Number \"BPB012\", Manufacturer Part Number \"BPB012btBK\". One power bank plus a USB-A to USB-C cable. Canonical is the dp ASIN B09NTNTVRJ; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\". Brand Name \"Belkin\", Manufacturer \"Belkin\", Model Number \"BPB012\", Manufacturer Part Number \"BPB012btBK\". One power bank plus a USB-A to USB-C cable. Canonical is the dp ASIN B09NTNTVRJ; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. dp_title_checked 2026-11-16T17:29Z; brand on page \"Belkin\"; title \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\".",
         "canonical_asin": "B09NTNTVRJ",
         "buyability": {
           "checked_at": "2026-11-16T16:53:00+00:00",
@@ -6069,7 +6069,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\". Brand Name \"Reliance Medical\", Manufacturer \"Reliance Medical\", Model Number / Manufacturer Part Number \"157\" (REL157 in the canonical slug). One family kit, 83 pieces. Canonical is the dp ASIN B001MG6WJ4; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\". Brand Name \"Reliance Medical\", Manufacturer \"Reliance Medical\", Model Number / Manufacturer Part Number \"157\" (REL157 in the canonical slug). One family kit, 83 pieces. Canonical is the dp ASIN B001MG6WJ4; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. dp_title_checked 2026-11-16T17:29Z; brand on page \"Reliance Medical\"; title \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\".",
         "canonical_asin": "B001MG6WJ4",
         "buyability": {
           "checked_at": "2026-11-16T16:57:00+00:00",
@@ -6147,7 +6147,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\". Brand Name \"Petzl\", Manufacturer \"Petzl\", Model Number / Manufacturer Part Number \"E069AA00\" (Aria 1). One head torch with 3 AAA batteries. Canonical is the dp ASIN B0BV7HHSMX; Add to Basket posts this ASIN. Delivery date shown: Tuesday, 24 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\". Brand Name \"Petzl\", Manufacturer \"Petzl\", Model Number / Manufacturer Part Number \"E069AA00\" (Aria 1). One head torch with 3 AAA batteries. Canonical is the dp ASIN B0BV7HHSMX; Add to Basket posts this ASIN. Delivery date shown: Tuesday, 24 November. dp_title_checked 2026-11-16T17:29Z; brand on page \"Petzl\"; title \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\".",
         "canonical_asin": "B0BV7HHSMX",
         "buyability": {
           "checked_at": "2026-11-16T16:54:00+00:00",
@@ -6231,7 +6231,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\". Brand Name \"Icelandic Glacial\"; Item model number / Part Number \"UN3681\" as shown on the listing; manufacturer contact Icelandic Water Limited (UK). One pack of 10 x 330 ml cans (Number of Items 10). Canonical is the dp ASIN B0BBSP1QVC; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\". Brand Name \"Icelandic Glacial\"; Item model number / Part Number \"UN3681\" as shown on the listing; manufacturer contact Icelandic Water Limited (UK). One pack of 10 x 330 ml cans (Number of Items 10). Canonical is the dp ASIN B0BBSP1QVC; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. dp_title_checked 2026-11-16T17:29Z; brand on page \"Icelandic Glacial\"; title \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\".",
         "canonical_asin": "B0BBSP1QVC",
         "buyability": {
           "checked_at": "2026-11-16T17:03:00+00:00",
@@ -6250,6 +6250,158 @@
       "notes": [
         "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
         "Why picked: Recognised spring-water brand in cans, sold by Amazon. Replaces the Cano 500 ml pack, whose earliest delivery is 12 December."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0713x4484",
+      "category": "radio",
+      "product_name": "Sony ICF506 Analog Tuning Portable FM/AM Radio with Battery/AC Power",
+      "brand": "Sony",
+      "asin_uk": "B0713X4484",
+      "gtin": null,
+      "mpn": "ICF506.CEK",
+      "model_code": "ICF506",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Portable FM/AM Radio\"",
+            "url": "https://www.amazon.co.uk/dp/B0713X4484"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "AM",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"FM/AM\"; Radio Bands Supported \"AM/FM\"",
+            "url": "https://www.amazon.co.uk/dp/B0713X4484"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0713X4484"
+      },
+      "captured_at": "2026-11-16T17:30:00+00:00",
+      "verification": "verified",
+      "display_name": "Sony portable AM and FM radio",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0713X4484",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sony ICF506 Analog Tuning Portable FM/AM Radio with Battery/AC Power\". Brand Name \"Sony\", Manufacturer \"Sony\", Model Number / Manufacturer Part Number \"ICF506.CEK\" (ICF506). One radio (Number of Items 1) with an AC power cord; title \"with Battery/AC Power\". Canonical is the dp ASIN B0713X4484; Add to Basket posts this ASIN. Delivery date shown: Wednesday, 18 November. dp_title_checked 2026-11-16T17:30Z; brand on page \"Sony\"; title \"Sony ICF506 Analog Tuning Portable FM/AM Radio with Battery/AC Power\".",
+        "canonical_asin": "B0713X4484",
+        "buyability": {
+          "checked_at": "2026-11-16T17:30:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "a s k",
+          "ships_from": "a s k",
+          "seller_class": "uk_seller_well_rated",
+          "seller_rating_note": "Seller page amazon.co.uk/sp?seller=A2L0UV81X3JLZ5: business ASK Outlets Ltd, country GB; 99% positive in the last 12 months (241 ratings)",
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Sony is an established electronics brand; battery or mains AM/FM portable radio from a UK seller that meets the 12-month rating bar. Replaces the Duronic ASIN that now shows a different product."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b06xxgk7gt",
+      "category": "radio",
+      "product_name": "Panasonic RF-P50DEG-S silver",
+      "brand": "Panasonic",
+      "asin_uk": "B06XXGK7GT",
+      "gtin": null,
+      "mpn": "RF-P50DEG-S",
+      "model_code": "RF-P50DEG-S",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Item Type Name \"Panasonic Portable AM/FM Radio - Silver\"",
+            "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "aa"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Product details \"2 AA batteries required.\"",
+            "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "AM",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Radio Bands Supported \"FM, MW\" (MW is AM)",
+            "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+      },
+      "captured_at": "2026-11-16T17:30:00+00:00",
+      "verification": "verified",
+      "display_name": "Panasonic pocket AM and FM radio",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B06XXGK7GT",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Panasonic RF-P50DEG-S silver\". Brand Name \"Panasonic\", Manufacturer \"Panasonic\", Model Number / Manufacturer Part Number \"RF-P50DEG-S\"; Item Type Name \"Panasonic Portable AM/FM Radio - Silver\". One radio (Number of Items 1), runs on 2 AA batteries. Canonical is the dp ASIN B06XXGK7GT; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November. dp_title_checked 2026-11-16T17:30Z; brand on page \"Panasonic\"; title \"Panasonic RF-P50DEG-S silver\".",
+        "canonical_asin": "B06XXGK7GT",
+        "buyability": {
+          "checked_at": "2026-11-16T17:30:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "ZAQI",
+          "ships_from": "Amazon",
+          "seller_class": "uk_seller_well_rated",
+          "seller_rating_note": "Seller page amazon.co.uk/sp?seller=A2YQF951WUX5MR: business ZAQI LTD, country GB; 100% positive in the last 12 months (23 ratings); fulfilled by Amazon",
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Panasonic is an established electronics brand; battery pocket AM/FM radio from a UK seller that meets the 12-month rating bar, fulfilled by Amazon. Replaces the Duronic ASIN that now shows a different product."
       ]
     }
   ]

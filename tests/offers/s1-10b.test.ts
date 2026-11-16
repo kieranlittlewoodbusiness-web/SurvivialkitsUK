@@ -177,7 +177,7 @@ describe('S1-10b QA #24 buyability rule (every verified product)', () => {
   });
   it('every record unverified by the sweep keeps its data and records a failing check with the reason', () => {
     const swept = catalogueProducts.filter((p) => p.verification_evidence?.buyability?.outcome === 'fail');
-    expect(swept.length).toBe(23); // 19 QA #24 sweep + 2 S1-10c delivery (Cano 500ml, HypaGuard) + 2 CR 12-month rule (Sangean, OverBoard)
+    expect(swept.length).toBe(24); // 19 QA #24 sweep + 2 S1-10c delivery (Cano 500ml, HypaGuard) + 2 CR 12-month rule (Sangean, OverBoard) + Duronic (ASIN reused)
     for (const p of swept) {
       expect(p.verification, p.asin_uk!).toBe('unverified');
       expect(p.display_rank ?? null).toBeNull();
@@ -187,7 +187,7 @@ describe('S1-10b QA #24 buyability rule (every verified product)', () => {
     for (const a of ['B00CRE5ZQG', 'B0CMY1SQ3D', 'B07QFSVXZW']) expect(swept.map((p) => p.asin_uk), `QA D1-D3 ${a}`).toContain(a);
   });
   it('the schema rejects a verified product without a passing check', () => {
-    const r = raw('B002XNGTOI');
+    const r = raw('B091YFB8N2');
     expect(() => parseCatalogueProduct(r)).not.toThrow();
     const without = JSON.parse(JSON.stringify(r));
     delete without.verification_evidence.buyability;
@@ -254,7 +254,7 @@ describe('S1-10b fake-tag library probe (counts only)', () => {
     .flatMap(([, a]) => a as readonly string[]);
   it('production = every verified, non-gated product, each linked once (derived; nothing gated after S1-10b-web)', () => {
     const l = links(PROD);
-    expect(VERIFIED_COUNT).toBe(52); // 67 - 19 (QA #24 sweep) + 1 Duronic = 49; S1-10c: - 2 (delivery) + 7 = 54; CR 12-month rule: - Sangean - OverBoard = 52
+    expect(VERIFIED_COUNT).toBe(53); // 67 - 19 (QA #24 sweep) + 1 Duronic = 49; S1-10c: - 2 (delivery) + 7 = 54; CR 12-month rule: - Sangean - OverBoard = 52; QA: - Duronic + Sony + Panasonic = 53
     expect(RENDERED).toHaveLength(VERIFIED_COUNT);
     expect(l).toHaveLength(RENDERED.length);
     expect(new Set(l.map((o) => o.link_url)).size).toBe(RENDERED.length);
