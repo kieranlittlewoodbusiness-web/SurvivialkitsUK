@@ -2,16 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { site } from '../../src/data/site';
-import {
-  EDITOR_DATE_MODIFIED,
-  EDITOR_DESCRIPTION,
-  EDITOR_PERSON_DESCRIPTION,
-  EDITOR_TITLE,
-  editor,
-  editorDocumentTitle,
-  editorPersonNode,
-  editorProfileJsonLd,
-} from '../../src/data/editor';
+import { EDITOR_DESCRIPTION, EDITOR_TITLE, editor, editorDocumentTitle } from '../../src/data/editor';
 
 const root = path.resolve('.');
 const read = (...parts: string[]) => fs.readFileSync(path.join(root, ...parts), 'utf8');
@@ -19,6 +10,7 @@ const read = (...parts: string[]) => fs.readFileSync(path.join(root, ...parts), 
 const TITLE_MAX = 60;
 const META_MIN = 120;
 const META_MAX = 160;
+const LD_JSON = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>/i;
 
 describe('SEO-9 editor bio copy', () => {
   it('uses the approved title, 60 characters or fewer including the site suffix', () => {
@@ -47,21 +39,13 @@ describe('SEO-9 editor bio copy', () => {
     expect(page).not.toMatch(/sameAs/);
   });
 
-  it('records the Person description for the later SEO-6 author step, with no sameAs or image', () => {
-    expect(EDITOR_PERSON_DESCRIPTION).toBe(
-      'Editor of UK Survival Kits. Chooses the products on the site and uses them where he can before sharing them.',
-    );
-    const person = editorPersonNode();
-    expect(person['@id']).toBe('https://uksurvivalkits.uk/about/kieran-littlewood/#person');
-    expect(person.description).toBe(EDITOR_PERSON_DESCRIPTION);
-    expect(person).not.toHaveProperty('sameAs');
-    expect(person).not.toHaveProperty('image');
-    expect(person).not.toHaveProperty('knowsAbout');
-    const graph = editorProfileJsonLd(EDITOR_DATE_MODIFIED);
-    const json = JSON.stringify(graph);
-    expect(json).not.toContain('sameAs');
-    expect(json).not.toMatch(/"image"/);
-    expect(graph['@graph'].some((n) => n['@type'] === 'ProfilePage')).toBe(true);
+  it('emits no JSON-LD on the bio page (Person/author is a follow-up after #37)', () => {
+    const page = read('src/pages/about/kieran-littlewood.astro');
+    expect(page).not.toMatch(LD_JSON);
+    expect(page).not.toMatch(/application\/ld\+json/);
+    expect(page).not.toMatch(/editorProfileJsonLd|editorPersonNode|@graph|ProfilePage/);
+    const editorSrc = read('src/data/editor.ts');
+    expect(editorSrc).not.toMatch(/editorPersonNode|editorProfileJsonLd|EDITOR_PERSON_DESCRIPTION/);
   });
 });
 
@@ -91,7 +75,7 @@ describe('SEO-9 built page (when dist is present)', () => {
   const distPage = path.join(root, 'dist/about/kieran-littlewood/index.html');
   const hasDist = fs.existsSync(distPage);
 
-  it.skipIf(!hasDist)('emits the approved title, meta, canonical, og tags and body', () => {
+  it.skipIf(!hasDist)('emits the approved title, meta, canonical, og tags and body, and no JSON-LD', () => {
     const html = fs.readFileSync(distPage, 'utf8');
     const title = html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '';
     expect(title).toBe(editorDocumentTitle);
@@ -108,6 +92,8 @@ describe('SEO-9 built page (when dist is present)', () => {
     expect(html).toContain('use them where I can');
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? '';
     expect(main).not.toMatch(/<img\b/);
+    expect(html).not.toMatch(LD_JSON);
+    expect(html).not.toMatch(/application\/ld\+json/);
   });
 
   it.skipIf(!hasDist)('lists the trailing-slash URL in the sitemap', () => {

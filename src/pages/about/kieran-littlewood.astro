@@ -1,13 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { editor, editorProfileJsonLd, EDITOR_DATE_MODIFIED } from '../../data/editor';
-
-const jsonLd = editorProfileJsonLd(EDITOR_DATE_MODIFIED);
+import { editor } from '../../data/editor';
 ---
 
 <BaseLayout title={editor.title} description={editor.description} canonicalPath={editor.path}>
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-
   <section class="section">
     <div class="wrap wrap--narrow">
       <nav aria-label="Breadcrumb">
