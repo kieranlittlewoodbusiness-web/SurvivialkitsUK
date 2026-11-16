@@ -12,8 +12,11 @@ export interface BreadcrumbItem {
 
 interface Props {
   items: BreadcrumbItem[];
-  /** Glyph between items (CSS ::before, not in the accessibility tree as a link). */
-  separator?: string;
+  /**
+   * Glyph between items, drawn by CSS ::before with empty alt text so screen readers skip it
+   * (CR N3 on #38). Only these two glyphs: each has a literal CSS rule (see the style block).
+   */
+  separator?: '/' | '›';
   /** Spacing on the list: compare uses start, the bio page uses end. */
   pad?: 'start' | 'end';
 }
@@ -22,7 +25,7 @@ const { items, separator = '/', pad = 'start' } = Astro.props;
 ---
 
 <nav aria-label="Breadcrumb">
-  <ol class:list={['crumbs', pad === 'end' && 'crumbs--end']} style={`--crumb-sep: ${JSON.stringify(separator)}`}>
+  <ol class:list={['crumbs', pad === 'end' && 'crumbs--end', separator === '›' && 'crumbs--chevron']}>
     {
       items.map((item, i) => {
         const current = i === items.length - 1;
@@ -61,9 +64,22 @@ const { items, separator = '/', pad = 'start' } = Astro.props;
     display: inline-flex;
     align-items: center;
   }
+  /*
+   * CR N3 (#38): the separator is decoration, so it gets empty alt text ("/ \"\"") and screen
+   * readers skip it. Each rule repeats the plain content first as a fallback: Safari before 17.4
+   * does not know the alt syntax and drops that declaration at parse time, keeping the first.
+   * The glyphs are literals on purpose. With var(--crumb-sep) the alt declaration would always
+   * parse (var() defers validation), then fail at computed-value time in those browsers, leaving
+   * no separator at all instead of falling back.
+   */
   .crumbs li + li::before {
-    content: var(--crumb-sep);
+    content: "/";
+    content: "/" / "";
     margin-right: var(--s-2);
     color: var(--ink-3);
+  }
+  .crumbs--chevron li + li::before {
+    content: "›";
+    content: "›" / "";
   }
 </style>

@@ -3,15 +3,13 @@
  * site (temp copy, so `npm test` does not depend on an existing dist).
  */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { spawnSync } from 'node:child_process';
+import { buildSiteCopy, type SiteBuild } from '../helpers/site-build';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { editor, EDITOR_PERSON_DESCRIPTION } from '../../src/data/editor';
 import { PERSON_ID, PERSON_URL, article, personNode } from '../../src/lib/seo/jsonld';
 import { EXPECTED_PERSON, PERSON_ID as CHECK_PERSON_ID, checkJsonLd } from '../../scripts/lib/jsonld-checks.mjs';
 
-const ROOT = path.resolve('.');
 const NOW = new Date('2026-11-16T12:00:00Z');
 type Node = Record<string, unknown>;
 
@@ -50,9 +48,9 @@ describe('personNode (spec §1)', () => {
 });
 
 describe('built site', () => {
-  let tmp = '';
+  let site: SiteBuild | undefined;
   let dist = '';
-  let build: ReturnType<typeof spawnSync>;
+  let build: SiteBuild['result'];
   const graphOf = (rel: string): Node[] => {
     const html = fs.readFileSync(path.join(dist, rel), 'utf8');
     const scripts = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
@@ -67,19 +65,15 @@ describe('built site', () => {
   const articlePages = () => pages().filter((p) => /^(gear|scenarios)\/[^/]+\/index\.html$|^compare\//.test(p));
 
   beforeAll(() => {
-    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'seo-9b-'));
-    for (const entry of ['src', 'public', 'config', 'astro.config.mjs', 'package.json', 'tsconfig.json']) {
-      fs.cpSync(path.join(ROOT, entry), path.join(tmp, entry), { recursive: true });
-    }
-    fs.symlinkSync(path.join(ROOT, 'node_modules'), path.join(tmp, 'node_modules'), 'dir');
-    dist = path.join(tmp, 'dist');
-    const env: NodeJS.ProcessEnv = { ...process.env, TZ: 'UTC' };
-    for (const k of ['SITE_ENV', 'AMAZON_ASSOCIATES_UK_TAG', 'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL']) delete env[k];
-    build = spawnSync(path.join(ROOT, 'node_modules/.bin/astro'), ['build', '--outDir', dist], { cwd: tmp, env, encoding: 'utf8' });
+    site = buildSiteCopy('seo-9b-', {
+      tz: 'UTC',
+    });
+    dist = site.dist;
+    build = site.result;
   }, 180_000);
 
   afterAll(() => {
-    if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
+    site?.cleanup();
   });
 
   it('builds and passes check:jsonld', () => {
