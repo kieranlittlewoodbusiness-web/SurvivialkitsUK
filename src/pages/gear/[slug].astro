@@ -13,6 +13,7 @@ import {
   pageUrl,
   webPage,
 } from '../../lib/seo/jsonld';
+import { formatLondonDate } from '../../lib/dates';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -43,10 +44,7 @@ const jsonLd = [
   article({ url, headline: heading, description, datePublished, dateModified }),
   breadcrumbList(url, crumbsForPage(canonicalPath, crumb, { label: 'Gear criteria', href: '/gear/' })),
 ];
-const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate).toLocaleDateString(
-  'en-GB',
-  { day: 'numeric', month: 'long', year: 'numeric' },
-);
+const reviewed = formatLondonDate(entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate);
 ---
 
 <BaseLayout
