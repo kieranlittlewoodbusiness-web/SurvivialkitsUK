@@ -3,10 +3,11 @@ import { editor } from '../data/editor';
 
 interface Props {
   reviewed: string;
+  /** SEO-6d: only passed when the published day differs from the reviewed day. */
+  published?: { datetime: string; label: string } | null;
 }
 
-const { reviewed } = Astro.props;
+const { reviewed, published } = Astro.props;
 ---
 
-<span>Edited by <a href={editor.path}>{editor.name}</a> · Last reviewed {reviewed}</span>
-
+<span>Edited by <a href={editor.path}>{editor.name}</a>{published && <Fragment> · Published <time datetime={published.datetime}>{published.label}</time></Fragment>} · Last reviewed {reviewed}</span>

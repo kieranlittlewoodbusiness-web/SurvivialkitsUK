@@ -13,7 +13,7 @@ import {
   pageUrl,
   webPage,
 } from '../../lib/seo/jsonld';
-import { formatLondonDate } from '../../lib/dates';
+import { formatLondonDate, publishedIfDifferent } from '../../lib/dates';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -47,6 +47,7 @@ const jsonLd = [
 ];
 
 const reviewed = formatLondonDate(entry.data.lastReviewed);
+const published = publishedIfDifferent(entry.data.pubDate, entry.data.lastReviewed);
 ---
 
 <BaseLayout
@@ -63,7 +64,7 @@ const reviewed = formatLondonDate(entry.data.lastReviewed);
       <p class="lede">{entry.data.scenario}</p>
       <p class="meta">
         {entry.data.evidence.map((kind) => <EvidenceBadge kind={kind} />)}
-        <EditorByline reviewed={reviewed} />
+        <EditorByline reviewed={reviewed} published={published} />
       </p>
 
       <div class="prose">

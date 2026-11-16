@@ -13,7 +13,7 @@ import {
   pageUrl,
   webPage,
 } from '../../lib/seo/jsonld';
-import { formatLondonDate } from '../../lib/dates';
+import { formatLondonDate, publishedIfDifferent } from '../../lib/dates';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -45,6 +45,7 @@ const jsonLd = [
   breadcrumbList(url, crumbsForPage(canonicalPath, crumb, { label: 'Gear criteria', href: '/gear/' })),
 ];
 const reviewed = formatLondonDate(entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate);
+const published = publishedIfDifferent(entry.data.pubDate, entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate);
 ---
 
 <BaseLayout
@@ -61,7 +62,7 @@ const reviewed = formatLondonDate(entry.data.lastReviewed ?? entry.data.updated 
       <p class="meta">
         <EvidenceBadge kind="desk-research" />
         <EvidenceBadge kind="official-guidance" />
-        <EditorByline reviewed={reviewed} />
+        <EditorByline reviewed={reviewed} published={published} />
       </p>
 
       <h2>What we compare</h2>

@@ -42,3 +42,17 @@ export function formatLondonShortDate(day: Date | string): string {
 export function formatLondonMonthYear(day: Date | string): string {
   return londonMonthYear.format(new Date(`${isoDate(day)}T12:00:00Z`));
 }
+
+/**
+ * SEO-6d (CR M1 on #40): the visible "Published" date for gear and scenario bylines, shown only when
+ * the published day differs from the day shown as "Last reviewed". check:jsonld requires every
+ * Article datePublished to be visible; when the two days are equal, "Last reviewed" already shows it.
+ */
+export function publishedIfDifferent(
+  pubDate: Date | string,
+  reviewed: Date | string,
+): { datetime: string; label: string } | null {
+  const published = isoDate(pubDate);
+  if (published === isoDate(reviewed)) return null;
+  return { datetime: published, label: formatLondonDate(published) };
+}
