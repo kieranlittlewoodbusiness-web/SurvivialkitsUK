@@ -8,7 +8,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   emergency_water: ['B07L142XSN', 'B0BBSP1QVC'],
   first_aid_kit: ['B00L7S9LU4', 'B001MG6WJ4', 'B008XI72FC'],
   torch: ['B075F3FBTB', 'B0BV7HHSMX', 'B016P27MGG'],
-  radio: ['B002XNGTOI', 'B091YFB8N2'], // Sangean B09SZB8Y4R unverified (CR: seller has 0 ratings in 12 months); no third radio passed
+  radio: ['B091YFB8N2', 'B0713X4484', 'B06XXGK7GT'], // Duronic B002XNGTOI now shows a car tool (QA); Sangean B09SZB8Y4R failed the 12-month seller rule
   power_bank: ['B0CZ9LH53B', 'B0CNWT16R8', 'B09NTNTVRJ'],
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
   emergency_blanket: ['B0CDBYT9WW', 'B0H761VV55'],
@@ -23,7 +23,7 @@ export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEG
 export const VERIFIED_COUNT = VERIFIED_ASINS.length;
 
 /** S1-10c hotfix (16 Nov 2026): records whose evidence was checked 16 Nov (replacements; Sangean since unverified). */
-export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC'];
+export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC', 'B0713X4484', 'B06XXGK7GT'];
 
 /** Thermal size children (PM ruling b): child ASIN -> parent canonical (size_child_of). */
 export const THERMAL_SIZE_CHILDREN: Readonly<Record<string, string>> = {
@@ -54,4 +54,5 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B005AQK6V2', 'B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B013P5S1KC',
   'B0896Q8JXD', 'B001FIQ7XU', // earliest delivery more than 10 days out (12 Dec / 6 Dec)
   'B09SZB8Y4R', // Sangean: seller has 0 ratings in the last 12 months (strict 12-month rule; lifetime does not count)
+  'B002XNGTOI', // Duronic: the ASIN now shows a Duronic CT51 car tool (canonical B0GWJ4Y9B3), not the Apex radio (QA, 16 Nov)
 ];

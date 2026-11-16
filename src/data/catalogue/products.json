@@ -299,7 +299,7 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed. S1-10 recheck 15 Nov 2026: Title, brand, model F30801 and kit match. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:06 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Direct 2 Your Door, ships from Direct 2 Your Door; Seller page amazon.co.uk/sp?seller=A20JT3MQON5891: business K Blaize Trading Ltd, country GB; 92% positive, 1187 ratings (last 12 months); availability text seen \"Only 8 left in stock.\"; delivery date shown Tomorrow, 17 November; outcome pass.",
+        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed. S1-10 recheck 15 Nov 2026: Title, brand, model F30801 and kit match. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:06 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Direct 2 Your Door, ships from Direct 2 Your Door; Seller page amazon.co.uk/sp?seller=A20JT3MQON5891: business K Blaize Trading Ltd, country GB; 92% positive, 1187 ratings (last 12 months); availability text seen \"Only 8 left in stock.\"; delivery date shown Tomorrow, 17 November; outcome pass. dp_title_checked 2026-11-16T17:25Z; brand on page \"St John Ambulance\"; title \"St John Ambulance BS 8599-2:2014 Medium Motor Vehicle First Aid Kit\".",
         "canonical_asin": "B00L7S9LU4"
       },
       "notes": [
@@ -640,7 +640,7 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand Anker; Model Number A1689 and Manufacturer Part Number A1689011 match; one power bank (Number of Items 1). S1-10 recheck 15 Nov 2026: Title, brand and model A1689 match. In stock. Canonical is the dp ASIN.",
+        "note": "Title matches exactly; brand Anker; Model Number A1689 and Manufacturer Part Number A1689011 match; one power bank (Number of Items 1). S1-10 recheck 15 Nov 2026: Title, brand and model A1689 match. In stock. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:25Z; brand on page \"Anker\"; title \"Anker Zolo Power Bank, 20,000mAh 30W Portable Charger with Built-in USB-C\".",
         "canonical_asin": "B0CZ9LH53B"
       },
       "notes": [
@@ -1092,7 +1092,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07L142XSN",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\". Brand Cano Water, model STRP330 and pack (24 x 330 ml) match the listing. The title omits the brand, but the byline and Product details show Cano Water. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:01 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\". Brand Cano Water, model STRP330 and pack (24 x 330 ml) match the listing. The title omits the brand, but the byline and Product details show Cano Water. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:01 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:25Z; brand on page \"Cano Water\"; title \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1193,7 +1193,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B008XI72FC",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"St John Ambulance Supplies Universal First Aid Kit\". Title, brand, model F30557 (Model and MPN agree) and 23 pieces match. Listing shows \"Only 2 left in stock\". Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:02 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Safelincs, ships from Safelincs; Seller page amazon.co.uk/sp?seller=A3SU58XNZKFSIV: business Safelincs Ltd., country GB; 97% positive, 2356 ratings (last 12 months); availability text seen \"Only 1 left in stock.\"; delivery date shown Thursday, 19 November; outcome pass."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"St John Ambulance Supplies Universal First Aid Kit\". Title, brand, model F30557 (Model and MPN agree) and 23 pieces match. Listing shows \"Only 2 left in stock\". Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:02 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Safelincs, ships from Safelincs; Seller page amazon.co.uk/sp?seller=A3SU58XNZKFSIV: business Safelincs Ltd., country GB; 97% positive, 2356 ratings (last 12 months); availability text seen \"Only 1 left in stock.\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:25Z; brand on page \"St John Ambulance\"; title \"St John Ambulance Supplies Universal First Aid Kit\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1259,7 +1259,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B075F3FBTB",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Torch, 450lm, 300m Beam, AAA Battery Powered, Lightweight\". Title, brand and model 501046 match. NOTE: the Product details battery fields contradict each other (\"Lithium Ion\" and \"Alkaline\"); these are not identity checks. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Torch, 450lm, 300m Beam, AAA Battery Powered, Lightweight\". Title, brand and model 501046 match. NOTE: the Product details battery fields contradict each other (\"Lithium Ion\" and \"Alkaline\"); these are not identity checks. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Ledlenser\"; title \"Ledlenser P7 Torch, 450lm, 300m Beam, AAA Battery Powered, Lightweight\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1390,7 +1390,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B016P27MGG",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Rechargeable LED Torch, 1000lm, 210m Beam, up to 40h Run Time\". Title (P7R), brand and model 9408-R match. Listing shows \"Only 1 left in stock\". Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Ledlenser P7 Rechargeable LED Torch, 1000lm, 210m Beam, up to 40h Run Time\". Title (P7R), brand and model 9408-R match. Listing shows \"Only 1 left in stock\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Ledlenser\"; title \"Ledlenser P7 Rechargeable LED Torch, 1000lm, 210m Beam, up to 40h Run Time\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1518,7 +1518,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0CDBYT9WW",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\". Title, brand, model LP760-PACK OF 3 and pack (3, matching Number of Items and Unit Count) match. NOTE: Product details colour says \"Pink\" for a foil blanket; not an identity check. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:02 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller First Aid Specialist, ships from First Aid Specialist; Seller page amazon.co.uk/sp?seller=A2LRMCHJHULCYA: business Nice Products Ltd, country GB; 90% positive, 41 ratings (last 12 months); availability text seen \"In stock\"; delivery date shown Friday, 20 November; outcome pass."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\". Title, brand, model LP760-PACK OF 3 and pack (3, matching Number of Items and Unit Count) match. NOTE: Product details colour says \"Pink\" for a foil blanket; not an identity check. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:02 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller First Aid Specialist, ships from First Aid Specialist; Seller page amazon.co.uk/sp?seller=A2LRMCHJHULCYA: business Nice Products Ltd, country GB; 90% positive, 41 ratings (last 12 months); availability text seen \"In stock\"; delivery date shown Friday, 20 November; outcome pass. dp_title_checked 2026-11-16T17:26Z; brand on page \"Reliance Medical\"; title \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1585,7 +1585,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0H761VV55",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\". Title, brand, model 1805, pack (1) and size (130 x 210 cm) match. NOTE: Material Type says \"Cotton\", while the filling says metallised polyester film; not an identity check. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:02 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller HDP Medical Supplies, ships from HDP Medical Supplies; Seller page amazon.co.uk/sp?seller=A166GJ5EKMO1FX: business HDP Medical Supplies Ltd, country GB; 92% positive, 495 ratings (last 12 months); availability text seen \"In stock\"; delivery date shown Friday, 20 November; outcome pass."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\". Title, brand, model 1805, pack (1) and size (130 x 210 cm) match. NOTE: Material Type says \"Cotton\", while the filling says metallised polyester film; not an identity check. Canonical is the dp ASIN. S1-10c re-check. Buyability check (2026-11-16 17:02 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller HDP Medical Supplies, ships from HDP Medical Supplies; Seller page amazon.co.uk/sp?seller=A166GJ5EKMO1FX: business HDP Medical Supplies Ltd, country GB; 92% positive, 495 ratings (last 12 months); availability text seen \"In stock\"; delivery date shown Friday, 20 November; outcome pass. dp_title_checked 2026-11-16T17:26Z; brand on page \"Steroplast\"; title \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1657,7 +1657,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B093C9B1HK",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\". Title, brand, model LR06 and pack (24) match. The listing gives up to 10 years of storage life. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\". Title, brand, model LR06 and pack (24) match. The listing gives up to 10 years of storage life. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Duracell\"; title \"DURACELL Plus AA Alkaline Batteries (24 Pack) 1.5V, LR06\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1720,7 +1720,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07L49RDJH",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AA Batteries (24 Pack) Up To 50% Long Lasting\". Title, brand, model E301594100 and pack (24) match. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AA Batteries (24 Pack) Up To 50% Long Lasting\". Title, brand, model E301594100 and pack (24) match. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Energizer\"; title \"Energizer Alkaline Power - AA Batteries (24 Pack) Up To 50% Long Lasting\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1783,7 +1783,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07WSS27QT",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\". Title, brand, model E301658100 and pack (32) match. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\". Title, brand, model E301658100 and pack (32) match. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Energizer\"; title \"Energizer Alkaline Power - AAA Batteries (32 Pack) Up To 50% Longer Lasting\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1854,7 +1854,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B00KHN3DZE",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Portwest C474 Hi-Vis Safety Vest Dual Band High Visibility Waistcoat\". Title, brand, model C474YERS/M and size S-M match. The listing states EN ISO 20471 Class 2. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Portwest C474 Hi-Vis Safety Vest Dual Band High Visibility Waistcoat\". Title, brand, model C474YERS/M and size S-M match. The listing states EN ISO 20471 Class 2. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Portwest\"; title \"Portwest C474 Hi-Vis Safety Vest Dual Band High Visibility Waistcoat\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -1933,7 +1933,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B09V5JXY6D",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Yellow & Orange Premium Hi Vis Vest With Pockets, Size Large\". Title (Size Large), brand, model 80302105 and size L match. The listing states EN20471:2013+A1:2016 class 2. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Yellow & Orange Premium Hi Vis Vest With Pockets, Size Large\". Title (Size Large), brand, model 80302105 and size L match. The listing states EN20471:2013+A1:2016 class 2. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Blackrock\"; title \"Blackrock Yellow & Orange Premium Hi Vis Vest With Pockets, Size Large\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -2013,7 +2013,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0GZ3CPMWB",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis)."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\". Size child ASIN B005DEW1K0: its own page shows Brand Blackrock (byline \"Visit the Blackrock Store\"; Brand Name Blackrock; Manufacturer Rodo Ltd); Model Number / Part Number 8010003; Style \"Long Sleeve Waistcoat\"; selected size S (title \"Size Small\"), colour Yellow; Number of Items 1. The listing states \"EN20471:2013 +A1:2016 class 3\" (bullet: certified by Intertek). Add to basket present; listing showed \"Only 8 left in stock.\" Canonical link points to the parent /dp/B0GZ3CPMWB (recorded as size_child_of and canonical_asin, PM ruling extending size_child_of to hi_vis). dp_title_checked 2026-11-16T17:26Z; brand on page \"Blackrock\"; title \"Blackrock Hi Vis Long Sleeve Vests Yellow, Hi Viz, PPE, Size Small\"."
       },
       "notes": [
         "Identity from the tagless public child listing (fetched by Backend 15 Nov 2026 09:45 GMT, Firefox UA). No price, availability or image stored.",
@@ -2077,7 +2077,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B008RXAX0E",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc\". Title, brand and model MP3525 (MPN agrees) match. 3 m, 25 mm² and 450 A peak are stated. Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc\". Title, brand and model MP3525 (MPN agrees) match. 3 m, 25 mm² and 450 A peak are stated. Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:26Z; brand on page \"Maypole\"; title \"Maypole Heavy Duty 3m Jump Leads Copper Coated Aluminium Booster Cables 450A, for Large Cars Van, 4×4’s, Agricultural Vehicles up to 4000cc\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -2132,7 +2132,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B000UZGUFE",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING 300A Booster Cables, Suitable For Vehicles up to 3.5L\". Title, brand and model RBC160 match. 300 A is stated. Listing shows \"Only 1 left in stock (more on the way)\". Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING 300A Booster Cables, Suitable For Vehicles up to 3.5L\". Title, brand and model RBC160 match. 300 A is stated. Listing shows \"Only 1 left in stock (more on the way)\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:27Z; brand on page \"RING\"; title \"RING 300A Booster Cables, Suitable For Vehicles up to 3.5L\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -2243,7 +2243,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B001NLVA6S",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Breakdown E-Approved Warning Triangle\". Title, brand, model 120 / part MP120 and pack (1) match. The listing title says \"E-Approved\" and a bullet says \"Fully E Approved\". Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Maypole Breakdown E-Approved Warning Triangle\". Title, brand, model 120 / part MP120 and pack (1) match. The listing title says \"E-Approved\" and a bullet says \"Fully E Approved\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:27Z; brand on page \"Maypole\"; title \"Maypole Breakdown E-Approved Warning Triangle\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -2298,7 +2298,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0DHW4RF9Z",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING E Approved Emergency Warning Triangle with Case\". Title, brand and model RCT1370 match. The title says \"E Approved\". Listing shows \"Only 7 left in stock (more on the way)\". Canonical is the dp ASIN."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"RING E Approved Emergency Warning Triangle with Case\". Title, brand and model RCT1370 match. The title says \"E Approved\". Listing shows \"Only 7 left in stock (more on the way)\". Canonical is the dp ASIN. dp_title_checked 2026-11-16T17:27Z; brand on page \"RING\"; title \"RING E Approved Emergency Warning Triangle with Case\"."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10 research, 15 Nov 2026, Firefox UA); Add to Basket present. No price, availability or image stored.",
@@ -2426,7 +2426,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0DMT14LGZ",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Regatta Mens Long-Sleeve Thermal Baselayer Top\". Size child ASIN B004KMGZG2: its own page shows Brand Regatta (byline \"Visit the Regatta Store\"; Brand Name Regatta); Model Number / Item model number TRU112, Model Name \"L/S Thermal Vest\", Manufacturer Part Number Rg289/Tru112; selected size M, colour Blue, Department Men's; Number of Items 1. Add to basket present; listing showed \"Only 2 left in stock (more on the way)\". Canonical link points to the parent /dp/B0DMT14LGZ (recorded as size_child_of and canonical_asin, PM ruling option b)."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Regatta Mens Long-Sleeve Thermal Baselayer Top\". Size child ASIN B004KMGZG2: its own page shows Brand Regatta (byline \"Visit the Regatta Store\"; Brand Name Regatta); Model Number / Item model number TRU112, Model Name \"L/S Thermal Vest\", Manufacturer Part Number Rg289/Tru112; selected size M, colour Blue, Department Men's; Number of Items 1. Add to basket present; listing showed \"Only 2 left in stock (more on the way)\". Canonical link points to the parent /dp/B0DMT14LGZ (recorded as size_child_of and canonical_asin, PM ruling option b). dp_title_checked 2026-11-16T17:27Z; brand on page \"Regatta\"; title \"Regatta Mens Long-Sleeve Thermal Baselayer Top\"."
       },
       "notes": [
         "Identity from the tagless public child listing (fetched by Backend 15 Nov 2026 09:34 GMT, Firefox UA). No price, availability or image stored.",
@@ -2499,7 +2499,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0CKXG19WH",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Helly Hansen Men's Lifa Active Crew Base Layer\". Size child ASIN B0887LWT53: its own page shows Brand Helly Hansen (Brand Name, Manufacturer); Model Number / Manufacturer Part Number / Item model number 49389, Model Name and Style Name \"Lifa Active Crew\"; selected size M (Garment Size Country Great Britain), colour Black, Department Men's; Number of Items 1. Add to basket present; \"In stock\". Canonical link points to the parent /dp/B0CKXG19WH (recorded as size_child_of and canonical_asin, PM ruling option b)."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Helly Hansen Men's Lifa Active Crew Base Layer\". Size child ASIN B0887LWT53: its own page shows Brand Helly Hansen (Brand Name, Manufacturer); Model Number / Manufacturer Part Number / Item model number 49389, Model Name and Style Name \"Lifa Active Crew\"; selected size M (Garment Size Country Great Britain), colour Black, Department Men's; Number of Items 1. Add to basket present; \"In stock\". Canonical link points to the parent /dp/B0CKXG19WH (recorded as size_child_of and canonical_asin, PM ruling option b). dp_title_checked 2026-11-16T17:27Z; brand on page \"Helly Hansen\"; title \"Helly Hansen Men's Lifa Active Crew Base Layer\"."
       },
       "notes": [
         "Identity from the tagless public child listing (fetched by Backend 15 Nov 2026 09:34 GMT, Firefox UA). No price, availability or image stored.",
@@ -2573,7 +2573,7 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents", "size"],
         "canonical_asin": "B0DZ8DXDGP",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Mountain Warehouse Talus Mens IsoTherm Base Layer Top\". Size child ASIN B013LFW3WS: its own page shows Brand Mountain Warehouse (byline \"Visit the Mountain Warehouse Store\"; Brand Name); style name \"Talus\" (IsoTherm) in the title; Model Name and Model Number both 023196005005 (Manufacturer Part Number 23196005005); selected size L, colour Black (Round Neck), Department Men's; Number of Items 1. Add to basket present; \"In stock\". QA: the model number is a long numeric code; identity rests on the title style name plus the agreeing model fields. Canonical link points to the parent /dp/B0DZ8DXDGP (recorded as size_child_of and canonical_asin, PM ruling option b)."
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Mountain Warehouse Talus Mens IsoTherm Base Layer Top\". Size child ASIN B013LFW3WS: its own page shows Brand Mountain Warehouse (byline \"Visit the Mountain Warehouse Store\"; Brand Name); style name \"Talus\" (IsoTherm) in the title; Model Name and Model Number both 023196005005 (Manufacturer Part Number 23196005005); selected size L, colour Black (Round Neck), Department Men's; Number of Items 1. Add to basket present; \"In stock\". QA: the model number is a long numeric code; identity rests on the title style name plus the agreeing model fields. Canonical link points to the parent /dp/B0DZ8DXDGP (recorded as size_child_of and canonical_asin, PM ruling option b). dp_title_checked 2026-11-16T17:27Z; brand on page \"Mountain Warehouse\"; title \"Mountain Warehouse Talus Mens IsoTherm Base Layer Top\"."
       },
       "notes": [
         "Identity from the tagless public child listing (fetched by Backend 15 Nov 2026 09:34 GMT, Firefox UA). No price, availability or image stored.",
@@ -2751,9 +2751,9 @@
         "url": "https://www.amazon.co.uk/dp/B002XNGTOI"
       },
       "captured_at": "2026-11-16T16:39:00+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Duronic wind-up solar AM/FM radio with torch",
-      "display_rank": 1,
+      "display_rank": null,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -2762,14 +2762,14 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B002XNGTOI",
         "checked_on": "2026-11-16",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Duronic Solar Radio Apex, Wind Up Radio, ...\". Brand Name \"Duronic\", Manufacturer \"Duronic\", Model Number \"APEX\", Manufacturer Part Number \"Apex\". One radio. Add to Basket present; canonical B002XNGTOI. Re-checked 16 Nov 2026 16:52 UK (S1-10c). Buyability check (2026-11-16 16:52 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller DURONIC, ships from DURONIC; Seller page amazon.co.uk/sp?seller=APLJ5AXPSKRV0: business Shine-Mart Ltd, country GB; 91% positive, 1016 ratings (last 12 months); availability text seen \"Only 1 left in stock.\"; delivery date shown Saturday, 21 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Duronic Solar Radio Apex, Wind Up Radio, ...\". Brand Name \"Duronic\", Manufacturer \"Duronic\", Model Number \"APEX\", Manufacturer Part Number \"Apex\". One radio. Add to Basket present; canonical B002XNGTOI. Re-checked 16 Nov 2026 16:52 UK (S1-10c). Buyability check (2026-11-16 16:52 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller DURONIC, ships from DURONIC; Seller page amazon.co.uk/sp?seller=APLJ5AXPSKRV0: business Shine-Mart Ltd, country GB; 91% positive, 1016 ratings (last 12 months); availability text seen \"Only 1 left in stock.\"; delivery date shown Saturday, 21 November; outcome pass. Unverified (QA, re-checked 16 Nov 2026 17:25 UK): the dp page now shows a different product: title \"Duronic CT51 Emergency Car Tool, Multifunctional Seatbelt Cutter with Pin Hammer, Car Escape Tool with Window Breaker, SOS Alarm and Magnetic Flashlight\", canonical B0GWJ4Y9B3 (QA 17:13 and 17:17 UK; confirmed 17:22 and 17:25 UK). The ASIN no longer resolves to the Duronic Apex wind-up radio.",
         "canonical_asin": "B002XNGTOI"
       },
       "notes": [
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA; buyability re-checked in S1-10c). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
-        "Why picked: Duronic is an established UK electronics brand; replaces the radios that failed the QA #24 buyability rule."
+        "Unverified (QA, re-checked 16 Nov 2026 17:25 UK): the dp page now shows a different product: title \"Duronic CT51 Emergency Car Tool, Multifunctional Seatbelt Cutter with Pin Hammer, Car Escape Tool with Window Breaker, SOS Alarm and Magnetic Flashlight\", canonical B0GWJ4Y9B3 (QA 17:13 and 17:17 UK; confirmed 17:22 and 17:25 UK). The ASIN no longer resolves to the Duronic Apex wind-up radio. Data kept."
       ]
     },
     {
@@ -2879,7 +2879,7 @@
       "captured_at": "2026-11-16T16:55:00+00:00",
       "verification": "verified",
       "display_name": "Roberts portable DAB and FM radio",
-      "display_rank": 2,
+      "display_rank": 1,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -2890,7 +2890,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\". Brand Name \"Roberts\", Manufacturer \"Roberts\", Model Number / Manufacturer Part Number \"PLAY20BK\" (PLAY20, black). One radio (Number of Items 1); bullet \"Portable battery power or mains plug in\". Canonical is the dp ASIN B091YFB8N2; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:55 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\". Brand Name \"Roberts\", Manufacturer \"Roberts\", Model Number / Manufacturer Part Number \"PLAY20BK\" (PLAY20, black). One radio (Number of Items 1); bullet \"Portable battery power or mains plug in\". Canonical is the dp ASIN B091YFB8N2; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:55 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:29Z; brand on page \"Roberts\"; title \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\".",
         "canonical_asin": "B091YFB8N2"
       },
       "notes": [
@@ -2945,7 +2945,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\". Brand Name \"Samsung\", Manufacturer \"Samsung\", Model Number / Manufacturer Part Number \"EB-P4520XUEGEU\". One power bank with a USB-C cable. Canonical is the dp ASIN B0CNWT16R8; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:53 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\". Brand Name \"Samsung\", Manufacturer \"Samsung\", Model Number / Manufacturer Part Number \"EB-P4520XUEGEU\". One power bank with a USB-C cable. Canonical is the dp ASIN B0CNWT16R8; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:53 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:29Z; brand on page \"Samsung\"; title \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\".",
         "canonical_asin": "B0CNWT16R8"
       },
       "notes": [
@@ -3012,7 +3012,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\". Brand Name \"Belkin\", Manufacturer \"Belkin\", Model Number \"BPB012\", Manufacturer Part Number \"BPB012btBK\". One power bank plus a USB-A to USB-C cable. Canonical is the dp ASIN B09NTNTVRJ; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:53 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\". Brand Name \"Belkin\", Manufacturer \"Belkin\", Model Number \"BPB012\", Manufacturer Part Number \"BPB012btBK\". One power bank plus a USB-A to USB-C cable. Canonical is the dp ASIN B09NTNTVRJ; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:53 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:29Z; brand on page \"Belkin\"; title \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\".",
         "canonical_asin": "B09NTNTVRJ"
       },
       "notes": [
@@ -3067,7 +3067,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\". Brand Name \"Reliance Medical\", Manufacturer \"Reliance Medical\", Model Number / Manufacturer Part Number \"157\" (REL157 in the canonical slug). One family kit, 83 pieces. Canonical is the dp ASIN B001MG6WJ4; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:57 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"Only 10 left in stock.\"; delivery date shown Thursday, 19 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\". Brand Name \"Reliance Medical\", Manufacturer \"Reliance Medical\", Model Number / Manufacturer Part Number \"157\" (REL157 in the canonical slug). One family kit, 83 pieces. Canonical is the dp ASIN B001MG6WJ4; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:57 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"Only 10 left in stock.\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:29Z; brand on page \"Reliance Medical\"; title \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\".",
         "canonical_asin": "B001MG6WJ4"
       },
       "notes": [
@@ -3132,7 +3132,7 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\". Brand Name \"Petzl\", Manufacturer \"Petzl\", Model Number / Manufacturer Part Number \"E069AA00\" (Aria 1). One head torch with 3 AAA batteries. Canonical is the dp ASIN B0BV7HHSMX; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:54 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon EU, ships from Amazon EU; availability text seen \"In stock\"; delivery date shown Tuesday, 24 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\". Brand Name \"Petzl\", Manufacturer \"Petzl\", Model Number / Manufacturer Part Number \"E069AA00\" (Aria 1). One head torch with 3 AAA batteries. Canonical is the dp ASIN B0BV7HHSMX; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:54 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon EU, ships from Amazon EU; availability text seen \"In stock\"; delivery date shown Tuesday, 24 November; outcome pass. dp_title_checked 2026-11-16T17:29Z; brand on page \"Petzl\"; title \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\".",
         "canonical_asin": "B0BV7HHSMX"
       },
       "notes": [
@@ -3203,12 +3203,138 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\". Brand Name \"Icelandic Glacial\"; Item model number / Part Number \"UN3681\" as shown on the listing; manufacturer contact Icelandic Water Limited (UK). One pack of 10 x 330 ml cans (Number of Items 10). Canonical is the dp ASIN B0BBSP1QVC; Add to Basket posts this ASIN. Buyability check (2026-11-16 17:03 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\". Brand Name \"Icelandic Glacial\"; Item model number / Part Number \"UN3681\" as shown on the listing; manufacturer contact Icelandic Water Limited (UK). One pack of 10 x 330 ml cans (Number of Items 10). Canonical is the dp ASIN B0BBSP1QVC; Add to Basket posts this ASIN. Buyability check (2026-11-16 17:03 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller Amazon, ships from Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:29Z; brand on page \"Icelandic Glacial\"; title \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\".",
         "canonical_asin": "B0BBSP1QVC"
       },
       "notes": [
         "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
         "Why picked: Recognised spring-water brand in cans, sold by Amazon. Replaces the Cano 500 ml pack, whose earliest delivery is 12 December."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0713x4484",
+      "category": "radio",
+      "product_name": "Sony ICF506 Analog Tuning Portable FM/AM Radio with Battery/AC Power",
+      "brand": "Sony",
+      "asin_uk": "B0713X4484",
+      "gtin": null,
+      "mpn": "ICF506.CEK",
+      "model_code": "ICF506",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Portable FM/AM Radio\"",
+            "url": "https://www.amazon.co.uk/dp/B0713X4484"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "AM",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"FM/AM\"; Radio Bands Supported \"AM/FM\"",
+            "url": "https://www.amazon.co.uk/dp/B0713X4484"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0713X4484"
+      },
+      "captured_at": "2026-11-16T17:30:00+00:00",
+      "verification": "verified",
+      "display_name": "Sony portable AM and FM radio",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0713X4484",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sony ICF506 Analog Tuning Portable FM/AM Radio with Battery/AC Power\". Brand Name \"Sony\", Manufacturer \"Sony\", Model Number / Manufacturer Part Number \"ICF506.CEK\" (ICF506). One radio (Number of Items 1) with an AC power cord; title \"with Battery/AC Power\". Canonical is the dp ASIN B0713X4484; Add to Basket posts this ASIN. Buyability check (2026-11-16 17:30 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller a s k, ships from a s k; Seller page amazon.co.uk/sp?seller=A2L0UV81X3JLZ5: business ASK Outlets Ltd, country GB; 99% positive in the last 12 months (241 ratings); availability text seen \"In stock\"; delivery date shown Wednesday, 18 November; outcome pass. dp_title_checked 2026-11-16T17:30Z; brand on page \"Sony\"; title \"Sony ICF506 Analog Tuning Portable FM/AM Radio with Battery/AC Power\".",
+        "canonical_asin": "B0713X4484"
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Sony is an established electronics brand; battery or mains AM/FM portable radio from a UK seller that meets the 12-month rating bar. Replaces the Duronic ASIN that now shows a different product."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b06xxgk7gt",
+      "category": "radio",
+      "product_name": "Panasonic RF-P50DEG-S silver",
+      "brand": "Panasonic",
+      "asin_uk": "B06XXGK7GT",
+      "gtin": null,
+      "mpn": "RF-P50DEG-S",
+      "model_code": "RF-P50DEG-S",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Item Type Name \"Panasonic Portable AM/FM Radio - Silver\"",
+            "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "aa"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Product details \"2 AA batteries required.\"",
+            "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "AM",
+            "FM"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Radio Bands Supported \"FM, MW\" (MW is AM)",
+            "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+          },
+          "captured_at": "2026-11-16T17:30:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B06XXGK7GT"
+      },
+      "captured_at": "2026-11-16T17:30:00+00:00",
+      "verification": "verified",
+      "display_name": "Panasonic pocket AM and FM radio",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B06XXGK7GT",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Panasonic RF-P50DEG-S silver\". Brand Name \"Panasonic\", Manufacturer \"Panasonic\", Model Number / Manufacturer Part Number \"RF-P50DEG-S\"; Item Type Name \"Panasonic Portable AM/FM Radio - Silver\". One radio (Number of Items 1), runs on 2 AA batteries. Canonical is the dp ASIN B06XXGK7GT; Add to Basket posts this ASIN. Buyability check (2026-11-16 17:30 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller ZAQI, ships from Amazon; Seller page amazon.co.uk/sp?seller=A2YQF951WUX5MR: business ZAQI LTD, country GB; 100% positive in the last 12 months (23 ratings); fulfilled by Amazon; availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. dp_title_checked 2026-11-16T17:30Z; brand on page \"Panasonic\"; title \"Panasonic RF-P50DEG-S silver\".",
+        "canonical_asin": "B06XXGK7GT"
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Panasonic is an established electronics brand; battery pocket AM/FM radio from a UK seller that meets the 12-month rating bar, fulfilled by Amazon. Replaces the Duronic ASIN that now shows a different product."
       ]
     }
   ]

@@ -169,7 +169,7 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
   it('migrated the three wind-up torch radios to radio, data otherwise preserved', () => {
     const migrated = ['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK'];
     const torchRadios = catalogueProducts.filter((p) => (p.specs as { device_type?: { value: string } }).device_type?.value === 'torch_radio');
-    // S1-10c hotfix: Duronic Apex (B002XNGTOI) is a new torch_radio added 16 Nov, not a migrated record.
+    // S1-10c hotfix: Duronic Apex (B002XNGTOI) is a torch_radio added 16 Nov (since unverified), not a migrated record.
     expect(torchRadios.map((p) => p.asin_uk).filter((a) => a !== 'B002XNGTOI').sort()).toEqual(migrated);
     for (const p of torchRadios) expect(p.category).toBe('radio');
     for (const a of migrated) expect(catalogueOffers.find((o) => o.asin === a)!.category).toBe('radio');
@@ -460,8 +460,9 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    // S1-10: 30. S1-10c hotfix (16 Nov): 10 failed buyability (incl. Sangean, strict 12-month rule), 8 added = 28 (radio and emergency_blanket have 2).
-    expect(n).toBe(28);
+    // S1-10: 30. S1-10c hotfix (16 Nov): 10 failed buyability (incl. Sangean, strict 12-month rule), 8 added = 28; then Duronic
+    // B002XNGTOI unverified (ASIN now shows a car tool) and Sony + Panasonic radios added = 29 (emergency_blanket has 2).
+    expect(n).toBe(29);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
