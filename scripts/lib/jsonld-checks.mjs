@@ -22,6 +22,51 @@ export const BANNED_TYPES = [
 export const BANNED_PRICE_KEYS = ['price', 'priceCurrency', 'lowPrice', 'highPrice', 'priceValidUntil'];
 
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+const ISO_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/;
+
+const datePart = (value) => String(value).slice(0, 10);
+
+/** Local midnight in Europe/London as a full ISO 8601 datetime with offset. */
+export function londonDateTime(day) {
+  const date = datePart(day);
+  if (!ISO_DAY.test(date)) throw new Error(`londonDateTime: not a calendar date: ${day}`);
+  const inst = new Date(`${date}T00:00:00Z`);
+  const tz = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    timeZoneName: 'longOffset',
+  })
+    .formatToParts(inst)
+    .find((part) => part.type === 'timeZoneName')?.value;
+  const match = tz?.match(/GMT([+-]\d{2}):(\d{2})/i);
+  if (!match) throw new Error(`londonDateTime: could not read the Europe/London offset for ${date} (${tz ?? 'none'})`);
+  return `${date}T00:00:00${match[1]}:${match[2]}`;
+}
+
+const MONTHS = {
+  january: '01', jan: '01', february: '02', feb: '02', march: '03', mar: '03',
+  april: '04', apr: '04', may: '05', june: '06', jun: '06', july: '07', jul: '07',
+  august: '08', aug: '08', september: '09', sep: '09', sept: '09', october: '10', oct: '10',
+  november: '11', nov: '11', december: '12', dec: '12',
+};
+
+/** Calendar dates from <time datetime> and visible "Last reviewed" / "Updated" / "Last checked" labels. */
+export function visibleDates(html) {
+  const out = new Set();
+  for (const m of html.matchAll(/<time\b[^>]*\bdatetime\s*=\s*["']([^"']+)["']/gi)) {
+    const value = decode(m[1]);
+    if (ISO_DAY.test(value) || ISO_DATETIME.test(value)) out.add(datePart(value));
+  }
+  const text = decode(html.replace(/<[^>]+>/g, ' '));
+  const label = /(?:Last reviewed|Updated|Last checked)\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/gi;
+  let m;
+  while ((m = label.exec(text))) {
+    const month = MONTHS[m[2].toLowerCase()];
+    if (!month) continue;
+    out.add(`${m[3]}-${month}-${m[1].padStart(2, '0')}`);
+  }
+  return [...out];
+}
+
 const WEBPAGE_TYPES = new Set(['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage']);
 
 const decode = (s) =>
@@ -369,16 +414,37 @@ function checkPage(file, html, { now } = {}, failures) {
         failures.push({ file, reason: `Article is missing ${field}` });
         continue;
       }
-      if (!ISO_DAY.test(String(value))) {
-        failures.push({ file, reason: `Article.${field} "${value}" is not YYYY-MM-DD` });
+      if (!ISO_DATETIME.test(String(value))) {
+        failures.push({
+          file,
+          reason: `Article.${field} "${value}" is not a full ISO 8601 datetime with a timezone offset (YYYY-MM-DDTHH:MM:SS±HH:MM)`,
+        });
+        continue;
+      }
+      const expected = londonDateTime(datePart(value));
+      if (value !== expected) {
+        failures.push({
+          file,
+          reason: `Article.${field} "${value}" must be local midnight in Europe/London (${expected})`,
+        });
       }
     }
-    if (ISO_DAY.test(String(art.datePublished ?? '')) && ISO_DAY.test(String(art.dateModified ?? ''))) {
-      if (art.datePublished > art.dateModified) {
+    if (ISO_DATETIME.test(String(art.datePublished ?? '')) && ISO_DATETIME.test(String(art.dateModified ?? ''))) {
+      if (datePart(art.datePublished) > datePart(art.dateModified)) {
         failures.push({ file, reason: `datePublished ${art.datePublished} is after dateModified ${art.dateModified}` });
       }
-      if (art.dateModified > today) {
+      if (datePart(art.dateModified) > today) {
         failures.push({ file, reason: `dateModified ${art.dateModified} is after the build date ${today}` });
+      }
+    }
+    const visible = visibleDates(html);
+    if (visible.length && ISO_DATETIME.test(String(art.dateModified ?? ''))) {
+      const modified = datePart(art.dateModified);
+      if (!visible.includes(modified)) {
+        failures.push({
+          file,
+          reason: `Article.dateModified date ${modified} does not match the visible date (${visible.join(', ')})`,
+        });
       }
     }
   }

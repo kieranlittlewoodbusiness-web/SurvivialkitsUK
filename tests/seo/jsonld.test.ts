@@ -13,6 +13,7 @@ import {
   crumbsForPage,
   dateModifiedOf,
   isoDate,
+  isoDateTimeLondon,
   itemList,
   organizationNode,
   pageUrl,
@@ -32,6 +33,19 @@ describe('isoDate and dateModifiedOf', () => {
     expect(dateModifiedOf(new Date('2026-11-14T00:00:00.000Z'), undefined, '2026-11-10')).toBe(
       '2026-11-14',
     );
+  });
+});
+
+describe('isoDateTimeLondon', () => {
+  it('emits local midnight with the Europe/London offset for GMT and BST dates', () => {
+    expect(isoDateTimeLondon('2026-11-14')).toBe('2026-11-14T00:00:00+00:00');
+    expect(isoDateTimeLondon('2026-11-15')).toBe('2026-11-15T00:00:00+00:00');
+    expect(isoDateTimeLondon('2026-07-01')).toBe('2026-07-01T00:00:00+01:00');
+    // Transition days: midnight on the last Sunday is still on the outgoing offset.
+    expect(isoDateTimeLondon('2026-03-29')).toBe('2026-03-29T00:00:00+00:00');
+    expect(isoDateTimeLondon('2026-03-30')).toBe('2026-03-30T00:00:00+01:00');
+    expect(isoDateTimeLondon('2026-10-25')).toBe('2026-10-25T00:00:00+01:00');
+    expect(isoDateTimeLondon('2026-10-26')).toBe('2026-10-26T00:00:00+00:00');
   });
 });
 
@@ -85,6 +99,8 @@ describe('article', () => {
     expect(node).not.toHaveProperty('author');
     expect(node.publisher).toEqual({ '@id': ORG_ID });
     expect(node.mainEntityOfPage).toEqual({ '@id': `${url}#webpage` });
+    expect(node.datePublished).toBe('2026-11-14T00:00:00+00:00');
+    expect(node.dateModified).toBe('2026-11-14T00:00:00+00:00');
     expect((node.image as { url: string }).url).toBe(`${APEX}/images/social-share.jpg`);
     expect((node.image as { width: number; height: number }).width).toBe(1200);
     expect((node.image as { height: number }).height).toBe(630);

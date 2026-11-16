@@ -54,8 +54,8 @@ const pageNodes = () => [
     '@id': `${CANONICAL}#article`,
     headline: H1,
     description: DESC,
-    datePublished: '2026-11-14',
-    dateModified: '2026-11-15',
+    datePublished: '2026-11-14T00:00:00+00:00',
+    dateModified: '2026-11-15T00:00:00+00:00',
     inLanguage: 'en-GB',
     mainEntityOfPage: { '@id': `${CANONICAL}#webpage` },
     isPartOf: { '@id': `${CANONICAL}#webpage` },
@@ -244,19 +244,47 @@ describe('checkJsonLd', () => {
     expect(reasons(site({ 'method/index.html': html({ script: graph(img) }) }))).toMatch(/Article\.image\.url/);
   });
 
-  it('fails when dates are not ISO, are out of order, or are in the future', () => {
-    const bad = pageNodes();
-    bad[3].datePublished = '14 November 2026';
-    expect(reasons(site({ 'method/index.html': html({ script: graph(bad) }) }))).toMatch(/YYYY-MM-DD/);
+  it('fails when dates are not full ISO 8601 datetimes with a Europe/London offset, are out of order, or are in the future', () => {
+    const dateOnly = pageNodes();
+    dateOnly[3].datePublished = '2026-11-14';
+    expect(reasons(site({ 'method/index.html': html({ script: graph(dateOnly) }) }))).toMatch(
+      /full ISO 8601 datetime with a timezone offset/,
+    );
+
+    const zulu = pageNodes();
+    zulu[3].datePublished = '2026-11-14T00:00:00Z';
+    expect(reasons(site({ 'method/index.html': html({ script: graph(zulu) }) }))).toMatch(
+      /full ISO 8601 datetime with a timezone offset/,
+    );
+
+    const wrongOffset = pageNodes();
+    wrongOffset[3].datePublished = '2026-11-14T00:00:00+01:00';
+    expect(reasons(site({ 'method/index.html': html({ script: graph(wrongOffset) }) }))).toMatch(
+      /Europe\/London/,
+    );
 
     const order = pageNodes();
-    order[3].datePublished = '2026-11-16';
-    order[3].dateModified = '2026-11-15';
-    expect(reasons(site({ 'method/index.html': html({ script: graph(order) }) }))).toMatch(/datePublished .* is after dateModified/);
+    order[3].datePublished = '2026-11-16T00:00:00+00:00';
+    order[3].dateModified = '2026-11-15T00:00:00+00:00';
+    expect(reasons(site({ 'method/index.html': html({ script: graph(order) }) }))).toMatch(
+      /datePublished .* is after dateModified/,
+    );
 
     const future = pageNodes();
-    future[3].dateModified = '2026-11-20';
+    future[3].dateModified = '2026-11-20T00:00:00+00:00';
     expect(reasons(site({ 'method/index.html': html({ script: graph(future) }) }))).toMatch(/after the build date/);
+  });
+
+  it('fails when dateModified does not match the visible date, and passes when it does', () => {
+    const mismatch = html({
+      body: 'Updated <time datetime="2026-11-14">14 Nov 2026</time>',
+    });
+    expect(reasons(site({ 'method/index.html': mismatch }))).toMatch(/does not match the visible date/);
+
+    const match = html({
+      body: 'Updated <time datetime="2026-11-15">15 Nov 2026</time>',
+    });
+    expect(checkJsonLd(site({ 'method/index.html': match, '404.html': html({ robots: 'noindex, nofollow', script: '', canonical: null, heading: 'Page not found' }) }), { now: NOW }).failures).toEqual([]);
   });
 
   it('fails when the last breadcrumb item is not the canonical', () => {

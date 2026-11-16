@@ -78,6 +78,27 @@ export function isoDate(value: Date | string): string {
   return `${y}-${m}-${d}`;
 }
 
+/** Europe/London offset at local midnight on a calendar date, e.g. "+00:00" (GMT) or "+01:00" (BST). */
+export function londonOffset(day: Date | string): string {
+  const date = isoDate(day);
+  const inst = new Date(`${date}T00:00:00Z`);
+  const tz = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/London',
+    timeZoneName: 'longOffset',
+  })
+    .formatToParts(inst)
+    .find((part) => part.type === 'timeZoneName')?.value;
+  const match = tz?.match(/GMT([+-]\d{2}):(\d{2})/i);
+  if (!match) throw new Error(`londonOffset: could not read the Europe/London offset for ${date} (${tz ?? 'none'})`);
+  return `${match[1]}:${match[2]}`;
+}
+
+/** Full ISO 8601 datetime at local midnight in Europe/London, e.g. 2026-11-14T00:00:00+00:00. */
+export function isoDateTimeLondon(day: Date | string): string {
+  const date = isoDate(day);
+  return `${date}T00:00:00${londonOffset(date)}`;
+}
+
 /** Latest of the given dates as YYYY-MM-DD (updated / lastReviewed / pubDate). */
 export function dateModifiedOf(...dates: Array<Date | string | undefined | null>): string {
   const days = dates
@@ -175,8 +196,8 @@ export function article(opts: {
     '@id': `${opts.url}#article`,
     headline: opts.headline,
     description: opts.description,
-    datePublished: opts.datePublished,
-    dateModified: opts.dateModified,
+    datePublished: isoDateTimeLondon(opts.datePublished),
+    dateModified: isoDateTimeLondon(opts.dateModified),
     inLanguage: 'en-GB',
     mainEntityOfPage: { '@id': `${opts.url}#webpage` },
     isPartOf: { '@id': `${opts.url}#webpage` },
