@@ -17,6 +17,19 @@ import { isoDate } from './seo/jsonld';
 export const NBSP = '\u00a0';
 const keepTogether = (label: string) => label.replace(/\s+/g, NBSP);
 
+/**
+ * SEO-6f (QA comment 6932313020 on #42): citation titles keep their year with the word before it, and
+ * a "22 Oct 2026" date inside a title stays on one line. Only whitespace changes (to U+00A0); the text
+ * reads the same. Idempotent, so labels that already carry NBSP are unchanged.
+ */
+const YEAR = String.raw`(?:19|20)\d{2}\b`;
+const BEFORE_YEAR = new RegExp(String.raw`\s+(?=${YEAR})`, 'g');
+const DAY_MONTH_YEAR = new RegExp(String.raw`\b(\d{1,2})\s+([A-Z][a-z]{2,8})(?=${NBSP}${YEAR})`, 'g');
+
+export function keepCitationYear(label: string): string {
+  return label.replace(BEFORE_YEAR, NBSP).replace(DAY_MONTH_YEAR, `$1${NBSP}$2`);
+}
+
 const londonLongDate = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/London',
   day: 'numeric',

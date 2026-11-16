@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { standardPageNodes } from '../lib/seo/jsonld';
+import { keepCitationYear, NBSP } from '../lib/dates';
 
 const title = 'Official sources for UK emergency kits';
 const heading = 'Official sources we cite';
@@ -105,14 +106,14 @@ const sources = [
       <h1>{heading}</h1>
       <p class="lede">
         Re-verify campaign URLs before major updates—government hosts and PDF paths can change.
-        Retrieved for this build: 16&nbsp;November&nbsp;2026.
+        Retrieved for this build: 16{NBSP}November{NBSP}2026.
       </p>
       <ul class="source-list">
         {
           sources.map((source) => (
             <li>
               <a href={source.url} rel="noopener noreferrer">
-                {source.label}
+                {keepCitationYear(source.label)}
               </a>
               <div class="url">{source.url}</div>
             </li>

@@ -8,7 +8,7 @@ import CategoryIcon from '../../../components/catalogue/CategoryIcon.astro';
 import { CATEGORY_META, loadCatalogue, productSections as compareSections } from '../../../components/catalogue/catalogueView';
 import { comparePath } from '../../../data/site';
 import { COMPARE_DATES } from '../../../data/compareDates';
-import { formatLondonDate, formatLondonShortDate, NBSP } from '../../../lib/dates';
+import { formatLondonDate, formatLondonShortDate, keepCitationYear, NBSP } from '../../../lib/dates';
 import {
   article,
   breadcrumbList,
@@ -33,7 +33,7 @@ const productSections = compareSections(catalogue);
 const official = [
   { label: 'Be Ready: be ready for emergencies (GOV.UK campaign)', url: 'https://beready.campaign.gov.uk/be-ready-for-emergencies/' },
   { label: 'Be Ready checklist (PDF)', url: 'https://beready.campaign.gov.uk/wp-content/uploads/sites/252/2026/10/Be-Ready-Checklist_English.pdf' },
-  { label: `GOV.UK: households encouraged to take small, simple steps (22${NBSP}Oct${NBSP}2026)`, url: 'https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency' },
+  { label: 'GOV.UK: households encouraged to take small, simple steps (22 Oct 2026)', url: 'https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency' },
   { label: 'British Red Cross: prepare an emergency kit', url: 'https://www.redcross.org.uk/get-help/prepare-for-emergencies/prepare-an-emergency-kit' },
   { label: 'Cabinet Office: UK Public Survey of Risk Perception, Resilience and Preparedness 2026', url: 'https://www.gov.uk/government/statistics/uk-public-survey-of-risk-perception-resilience-and-preparedness-2026/uk-public-survey-of-risk-perception-resilience-and-preparedness-2026-headline-findings-html' },
   { label: 'Power Cut 105 (GB)', url: 'https://www.powercut105.com/en/' },
@@ -275,7 +275,7 @@ const litresRows = [1, 2, 3, 4, 5, 6];
       <p>Last checked <time datetime={UPDATED_ON}>{formatLondonDate(UPDATED_ON)}</time>.</p>
       <h3>Official guidance</h3>
       <ul class="source-list">
-        {official.map((s) => <li><a href={s.url} rel="noopener noreferrer">{s.label}</a></li>)}
+        {official.map((s) => <li><a href={s.url} rel="noopener noreferrer">{keepCitationYear(s.label)}</a></li>)}
       </ul>
       <h3>Product listings</h3>
       <p>Amazon UK product pages for each item above, read on {formatLondonDate(UPDATED_ON)}.</p>
