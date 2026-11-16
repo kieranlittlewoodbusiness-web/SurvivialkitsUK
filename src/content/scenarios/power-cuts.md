@@ -1,6 +1,7 @@
 ---
-title: "Power cuts: light, warmth and information at home"
-description: "UK household guide for a multi-hour power cut—torch, radio, warmth, 105 on paper and Priority Services Register."
+title: "Power cut kit for UK homes: what to have ready"
+seoTitle: "Power cut kit for UK homes"
+description: "A UK power cut kit for a multi-hour outage at home: torch, radio, warmth, the 105 number on paper, and the Priority Services Register if you need extra help."
 scenario: Multi-hour or overnight electricity outage at home
 pubDate: 2026-11-14
 updated: 2026-11-14

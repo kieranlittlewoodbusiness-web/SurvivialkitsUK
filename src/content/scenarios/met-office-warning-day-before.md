@@ -1,6 +1,7 @@
 ---
-title: "Amber on the map: what to do the day before a Met Office warning"
-description: "Calm steps when a Yellow or Amber Met Office warning covers your area—read the impact text, charge devices, review your kit."
+title: "What to do the day before a Met Office warning"
+seoTitle: "Met Office warning tomorrow? What to do"
+description: "Calm steps the day before a Yellow or Amber Met Office warning: read the impact text for your area, charge devices, and review your kit."
 scenario: Yellow or Amber weather warning for your area
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

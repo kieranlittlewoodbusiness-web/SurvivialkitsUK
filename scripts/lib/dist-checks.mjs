@@ -14,6 +14,10 @@
  *   - Every Ad badge (.badge--ad) sits in a card (<article>, or class card/pcard/cta) that also
  *     contains an <a rel="sponsored …"> link. A legend badge must opt out with data-badge-legend.
  *   - Exactly one <meta name="robots"> per page.
+ *   - Indexable pages (those whose robots meta does not include noindex):
+ *     <title> is 60 characters or fewer, including any suffix; exactly one
+ *     meta description of 120–160 characters, unique across indexable pages.
+ *     Noindex pages are exempt.
  *   - production: no noindex on any page except 404.html; robots.txt allows crawling;
  *     _headers must exist, /* must send X-Frame-Options (DENY or SAMEORIGIN)
  *     and a Permissions-Policy that includes camera=(), microphone=(),
@@ -329,6 +333,30 @@ function assertApexUrl(file, field, url, failures) {
   }
 }
 
+
+const TITLE_MAX = 60;
+const META_MIN = 120;
+const META_MAX = 160;
+
+function documentTitle(html) {
+  const m = html.match(/<title\b[^>]*>([\s\S]*?)<\/title>/i);
+  if (!m) return null;
+  return decode(m[1].replace(/<[^>]+>/g, '')).trim();
+}
+
+function metaDescriptions(html) {
+  return [...html.matchAll(/<meta\b[^>]*>/gi)]
+    .filter((m) => /\bname\s*=\s*["']description["']/i.test(m[0]))
+    .map((m) => decode(attr(m[0], 'content') ?? '').trim());
+}
+
+function pageIsIndexable(html) {
+  const robots = [...html.matchAll(/<meta\b[^>]*>/gi)]
+    .filter((m) => /\bname\s*=\s*["']robots["']/i.test(m[0]))
+    .map((m) => attr(m[0], 'content') ?? '');
+  return !robots.some((c) => /noindex/i.test(c));
+}
+
 export function checkContent(dist, { production = false, banned = DEFAULT_BANNED } = {}) {
   const files = htmlFiles(dist);
   const failures = [];
@@ -351,6 +379,35 @@ export function checkContent(dist, { production = false, banned = DEFAULT_BANNED
     const robots = [...html.matchAll(/<meta\b[^>]*\bname\s*=\s*["']robots["'][^>]*>/gi)].map((m) => attr(m[0], 'content') ?? '');
     if (robots.length !== 1) failures.push({ file: rel, reason: `expected exactly 1 robots meta, found ${robots.length}` });
     if (production && rel !== '404.html' && robots.some((c) => /noindex/i.test(c))) failures.push({ file: rel, reason: 'production page is noindex' });
+    if (pageIsIndexable(html)) {
+      const title = documentTitle(html);
+      if (!title) failures.push({ file: rel, reason: 'indexable page is missing a title' });
+      else if (title.length > TITLE_MAX) failures.push({ file: rel, reason: `title is ${title.length} characters (max ${TITLE_MAX})` });
+      const descs = metaDescriptions(html);
+      if (descs.length !== 1) failures.push({ file: rel, reason: `expected exactly 1 meta description, found ${descs.length}` });
+      else if (!descs[0]) failures.push({ file: rel, reason: 'indexable page is missing a meta description' });
+      else if (descs[0].length < META_MIN || descs[0].length > META_MAX) {
+        failures.push({ file: rel, reason: `meta description is ${descs[0].length} characters (must be ${META_MIN}–${META_MAX})` });
+      }
+    }
+  }
+  const descriptionsByText = new Map();
+  for (const file of files) {
+    const rel = path.relative(dist, file);
+    const html = fs.readFileSync(file, 'utf8');
+    if (!pageIsIndexable(html)) continue;
+    const descs = metaDescriptions(html);
+    if (descs.length !== 1 || !descs[0]) continue;
+    const list = descriptionsByText.get(descs[0]) ?? [];
+    list.push(rel);
+    descriptionsByText.set(descs[0], list);
+  }
+  for (const [, list] of descriptionsByText) {
+    if (list.length < 2) continue;
+    for (const rel of list) {
+      const others = list.filter((f) => f !== rel).join(', ');
+      failures.push({ file: rel, reason: `meta description is not unique (also on ${others})` });
+    }
   }
   const site = {};
   if (production) {

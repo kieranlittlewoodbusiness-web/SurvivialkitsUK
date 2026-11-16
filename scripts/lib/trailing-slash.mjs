@@ -129,8 +129,14 @@ export function checkTrailingSlash(dist, { origin = CANONICAL_ORIGIN } = {}) {
     const self = pagePath(rel);
     const { canonicals, ogUrls, hrefs } = extract(fs.readFileSync(path.join(dist, rel), 'utf8'));
     const is404 = self === '/404';
-    if (canonicals.length !== 1) fail(file, `expected 1 canonical, found ${canonicals.length}`);
-    if (ogUrls.length !== 1) fail(file, `expected 1 og:url, found ${ogUrls.length}`);
+    // SEO-7: the 404 page must omit rel=canonical and og:url.
+    if (is404) {
+      if (canonicals.length) fail(file, `expected 0 canonicals on 404, found ${canonicals.length}`);
+      if (ogUrls.length) fail(file, `expected 0 og:url on 404, found ${ogUrls.length}`);
+    } else {
+      if (canonicals.length !== 1) fail(file, `expected 1 canonical, found ${canonicals.length}`);
+      if (ogUrls.length !== 1) fail(file, `expected 1 og:url, found ${ogUrls.length}`);
+    }
     for (const [kind, list] of [['canonical', canonicals], ['og:url', ogUrls]]) {
       for (const v of list) {
         headUrls++;

@@ -1,6 +1,7 @@
 ---
-title: "Neighbours and the Priority Services Register: planning for extra support"
-description: "How UK Priority Services Registers and neighbour check-ins help households that need more support in an outage."
+title: "Neighbours and the Priority Services Register"
+seoTitle: "Priority Services Register and neighbours"
+description: "How the UK Priority Services Register and a simple neighbour check-in can help households that need extra support during a power cut or other outage."
 scenario: Household includes or supports someone who needs extra help
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

@@ -1,6 +1,7 @@
 ---
-title: "Power cut evening: light, heat and information without draining your phone"
-description: "How to manage a multi-hour UK power cut at home—torch, radio, warmth, and the 105 number on paper."
+title: "Power cut at night: light, warmth and updates without draining your phone"
+seoTitle: "Power cut at night: what to do"
+description: "A long evening or overnight power cut at home: keep 105 written down, save your phone battery with a radio, and use torches rather than candles."
 scenario: Multi-hour or overnight electricity outage at home
 pubDate: 2026-11-14
 updated: 2026-11-14

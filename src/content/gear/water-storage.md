@@ -1,6 +1,9 @@
 ---
 title: Water storage
+seoTitle: "Emergency water storage criteria UK"
+heading: "Emergency water storage criteria"
 description: "Food-grade water storage criteria for UK households—quantity, seals, stackability and hygiene."
+seoDescription: "Food-grade water storage criteria for UK emergency planning: how much to keep, container seals, stackability and hygiene when storing drinking water at home."
 category: water-storage
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

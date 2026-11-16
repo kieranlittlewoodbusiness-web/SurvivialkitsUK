@@ -1,6 +1,9 @@
 ---
 title: Torches
+seoTitle: "Torch and head torch criteria UK"
+heading: "Torch and head torch criteria for UK power cuts"
 description: "Comparison criteria for household torches and headlamps for UK power cuts—runtime, batteries and indoor usability."
+seoDescription: "Criteria for household torches and head torches in a UK power cut, including runtime, batteries and whether they are practical to use indoors."
 category: torches
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

@@ -1,6 +1,7 @@
 ---
-title: "The leave-home bag: temporary evacuation without drama"
-description: "A calm grab bag for short UK evacuations—documents, medication and essentials. In a fire, get out, stay out and call 999."
+title: "A UK grab bag for temporary evacuation"
+seoTitle: "Grab bag UK: a leave-home bag"
+description: "What to pack in a UK grab bag if you have to leave home for a short time: documents, medication and essentials. In a fire, get out, stay out and call 999."
 scenario: Asked to leave home for flooding, gas incident or similar
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14
