@@ -9,6 +9,7 @@ import { AMAZON_DISCLOSURE } from './catalogue/catalogueView';
     <div class="site-footer__grid">
       <div class="site-footer__brand">
         <Wordmark tone="band" />
+        <p class="site-footer__tagline">Ready for the unexpected.</p>
         <p>Independent UK household readiness guides. Start with what you already own; fill gaps gradually.</p>
         <p>
           <a href="/affiliate-disclosure">Affiliate disclosure</a> · <a href="/editorial-policy">Editorial policy</a> ·
@@ -52,7 +53,9 @@ import { AMAZON_DISCLOSURE } from './catalogue/catalogueView';
     border-radius: var(--r-lg) var(--r-lg) 0 0;
   }
   .site-footer a { color: var(--on-band); }
-  .site-footer a:hover { color: #ffffff; }
+  .site-footer a:hover { color: var(--band-accent); }
+  .site-footer :focus-visible { outline-color: var(--focus-on-band); }
+  .site-footer__tagline { margin-top: var(--s-3); color: var(--band-accent); font-family: var(--font-display); font-weight: 700; font-size: var(--step-2); line-height: 1.1; }
   .site-footer strong { color: var(--on-band); }
   .site-footer p { max-width: 34rem; }
   .site-footer__grid { display: grid; gap: var(--s-6); }
@@ -60,7 +63,7 @@ import { AMAZON_DISCLOSURE } from './catalogue/catalogueView';
   .footer-list { list-style: none; margin: 0; padding: 0; display: grid; }
   .footer-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 0 0.35em; min-height: var(--tap); }
   .footer-list a { display: inline-flex; align-items: center; min-height: var(--tap); }
-  .site-footer__legal { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid rgb(255 255 255 / 0.14); font-size: var(--step--1); }
+  .site-footer__legal { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid rgb(244 239 229 / 0.16); font-size: var(--step--1); }
   .site-footer__legal p { margin: 0 0 var(--s-2); }
   .amazon-disclosure { color: var(--on-band); }
   @media (min-width: 768px) { .site-footer__grid { grid-template-columns: 1.4fr 1fr 1fr; } }

@@ -1,7 +1,7 @@
 /**
  * S1-10 view model for Amazon-only product cards. Read-only over src/lib/offers:
  * comparisons come from buildCatalogueComparisons, then groupComparisonsByCategory.
- * This file never regroups or re-sorts, never picks a best price, and never renders a URL
+ * This file never regroups products or re-sorts them within a category (it only orders the sections), never picks a best price, and never renders a URL
  * other than the contract's production affiliate link_url.
  */
 import {
@@ -91,44 +91,111 @@ export function shownPrice(offer: AffiliateDisplayOffer, now: Date): ShownPrice 
 
 /* ---------- Categories ---------- */
 
-export const CATEGORY_META: Record<ProductCategory, { title: string; short: string; dek: string; anchor: string }> = {
-  kit: { title: CATEGORY_LABELS.kit, short: 'kit', dek: 'Grab bags and home boxes', anchor: 'kits' },
-  emergency_water: { title: CATEGORY_LABELS.emergency_water, short: 'water', dek: 'Cans, cartons and pouches', anchor: 'water' },
-  first_aid_kit: { title: CATEGORY_LABELS.first_aid_kit, short: 'first aid kit', dek: 'Household, workplace and car kits', anchor: 'first-aid' },
-  torch: { title: CATEGORY_LABELS.torch, short: 'torch', dek: 'Light without mains power', anchor: 'torches' },
-  radio: { title: CATEGORY_LABELS.radio, short: 'radio', dek: 'News without mains power', anchor: 'radios' },
-  batteries: { title: CATEGORY_LABELS.batteries, short: 'batteries', dek: 'Spares for torches and radios', anchor: 'batteries' },
-  hi_vis: { title: CATEGORY_LABELS.hi_vis, short: 'hi-vis vest', dek: 'Be seen at the roadside', anchor: 'hi-vis' },
-  jump_leads: { title: CATEGORY_LABELS.jump_leads, short: 'jump leads', dek: 'Restart a flat car battery', anchor: 'jump-leads' },
-  warning_triangle: { title: CATEGORY_LABELS.warning_triangle, short: 'warning triangle', dek: 'Be seen if you break down', anchor: 'warning-triangles' },
-  power_bank: { title: CATEGORY_LABELS.power_bank, short: 'power bank', dek: 'Keep phones charged', anchor: 'power-banks' },
-  emergency_blanket: { title: CATEGORY_LABELS.emergency_blanket, short: 'blankets', dek: 'Foil and thermal blankets', anchor: 'blankets' },
-  thermal_clothing: { title: CATEGORY_LABELS.thermal_clothing, short: 'thermals', dek: 'Base layers for cold homes', anchor: 'thermals' },
-  // S1-10b: minimal compile fix by Backend (placeholder copy; Web owns final wording).
-  water_container: { title: CATEGORY_LABELS.water_container, short: 'water container', dek: 'Carriers and jerrycans', anchor: 'water-containers' },
-  rainwater_storage: { title: CATEGORY_LABELS.rainwater_storage, short: 'water butt', dek: 'For flushing and plants, not drinking', anchor: 'rainwater' },
-  gravity_filter: { title: CATEGORY_LABELS.gravity_filter, short: 'water filter', dek: 'Filter water without power', anchor: 'water-filters' },
-  flask: { title: CATEGORY_LABELS.flask, short: 'flask', dek: 'Hot drinks without power', anchor: 'flasks' },
-  tin_opener: { title: CATEGORY_LABELS.tin_opener, short: 'tin opener', dek: 'Open tinned food by hand', anchor: 'tin-openers' },
-  electric_lighter: { title: CATEGORY_LABELS.electric_lighter, short: 'lighter', dek: 'Rechargeable windproof lighters', anchor: 'lighters' },
-  two_way_radio: { title: CATEGORY_LABELS.two_way_radio, short: 'two-way radio', dek: 'Licence-free walkie-talkies', anchor: 'two-way-radios' },
-  multi_tool: { title: CATEGORY_LABELS.multi_tool, short: 'multi-tool', dek: 'Pocket tools for repairs', anchor: 'multi-tools' },
-  sleeping_bag: { title: CATEGORY_LABELS.sleeping_bag, short: 'sleeping bag', dek: 'Warmth if the heating fails', anchor: 'sleeping-bags' },
-  hygiene: { title: CATEGORY_LABELS.hygiene, short: 'hygiene', dek: 'Sanitiser, wipes and toilet bags', anchor: 'hygiene' },
-  baby_care: { title: CATEGORY_LABELS.baby_care, short: 'baby care', dek: 'Nappies and wipes', anchor: 'baby-care' },
-  document_pouch: { title: CATEGORY_LABELS.document_pouch, short: 'document pouch', dek: 'Keep papers dry', anchor: 'document-pouches' },
-  home_kit: { title: CATEGORY_LABELS.home_kit, short: 'home kit', dek: 'Ready-made kits for staying put', anchor: 'home-kits' },
-  grab_bag_kit: { title: CATEGORY_LABELS.grab_bag_kit, short: 'grab bag', dek: 'Ready-made bags for leaving fast', anchor: 'grab-bags' },
+export interface CategoryGuide {
+  href: string;
+  label: string;
+}
+
+export interface CategoryMeta {
+  title: string;
+  short: string;
+  dek: string;
+  anchor: string;
+  /** Our own guide page for the category, where one exists (internal link). */
+  guide: CategoryGuide | null;
+}
+
+const GUIDES = {
+  water: { href: '/gear/water-storage', label: 'Water storage guide' },
+  waterCut: { href: '/scenarios/water-interruption', label: 'Water supply cut guide' },
+  firstAid: { href: '/gear/first-aid', label: 'First aid kit guide' },
+  torches: { href: '/gear/torches', label: 'Torch guide' },
+  radios: { href: '/gear/radios', label: 'Radio guide' },
+  powerBanks: { href: '/gear/power-banks', label: 'Power bank guide' },
+  powerCuts: { href: '/scenarios/power-cuts', label: 'Power cut guide' },
+  winter: { href: '/gear/winter-travel', label: 'Winter travel guide' },
+  winterCar: { href: '/scenarios/winter-car-shelf', label: 'Winter car guide' },
+  food: { href: '/scenarios/cupboard-first-food', label: 'Store cupboard food guide' },
+  leaveHome: { href: '/scenarios/leave-home-bag', label: 'Grab bag guide' },
+  checklist: { href: '/checklist', label: 'Kit checklist' },
+} as const satisfies Record<string, CategoryGuide>;
+
+export const CATEGORY_META: Record<ProductCategory, CategoryMeta> = {
+  kit: { title: CATEGORY_LABELS.kit, short: 'kit', dek: 'Grab bags and home boxes', anchor: 'kits', guide: GUIDES.checklist },
+  emergency_water: { title: CATEGORY_LABELS.emergency_water, short: 'water', dek: 'Cans, cartons and pouches', anchor: 'water', guide: GUIDES.water },
+  water_container: { title: CATEGORY_LABELS.water_container, short: 'water container', dek: 'Fill from the tap before a supply cut', anchor: 'water-containers', guide: GUIDES.water },
+  gravity_filter: { title: CATEGORY_LABELS.gravity_filter, short: 'water filter', dek: 'Filter water without power', anchor: 'water-filters', guide: GUIDES.waterCut },
+  rainwater_storage: { title: CATEGORY_LABELS.rainwater_storage, short: 'water butt', dek: 'For flushing and plants, not drinking', anchor: 'rainwater', guide: null },
+  first_aid_kit: { title: CATEGORY_LABELS.first_aid_kit, short: 'first aid kit', dek: 'Household, workplace and car kits', anchor: 'first-aid', guide: GUIDES.firstAid },
+  hygiene: { title: CATEGORY_LABELS.hygiene, short: 'hygiene', dek: 'Hand gel, wipes and toilet bags', anchor: 'hygiene', guide: GUIDES.waterCut },
+  baby_care: { title: CATEGORY_LABELS.baby_care, short: 'baby care', dek: 'Nappies and baby wipes', anchor: 'baby-care', guide: GUIDES.leaveHome },
+  torch: { title: CATEGORY_LABELS.torch, short: 'torch', dek: 'Light without mains power', anchor: 'torches', guide: GUIDES.torches },
+  radio: { title: CATEGORY_LABELS.radio, short: 'radio', dek: 'News without mains power', anchor: 'radios', guide: GUIDES.radios },
+  two_way_radio: { title: CATEGORY_LABELS.two_way_radio, short: 'two-way radio', dek: 'Talk nearby without phone signal', anchor: 'two-way-radios', guide: null },
+  batteries: { title: CATEGORY_LABELS.batteries, short: 'batteries', dek: 'Spares for torches and radios', anchor: 'batteries', guide: GUIDES.powerCuts },
+  power_bank: { title: CATEGORY_LABELS.power_bank, short: 'power bank', dek: 'Keep phones charged', anchor: 'power-banks', guide: GUIDES.powerBanks },
+  electric_lighter: { title: CATEGORY_LABELS.electric_lighter, short: 'lighter', dek: 'Rechargeable, no fuel or matches', anchor: 'lighters', guide: null },
+  flask: { title: CATEGORY_LABELS.flask, short: 'flask', dek: 'Keep drinks hot without power', anchor: 'flasks', guide: GUIDES.winter },
+  tin_opener: { title: CATEGORY_LABELS.tin_opener, short: 'tin opener', dek: 'Open tinned food by hand', anchor: 'tin-openers', guide: GUIDES.food },
+  emergency_blanket: { title: CATEGORY_LABELS.emergency_blanket, short: 'blankets', dek: 'Foil and thermal blankets', anchor: 'blankets', guide: GUIDES.winter },
+  thermal_clothing: { title: CATEGORY_LABELS.thermal_clothing, short: 'thermals', dek: 'Base layers for cold homes', anchor: 'thermals', guide: GUIDES.winter },
+  sleeping_bag: { title: CATEGORY_LABELS.sleeping_bag, short: 'sleeping bag', dek: 'Stay warm if the heating fails', anchor: 'sleeping-bags', guide: GUIDES.powerCuts },
+  multi_tool: { title: CATEGORY_LABELS.multi_tool, short: 'multi-tool', dek: 'Pocket tools for small repairs', anchor: 'multi-tools', guide: null },
+  document_pouch: { title: CATEGORY_LABELS.document_pouch, short: 'document pouch', dek: 'Keep important papers dry', anchor: 'document-pouches', guide: GUIDES.leaveHome },
+  home_kit: { title: CATEGORY_LABELS.home_kit, short: 'home kit', dek: 'Ready-made kits for staying at home', anchor: 'home-kits', guide: GUIDES.checklist },
+  grab_bag_kit: { title: CATEGORY_LABELS.grab_bag_kit, short: 'grab bag', dek: 'Ready-made bags if you have to leave', anchor: 'grab-bags', guide: GUIDES.leaveHome },
+  hi_vis: { title: CATEGORY_LABELS.hi_vis, short: 'hi-vis vest', dek: 'Be seen at the roadside', anchor: 'hi-vis', guide: GUIDES.winterCar },
+  jump_leads: { title: CATEGORY_LABELS.jump_leads, short: 'jump leads', dek: 'Restart a flat car battery', anchor: 'jump-leads', guide: GUIDES.winterCar },
+  warning_triangle: { title: CATEGORY_LABELS.warning_triangle, short: 'warning triangle', dek: 'Be seen if you break down', anchor: 'warning-triangles', guide: GUIDES.winterCar },
 };
 
-/** All categories, in Backend's PRODUCT_CATEGORIES order (for the home grid, including empty ones). */
-export const CATEGORY_ORDER: ProductCategory[] = [...PRODUCT_CATEGORIES];
+/**
+ * Web's section order (S1-10b): related categories sit together. Water, then first aid and hygiene,
+ * light, power and communication, food and drink, warmth, tools and papers, ready-made kits, then the
+ * car. The legacy `kit` bucket never renders; it stays first only so the Record covers every key.
+ * groupComparisonsByCategory still decides WHICH products and how many; this only orders sections.
+ */
+export const CATEGORY_ORDER: ProductCategory[] = [
+  'kit',
+  'emergency_water',
+  'water_container',
+  'gravity_filter',
+  'rainwater_storage',
+  'first_aid_kit',
+  'hygiene',
+  'baby_care',
+  'torch',
+  'radio',
+  'two_way_radio',
+  'batteries',
+  'power_bank',
+  'electric_lighter',
+  'flask',
+  'tin_opener',
+  'emergency_blanket',
+  'thermal_clothing',
+  'sleeping_bag',
+  'multi_tool',
+  'document_pouch',
+  'home_kit',
+  'grab_bag_kit',
+  'hi_vis',
+  'jump_leads',
+  'warning_triangle',
+];
+
+const orderIndex = (c: ProductCategory) => {
+  const i = CATEGORY_ORDER.indexOf(c);
+  return i === -1 ? CATEGORY_ORDER.length : i;
+};
 
 /* ---------- Names ---------- */
 
 /** Measurements are fine in a fallback title: "20,000mAh", "500ml", "12V". */
 const MEASUREMENT_TOKEN = /^\d+(?:[.,]\d+)*(?:mAh|Ah|Wh|W|kW|V|ml|cl|L|m|cm|mm|mm²|kg|g|lm|A|x)$/i;
 const COUNT_TOKEN = /^\d+-(?:pack|piece|person|litre|metre|year)s?$/i;
+/** ISO 216 paper sizes (A0 to A10) are plain sizes, not model codes ("A3 document pouch"). */
+export const PAPER_SIZE_TOKEN = /^A(?:10|[0-9])$/i;
 const KEPT_CAPS = new Set(['USB', 'DAB', 'AM', 'FM', 'LED', 'UK', 'EU', 'NHS']);
 /** Fuller than STANDARDS_CODE_PATTERN, which only matches the start of a code. */
 const STANDARDS_CODE_FULL = /\bBS\s?\d+(?:[-\s]\d+)*(?::\d+)?|\bEN(?:\s+ISO)?\s?\d+(?:[-\s]\d+)*|\bISO\s?\d+(?:[-\s]\d+)*/i;
@@ -152,7 +219,7 @@ export function cleanProductTitle(title: string): string {
   for (const raw of s.split(/\s+/)) {
     const t = raw.replace(/^[("'[]+|[)"'\],.;:!?]+$/g, '');
     if (!t) continue;
-    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t)) continue;
+    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t) && !PAPER_SIZE_TOKEN.test(t)) continue;
     if (/^\d{5,}$/.test(t)) continue;
     tokens.push(t);
   }
@@ -252,6 +319,16 @@ function isPlainFact(value: string): boolean {
   return !STANDARDS_CODE_PATTERN.test(value) && !STANDARDS_CODE_FULL.test(value) && value !== 'none_stated';
 }
 
+/** Kieran (16 Nov, issue #11): kits that include a blade show exactly this chip. */
+export const KNIFE_CHIP = 'Includes a knife';
+
+/** Safety note shown as plain text on a card (rainwater: from specs.drinking_water_note in the data). */
+export function safetyNote(c: CatalogueComparison): string | null {
+  if (c.category !== 'rainwater_storage') return null;
+  const v = (c.product.specs as Record<string, unknown>).drinking_water_note;
+  return typeof v === 'string' && v.trim() ? v.trim() : null;
+}
+
 /** Spec values from the public summary as short facts. Only values present in the data. */
 export function specFacts(c: CatalogueComparison): string[] {
   const s = c.product.specs as Record<string, unknown>;
@@ -295,6 +372,22 @@ export function specFacts(c: CatalogueComparison): string[] {
   if (has('rated_amps')) out.push(`Rated ${num(Number(s.rated_amps))} A`);
   if (has('max_engine_cc')) out.push(`Suits engines up to ${num(Number(s.max_engine_cc))} cc`);
   if (has('pack_count')) out.push(`Pack of ${s.pack_count}`);
+  // S1-10b specs (absent = not stated on the listing).
+  if (has('capacity_l')) {
+    const l = Number(s.capacity_l);
+    out.push(l < 1 ? `${num(Math.round(l * 1000))} ml` : `${num(l)} L`);
+  }
+  if (has('channels')) out.push(`${num(Number(s.channels))} channels`);
+  // Never "PMR446" on the page: the plain meaning only.
+  if (s.pmr446_stated === true) out.push('Licence-free UK channels');
+  if (s.locking_blade === true) out.push('Locking blade');
+  if (s.rechargeable === true) out.push('Rechargeable');
+  // Kits: people and what the kit includes. No shelf life (no packing date is stated), no listing
+  // claims, no age copy (Amazon handles age restrictions). stated_contents lists are long and use
+  // US measures, so they are not shown as chips.
+  if (has('people')) out.push(Number(s.people) === 1 ? 'For 1 person' : `For ${num(Number(s.people))} people`);
+  if (s.contains_food_water === true) out.push('Includes food and water');
+  if (s.contains_blade === true) out.push(KNIFE_CHIP);
   return out.filter(isPlainFact);
 }
 
@@ -313,6 +406,8 @@ export interface ProductCardModel {
   brand: string;
   buttonLabel: string;
   facts: string[];
+  /** Plain-text safety note from the data (rainwater drinking-water note), or null. */
+  safetyNote: string | null;
   image: ProductImageModel | null;
   offers: CardOffer[];
 }
@@ -320,6 +415,8 @@ export interface ProductCardModel {
 export interface CatalogueSection {
   category: ProductCategory;
   category_label: string;
+  /** Section-level safety note (from the section's card data), or null. */
+  note: string | null;
   cards: ProductCardModel[];
 }
 
@@ -345,6 +442,7 @@ export function toCardModel(c: CatalogueComparison, env: Env, now: Date): Produc
     brand: c.product.brand,
     buttonLabel: `Check ${name} on Amazon`,
     facts: specFacts(c),
+    safetyNote: safetyNote(c),
     image: productImage(c.product),
     offers,
   };
@@ -364,13 +462,15 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
     now,
   });
   const groups = groupComparisonsByCategory(built, { perCategory: 3 });
-  const sections: CatalogueSection[] = groups.map((g) => ({
-    category: g.category,
-    category_label: g.category_label,
-    cards: g.comparisons.map((c) =>
-      toCardModel({ ...c, offers: c.offers.filter((o) => o.model_match_confirmed === true) }, env, now),
-    ),
-  }));
+  const sections: CatalogueSection[] = groups
+    .map((g) => {
+      const cards = g.comparisons.map((c) =>
+        toCardModel({ ...c, offers: c.offers.filter((o) => o.model_match_confirmed === true) }, env, now),
+      );
+      return { category: g.category, category_label: g.category_label, note: cards.find((c) => c.safetyNote)?.safetyNote ?? null, cards };
+    })
+    // Web's section order only; the products in each section are untouched.
+    .sort((a, b) => orderIndex(a.category) - orderIndex(b.category));
   const cards = sections.flatMap((s) => s.cards);
   // Distinct visible labels without putting a marketplace id in the button text.
   const seen = new Map<string, number>();
@@ -388,4 +488,12 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
     asins: cards.map((c) => asinOf.get(c.id)!),
     stats: { cards: cards.length, withButton, withoutButton: cards.length - withButton, withPrice: cards.filter((c) => c.offers.some((o) => o.price)).length },
   };
+}
+
+/**
+ * Category sections that the compare page renders (one anchor each): every section with at least
+ * one card, except the legacy `kit` bucket. The homepage links only to these anchors.
+ */
+export function productSections(model: Pick<CatalogueModel, 'sections'>): CatalogueSection[] {
+  return model.sections.filter((s) => s.category !== 'kit' && s.cards.length > 0);
 }

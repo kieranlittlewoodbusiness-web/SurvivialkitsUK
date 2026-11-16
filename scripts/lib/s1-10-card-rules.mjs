@@ -1,5 +1,5 @@
 /**
- * S1-10 rule-based checks over built compare-page HTML. Counts are passed in from the
+ * S1-10 rule-based checks over built compare-page HTML, plus S1-11 homepage top-pick rules. Counts are passed in from the
  * data / verifiedSet; this file never hard-codes 9 or 30.
  */
 import fs from 'node:fs';
@@ -10,6 +10,8 @@ export const STANDARDS_RE = /\bBS\s?\d|\bEN\s?\d|ISO\s?\d/i;
 export const AFFILIATE_RE = /^https:\/\/www\.amazon\.co\.uk\/dp\/[A-Z0-9]{10}\?tag=[A-Za-z0-9][A-Za-z0-9-]{0,60}-21$/;
 const MEASUREMENT_TOKEN = /^\d+(?:[.,]\d+)*(?:mAh|Ah|Wh|W|kW|V|ml|cl|L|m|cm|mm|mm²|kg|g|lm|A|x)$/i;
 const COUNT_TOKEN = /^\d+-(?:pack|piece|person|litre|metre|year)s?$/i;
+/** ISO 216 paper sizes (A0 to A10) are plain sizes, not model codes ("A3 document pouch"). */
+export const PAPER_SIZE_TOKEN = /^A(?:10|[0-9])$/i;
 
 const attr = (attrs, name) => {
   const m = attrs.match(new RegExp(`\\b${name}\\s*=\\s*("([^"]*)"|'([^']*)')`, 'i'));
@@ -35,7 +37,7 @@ export function modelNumberTokens(text) {
   for (const raw of text.split(/\s+/)) {
     const t = raw.replace(/^[("'[]+|[)"'\],.;:!?]+$/g, '');
     if (!t) continue;
-    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t)) flagged.push(t);
+    if (/[A-Za-z]/.test(t) && /\d/.test(t) && !MEASUREMENT_TOKEN.test(t) && !COUNT_TOKEN.test(t) && !PAPER_SIZE_TOKEN.test(t)) flagged.push(t);
     else if (/^\d{5,}$/.test(t)) flagged.push(t);
   }
   return flagged;
@@ -66,6 +68,7 @@ export function extractSections(html) {
     sections.push({
       category: attr(attrs, 'data-category'),
       id: attr(attrs, 'id'),
+      html: inner,
       cards,
     });
   }
@@ -88,6 +91,40 @@ export function extractCtAs(html) {
     });
   }
   return links;
+}
+
+/* ---------- S1-10b (CR M1 on #24): rainwater drinking-water note ---------- */
+
+export const RAINWATER_CATEGORY = 'rainwater_storage';
+const norm = (t) => String(t ?? '').replace(/\s+/g, ' ').trim();
+
+/** Visible texts of every data-safety-note="drinking-water" element in `html`. */
+export function drinkingWaterNotes(html) {
+  const out = [];
+  const re = /<(p|div|span)\b([^>]*\bdata-safety-note="drinking-water"[^>]*)>([\s\S]*?)<\/\1>/gi;
+  for (const m of html.matchAll(re)) out.push(visibleText(m[3]));
+  return out;
+}
+
+/**
+ * Extends Backend's page-level guard (dist-checks.mjs checkRainwaterNote, CR M1): fails when the
+ * rainwater section, or any rainwater card, ships without the exact note (RAINWATER_DRINKING_WATER_NOTE,
+ * passed in by verify:dist from derive-affiliate-count --rainwater).
+ * `sections` / `cards` come from extractSections / extractCards.
+ */
+export function checkRainwaterNotes(sections, cards, note) {
+  const failures = [];
+  const expected = norm(note);
+  const rainCards = cards.filter((c) => c.category === RAINWATER_CATEGORY);
+  for (const s of sections.filter((x) => x.category === RAINWATER_CATEGORY)) {
+    const outsideCards = s.html.replace(/<article\b[\s\S]*?<\/article>/gi, ' ');
+    if (!drinkingWaterNotes(outsideCards).some((t) => t === expected)) failures.push('rainwater section has no section-level drinking-water note');
+  }
+  if (rainCards.length && !sections.some((x) => x.category === RAINWATER_CATEGORY)) failures.push('rainwater cards render outside a rainwater section');
+  for (const c of rainCards) {
+    if (!drinkingWaterNotes(c.html).some((t) => t === expected)) failures.push(`rainwater card ${c.id} has no drinking-water note`);
+  }
+  return { failures, rainwaterCards: rainCards.length };
 }
 
 /**
@@ -155,7 +192,117 @@ export function checkComparePage(html, opts) {
     }
   }
 
-  return { failures, sections, cards, ctas, disclosureCount };
+  let rainwaterCards = cards.filter((c) => c.category === RAINWATER_CATEGORY).length;
+  if (opts.rainwaterNote) {
+    const r = checkRainwaterNotes(sections, cards, opts.rainwaterNote);
+    failures.push(...r.failures);
+    rainwaterCards = r.rainwaterCards;
+  } else if (rainwaterCards > 0 && opts.rainwaterNote !== undefined) {
+    failures.push('rainwater cards rendered but no verified rainwater product has a note');
+  }
+
+  return { failures, sections, cards, ctas, disclosureCount, rainwaterCards };
+}
+
+/* ---------- S1-11 homepage: top pick per category ---------- */
+
+export const COMPARE_PATH = '/compare/72-hour-emergency-kits/';
+
+export function extractPicks(html) {
+  const picks = [];
+  const re = /<article\b([^>]*)class="[^"]*\bpick\b[^"]*"([^>]*)>([\s\S]*?)<\/article>/gi;
+  for (const m of html.matchAll(re)) {
+    const attrs = `${m[1]} ${m[2]}`;
+    const catLink = m[0].match(/<a\b[^>]*class="[^"]*\bpick__cat\b[^"]*"[^>]*>/i);
+    picks.push({
+      category: attr(attrs, 'data-category'),
+      html: m[0],
+      text: visibleText(m[0]),
+      catHref: catLink ? attr(catLink[0], 'href') : null,
+      ctas: extractCtAs(m[0]),
+      adBadges: (m[0].match(/\bbadge--ad\b/g) || []).length,
+      ctaNames: [...m[0].matchAll(/<a\b([^>]*\bdata-affiliate="amazon"[^>]*)>([\s\S]*?)<\/a>/gi)].map((a) =>
+        // Without aria-label, browsers may put a space around a visually-hidden span, so tags count as spaces.
+        norm(attr(a[1], 'aria-label') ?? visibleText(a[2])),
+      ),
+    });
+  }
+  return picks;
+}
+
+/**
+ * Homepage rules (S1-11): one top pick per compare-page category, each linking to that category's
+ * anchor on the compare page, with exactly one tagged sponsored Amazon button and one Ad label when
+ * buttons are expected. Plus the brand CTA, image loading rules and the single footer disclosure.
+ * @param {string} html homepage HTML
+ * @param {{ expectedButtons: number, expectedCategories: string[], compareHtml?: string }} opts
+ */
+export function checkHomePage(html, opts) {
+  const failures = [];
+  const picks = extractPicks(html);
+  const ctas = extractCtAs(html);
+  if (ctas.length !== opts.expectedButtons) {
+    failures.push(`expected ${opts.expectedButtons} homepage affiliate buttons (derived), found ${ctas.length}`);
+  }
+  for (const cta of ctas) {
+    if (!cta.href || !AFFILIATE_RE.test(cta.href)) failures.push('homepage CTA is not the tagged amazon.co.uk/dp shape');
+    if (!cta.rel.includes('sponsored') || !cta.rel.includes('nofollow')) failures.push('homepage CTA rel missing sponsored nofollow');
+  }
+  const cats = picks.map((p) => p.category);
+  if (new Set(cats).size !== cats.length) failures.push('a category has more than one homepage top pick');
+  const expected = new Set(opts.expectedCategories);
+  for (const c of cats) if (!expected.has(c)) failures.push(`unexpected homepage pick category: ${c}`);
+  for (const c of expected) if (!cats.includes(c)) failures.push(`missing homepage pick for category: ${c}`);
+  const anchors = opts.compareHtml ? new Set([...opts.compareHtml.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1])) : null;
+  for (const p of picks) {
+    if (!p.catHref || !p.catHref.startsWith(`${COMPARE_PATH}#`)) failures.push(`pick ${p.category} does not link to a compare-page category anchor`);
+    else if (anchors && !anchors.has(p.catHref.split('#')[1])) failures.push(`pick ${p.category} links to missing anchor ${p.catHref}`);
+    if (p.ctas.length > 1) failures.push(`pick ${p.category} has ${p.ctas.length} buttons`);
+    if (p.ctas.length !== p.adBadges) failures.push(`pick ${p.category} has ${p.ctas.length} buttons but ${p.adBadges} Ad labels`);
+    if (STANDARDS_RE.test(p.text)) failures.push(`pick ${p.category} visible text contains a standards code`);
+    const models = modelNumberTokens(p.text);
+    if (models.length) failures.push(`pick ${p.category} visible text contains model/SKU-like token "${models[0]}"`);
+    if (p.text.includes(DISCLOSURE)) failures.push(`pick ${p.category} repeats the disclosure`);
+    // CR N1 on #25: the buy button's accessible name is "Buy on Amazon: <name>", no space before the colon.
+    for (const name of p.ctaNames) {
+      if (/\s[:;,.]/.test(name)) failures.push(`pick ${p.category} button name has a space before punctuation: "${name}"`);
+    }
+    if (opts.rainwaterNote && p.category === RAINWATER_CATEGORY && !drinkingWaterNotes(p.html).some((t) => t === norm(opts.rainwaterNote))) {
+      failures.push('rainwater homepage pick has no drinking-water note');
+    }
+  }
+  if ((html.match(/class="pcard__amount"/g) || []).length > 0 || /£\s?\d/.test(picks.map((p) => p.text).join(' '))) {
+    failures.push('homepage shows a price');
+  }
+  const disclosureCount = html.split(DISCLOSURE).length - 1;
+  if (disclosureCount !== 1) failures.push(`expected exactly 1 disclosure line on the homepage, found ${disclosureCount}`);
+  // Brand CTA: Kieran's wording, Amber CTA class, to the compare page.
+  const heroCta = [...html.matchAll(/<a\b([^>]*\bdata-cta="get-prepared"[^>]*)>([\s\S]*?)<\/a>/gi)];
+  if (!heroCta.some((m) => /\bbtn--cta\b/.test(m[1]) && attr(m[1], 'href') === COMPARE_PATH && visibleText(m[2]) === 'Get prepared here')) {
+    failures.push('no Amber "Get prepared here" CTA to the compare page');
+  }
+  if (/>\s*Compare kits\s*</i.test(html)) failures.push('"Compare kits" CTA text found (Kieran\'s wording is "Get prepared here")');
+  // Images: explicit size; the hero is eager + fetchpriority=high; every other content image is lazy.
+  for (const m of html.matchAll(/<img\b([^>]*)>/gi)) {
+    const a = m[1];
+    const src = attr(a, 'src') ?? '';
+    if (!attr(a, 'width') || !attr(a, 'height')) failures.push(`img ${src} has no explicit width/height`);
+    if (/^https?:/i.test(src)) failures.push(`img ${src} is not a local image`);
+    const isHero = /\bhero__img\b/.test(attr(a, 'class') ?? '');
+    const isLogo = /\bwordmark__img\b/.test(attr(a, 'class') ?? '');
+    if (isHero) {
+      if (attr(a, 'fetchpriority') !== 'high') failures.push('hero image lacks fetchpriority="high"');
+      if (attr(a, 'loading') === 'lazy') failures.push('hero image is lazy-loaded');
+    } else if (!isLogo && attr(a, 'loading') !== 'lazy') {
+      failures.push(`img ${src} is not lazy-loaded`);
+    }
+    if (attr(a, 'alt') === null) failures.push(`img ${src} has no alt attribute`);
+  }
+  return { failures, picks, ctas, disclosureCount };
+}
+
+export function readHomeHtml(distDir) {
+  return fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
 }
 
 export function readCompareHtml(distDir) {

@@ -3,7 +3,8 @@
  * Amazon-only product card (S1-10). Renders a ProductCardModel built from
  * groupComparisonsByCategory. Price only when shownPrice allows it; button only when buttonLink
  * returns the contract link; image only when productImage allows it. Otherwise none of those,
- * and no placeholder text or empty image frame.
+ * and no placeholder text or empty image frame. A safety note (S1-10b rainwater) shows as plain text
+ * when the data carries one.
  */
 import CategoryIcon from './CategoryIcon.astro';
 import { CATEGORY_META, type ProductCardModel } from './catalogueView';
@@ -27,6 +28,7 @@ const img = card.image;
       </ul>
     )
   }
+  {card.safetyNote && <p class="notice notice--info" data-safety-note="drinking-water">{card.safetyNote}</p>}
   {
     img && (
       img.fixedAspect ? (
@@ -73,7 +75,7 @@ const img = card.image;
   .pcard__offer { display: grid; gap: var(--s-3); }
   .pcard__price { padding: var(--s-4); border-radius: var(--r-md); background: var(--success-soft); }
   .pcard__price p { margin: 0; }
-  .pcard__amount { font-size: var(--step-3); font-weight: 780; letter-spacing: -0.02em; color: var(--success); font-variant-numeric: tabular-nums; }
+  .pcard__amount { font-size: var(--step-3); font-weight: 600; letter-spacing: -0.02em; color: var(--success); font-variant-numeric: tabular-nums; }
   .pcard__cta { display: flex; align-items: center; gap: var(--s-2); margin: 0; max-width: none; }
   .pcard__cta .btn { flex: 1 1 auto; }
   @media (min-width: 640px) { .pcard__cta .btn { flex: 0 1 auto; } }

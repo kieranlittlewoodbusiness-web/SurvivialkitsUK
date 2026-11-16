@@ -22,6 +22,8 @@ const {
 const robots = noindex || isPreviewBuild() ? 'noindex, nofollow' : 'index, follow';
 const pageTitle = title === site.name ? title : `${title} · ${site.name}`;
 const canonical = new URL(canonicalPath === '/' ? '/' : canonicalPath, site.siteUrl).href;
+// Absolute on the apex so crawlers and chat apps can fetch it from any host (S1-11).
+const ogImage = new URL(site.ogImage.path, site.siteUrl).href;
 ---
 
 <meta charset="utf-8" />
@@ -39,9 +41,18 @@ const canonical = new URL(canonicalPath === '/' ? '/' : canonicalPath, site.site
 <meta property="og:locale" content="en_GB" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={pageTitle} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content={String(site.ogImage.width)} />
+<meta property="og:image:height" content={String(site.ogImage.height)} />
+<meta property="og:image:alt" content={site.ogImage.alt} />
 <meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={site.ogImage.alt} />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="preload" href="/fonts/schibsted-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
-<meta name="theme-color" content="#f5f3ee" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0e1312" media="(prefers-color-scheme: dark)" />
+<link rel="apple-touch-icon" href="/icon-192.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<link rel="preload" href="/fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+<meta name="theme-color" content="#f4efe5" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f211a" media="(prefers-color-scheme: dark)" />
 <meta name="color-scheme" content="light dark" />

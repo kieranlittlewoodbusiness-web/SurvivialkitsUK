@@ -74,6 +74,15 @@ function isActive(rawHref: string) {
     padding-inline: var(--s-5);
   }
 
+  @media (max-width: 399px) {
+    .site-header__bar {
+      column-gap: var(--s-2);
+    }
+    .nav-toggle {
+      padding-inline: var(--s-4);
+    }
+  }
+
   .site-nav {
     display: none;
     flex-basis: 100%;
@@ -103,7 +112,7 @@ function isActive(rawHref: string) {
     padding: 0 var(--s-4);
     border-radius: var(--r-sm);
     color: var(--ink);
-    font-weight: 650;
+    font-weight: 600;
     font-size: var(--step-1);
     text-decoration: none;
   }
@@ -120,16 +129,16 @@ function isActive(rawHref: string) {
   .site-nav a.site-nav__cta {
     justify-content: center;
     min-height: 52px;
-    background: var(--accent);
-    color: var(--on-accent);
+    background: var(--cta);
+    color: var(--on-cta);
     border-radius: var(--r-pill);
-    font-weight: 650;
+    font-weight: 600;
   }
 
   .site-nav a.site-nav__cta:hover,
   .site-nav a.site-nav__cta[aria-current='page'] {
-    background: var(--accent-hover);
-    color: var(--on-accent);
+    background: var(--cta-hover);
+    color: var(--on-cta);
   }
 
   .site-nav a.site-nav__cta:focus-visible {
@@ -182,8 +191,8 @@ function isActive(rawHref: string) {
 
     .site-nav a.site-nav__cta:hover,
     .site-nav a.site-nav__cta[aria-current='page'] {
-      background: var(--accent-hover);
-      color: var(--on-accent);
+      background: var(--cta-hover);
+      color: var(--on-cta);
       box-shadow: var(--shadow-1);
     }
   }

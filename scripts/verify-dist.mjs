@@ -1,19 +1,24 @@
 #!/usr/bin/env node
 /**
- * S1-10 production verification. Builds a production site into .verify-dist with a DUMMY
- * Associates tag (never the real one), then runs the link check (expected affiliate count
- * derived from the verified set, capped at 3 per category) and the content check with
- * production rules (no noindex, robots.txt allows crawling). S1-10b (CR L1): the exact set of ASINs
- * behind tagged affiliate links must equal the ASINs in VERIFIED_BY_CATEGORY (tests/offers/verifiedSet.ts),
- * each linked once; a matching count alone is not enough. Render-gated categories (RENDER_GATED_CATEGORIES,
- * CR M1) are subtracted in code by derive-affiliate-count.ts. Rainwater guard (CR M1): whenever any
- * rainwater card/section renders, the compare page must show RAINWATER_DRINKING_WATER_NOTE. Usage:
+ * S1-10 / S1-10b / S1-11 production verification. Builds a production site into .verify-dist with a
+ * DUMMY Associates tag (never the real one), then runs:
+ * - the link check: expected affiliate count derived from tests/offers/verifiedSet.ts (compare page
+ *   capped at 3 per category, plus one homepage top pick per category);
+ * - the content check with production rules (no noindex, robots.txt allows crawling, #23 headers);
+ * - S1-10b (CR L1, K55 ruling): the exact ASIN set. Every expected ASIN is linked exactly once on the
+ *   compare page; the homepage may add at most one link per category, and only to that category's
+ *   first-ranked verified product; no other page has affiliate links;
+ * - Backend's rainwater guard (CR M1, checkRainwaterNote): whenever rainwater content renders on the
+ *   compare page, RAINWATER_DRINKING_WATER_NOTE must be on the page; Web extends it (checkRainwaterNotes):
+ *   the rainwater section AND every rainwater card (and the homepage rainwater pick) carry the note;
+ * - the compare-page and homepage card rules.
+ * Usage:
  *   npm run verify:dist [-- --expect-affiliate N]
  */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
-import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
-import { affiliateAsins, checkRainwaterNote, compareAsinSets } from './lib/dist-checks.mjs';
+import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
+import { affiliateAsins, affiliateAsinsByPage, checkAffiliatePlacement, checkRainwaterNote, compareAsinSets } from './lib/dist-checks.mjs';
 
 const OUT = process.env.VERIFY_OUT_DIR || '.verify-dist';
 const DUMMY_TAG = 'verifydist-21';
@@ -27,8 +32,8 @@ const run = (cmd, a) => {
   return r;
 };
 
-function derive(extra = []) {
-  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts', ...extra], {
+function derive(flag) {
+  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts', flag], {
     env,
     encoding: 'utf8',
   });
@@ -36,34 +41,36 @@ function derive(extra = []) {
     console.error(r.stderr || r.stdout || 'derive-affiliate-count failed');
     process.exit(r.status ?? 1);
   }
-  return (r.stdout || '').trim();
-}
-
-function derivedAsins() {
-  const out = derive(['--asins']);
-  let list;
   try {
-    list = JSON.parse(out);
+    return JSON.parse((r.stdout || '').trim());
   } catch {
-    list = null;
-  }
-  if (!Array.isArray(list) || !list.every((a) => typeof a === 'string' && /^[A-Z0-9]{10}$/.test(a))) {
-    console.error('derive-affiliate-count --asins did not print a JSON array of ASINs');
+    console.error(`derive-affiliate-count ${flag} did not print JSON`);
     process.exit(1);
   }
-  return list;
 }
 
 function derivedExpect() {
-  const n = derive();
-  if (!/^\d+$/.test(n)) {
-    console.error('derive-affiliate-count did not print a number');
+  const parsed = derive('--json');
+  for (const k of ['compare', 'home', 'total']) {
+    if (!Number.isInteger(parsed[k]) || parsed[k] < 0) {
+      console.error(`derive-affiliate-count: ${k} is not a valid integer`);
+      process.exit(1);
+    }
+  }
+  const asinOk = (a) => typeof a === 'string' && /^[A-Z0-9]{10}$/.test(a);
+  if (!parsed.byCategory || !Object.values(parsed.byCategory).every((l) => Array.isArray(l) && l.every(asinOk))) {
+    console.error('derive-affiliate-count: byCategory is not a map of ASIN lists');
     process.exit(1);
   }
-  return Number(n);
+  if (!parsed.topPicks || !Object.values(parsed.topPicks).every(asinOk)) {
+    console.error('derive-affiliate-count: topPicks is not a map of ASINs');
+    process.exit(1);
+  }
+  return parsed;
 }
 
-const expect = ei >= 0 ? Number(args[ei + 1]) : derivedExpect();
+const derived = derivedExpect();
+const expect = ei >= 0 ? Number(args[ei + 1]) : derived.total;
 if (!Number.isInteger(expect) || expect < 0) {
   console.error('expected affiliate count is not a valid integer');
   process.exit(1);
@@ -74,29 +81,27 @@ run('npx', ['astro', 'build', '--outDir', OUT]);
 run('node', ['scripts/check-outbound-links.mjs', OUT, '--expect-affiliate', String(expect)]);
 run('node', ['scripts/check-content.mjs', OUT, '--production']);
 
-// S1-10b (CR L1): the exact ASIN set, not just the count.
-const expectedAsins = derivedAsins();
+// S1-10b (CR L1 + K55 ruling): the exact ASIN set and where each ASIN may appear.
+const expectedAsins = Object.values(derived.byCategory).flat();
 const built = affiliateAsins(OUT);
 const set = compareAsinSets(built.asins, expectedAsins);
-const repeated = [...built.counts].filter(([, n]) => n !== 1).map(([a, n]) => `${a} x${n}`);
-if (!set.ok || repeated.length || new Set(expectedAsins).size !== expectedAsins.length) {
-  console.error(`FAIL: affiliate ASIN set does not match verifiedSet.ts (built ${built.asins.length}, expected ${expectedAsins.length})`);
+const placement = checkAffiliatePlacement(affiliateAsinsByPage(OUT), derived);
+if (!set.ok || !placement.ok) {
+  console.error(`FAIL: affiliate ASINs do not match verifiedSet.ts (built ${built.asins.length}, expected ${expectedAsins.length})`);
   if (set.missing.length) console.error(`  missing from dist: ${set.missing.join(', ')}`);
   if (set.extra.length) console.error(`  not in verifiedSet: ${set.extra.join(', ')}`);
-  if (repeated.length) console.error(`  linked more than once: ${repeated.join(', ')}`);
+  for (const f of placement.failures) console.error(`  ${f}`);
   process.exit(1);
 }
-console.log(`PASS: affiliate ASIN set equals verifiedSet.ts exactly (${expectedAsins.length} ASINs, each linked once).`);
+console.log(
+  `PASS: affiliate ASIN set equals verifiedSet.ts exactly (${expectedAsins.length} ASINs, each linked once on the compare page; ` +
+    `${placement.homeLinks} homepage top picks, each its category's first-ranked product, at most once).`,
+);
 
 const html = readCompareHtml(OUT);
 
-// S1-10b (CR M1): rainwater content may only render together with the exact drinking-water note.
-let rw;
-try {
-  rw = JSON.parse(derive(['--rainwater']));
-} catch {
-  rw = null;
-}
+// S1-10b (CR M1, Backend's guard): rainwater content may only render together with the exact note.
+const rw = derive('--rainwater');
 if (!rw || !Array.isArray(rw.asins) || typeof rw.note !== 'string' || !rw.note) {
   console.error('derive-affiliate-count --rainwater did not print { asins, note }');
   process.exit(1);
@@ -107,14 +112,25 @@ if (!guard.ok) {
   process.exit(1);
 }
 console.log(`PASS: rainwater guard: ${guard.reason} (${guard.rainwater} rainwater signals on the compare page).`);
+const rainwaterNote = rw.note;
 const rules = checkComparePage(html, {
-  expectedButtons: expect,
+  expectedButtons: derived.compare,
+  expectedCategories: derived.categories,
   maxPerCategory: 3,
   expectNoImages: true,
+  rainwaterNote,
 });
-if (rules.failures.length) {
-  console.error(`FAIL: ${rules.failures.length} S1-10 card rule(s)`);
-  for (const f of rules.failures) console.error(`  ${f}`);
+const home = checkHomePage(readHomeHtml(OUT), {
+  expectedButtons: derived.home,
+  expectedCategories: derived.categories,
+  compareHtml: html,
+  rainwaterNote,
+});
+const failures = [...rules.failures, ...home.failures.map((f) => `home: ${f}`)];
+if (failures.length) {
+  console.error(`FAIL: ${failures.length} S1-10/S1-11 card rule(s)`);
+  for (const f of failures) console.error(`  ${f}`);
   process.exit(1);
 }
-console.log(`verify:dist PASS (production build in ${OUT}, dummy tag, ${expect} affiliate links).`);
+console.log(`PASS: rainwater drinking-water note on the rainwater section and every rainwater card (${rules.rainwaterCards} cards).`);
+console.log(`verify:dist PASS (production build in ${OUT}, dummy tag, ${expect} affiliate links: compare ${derived.compare}, home ${derived.home}).`);

@@ -1,4 +1,4 @@
-# U.K. Survival Kit Brief
+# UK Survival Kits
 
 UK civilian household preparedness site: serious editorial guides for outages, severe weather, supply disruption and temporary evacuation. Built with **Astro** and **TypeScript**, published as a **static** site to **Cloudflare Pages** (`npm run build` → `dist`).
 
@@ -112,7 +112,7 @@ BUILD_BRIEF.md
 
 - Mobile-first CSS; keyboard menu with Escape to close; visible `:focus-visible`
 - Print stylesheet hides header/footer, toolbars and `.no-print`
-- No third-party scripts or fonts (Schibsted Grotesk is self-hosted in `public/fonts`)
+- No third-party scripts or fonts (Barlow Condensed 700 and Inter 400/600 are self-hosted from @fontsource in `public/fonts`, OFL 1.1)
 
 ## What you still need to supply
 

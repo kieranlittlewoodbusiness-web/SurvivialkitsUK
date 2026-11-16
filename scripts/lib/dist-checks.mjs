@@ -34,6 +34,7 @@ export const DEFAULT_BANNED = [
   'unverified specification',
   'coming soon',
   'household brief',
+  'survival kit brief',
   'evaq8',
   't-minus',
   'prepared britain',
@@ -429,6 +430,60 @@ export function compareAsinSets(actual, expected) {
   const missing = [...e].filter((x) => !a.has(x)).sort();
   const extra = [...a].filter((x) => !e.has(x)).sort();
   return { ok: missing.length === 0 && extra.length === 0, missing, extra };
+}
+
+/* ---------- S1-10b (K55 L1 ruling): where each affiliate ASIN may appear ---------- */
+
+export const COMPARE_PAGE_FILE = path.join('compare', '72-hour-emergency-kits', 'index.html');
+export const HOME_PAGE_FILE = 'index.html';
+
+/** Tagged amazon.co.uk/dp ASIN counts per HTML file (path relative to `dist`). Never returns the tag. */
+export function affiliateAsinsByPage(dist) {
+  const pages = new Map();
+  for (const f of htmlFiles(dist)) {
+    const counts = new Map();
+    for (const m of fs.readFileSync(f, 'utf8').matchAll(AFFILIATE_HREF_RX)) counts.set(m[1], (counts.get(m[1]) ?? 0) + 1);
+    if (counts.size) pages.set(path.relative(dist, f), counts);
+  }
+  return pages;
+}
+
+/**
+ * Link rule (K55 ruling on #24/#25):
+ * - every expected ASIN (each category's first `cap` verified, from verifiedSet) appears EXACTLY once
+ *   on the compare page, and nothing else does;
+ * - the homepage may additionally link at most one top pick per category: each home ASIN must be the
+ *   first-ranked verified product of its category, linked at most once;
+ * - no other page carries an affiliate link.
+ * Counts all come from `byCategory` / `topPicks` (derived from verifiedSet), never hard-coded.
+ * @param {Map<string, Map<string, number>>} byPage from affiliateAsinsByPage
+ * @param {{ byCategory: Record<string, string[]>, topPicks: Record<string, string> }} expected
+ */
+export function checkAffiliatePlacement(byPage, expected, files = { compare: COMPARE_PAGE_FILE, home: HOME_PAGE_FILE }) {
+  const failures = [];
+  const expectedCompare = Object.values(expected.byCategory).flat();
+  if (new Set(expectedCompare).size !== expectedCompare.length) failures.push('verifiedSet lists an ASIN in more than one place');
+  const topPickCategory = new Map(Object.entries(expected.topPicks).map(([cat, asin]) => [asin, cat]));
+  const compare = byPage.get(files.compare) ?? new Map();
+  const home = byPage.get(files.home) ?? new Map();
+  const set = compareAsinSets([...compare.keys()], expectedCompare);
+  for (const a of set.missing) failures.push(`compare page: missing ${a}`);
+  for (const a of set.extra) failures.push(`compare page: ${a} is not in verifiedSet`);
+  for (const [a, n] of compare) if (n !== 1) failures.push(`compare page: ${a} linked ${n} times (must be exactly once)`);
+  const homeCats = new Map();
+  for (const [a, n] of home) {
+    const cat = topPickCategory.get(a);
+    if (!cat) failures.push(`homepage: ${a} is not the top-ranked verified pick of its category`);
+    else homeCats.set(cat, (homeCats.get(cat) ?? 0) + n);
+    if (n > 1) failures.push(`homepage: ${a} linked ${n} times (at most once)`);
+  }
+  for (const [cat, n] of homeCats) if (n > 1) failures.push(`homepage: category ${cat} has ${n} top-pick links (at most one)`);
+  for (const [file] of byPage) {
+    if (file !== files.compare && file !== files.home) failures.push(`${file}: affiliate links are only allowed on the compare page and homepage`);
+  }
+  const homeLinks = [...home.values()].reduce((s, n) => s + n, 0);
+  const compareLinks = [...compare.values()].reduce((s, n) => s + n, 0);
+  return { ok: failures.length === 0, failures, compareLinks, homeLinks };
 }
 
 /* ---------- S1-10b (CR M1): rainwater drinking-water note guard ---------- */

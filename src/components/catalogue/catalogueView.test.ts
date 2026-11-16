@@ -8,6 +8,11 @@ import {
   productImage,
   FALLBACK_IMAGE_SIZE,
   loadCatalogue,
+  CATEGORY_ORDER,
+  CATEGORY_META,
+  KNIFE_CHIP,
+  specFacts,
+  safetyNote,
 } from './catalogueView';
 import type { AffiliateDisplayOffer } from '../../lib/offers';
 import { affiliateProgrammes } from '../../lib/offers/data';
@@ -188,7 +193,8 @@ const expectedFromVerifiedSet = Object.values(VERIFIED_BY_CATEGORY).reduce(
   (n, asins) => n + Math.min(asins.length, PER_CATEGORY),
   0,
 );
-const expectedCategories = PRODUCT_CATEGORIES.filter((c) => (VERIFIED_BY_CATEGORY[c]?.length ?? 0) > 0);
+// Web's section order (CATEGORY_ORDER), only categories with a verified product.
+const expectedCategories = CATEGORY_ORDER.filter((c) => (VERIFIED_BY_CATEGORY[c]?.length ?? 0) > 0);
 const PROD_ENV = { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: 'verifydist-21' };
 
 describe('catalogue grouping (groupComparisonsByCategory, cap 3)', () => {
@@ -262,5 +268,100 @@ describe('catalogue grouping (groupComparisonsByCategory, cap 3)', () => {
     expect(VERIFIED_COUNT).toBe(VERIFIED_ASINS.length);
     expect(m.asins.every((id) => VERIFIED_ASINS.includes(id))).toBe(true);
     expect(isShortlistable).toEqual(expect.any(Function));
+  });
+});
+
+describe('S1-10b rendering: order, labels, notes and chips', () => {
+  const recordOf = new Map(catalogueProducts.map((p) => [p.variant_id, p]));
+  const JARGON = /\bBS\s?\d|\bEN\s?\d|ISO\s?\d|PMR\s?446|\bPMR\b|\bT\d{2}\b|Red Cross|under[- ]?18|\bage\b/i;
+
+  it('CATEGORY_ORDER lists every category exactly once', () => {
+    expect([...CATEGORY_ORDER].sort()).toEqual([...PRODUCT_CATEGORIES].sort());
+    expect(new Set(CATEGORY_ORDER).size).toBe(CATEGORY_ORDER.length);
+  });
+
+  it('category copy is plain English with no codes, model numbers or jargon, and guides point at real pages', async () => {
+    const fs = await import('node:fs');
+    const pageExists = (href: string) => {
+      const [, kind, slug] = href.split('/');
+      if (kind === 'gear' || kind === 'scenarios') return fs.existsSync(`src/content/${kind}/${slug}.md`);
+      return fs.existsSync(`src/pages${href}.astro`);
+    };
+    for (const c of CATEGORY_ORDER) {
+      const m = CATEGORY_META[c];
+      for (const text of [m.title, m.short, m.dek, m.guide?.label ?? '']) {
+        expect(text, c).not.toMatch(JARGON);
+        expect(text, c).not.toMatch(/[A-Za-z]+\d|\d+[A-Za-z]{2,}/);
+      }
+      expect(m.dek.length, c).toBeGreaterThan(0);
+      expect(m.anchor, c).toMatch(/^[a-z0-9-]+$/);
+      if (m.guide) expect(pageExists(m.guide.href), `${c} -> ${m.guide.href}`).toBe(true);
+    }
+    expect(new Set(CATEGORY_ORDER.map((c) => CATEGORY_META[c].anchor)).size).toBe(CATEGORY_ORDER.length);
+    // Rainwater is not drinking water: no guide pairing it with filters or drinking water.
+    expect(CATEGORY_META.rainwater_storage.guide).toBeNull();
+  });
+
+  it('every rainwater card and the rainwater section carry the drinking-water note from the data', async () => {
+    const m = await loadCatalogue(PROD_ENV, NOW);
+    const s = m.sections.find((x) => x.category === 'rainwater_storage');
+    const expectedCards = Math.min(VERIFIED_BY_CATEGORY.rainwater_storage?.length ?? 0, PER_CATEGORY);
+    expect(s?.cards.length ?? 0).toBe(expectedCards);
+    for (const card of s?.cards ?? []) {
+      const rec = recordOf.get(card.id)!;
+      const fromData = (rec.specs as { drinking_water_note?: { value: string } }).drinking_water_note?.value;
+      expect(fromData).toBeTruthy();
+      expect(card.safetyNote).toBe(fromData);
+    }
+    if (s) expect(s.note).toBe(s.cards[0]!.safetyNote);
+    for (const other of m.sections.filter((x) => x.category !== 'rainwater_storage')) {
+      expect(other.note).toBeNull();
+      expect(other.cards.every((c) => c.safetyNote === null)).toBe(true);
+    }
+  });
+
+  it('kits: "Includes a knife" exactly when contains_blade is true; no shelf life, age or listing claims', async () => {
+    const m = await loadCatalogue(PROD_ENV, NOW);
+    let knives = 0;
+    for (const s of m.sections) {
+      for (const card of s.cards) {
+        const specs = recordOf.get(card.id)!.specs as { contains_blade?: { value: boolean } };
+        const blade = specs.contains_blade?.value === true;
+        expect(card.facts.includes(KNIFE_CHIP), card.id).toBe(blade);
+        if (blade) knives++;
+        for (const f of card.facts) {
+          expect(f).not.toMatch(JARGON);
+          if (['home_kit', 'grab_bag_kit'].includes(card.category)) expect(f).not.toMatch(/shelf life|packed|best before/i);
+        }
+      }
+    }
+    expect(KNIFE_CHIP).toBe('Includes a knife');
+    const expectedKnives = catalogueProducts.filter(
+      (p) => p.verification === 'verified' && (p.specs as { contains_blade?: { value: boolean } }).contains_blade?.value === true,
+    ).length;
+    expect(knives).toBe(expectedKnives);
+  });
+
+  it('spec facts: PMR446 shows as "Licence-free UK channels", capacities and flags are plain', () => {
+    const c = (category: string, specs: Record<string, unknown>) =>
+      ({ category, product: { specs } }) as unknown as Parameters<typeof specFacts>[0];
+    expect(specFacts(c('two_way_radio', { pmr446_stated: true, pack_count: 2 }))).toEqual(['Pack of 2', 'Licence-free UK channels']);
+    expect(specFacts(c('two_way_radio', { pmr446_stated: false }))).toEqual([]);
+    expect(specFacts(c('flask', { capacity_l: 0.47 }))).toEqual(['470 ml']);
+    expect(specFacts(c('water_container', { capacity_l: 12 }))).toEqual(['12 L']);
+    expect(specFacts(c('multi_tool', { locking_blade: true }))).toEqual(['Locking blade']);
+    expect(specFacts(c('electric_lighter', { rechargeable: true }))).toEqual(['Rechargeable']);
+    expect(
+      specFacts(c('grab_bag_kit', { people: 4, contains_food_water: true, contains_blade: true, food_water_shelf_life_years: 5, stated_contents: ['Knife'] })),
+    ).toEqual(['For 4 people', 'Includes food and water', 'Includes a knife']);
+    expect(specFacts(c('home_kit', { people: 1, contains_blade: false, contains_food_water: false }))).toEqual(['For 1 person']);
+    expect(safetyNote(c('rainwater_storage', { drinking_water_note: ' Do not drink. ' }))).toBe('Do not drink.');
+    expect(safetyNote(c('flask', { drinking_water_note: 'x' }))).toBeNull();
+  });
+
+  it('fallback title cleaner keeps ISO paper sizes (A0 to A10) but still drops model codes', () => {
+    expect(cleanProductTitle('OverBoard A3 waterproof document pouch')).toBe('OverBoard A3 waterproof document pouch');
+    expect(cleanProductTitle('Pouch A10 and A0 sizes')).toBe('Pouch A10 and A0 sizes');
+    expect(cleanProductTitle('Pouch A11 OB1104')).toBe('Pouch');
   });
 });

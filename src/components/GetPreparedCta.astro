@@ -1,12 +1,14 @@
 ---
+/** "Get prepared here": Kieran's wording for the main CTA. Amber fill, Ink label (S1-11 brand). */
 import { comparePath } from '../data/site';
 
 interface Props {
   class?: string;
+  size?: 'default' | 'lg';
   'aria-current'?: 'page';
 }
 
-const { class: className, 'aria-current': ariaCurrent } = Astro.props;
+const { class: className, size = 'default', 'aria-current': ariaCurrent } = Astro.props;
 ---
 
-<a class:list={['btn', className]} href={comparePath} aria-current={ariaCurrent}>Get prepared here</a>
+<a class:list={['btn', 'btn--cta', size === 'lg' && 'btn--lg', className]} href={comparePath} aria-current={ariaCurrent} data-cta="get-prepared">Get prepared here</a>
