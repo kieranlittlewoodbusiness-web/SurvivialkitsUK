@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import CompareLinks from '../../components/catalogue/CompareLinks.astro';
+import EditorByline from '../../components/EditorByline.astro';
 import { getPublishedGear } from '../../lib/content';
 import {
   article,
@@ -62,7 +63,7 @@ const reviewed = (entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pu
       <p class="meta">
         <EvidenceBadge kind="desk-research" />
         <EvidenceBadge kind="official-guidance" />
-        <span>Last reviewed {reviewed}</span>
+        <EditorByline reviewed={reviewed} />
       </p>
 
       <h2>What we compare</h2>

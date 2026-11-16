@@ -40,6 +40,7 @@ describe('contentLastmodMap', () => {
   });
   it('gives static pages the fixed release date, not the build time', () => {
     expect(lastmodFor('https://uksurvivalkits.uk/about/', map, '2026-11-16')).toBe('2026-11-16');
+    expect(lastmodFor('https://uksurvivalkits.uk/about/kieran-littlewood/', map, '2026-11-16')).toBe('2026-11-16');
     expect(lastmodFor('https://uksurvivalkits.uk/scenarios/a/', map, '2026-11-16')).toBe('2026-10-20');
     expect(STATIC_PAGES_RELEASED).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
