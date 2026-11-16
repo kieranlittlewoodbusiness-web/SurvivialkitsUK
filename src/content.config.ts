@@ -11,6 +11,10 @@ const scenarios = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/scenarios' }),
   schema: z.object({
     title: z.string(),
+    /** Document <title> without the site suffix; falls back to title. */
+    seoTitle: z.string().optional(),
+    /** Visible H1; falls back to title. */
+    heading: z.string().optional(),
     description: z.string(),
     scenario: z.string(),
     pubDate: z.coerce.date(),
@@ -48,7 +52,13 @@ const gear = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/gear' }),
   schema: z.object({
     title: z.string(),
+    /** Document <title> without the site suffix; falls back to title. */
+    seoTitle: z.string().optional(),
+    /** Visible H1; falls back to title. */
+    heading: z.string().optional(),
     description: z.string(),
+    /** Meta description; falls back to description so listing ledes stay unchanged. */
+    seoDescription: z.string().optional(),
     category: z.enum([
       'torches',
       'power-banks',

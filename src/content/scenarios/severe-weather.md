@@ -1,6 +1,7 @@
 ---
-title: "Severe weather: calm steps when a Met Office warning is out"
-description: "What to do when a Yellow, Amber or Red Met Office warning covers your area—read the impact text, charge devices, review your kit."
+title: "Storm preparation when a Met Office warning is out"
+seoTitle: "Storm preparation: Met Office warnings"
+description: "What to do when a Yellow, Amber or Red Met Office warning covers your area, including warning colours, travel plans, and when to check flood messaging."
 scenario: Met Office weather warning covering your area
 pubDate: 2026-11-14
 updated: 2026-11-14

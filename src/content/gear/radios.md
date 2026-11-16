@@ -1,6 +1,9 @@
 ---
 title: Radios
+seoTitle: "Wind-up radio criteria for UK homes"
+heading: "Wind-up and emergency radio criteria"
 description: "Battery and wind-up radio criteria for UK power cuts—FM reception, power source and paper station frequencies."
+seoDescription: "Criteria for battery and wind-up radios in a UK power cut: FM reception, a wind-up or battery power source, and station frequencies written down on paper."
 category: radios
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

@@ -1,6 +1,9 @@
 ---
 title: Power banks
+seoTitle: "Power banks for UK power cuts"
+heading: "Power banks for UK power cuts"
 description: "Criteria for household power banks used in UK outages—capacity, USB-C, self-discharge and medical-device cautions."
+seoDescription: "What to look for in a household power bank for UK power cuts: capacity, USB-C charging, self-discharge, and cautions if you rely on a medical device."
 category: power-banks
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

@@ -1,6 +1,6 @@
 ---
-title: "Winter travel: a modest UK car shelf"
-description: "Ready Scotland and Be Ready winter car kit for short delays—not expedition motoring. Check warnings first."
+title: "Winter car kit checklist for UK travel"
+description: "A modest winter car kit checklist for short UK delays, drawing on Ready Scotland's kit advice rather than expedition lists. Check official warnings first."
 scenario: Short winter delay or immobilisation on a UK road
 pubDate: 2026-11-14
 updated: 2026-11-14

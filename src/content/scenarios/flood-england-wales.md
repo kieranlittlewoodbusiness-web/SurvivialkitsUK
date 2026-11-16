@@ -1,6 +1,7 @@
 ---
-title: "Flood alert to flood warning: England and Wales household steps"
-description: "What Environment Agency flood alerts, warnings and severe warnings mean—and calm household actions for each."
+title: "Flood warning steps for households in England and Wales"
+seoTitle: "Flood warning steps: England and Wales"
+description: "What Environment Agency flood alerts, flood warnings and severe flood warnings mean in England and Wales, and calm household steps for each stage."
 scenario: Environment Agency flood messaging for your postcode
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14

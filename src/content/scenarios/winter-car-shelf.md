@@ -1,6 +1,7 @@
 ---
-title: "Winter car shelf: stuck on a UK road in snow or ice"
-description: "A modest UK winter car kit for delays—not expedition motoring. Check warnings and avoid non-essential travel."
+title: "Stuck on a UK road in snow or ice: what to keep in the car"
+seoTitle: "Stuck in snow in your car: what to carry"
+description: "What to carry in case you are stuck on a snowy or icy UK road: warm layers, a torch, a charger and a shovel. Check Met Office warnings before you set off."
 scenario: Short winter delay or immobilisation on a UK road
 pubDate: 2026-11-14
 lastReviewed: 2026-11-14
