@@ -1,7 +1,7 @@
 /**
  * SEO-9 editor bio. Copy is the FINAL text Kieran approved (relayed by the PM).
  * Do not add credentials, a photo, sameAs, or claims that he used or tested every product.
- * Person JSON-LD / author is a follow-up after SEO-6 (#37) and this page are live.
+ * Person / author JSON-LD is a follow-up after this page is live. Do not add sameAs.
  */
 import { site } from './site';
 

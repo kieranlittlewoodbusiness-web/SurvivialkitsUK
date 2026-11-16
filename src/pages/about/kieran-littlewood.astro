@@ -1,9 +1,27 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { editor } from '../../data/editor';
+import { breadcrumbList, crumbsForPage, pageUrl, webPage } from '../../lib/seo/jsonld';
+
+const canonicalPath = editor.path;
+const url = pageUrl(canonicalPath);
+const jsonLd = [
+  webPage({
+    url,
+    name: editor.name,
+    description: editor.description,
+    breadcrumb: true,
+  }),
+  breadcrumbList(url, crumbsForPage(canonicalPath, editor.name, { label: 'About', href: '/about/' })),
+];
 ---
 
-<BaseLayout title={editor.title} description={editor.description} canonicalPath={editor.path}>
+<BaseLayout
+  title={editor.title}
+  description={editor.description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
+>
   <section class="section">
     <div class="wrap wrap--narrow">
       <nav aria-label="Breadcrumb">

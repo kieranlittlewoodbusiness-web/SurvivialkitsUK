@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { site } from '../../src/data/site';
 import { EDITOR_DESCRIPTION, EDITOR_TITLE, editor, editorDocumentTitle } from '../../src/data/editor';
+import { breadcrumbList, crumbsForPage, pageUrl, webPage } from '../../src/lib/seo/jsonld';
 
 const root = path.resolve('.');
 const read = (...parts: string[]) => fs.readFileSync(path.join(root, ...parts), 'utf8');
@@ -10,7 +11,15 @@ const read = (...parts: string[]) => fs.readFileSync(path.join(root, ...parts), 
 const TITLE_MAX = 60;
 const META_MIN = 120;
 const META_MAX = 160;
-const LD_JSON = /<script\b[^>]*type=["']application\/ld\+json["'][^>]*>/i;
+function parseGraph(html: string) {
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].filter((m) =>
+    /type\s*=\s*["']application\/ld\+json["']/i.test(m[1]),
+  );
+  return { scripts, data: scripts.length === 1 ? JSON.parse(scripts[0][2]) : null };
+}
+
+const typesOf = (node: { '@type'?: string | string[] }) =>
+  Array.isArray(node['@type']) ? node['@type'] : node['@type'] ? [node['@type']] : [];
 
 describe('SEO-9 editor bio copy', () => {
   it('uses the approved title, 60 characters or fewer including the site suffix', () => {
@@ -39,13 +48,31 @@ describe('SEO-9 editor bio copy', () => {
     expect(page).not.toMatch(/sameAs/);
   });
 
-  it('emits no JSON-LD on the bio page (Person/author is a follow-up after #37)', () => {
+  it('uses the standard SEO-6 page graph with no Person, author or sameAs', () => {
     const page = read('src/pages/about/kieran-littlewood.astro');
-    expect(page).not.toMatch(LD_JSON);
-    expect(page).not.toMatch(/application\/ld\+json/);
-    expect(page).not.toMatch(/editorProfileJsonLd|editorPersonNode|@graph|ProfilePage/);
-    const editorSrc = read('src/data/editor.ts');
-    expect(editorSrc).not.toMatch(/editorPersonNode|editorProfileJsonLd|EDITOR_PERSON_DESCRIPTION/);
+    expect(page).toContain('jsonLd={jsonLd}');
+    expect(page).toContain('webPage(');
+    expect(page).toContain('breadcrumbList(');
+    expect(page).toContain("crumbsForPage(canonicalPath, editor.name, { label: 'About', href: '/about/' })");
+    expect(page).not.toMatch(/Person|ProfilePage|sameAs|author:/);
+
+    const url = pageUrl(editor.path);
+    const nodes = [
+      webPage({ url, name: editor.name, description: editor.description, breadcrumb: true }),
+      breadcrumbList(url, crumbsForPage(editor.path, editor.name, { label: 'About', href: '/about/' })),
+    ];
+    expect(nodes[0]['@type']).toBe('WebPage');
+    expect(nodes[0].name).toBe('Kieran Littlewood');
+    expect(nodes[0].description).toBe(EDITOR_DESCRIPTION);
+    expect(nodes[0].url).toBe('https://uksurvivalkits.uk/about/kieran-littlewood/');
+    expect(nodes[1]['@type']).toBe('BreadcrumbList');
+    const crumbs = nodes[1].itemListElement as Array<{ position: number; name: string; item: string }>;
+    expect(crumbs.map((c) => [c.position, c.name, c.item])).toEqual([
+      [1, 'Home', 'https://uksurvivalkits.uk/'],
+      [2, 'About', 'https://uksurvivalkits.uk/about/'],
+      [3, 'Kieran Littlewood', 'https://uksurvivalkits.uk/about/kieran-littlewood/'],
+    ]);
+    expect(JSON.stringify(nodes)).not.toMatch(/Person|sameAs|"author"/);
   });
 });
 
@@ -54,7 +81,7 @@ describe('SEO-9 routes and inbound links', () => {
     expect(editor.path).toBe('/about/kieran-littlewood/');
     expect(fs.existsSync(path.join(root, 'src/pages/about/kieran-littlewood.astro'))).toBe(true);
     const page = read('src/pages/about/kieran-littlewood.astro');
-    expect(page).toContain('canonicalPath={editor.path}');
+    expect(page).toContain('canonicalPath={canonicalPath}');
     expect(page).toContain('<h1>{editor.name}</h1>');
   });
 
@@ -75,7 +102,7 @@ describe('SEO-9 built page (when dist is present)', () => {
   const distPage = path.join(root, 'dist/about/kieran-littlewood/index.html');
   const hasDist = fs.existsSync(distPage);
 
-  it.skipIf(!hasDist)('emits the approved title, meta, canonical, og tags and body, and no JSON-LD', () => {
+  it.skipIf(!hasDist)('emits the approved title, meta, canonical, og tags and body', () => {
     const html = fs.readFileSync(distPage, 'utf8');
     const title = html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? '';
     expect(title).toBe(editorDocumentTitle);
@@ -92,8 +119,35 @@ describe('SEO-9 built page (when dist is present)', () => {
     expect(html).toContain('use them where I can');
     const main = html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] ?? '';
     expect(main).not.toMatch(/<img\b/);
-    expect(html).not.toMatch(LD_JSON);
-    expect(html).not.toMatch(/application\/ld\+json/);
+  });
+
+  it.skipIf(!hasDist)('emits one SEO-6 @graph with Organization, WebSite, WebPage and BreadcrumbList, and no Person, author or sameAs', () => {
+    const html = fs.readFileSync(distPage, 'utf8');
+    const { scripts, data } = parseGraph(html);
+    expect(scripts).toHaveLength(1);
+    expect(data['@context']).toBe('https://schema.org');
+    const graph = data['@graph'] as Array<Record<string, unknown>>;
+    const types = graph.flatMap((n) => typesOf(n));
+    expect(types).toEqual(['Organization', 'WebSite', 'WebPage', 'BreadcrumbList']);
+    expect(types).not.toContain('Person');
+    expect(types).not.toContain('ProfilePage');
+    expect(JSON.stringify(data)).not.toMatch(/"author"|sameAs|"Person"/);
+
+    const page = graph.find((n) => typesOf(n).includes('WebPage'))!;
+    const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)?.[1]?.replace(/<[^>]+>/g, '').trim();
+    const desc = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1];
+    const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]*)"/i)?.[1];
+    expect(page.name).toBe(h1);
+    expect(page.description).toBe(desc);
+    expect(page.url).toBe(canonical);
+    expect(canonical).toBe('https://uksurvivalkits.uk/about/kieran-littlewood/');
+
+    const crumbs = (graph.find((n) => typesOf(n).includes('BreadcrumbList'))!.itemListElement as Array<{ name: string; item: string }>);
+    expect(crumbs.map((c) => [c.name, c.item])).toEqual([
+      ['Home', 'https://uksurvivalkits.uk/'],
+      ['About', 'https://uksurvivalkits.uk/about/'],
+      ['Kieran Littlewood', 'https://uksurvivalkits.uk/about/kieran-littlewood/'],
+    ]);
   });
 
   it.skipIf(!hasDist)('lists the trailing-slash URL in the sitemap', () => {
