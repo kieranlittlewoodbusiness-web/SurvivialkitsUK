@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../components/EvidenceBadge.astro';
 import CompareLinks from '../../components/catalogue/CompareLinks.astro';
+import EditorByline from '../../components/EditorByline.astro';
 import { getPublishedScenarios } from '../../lib/content';
 import { render } from 'astro:content';
 
@@ -36,7 +37,7 @@ const reviewed = entry.data.lastReviewed.toLocaleDateString('en-GB', {
       <p class="lede">{entry.data.scenario}</p>
       <p class="meta">
         {entry.data.evidence.map((kind) => <EvidenceBadge kind={kind} />)}
-        <span>Last reviewed {reviewed}</span>
+        <EditorByline reviewed={reviewed} />
       </p>
 
       <div class="prose">

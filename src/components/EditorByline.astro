@@ -1,0 +1,12 @@
+---
+import { editor } from '../data/editor';
+
+interface Props {
+  reviewed: string;
+}
+
+const { reviewed } = Astro.props;
+---
+
+<span>Edited by <a href={editor.path}>{editor.name}</a> · Last reviewed {reviewed}</span>
+
