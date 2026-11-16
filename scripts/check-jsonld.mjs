@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * SEO-6 check over built HTML. Rules: scripts/lib/jsonld-checks.mjs (checkJsonLd).
+ * SEO-6 check over built HTML.
+ * SEO-9b: also one Person @id site-wide (see checkPerson / EXPECTED_PERSON). Rules: scripts/lib/jsonld-checks.mjs (checkJsonLd).
  * Usage: node scripts/check-jsonld.mjs [distDir] [--json out.json]
  */
 import fs from 'node:fs';
@@ -23,4 +24,4 @@ if (r.failures.length) {
   if (r.failures.length > 80) console.error(`  ... and ${r.failures.length - 80} more`);
   process.exit(1);
 }
-console.log('PASS: one JSON-LD @graph per indexable page, none on 404; no duplicate @id; no Product, Offer, price or Amazon URLs; absolute apex URLs; consistent with canonical, H1, meta and og:image.');
+console.log('PASS: one JSON-LD @graph per indexable page, none on 404; no duplicate @id; no Product, Offer, price or Amazon URLs; absolute apex URLs; consistent with canonical, H1, meta and og:image; one Person (#person) site-wide, every author and ProfilePage mainEntity resolves to it.');

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { checkJsonLd } from './lib/jsonld-checks.mjs';
+import { BIO_FILE, EXPECTED_PERSON, PERSON_ID, checkJsonLd } from './lib/jsonld-checks.mjs';
 
 const TITLE = 'A valid page title';
 const DESC =
@@ -59,6 +59,7 @@ const pageNodes = () => [
     inLanguage: 'en-GB',
     mainEntityOfPage: { '@id': `${CANONICAL}#webpage` },
     isPartOf: { '@id': `${CANONICAL}#webpage` },
+    author: { '@id': 'https://uksurvivalkits.uk/about/kieran-littlewood/#person' },
     publisher: { '@id': 'https://uksurvivalkits.uk/#organization' },
     image: { '@type': 'ImageObject', url: OG, width: 1200, height: 630 },
   },
@@ -70,6 +71,8 @@ const pageNodes = () => [
       { '@type': 'ListItem', position: 2, name: 'Method', item: CANONICAL },
     ],
   },
+  // SEO-9b: the Person the Article author resolves to (index 5).
+  { ...EXPECTED_PERSON, worksFor: { ...EXPECTED_PERSON.worksFor } },
 ];
 
 const graph = (nodes = pageNodes()) =>
@@ -89,7 +92,42 @@ const html = ({ body = '', robots = 'index, follow', extraHead = '', script = gr
     ${body}
   </body></html>`;
 
-function site(files) {
+// SEO-9b: a valid editor bio page (ProfilePage + the Person). site() adds it unless a test passes its own
+// BIO_FILE entry or opts out with { [NO_BIO]: true }, because check:jsonld requires the bio page whenever
+// a page carries the Person node.
+const BIO_URL = 'https://uksurvivalkits.uk/about/kieran-littlewood/';
+const bioNodes = () => [
+  pageNodes()[0],
+  pageNodes()[1],
+  {
+    '@type': 'ProfilePage',
+    '@id': `${BIO_URL}#webpage`,
+    url: BIO_URL,
+    name: 'Kieran Littlewood',
+    description: DESC,
+    isPartOf: { '@id': 'https://uksurvivalkits.uk/#website' },
+    inLanguage: 'en-GB',
+    breadcrumb: { '@id': `${BIO_URL}#breadcrumb` },
+    mainEntity: { '@id': PERSON_ID },
+  },
+  { ...EXPECTED_PERSON, worksFor: { ...EXPECTED_PERSON.worksFor } },
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${BIO_URL}#breadcrumb`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://uksurvivalkits.uk/' },
+      { '@type': 'ListItem', position: 2, name: 'About', item: 'https://uksurvivalkits.uk/about/' },
+      { '@type': 'ListItem', position: 3, name: 'Kieran Littlewood', item: BIO_URL },
+    ],
+  },
+];
+const NO_BIO = Symbol('no bio page');
+
+function site(input) {
+  const files = { ...input };
+  if (!input[NO_BIO] && !(BIO_FILE in files)) {
+    files[BIO_FILE] = html({ script: graph(bioNodes()), heading: 'Kieran Littlewood', canonical: BIO_URL });
+  }
   const d = fs.mkdtempSync(path.join(os.tmpdir(), 'jsonld-'));
   for (const [rel, contents] of Object.entries(files)) {
     const full = path.join(d, rel);
@@ -113,7 +151,7 @@ describe('checkJsonLd', () => {
   it('passes a valid indexable page and a 404 with no JSON-LD', () => {
     const r = checkJsonLd(good(), { now: NOW });
     expect(r.failures).toEqual([]);
-    expect(r.files).toBe(2);
+    expect(r.files).toBe(3);
   });
 
   it('fails when an indexable page has no JSON-LD script', () => {
