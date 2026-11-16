@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 /**
- * S1-10 production verification. Builds a production site into .verify-dist with a DUMMY
+ * S1-10 / S1-11 production verification. Builds a production site into .verify-dist with a DUMMY
  * Associates tag (never the real one), then runs the link check (expected affiliate count
- * derived from the verified set, capped at 3 per category) and the content check with
+ * derived from the verified set: compare page capped at 3 per category, plus one homepage top pick per category) and the content check with
  * production rules (no noindex, robots.txt allows crawling). Usage:
  *   npm run verify:dist [-- --expect-affiliate N]
  */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
-import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
+import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
 
 const OUT = process.env.VERIFY_OUT_DIR || '.verify-dist';
 const DUMMY_TAG = 'verifydist-21';
@@ -23,7 +23,7 @@ const run = (cmd, a) => {
 };
 
 function derivedExpect() {
-  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts'], {
+  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts', '--json'], {
     env,
     encoding: 'utf8',
   });
@@ -31,15 +31,24 @@ function derivedExpect() {
     console.error(r.stderr || r.stdout || 'derive-affiliate-count failed');
     process.exit(r.status ?? 1);
   }
-  const n = (r.stdout || '').trim();
-  if (!/^\d+$/.test(n)) {
-    console.error('derive-affiliate-count did not print a number');
+  let parsed;
+  try {
+    parsed = JSON.parse((r.stdout || '').trim());
+  } catch {
+    console.error('derive-affiliate-count did not print JSON');
     process.exit(1);
   }
-  return Number(n);
+  for (const k of ['compare', 'home', 'total']) {
+    if (!Number.isInteger(parsed[k]) || parsed[k] < 0) {
+      console.error(`derive-affiliate-count: ${k} is not a valid integer`);
+      process.exit(1);
+    }
+  }
+  return parsed;
 }
 
-const expect = ei >= 0 ? Number(args[ei + 1]) : derivedExpect();
+const derived = derivedExpect();
+const expect = ei >= 0 ? Number(args[ei + 1]) : derived.total;
 if (!Number.isInteger(expect) || expect < 0) {
   console.error('expected affiliate count is not a valid integer');
   process.exit(1);
@@ -52,13 +61,20 @@ run('node', ['scripts/check-content.mjs', OUT, '--production']);
 
 const html = readCompareHtml(OUT);
 const rules = checkComparePage(html, {
-  expectedButtons: expect,
+  expectedButtons: derived.compare,
+  expectedCategories: derived.categories,
   maxPerCategory: 3,
   expectNoImages: true,
 });
-if (rules.failures.length) {
-  console.error(`FAIL: ${rules.failures.length} S1-10 card rule(s)`);
-  for (const f of rules.failures) console.error(`  ${f}`);
+const home = checkHomePage(readHomeHtml(OUT), {
+  expectedButtons: derived.home,
+  expectedCategories: derived.categories,
+  compareHtml: html,
+});
+const failures = [...rules.failures, ...home.failures.map((f) => `home: ${f}`)];
+if (failures.length) {
+  console.error(`FAIL: ${failures.length} S1-10/S1-11 card rule(s)`);
+  for (const f of failures) console.error(`  ${f}`);
   process.exit(1);
 }
-console.log(`verify:dist PASS (production build in ${OUT}, dummy tag, ${expect} affiliate links).`);
+console.log(`verify:dist PASS (production build in ${OUT}, dummy tag, ${expect} affiliate links: compare ${derived.compare}, home ${derived.home}).`);
