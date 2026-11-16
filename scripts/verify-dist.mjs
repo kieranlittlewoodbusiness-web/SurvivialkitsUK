@@ -5,13 +5,15 @@
  * derived from the verified set, capped at 3 per category) and the content check with
  * production rules (no noindex, robots.txt allows crawling). S1-10b (CR L1): the exact set of ASINs
  * behind tagged affiliate links must equal the ASINs in VERIFIED_BY_CATEGORY (tests/offers/verifiedSet.ts),
- * each linked once; a matching count alone is not enough. Usage:
+ * each linked once; a matching count alone is not enough. Render-gated categories (RENDER_GATED_CATEGORIES,
+ * CR M1) are subtracted in code by derive-affiliate-count.ts. Rainwater guard (CR M1): whenever any
+ * rainwater card/section renders, the compare page must show RAINWATER_DRINKING_WATER_NOTE. Usage:
  *   npm run verify:dist [-- --expect-affiliate N]
  */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
-import { affiliateAsins, compareAsinSets } from './lib/dist-checks.mjs';
+import { affiliateAsins, checkRainwaterNote, compareAsinSets } from './lib/dist-checks.mjs';
 
 const OUT = process.env.VERIFY_OUT_DIR || '.verify-dist';
 const DUMMY_TAG = 'verifydist-21';
@@ -87,6 +89,24 @@ if (!set.ok || repeated.length || new Set(expectedAsins).size !== expectedAsins.
 console.log(`PASS: affiliate ASIN set equals verifiedSet.ts exactly (${expectedAsins.length} ASINs, each linked once).`);
 
 const html = readCompareHtml(OUT);
+
+// S1-10b (CR M1): rainwater content may only render together with the exact drinking-water note.
+let rw;
+try {
+  rw = JSON.parse(derive(['--rainwater']));
+} catch {
+  rw = null;
+}
+if (!rw || !Array.isArray(rw.asins) || typeof rw.note !== 'string' || !rw.note) {
+  console.error('derive-affiliate-count --rainwater did not print { asins, note }');
+  process.exit(1);
+}
+const guard = checkRainwaterNote(html, rw);
+if (!guard.ok) {
+  console.error(`FAIL: rainwater guard: ${guard.reason}`);
+  process.exit(1);
+}
+console.log(`PASS: rainwater guard: ${guard.reason} (${guard.rainwater} rainwater signals on the compare page).`);
 const rules = checkComparePage(html, {
   expectedButtons: expect,
   maxPerCategory: 3,

@@ -8,7 +8,7 @@
     "Datrex B0134DAXJ2: listing conflict on pack quantity (title 18 packs vs details pack of 1).",
     "S1-10 (15 Nov 2026): up to 3 verified products per category from the tagless public listings (candidates in the PR body). Gaps: emergency_water 2 (Mayday B08GYLB55H volume conflict, unverified), hi_vis 2, jump_leads 2 (AA B00DNSDDI2 model unconfirmed; alternates lacked full evidence).",
     "Thermal clothing: size-child ASINs verify against the parent canonical (size_child_of, PM ruling b). Heatwave B01LX282CT and B01LYD385A stay unverified (no model number).",
-    "S1-10b (16 Nov 2026): 14 more categories from tagless public listings (picks and gaps in the PR body). Gaps: water_container 2, home_kit 1, grab_bag_kit 2. LifeStraw B0CMY1GRTZ and Highlander B004LWWFQ0 lost Add to Basket on re-check (unverified); First My Family B0CHVPBJ29 pack-count conflict (unverified). Legacy kit/EVAQ8 data never renders."
+    "S1-10b (16 Nov 2026): 14 more categories from tagless public listings (picks and gaps in PR #24). Gaps: water_container 2, home_kit 0 (Ready America B00MCN9AJ0 unverified: US third-party seller only), grab_bag_kit 2. LifeStraw B0CMY1GRTZ and Highlander B004LWWFQ0 lost Add to Basket on re-check (unverified); First My Family B0CHVPBJ29 pack-count conflict (unverified). rainwater_storage stays verified but is render-gated (CR M1) until Web renders specs.drinking_water_note. Legacy kit/EVAQ8 data never renders."
   ],
   "products": [
     {
@@ -3350,9 +3350,9 @@
         "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
       },
       "captured_at": "2026-11-16T12:22:00+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Ready America shelter-in-place kit for 5 people",
-      "display_rank": 1,
+      "display_rank": null,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -3361,15 +3361,15 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B00MCN9AJ0",
         "checked_on": "2026-11-16",
-        "outcome": "verified",
-        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model"],
         "canonical_asin": "B00MCN9AJ0",
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Ready America 70510 Shelter-in-Place/Lockdown Kit for 5-Person\". Brand \"Ready America\", model \"70510\". Pack: Per listing: 5 food bars, 30 water pouches, 5 lightsticks, 5 whistles, 107-pc first aid kit, 5 survival blankets, 5 tissue packs, 10 nitrile gloves, 5 dust masks, 5 bio-hazard bags, 15 towelettes, 5 toothbrushes, 5 toothpastes, 5 mouthwash, 5-gallon bucket, contact card. Add to Basket present; canonical B00MCN9AJ0."
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Ready America 70510 Shelter-in-Place/Lockdown Kit for 5-Person\". Unverified 16 Nov 2026 (PM N1 ruling: kits must be UK-sold and UK-appropriate). Re-read with a Firefox UA: the only offer is \"Shipper / Seller SELECT ELITE\", a third-party seller whose Amazon seller page gives a US business address (Diamond Bar, CA) and 30% positive feedback in the last 12 months; delivery is quoted 10-16 December (import lead time). The listing itself shows no FEMA, American Red Cross or other US-only guidance text, but its description also mentions a crank radio/siren/torch \"power station\" that is not in the \"Kit Contains\" list, and it is framed as a US school/office \"lockdown\" kit. Not UK-sold, so unverified; data kept."
       },
       "notes": [
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
-        "Why picked: Recognised US preparedness brand; home bucket kit with a full contents list",
-        "US-made kit sold on Amazon UK. Food/water packing date is not stated on the listing."
+        "Unverified: Unverified 16 Nov 2026 (PM N1 ruling: kits must be UK-sold and UK-appropriate). Re-read with a Firefox UA: the only offer is \"Shipper / Seller SELECT ELITE\", a third-party seller whose Amazon seller page gives a US business address (Diamond Bar, CA) and 30% positive feedback in the last 12 months; delivery is quoted 10-16 December (import lead time). The listing itself shows no FEMA, American Red Cross or other US-only guidance text, but its description also mentions a crank radio/siren/torch \"power station\" that is not in the \"Kit Contains\" list, and it is framed as a US school/office \"lockdown\" kit. Not UK-sold, so unverified; data kept.",
+        "Previously picked (S1-10b first pass): recognised US preparedness brand; home bucket kit with a full contents list."
       ]
     },
     {
@@ -4473,7 +4473,7 @@
           "captured_at": "2026-11-16T12:24:00+00:00"
         },
         "drinking_water_note": {
-          "value": "Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.",
+          "value": "Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.",
           "source": {
             "name": "Prepare (UK government): water supply interruptions or outages",
             "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
@@ -4505,7 +4505,7 @@
       "notes": [
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
         "Why picked: Harcostar is the UK market-leading water butt brand; complete kit",
-        "Rainwater is not drinking water: filter or treat it before drinking (pairs with gravity_filter). See specs.drinking_water_note."
+        "Rainwater is not drinking water: \"Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.\" (specs.drinking_water_note, Prepare). Not rendered until Web shows the note (RENDER_GATED_CATEGORIES, CR M1)."
       ]
     },
     {
@@ -4530,7 +4530,7 @@
           "captured_at": "2026-11-16T12:24:00+00:00"
         },
         "drinking_water_note": {
-          "value": "Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.",
+          "value": "Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.",
           "source": {
             "name": "Prepare (UK government): water supply interruptions or outages",
             "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
@@ -4562,7 +4562,7 @@
       "notes": [
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
         "Why picked: Ward (Strata Products Ltd), UK-made; model GN340",
-        "Rainwater is not drinking water: filter or treat it before drinking (pairs with gravity_filter). See specs.drinking_water_note."
+        "Rainwater is not drinking water: \"Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.\" (specs.drinking_water_note, Prepare). Not rendered until Web shows the note (RENDER_GATED_CATEGORIES, CR M1)."
       ]
     },
     {
@@ -4586,7 +4586,7 @@
           "captured_at": "2026-11-16T12:25:00+00:00"
         },
         "drinking_water_note": {
-          "value": "Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.",
+          "value": "Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.",
           "source": {
             "name": "Prepare (UK government): water supply interruptions or outages",
             "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
@@ -4618,7 +4618,7 @@
       "notes": [
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
         "Why picked: Stewart Garden, established UK garden brand; model 238976",
-        "Rainwater is not drinking water: filter or treat it before drinking (pairs with gravity_filter). See specs.drinking_water_note."
+        "Rainwater is not drinking water: \"Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.\" (specs.drinking_water_note, Prepare). Not rendered until Web shows the note (RENDER_GATED_CATEGORIES, CR M1)."
       ]
     },
     {

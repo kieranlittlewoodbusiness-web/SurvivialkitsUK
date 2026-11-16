@@ -20,7 +20,7 @@ import rawVariants from '../../src/data/kits/variants.json';
 import rawProgrammes from '../../src/data/affiliate/programmes.json';
 import type { AffiliateProgrammeRecord, CatalogueProduct, Offer } from '../../src/lib/offers/types';
 import { offer, variant } from './fixtures';
-import { KNOWN_UNVERIFIED, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
+import { KNOWN_UNVERIFIED, RENDERED_ASINS, RENDERED_COUNT, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
 
 const FAKE_TAG = 'TESTONLY-21';
 const NOW = '2026-11-15T12:00:00+00:00';
@@ -29,6 +29,8 @@ const S1_10B_CATEGORIES: string[] = ['water_container', 'rainwater_storage', 'gr
 
 /** S1-10: the verified set lives in one place (tests/offers/verifiedSet.ts). */
 const EXPECTED_VERIFIED = [...VERIFIED_ASINS];
+/** S1-10b (CR M1): rendered output = verified minus render-gated categories. */
+const EXPECTED_RENDERED = [...RENDERED_ASINS];
 
 const run = (env: Record<string, string | undefined>, products = allProducts) =>
   buildCatalogueComparisons(products, allOffers, { now: NOW, programmes: affiliateProgrammes, buildEnv: env }).comparisons.flatMap((c) => c.offers);
@@ -141,9 +143,9 @@ describe('verification_evidence schema', () => {
 describe('seed link counts with the committed (approved) programme', () => {
   it('fake tag set => exactly one sponsored nofollow amazon.co.uk/dp link per verified model-matched product (amazon.co.uk/dp)', () => {
     const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
-    expect(linked).toHaveLength(EXPECTED_VERIFIED.length);
+    expect(linked).toHaveLength(EXPECTED_RENDERED.length);
     const asins = linked.map((o) => new URL(o.link_url!).pathname.replace('/dp/', '')).sort();
-    expect(asins).toEqual(EXPECTED_VERIFIED);
+    expect(asins).toEqual(EXPECTED_RENDERED);
     for (const o of linked) {
       const u = new URL(o.link_url!);
       expect(u.origin).toBe('https://www.amazon.co.uk');
@@ -219,8 +221,8 @@ describe('M1: Amazon links only in a production build (SITE_ENV=production, not 
   const T = { AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG };
   const count = (env: Record<string, string | undefined>) => run(env).filter((o) => o.link_url !== null).length;
 
-  it('real seed + fake tag + SITE_ENV=production => exactly VERIFIED_COUNT links', () => {
-    expect(count({ ...T, SITE_ENV: 'production' })).toBe(VERIFIED_COUNT);
+  it('real seed + fake tag + SITE_ENV=production => exactly RENDERED_COUNT links', () => {
+    expect(count({ ...T, SITE_ENV: 'production' })).toBe(RENDERED_COUNT);
   });
   it('real seed + fake tag + SITE_ENV=preview => 0 links', () => {
     expect(count({ ...T, SITE_ENV: 'preview' })).toBe(0);
@@ -237,20 +239,20 @@ describe('M1: Amazon links only in a production build (SITE_ENV=production, not 
   ])('%s (fake tag set) => 0 links, reason non_production_build', (_k, env) => {
     expect(count(env)).toBe(0);
     const amazonMatched = run(env).filter((o) => o.retailer === 'Amazon UK' && o.no_link_reason !== 'product_unverified' && o.no_link_reason !== 'exact_product_not_confirmed');
-    expect(amazonMatched).toHaveLength(VERIFIED_COUNT);
+    expect(amazonMatched).toHaveLength(RENDERED_COUNT);
     expect(amazonMatched.every((o) => o.no_link_reason === 'non_production_build' && o.disclosure_text === null)).toBe(true);
   });
   it.each([
     ['local production build', { ...T, SITE_ENV: 'production' }],
     ['CF production branch (main)', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'main' }],
     ['CF production branch via PRODUCTION_BRANCH', { ...T, SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'release', PRODUCTION_BRANCH: 'release' }],
-  ])('%s + fake tag => VERIFIED_COUNT links', (_k, env) => {
+  ])('%s + fake tag => RENDERED_COUNT links', (_k, env) => {
     expect(isProductionLinkBuild(env)).toBe(true);
-    expect(count(env)).toBe(VERIFIED_COUNT);
+    expect(count(env)).toBe(RENDERED_COUNT);
   });
   it('the build check runs before the tag is read (a preview with a malformed tag still says non_production_build)', () => {
     const r = run({ SITE_ENV: 'preview', AMAZON_ASSOCIATES_UK_TAG: 'TESTONLY' }).filter((o) => o.no_link_reason === 'non_production_build');
-    expect(r).toHaveLength(VERIFIED_COUNT);
+    expect(r).toHaveLength(RENDERED_COUNT);
   });
   it('isProductionLinkBuild never throws on a bogus SITE_ENV (fails closed)', () => {
     expect(() => isProductionLinkBuild({ SITE_ENV: 'bogus' })).not.toThrow();
@@ -314,7 +316,7 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
     expect(isProductVerified(ug())).toBe(true);
     expect(catalogueProducts.filter((p) => p.verification === 'verified')).toHaveLength(VERIFIED_COUNT);
     const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
-    expect(linked).toHaveLength(VERIFIED_COUNT);
+    expect(linked).toHaveLength(RENDERED_COUNT);
     expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(true);
   });
   it('schema: listing_mpn may not double as an identity key; blank values are rejected; both fields optional', () => {

@@ -3,9 +3,10 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { affiliateAsins, compareAsinSets, checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
+import { affiliateAsins, checkRainwaterNote, compareAsinSets, checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
 import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
 import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
+import { RAINWATER_DRINKING_WATER_NOTE, RENDER_GATED_CATEGORIES } from '../src/lib/offers/types.ts';
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
 const ROBOTS = '<meta name="robots" content="index, follow">';
@@ -192,13 +193,18 @@ describe('checkContent', () => {
 });
 
 const PER_CATEGORY = 3;
-const expectedAffiliate = Object.values(VERIFIED_BY_CATEGORY).reduce(
+/** S1-10b (CR M1): render-gated categories stay verified but are not expected in dist. */
+const RENDERED_BY_CATEGORY = Object.fromEntries(
+  Object.entries(VERIFIED_BY_CATEGORY).filter(([cat]) => !RENDER_GATED_CATEGORIES.includes(cat)),
+); // same derivation as verifiedSet.ts RENDERED_BY_CATEGORY
+const expectedAffiliate = Object.values(RENDERED_BY_CATEGORY).reduce(
   (n, asins) => n + Math.min(asins.length, PER_CATEGORY),
   0,
 );
-const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
+const expectedCategories = Object.entries(RENDERED_BY_CATEGORY)
   .filter(([, asins]) => asins.length > 0)
   .map(([cat]) => cat);
+const RAINWATER_ASINS = VERIFIED_BY_CATEGORY.rainwater_storage ?? [];
 
 describe('verify:dist (production build with a dummy tag)', () => {
   it('builds production and passes links (derived affiliate count, sponsored + nofollow) and content (indexable) checks', () => {
@@ -215,7 +221,17 @@ describe('verify:dist (production build with a dummy tag)', () => {
     // S1-10b (CR L1): exact ASIN set, not just the count.
     expect(log).toMatch(new RegExp(`affiliate ASIN set equals verifiedSet\\.ts exactly \\(${expectedAffiliate} ASINs`));
     expect(r.status).toBe(0);
-    expect(affiliateAsins(out).asins).toEqual(Object.values(VERIFIED_BY_CATEGORY).flatMap((a) => a.slice(0, PER_CATEGORY)).sort());
+    expect(affiliateAsins(out).asins).toEqual(Object.values(RENDERED_BY_CATEGORY).flatMap((a) => a.slice(0, PER_CATEGORY)).sort());
+    // S1-10b (CR M1): rainwater guard ran; while gated, no rainwater ASIN anywhere in dist and no rainwater section.
+    expect(log).toMatch(/PASS: rainwater guard: /);
+    if (RENDER_GATED_CATEGORIES.includes('rainwater_storage')) {
+      const all = fs.readdirSync(out, { recursive: true }).filter((f) => String(f).endsWith('.html')).map((f) => fs.readFileSync(path.join(out, String(f)), 'utf8')).join('\n');
+      for (const a of RAINWATER_ASINS) expect(all.includes(a), a).toBe(false);
+      const cmp = readCompareHtml(out);
+      expect(cmp).not.toMatch(/data-category="rainwater_storage"/);
+      expect(cmp).not.toMatch(/Rainwater storage/);
+      expect(checkRainwaterNote(cmp, { asins: RAINWATER_ASINS, note: RAINWATER_DRINKING_WATER_NOTE }).rainwater).toBe(0);
+    }
     const realTag = process.env.AMAZON_ASSOCIATES_UK_TAG;
     if (realTag) expect(log.includes(realTag)).toBe(false);
     const compare = readCompareHtml(out);
@@ -331,5 +347,22 @@ describe('S1-10b (CR L1): exact affiliate ASIN set', () => {
   it('same count but a different ASIN fails; identical sets pass', () => {
     expect(compareAsinSets(['A000000001', 'A000000002'], ['A000000001', 'A000000003'])).toEqual({ ok: false, missing: ['A000000003'], extra: ['A000000002'] });
     expect(compareAsinSets(['A000000002', 'A000000001'], ['A000000001', 'A000000002']).ok).toBe(true);
+  });
+});
+
+describe('S1-10b (CR M1): rainwater drinking-water note guard', () => {
+  const opts = { asins: ['B00ZUTJAHA'], note: RAINWATER_DRINKING_WATER_NOTE };
+  const section = (inner) => `<section class="cat-section" id="rainwater" data-category="rainwater_storage"><h2>Rainwater storage</h2>${inner}</section>`;
+  it('no rainwater content => passes with 0 signals', () => {
+    expect(checkRainwaterNote('<section data-category="flask"></section>', opts)).toMatchObject({ ok: true, rainwater: 0 });
+  });
+  it('a rainwater section or card without the exact note fails (forces the Web follow-up to render it)', () => {
+    expect(checkRainwaterNote(section('<a href="https://www.amazon.co.uk/dp/B00ZUTJAHA?tag=TESTONLY-21">x</a>'), opts).ok).toBe(false);
+    expect(checkRainwaterNote('<div data-asin="B00ZUTJAHA">card</div>', opts).ok).toBe(false);
+    expect(checkRainwaterNote(section('<p>Do not drink rainwater.</p>'), opts).ok).toBe(false);
+  });
+  it('the exact note as text (entities and line breaks allowed) passes', () => {
+    const p = `<p>${RAINWATER_DRINKING_WATER_NOTE.replace(':', '&#58;').replace('Use it', 'Use\n  it')}</p>`;
+    expect(checkRainwaterNote(section(p), opts)).toMatchObject({ ok: true });
   });
 });

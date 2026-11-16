@@ -389,23 +389,37 @@ export const PRODUCT_CATEGORIES: readonly ProductCategory[] = [
  */
 export const LEGACY_KIT_CATEGORY = 'kit' as const;
 
-/** S1-10b: every category that may appear in rendered output (PRODUCT_CATEGORIES minus legacy 'kit'). */
-export const RENDERABLE_CATEGORIES: readonly ProductCategory[] = PRODUCT_CATEGORIES.filter((c) => c !== LEGACY_KIT_CATEGORY);
+/**
+ * S1-10b RENDER GATE (Code Reviewer M1 on PR #24, PM-approved 16 Nov 2026): categories kept in the
+ * data (records stay verified) but excluded from EVERY rendered output (buildCatalogueComparisons,
+ * groupComparisonsByCategory, RENDERABLE_CATEGORIES) so no card, section or affiliate link reaches dist.
+ * - rainwater_storage: gated until Web renders specs.drinking_water_note on the compare page
+ *   (Web follow-up PR s1-10b-rendering removes it from this list). verify:dist then requires the note
+ *   whenever a rainwater card renders, and its expected ASIN set drops gated categories automatically.
+ */
+export const RENDER_GATED_CATEGORIES: readonly ProductCategory[] = ['rainwater_storage'];
+
+/** S1-10b: every category that may appear in rendered output (PRODUCT_CATEGORIES minus legacy 'kit' and RENDER_GATED_CATEGORIES). */
+export const RENDERABLE_CATEGORIES: readonly ProductCategory[] = PRODUCT_CATEGORIES.filter(
+  (c) => c !== LEGACY_KIT_CATEGORY && !RENDER_GATED_CATEGORIES.includes(c),
+);
 
 /** S1-10b: pre-packed kit categories (ordinary CatalogueProducts with KitSpecs). */
 export const KIT_CATEGORIES: readonly ProductCategory[] = ['home_kit', 'grab_bag_kit'];
 
 /**
  * S1-10b: rainwater_storage carries this in specs.drinking_water_note (required when verified).
- * Rainwater is not drinking water; pair it with gravity_filter. Web renders the value as plain text.
+ * Wording matches the cited source exactly (CR M2): rain-butt water is not for drinking. Never suggest
+ * that filtering or treating makes it drinkable. Web renders the value as plain text.
  */
 export const RAINWATER_DRINKING_WATER_NOTE =
-  'Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.';
-/** Source for RAINWATER_DRINKING_WATER_NOTE (UK government Prepare campaign: "Do not drink this water"). */
+  'Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.';
+/** Source for RAINWATER_DRINKING_WATER_NOTE (UK government Prepare campaign: "Do not drink this water as it could contain bacteria or disease"). */
 export const RAINWATER_DRINKING_WATER_SOURCE = {
   name: 'Prepare (UK government): water supply interruptions or outages',
   url: 'https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/',
 } as const;
+
 
 /**
  * S1-10: pre-split slug. Still accepted when parsing (backward compatible) and migrated on

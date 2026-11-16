@@ -106,7 +106,7 @@ export const CATEGORY_META: Record<ProductCategory, { title: string; short: stri
   thermal_clothing: { title: CATEGORY_LABELS.thermal_clothing, short: 'thermals', dek: 'Base layers for cold homes', anchor: 'thermals' },
   // S1-10b: minimal compile fix by Backend (placeholder copy; Web owns final wording).
   water_container: { title: CATEGORY_LABELS.water_container, short: 'water container', dek: 'Carriers and jerrycans', anchor: 'water-containers' },
-  rainwater_storage: { title: CATEGORY_LABELS.rainwater_storage, short: 'water butt', dek: 'Not drinking water until treated', anchor: 'rainwater' },
+  rainwater_storage: { title: CATEGORY_LABELS.rainwater_storage, short: 'water butt', dek: 'For flushing and plants, not drinking', anchor: 'rainwater' },
   gravity_filter: { title: CATEGORY_LABELS.gravity_filter, short: 'water filter', dek: 'Filter water without power', anchor: 'water-filters' },
   flask: { title: CATEGORY_LABELS.flask, short: 'flask', dek: 'Hot drinks without power', anchor: 'flasks' },
   tin_opener: { title: CATEGORY_LABELS.tin_opener, short: 'tin opener', dek: 'Open tinned food by hand', anchor: 'tin-openers' },

@@ -11,6 +11,7 @@ import { parseCatalogueProduct, validateDisplayName } from '../../src/lib/offers
 import { affiliateProgrammes, allOffers, allProducts, catalogueProducts, kitVariants } from '../../src/lib/offers/data';
 import {
   CATEGORY_LABELS,
+  RENDER_GATED_CATEGORIES,
   KIT_CATEGORIES,
   PRODUCT_CATEGORIES,
   RAINWATER_DRINKING_WATER_NOTE,
@@ -38,10 +39,13 @@ describe('S1-10b categories', () => {
       expect(CATEGORY_LABELS[c]).toMatch(/^[A-Z][a-z -]+$/);
     }
     expect(RENDERABLE_CATEGORIES).not.toContain('kit');
+    expect(RENDER_GATED_CATEGORIES).toEqual(['rainwater_storage']);
+    expect(RENDERABLE_CATEGORIES).not.toContain('rainwater_storage');
     expect(KIT_CATEGORIES).toEqual(['home_kit', 'grab_bag_kit']);
     const groups = groupComparisonsByCategory(build(PROD));
     const order = groups.map((g) => g.category);
     expect(order).toEqual(RENDERABLE_CATEGORIES.filter((c) => (VERIFIED_BY_CATEGORY[c]?.length ?? 0) > 0));
+    expect(order).not.toContain('rainwater_storage');
     for (const g of groups) expect(g.comparisons.map((c) => c.product.asin_uk)).toEqual(VERIFIED_BY_CATEGORY[g.category]);
   });
 
@@ -92,7 +96,12 @@ describe('S1-10b rainwater_storage', () => {
       expect((p.specs as { drinking_water_note?: { value: string } }).drinking_water_note?.value).toBe(RAINWATER_DRINKING_WATER_NOTE);
       expect(p.notes.some((n) => /not drinking water/i.test(n))).toBe(true);
     }
-    expect(RAINWATER_DRINKING_WATER_NOTE).toMatch(/filter and treat/);
+  });
+  it('the note matches the Prepare source exactly and gives no filter / treat / drinkable advice (CR M2)', () => {
+    expect(RAINWATER_DRINKING_WATER_NOTE).toBe('Do not drink rainwater from a water butt: it can contain bacteria or disease. Use it to flush toilets or water plants.');
+    for (const text of [RAINWATER_DRINKING_WATER_NOTE, ...catalogueProducts.filter((p) => p.category === 'rainwater_storage').flatMap((p) => p.notes)]) {
+      expect(text).not.toMatch(/filter|treat|drinkable|purif/i);
+    }
   });
   it('without the note a water butt neither parses as verified nor links', () => {
     const r = raw('B00ZUTJAHA');
@@ -146,14 +155,47 @@ describe('S1-10b legacy kit / EVAQ8 data never renders', () => {
   });
 });
 
+describe('S1-10b render gate (CR M1): rainwater_storage', () => {
+  it('the 3 water butts stay verified in the data but produce 0 comparisons, sections or links', () => {
+    const rwAsins = VERIFIED_BY_CATEGORY.rainwater_storage!;
+    expect(rwAsins).toHaveLength(3);
+    for (const a of rwAsins) expect(catalogueProducts.find((p) => p.asin_uk === a)!.verification).toBe('verified');
+    for (const env of [PROD, {}]) {
+      const built = build(env);
+      expect(built.comparisons.filter((c) => c.category === 'rainwater_storage')).toHaveLength(0);
+      expect(built.unknown.filter((o) => rwAsins.some((a) => o.variant_id.includes(a.toLowerCase())))).toHaveLength(0);
+      const grouped = groupComparisonsByCategory(built);
+      expect(grouped.map((g) => g.category_label)).not.toContain('Rainwater storage');
+      const json = JSON.stringify(grouped);
+      for (const a of rwAsins) expect(json.includes(a)).toBe(false);
+    }
+  });
+});
+
+describe('S1-10b N1: Ready America 70510 not UK-sold', () => {
+  it('is unverified with the reason recorded and takes no slot (home_kit 0)', () => {
+    const p = catalogueProducts.find((x) => x.asin_uk === 'B00MCN9AJ0')!;
+    expect(p.verification).toBe('unverified');
+    expect(p.display_rank ?? null).toBeNull();
+    expect(p.verification_evidence!.note).toMatch(/US business address/);
+    expect(VERIFIED_BY_CATEGORY.home_kit).toEqual([]);
+    expect(KNOWN_UNVERIFIED).toContain('B00MCN9AJ0');
+  });
+});
+
 describe('S1-10b fake-tag library probe (counts only)', () => {
   const links = (env: Record<string, string | undefined>) =>
     groupComparisonsByCategory(build(env)).flatMap((g) => g.comparisons).flatMap((c) => c.offers).filter((o) => o.link_url !== null);
-  it('production = every verified product (VERIFIED_COUNT), each linked once; the new ASINs included', () => {
+  const RENDERED = Object.entries(VERIFIED_BY_CATEGORY)
+    .filter(([c]) => !(RENDER_GATED_CATEGORIES as readonly string[]).includes(c))
+    .flatMap(([, a]) => a as readonly string[]);
+  it('production = every verified, non-gated product, each linked once (67 verified - 3 gated rainwater = 64)', () => {
     const l = links(PROD);
-    expect(l).toHaveLength(VERIFIED_COUNT);
-    expect(new Set(l.map((o) => o.link_url)).size).toBe(VERIFIED_COUNT);
-    const expected = Object.values(VERIFIED_BY_CATEGORY).flat().map((a) => `https://www.amazon.co.uk/dp/${a}?tag=${FAKE_TAG}`).sort();
+    expect(VERIFIED_COUNT).toBe(67);
+    expect(RENDERED).toHaveLength(64);
+    expect(l).toHaveLength(RENDERED.length);
+    expect(new Set(l.map((o) => o.link_url)).size).toBe(RENDERED.length);
+    const expected = RENDERED.map((a) => `https://www.amazon.co.uk/dp/${a}?tag=${FAKE_TAG}`).sort();
     expect(l.map((o) => o.link_url!).sort()).toEqual(expected);
   });
   it.each([
