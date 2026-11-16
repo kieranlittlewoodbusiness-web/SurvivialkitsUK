@@ -247,6 +247,15 @@ export function buildGraph(pageNodes: JsonLdNode[]): { '@context': string; '@gra
   };
 }
 
+/**
+ * SEO-6b (L2): serialise a graph for an inline application/ld+json script. Every '<' becomes the
+ * JSON escape \u003c so no string value can close the script ("</script>") or open a comment
+ * ("<!--"). JSON.parse reads \u003c back as '<', so the data is unchanged.
+ */
+export function serializeJsonLd(graph: unknown): string {
+  return JSON.stringify(graph).replace(/</g, '\\u003c');
+}
+
 /** Trust / utility pages: WebPage (or subtype) + BreadcrumbList. */
 export function standardPageNodes(opts: {
   canonicalPath: string;

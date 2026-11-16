@@ -131,6 +131,15 @@ describe('checkJsonLd', () => {
     );
   });
 
+  it('SEO-6b: parses a script whose strings carry \\u003c escapes for <', () => {
+    const nodes = pageNodes();
+    nodes[0] = { ...nodes[0], alternateName: 'UK Survival Kits </script> <!-- test' };
+    const script = graph(nodes).replace(/</g, '\\u003c');
+    expect(script).not.toContain('<');
+    const r = checkJsonLd(site({ 'method/index.html': html({ script, body: '<nav aria-label="Breadcrumb"><ol><li><a href="/">Home</a></li><li aria-current="page">Method</li></ol></nav>' }) }), { now: NOW });
+    expect(r.failures).toEqual([]);
+  });
+
   it('fails when the script is not valid JSON', () => {
     expect(reasons(site({ 'index.html': html({ script: '{not-json' }) }))).toMatch(/did not parse/);
   });
