@@ -85,6 +85,23 @@ export function visibleDates(html) {
   return [...out];
 }
 
+/**
+ * SEO-6e: calendar dates from the visible "last modified" labels only ("Last reviewed", "Updated",
+ * "Last checked"), not "Published". The byline day an Article's dateModified must equal.
+ */
+export function visibleModifiedDates(html) {
+  const out = new Set();
+  const text = decode(html.replace(/<[^>]+>/g, ' '));
+  const label = /(?:Last reviewed|Updated|Last checked)\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/gi;
+  let m;
+  while ((m = label.exec(text))) {
+    const month = MONTHS[m[2].toLowerCase()];
+    if (!month) continue;
+    out.add(`${m[3]}-${month}-${m[1].padStart(2, '0')}`);
+  }
+  return [...out];
+}
+
 const WEBPAGE_TYPES = new Set(['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage', 'ProfilePage']);
 
 const decode = (s) =>
@@ -519,9 +536,19 @@ function checkPage(file, html, { now } = {}, failures) {
       }
     }
     const visible = visibleDates(html);
+    // SEO-6e: when the page shows a "Last reviewed" / "Updated" / "Last checked" day, dateModified must be
+    // that day (matching only the "Published" day is not enough).
+    const visibleModified = visibleModifiedDates(html);
     if (visible.length && ISO_DATETIME.test(String(art.dateModified ?? ''))) {
       const modified = datePart(art.dateModified);
-      if (!visible.includes(modified)) {
+      if (visibleModified.length) {
+        if (!visibleModified.includes(modified)) {
+          failures.push({
+            file,
+            reason: `Article.dateModified date ${modified} does not match the visible date (Last reviewed / Updated / Last checked: ${visibleModified.join(', ')})`,
+          });
+        }
+      } else if (!visible.includes(modified)) {
         failures.push({
           file,
           reason: `Article.dateModified date ${modified} does not match the visible date (${visible.join(', ')})`,

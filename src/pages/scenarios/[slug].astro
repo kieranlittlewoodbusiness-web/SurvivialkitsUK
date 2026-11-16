@@ -8,13 +8,13 @@ import {
   article,
   breadcrumbList,
   crumbsForPage,
-  dateModifiedOf,
   isoDate,
   pageUrl,
   personNode,
   webPage,
 } from '../../lib/seo/jsonld';
 import { formatLondonDate, publishedIfDifferent } from '../../lib/dates';
+import { reviewedDate } from '../../lib/content-dates';
 import { render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -34,7 +34,9 @@ const canonicalPath = `/scenarios/${entry.id}/`;
 const url = pageUrl(canonicalPath);
 const crumb = entry.data.crumb ?? entry.data.title;
 const datePublished = isoDate(entry.data.pubDate);
-const dateModified = dateModifiedOf(entry.data.updated, entry.data.lastReviewed, entry.data.pubDate);
+// SEO-6e: dateModified is the byline's reviewed day; the content schema guarantees it is the latest date.
+const reviewedOn = reviewedDate(entry.data);
+const dateModified = isoDate(reviewedOn);
 const jsonLd = [
   webPage({
     url,
@@ -48,8 +50,8 @@ const jsonLd = [
   breadcrumbList(url, crumbsForPage(canonicalPath, crumb, { label: 'Scenarios', href: '/scenarios/' })),
 ];
 
-const reviewed = formatLondonDate(entry.data.lastReviewed);
-const published = publishedIfDifferent(entry.data.pubDate, entry.data.lastReviewed);
+const reviewed = formatLondonDate(reviewedOn);
+const published = publishedIfDifferent(entry.data.pubDate, reviewedOn);
 ---
 
 <BaseLayout
