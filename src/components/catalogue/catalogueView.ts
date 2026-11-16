@@ -106,18 +106,18 @@ export interface CategoryMeta {
 }
 
 const GUIDES = {
-  water: { href: '/gear/water-storage', label: 'Water storage guide' },
-  waterCut: { href: '/scenarios/water-interruption', label: 'Water supply cut guide' },
-  firstAid: { href: '/gear/first-aid', label: 'First aid kit guide' },
-  torches: { href: '/gear/torches', label: 'Torch guide' },
-  radios: { href: '/gear/radios', label: 'Radio guide' },
-  powerBanks: { href: '/gear/power-banks', label: 'Power bank guide' },
-  powerCuts: { href: '/scenarios/power-cuts', label: 'Power cut guide' },
-  winter: { href: '/gear/winter-travel', label: 'Winter travel guide' },
-  winterCar: { href: '/scenarios/winter-car-shelf', label: 'Winter car guide' },
-  food: { href: '/scenarios/cupboard-first-food', label: 'Store cupboard food guide' },
-  leaveHome: { href: '/scenarios/leave-home-bag', label: 'Grab bag guide' },
-  checklist: { href: '/checklist', label: 'Kit checklist' },
+  water: { href: '/gear/water-storage/', label: 'Water storage guide' },
+  waterCut: { href: '/scenarios/water-interruption/', label: 'Water supply cut guide' },
+  firstAid: { href: '/gear/first-aid/', label: 'First aid kit guide' },
+  torches: { href: '/gear/torches/', label: 'Torch guide' },
+  radios: { href: '/gear/radios/', label: 'Radio guide' },
+  powerBanks: { href: '/gear/power-banks/', label: 'Power bank guide' },
+  powerCuts: { href: '/scenarios/power-cuts/', label: 'Power cut guide' },
+  winter: { href: '/gear/winter-travel/', label: 'Winter travel guide' },
+  winterCar: { href: '/scenarios/winter-car-shelf/', label: 'Winter car guide' },
+  food: { href: '/scenarios/cupboard-first-food/', label: 'Store cupboard food guide' },
+  leaveHome: { href: '/scenarios/leave-home-bag/', label: 'Grab bag guide' },
+  checklist: { href: '/checklist/', label: 'Kit checklist' },
 } as const satisfies Record<string, CategoryGuide>;
 
 export const CATEGORY_META: Record<ProductCategory, CategoryMeta> = {
