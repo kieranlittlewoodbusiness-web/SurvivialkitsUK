@@ -24,7 +24,7 @@ Plan ahead and avoid travel unless essential when severe weather is forecast. Ch
 
 ## Boot kit checklist
 
-Ready Scotland and Prepare-style guidance commonly include:
+Ready Scotland and Be Ready guidance commonly include:
 
 - Torch and spare batteries
 - Warm clothes, boots and a blanket
