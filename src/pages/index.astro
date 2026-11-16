@@ -132,12 +132,12 @@ const jsonLd = {
                               <span id={`pick-${p.category}`}>{p.categoryLabel}</span>
                               <span class="pick__count">{p.count === 1 ? 'See the pick' : `See all ${p.count} picks`}</span>
                             </a>
-                            <p class="pick__name"><span class="pick__brand">{p.card.brand}</span> {p.card.name}</p>
+                            <p class="pick__name">{p.card.name}</p>
                             {link && (
                               <p class="pick__cta">
                                 <span class="badge badge--ad">Ad</span>
                                 <a class="btn pick__btn" href={link.href} rel={`${link.rel} noopener`} data-affiliate="amazon">
-                                  {p.card.buttonLabel}<span class="visually-hidden"> (affiliate link)</span>
+                                  Buy on Amazon<span class="visually-hidden">: {p.card.name} (affiliate link)</span>
                                 </a>
                               </p>
                             )}
@@ -304,9 +304,8 @@ const jsonLd = {
   .pick__cat:hover { color: var(--ink); text-decoration: underline; }
   .pick__count { color: var(--accent); font-size: var(--step--1); font-weight: 600; text-decoration: underline; text-underline-offset: 0.18em; }
   .pick__name { margin: 0; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.45; }
-  .pick__brand { color: var(--ink); font-weight: 600; }
   .pick__cta { display: flex; align-items: center; gap: var(--s-2); margin: 0; max-width: none; }
-  .pick__btn { flex: 1 1 auto; justify-content: center; }
+  .pick__btn { flex: 1 1 auto; justify-content: center; white-space: nowrap; }
   @media (min-width: 768px) {
     .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
