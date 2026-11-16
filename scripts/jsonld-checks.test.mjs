@@ -291,7 +291,7 @@ describe('checkJsonLd', () => {
     expect(reasons(site({ 'method/index.html': mismatch }))).toMatch(/does not match the visible date/);
 
     const match = html({
-      body: 'Updated <time datetime="2026-11-15">15 Nov 2026</time>',
+      body: 'Published <time datetime="2026-11-14">14 Nov 2026</time> · Updated <time datetime="2026-11-15">15 Nov 2026</time>',
     });
     expect(checkJsonLd(site({ 'method/index.html': match, '404.html': html({ robots: 'noindex, nofollow', script: '', canonical: null, heading: 'Page not found' }) }), { now: NOW }).failures).toEqual([]);
   });
