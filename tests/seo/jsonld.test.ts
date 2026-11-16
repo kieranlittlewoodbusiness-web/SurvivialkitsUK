@@ -11,7 +11,6 @@ import {
   breadcrumbList,
   buildGraph,
   crumbsForPage,
-  dateModifiedOf,
   isoDate,
   isoDateTimeLondon,
   itemList,
@@ -22,17 +21,15 @@ import {
   websiteNode,
 } from '../../src/lib/seo/jsonld';
 
-describe('isoDate and dateModifiedOf', () => {
+describe('isoDate', () => {
   it('formats Date and string values as YYYY-MM-DD', () => {
     expect(isoDate('2026-11-14')).toBe('2026-11-14');
     expect(isoDate(new Date('2026-11-14T00:00:00.000Z'))).toBe('2026-11-14');
   });
 
-  it('takes the latest of updated, lastReviewed and pubDate', () => {
-    expect(dateModifiedOf('2026-11-01', '2026-11-15', '2026-11-12')).toBe('2026-11-15');
-    expect(dateModifiedOf(new Date('2026-11-14T00:00:00.000Z'), undefined, '2026-11-10')).toBe(
-      '2026-11-14',
-    );
+  it('SEO-6f: dateModifiedOf is gone (templates use reviewedDate from src/lib/content-dates)', async () => {
+    const mod = await import('../../src/lib/seo/jsonld');
+    expect('dateModifiedOf' in mod).toBe(false);
   });
 });
 
