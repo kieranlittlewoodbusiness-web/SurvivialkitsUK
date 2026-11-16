@@ -19,7 +19,7 @@ import {
   type CatalogueProduct,
 } from '../../src/lib/offers/types';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { KNOWN_UNVERIFIED, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { KNOWN_UNVERIFIED, TEST_BUYABILITY, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 
 const NOW = '2026-11-16T16:00:00+00:00';
 const FAKE_TAG = 'TESTONLY-21';
@@ -82,7 +82,12 @@ describe('S1-10b kits (home_kit, grab_bag_kit)', () => {
     }
   });
   it('the schema rejects a verified kit missing a required spec', () => {
+    // Mayday is unverified (QA #24 buyability); make a verified copy to exercise the kit rule.
     const r = raw('B005GGMBI2');
+    r.verification = 'verified';
+    r.display_rank = 1;
+    r.verification_evidence = { ...r.verification_evidence, outcome: 'verified', checks_matched: ['title', 'brand', 'model', 'pack_contents'], buyability: TEST_BUYABILITY };
+    expect(() => parseCatalogueProduct(r)).not.toThrow();
     delete r.specs.contains_blade;
     expect(() => parseCatalogueProduct(r)).toThrow(/contains_blade/);
   });
@@ -155,6 +160,65 @@ describe('S1-10b legacy kit / EVAQ8 data never renders', () => {
   });
 });
 
+describe('S1-10b QA #24 buyability rule (every verified product)', () => {
+  it('every verified record passed a Buy Box check on 16 Nov: featured offer, in stock, Add to Basket, Amazon or well-rated UK seller', () => {
+    const verified = catalogueProducts.filter((p) => p.verification === 'verified');
+    expect(verified).toHaveLength(VERIFIED_COUNT);
+    for (const p of verified) {
+      const b = p.verification_evidence!.buyability!;
+      expect(b, p.asin_uk!).toBeDefined();
+      expect(b.outcome, p.asin_uk!).toBe('pass');
+      expect(b.featured_offer && b.in_stock && b.add_to_basket, p.asin_uk!).toBe(true);
+      expect(['amazon', 'uk_seller_well_rated'], p.asin_uk!).toContain(b.seller_class);
+      expect(b.seller_name, p.asin_uk!).toBeTruthy();
+      expect(b.checked_at.startsWith('2026-11-16T'), p.asin_uk!).toBe(true);
+      if (b.seller_class === 'uk_seller_well_rated') expect(b.seller_rating_note, p.asin_uk!).toMatch(/country GB|GB VAT/);
+    }
+  });
+  it('every record unverified by the sweep keeps its data and records a failing check with the reason', () => {
+    const swept = catalogueProducts.filter((p) => p.verification_evidence?.buyability?.outcome === 'fail');
+    expect(swept.length).toBe(19);
+    for (const p of swept) {
+      expect(p.verification, p.asin_uk!).toBe('unverified');
+      expect(p.display_rank ?? null).toBeNull();
+      expect(p.verification_evidence!.buyability!.reason, p.asin_uk!).toBeTruthy();
+      expect(KNOWN_UNVERIFIED, p.asin_uk!).toContain(p.asin_uk);
+    }
+    for (const a of ['B00CRE5ZQG', 'B0CMY1SQ3D', 'B07QFSVXZW']) expect(swept.map((p) => p.asin_uk), `QA D1-D3 ${a}`).toContain(a);
+  });
+  it('the schema rejects a verified product without a passing check', () => {
+    const r = raw('B002XNGTOI');
+    expect(() => parseCatalogueProduct(r)).not.toThrow();
+    const without = JSON.parse(JSON.stringify(r));
+    delete without.verification_evidence.buyability;
+    expect(() => parseCatalogueProduct(without)).toThrow(/buyability/);
+    for (const bad of [{ outcome: 'fail', reason: 'x' }, { in_stock: false }, { featured_offer: false }, { add_to_basket: false }, { seller_class: 'other' }]) {
+      const c = JSON.parse(JSON.stringify(r));
+      Object.assign(c.verification_evidence.buyability, bad);
+      expect(() => parseCatalogueProduct(c), JSON.stringify(bad)).toThrow(/buyability/);
+    }
+  });
+  it('kits: no kit met the 16 Nov kit criteria, so home_kit and grab_bag_kit are empty and the kit records stay as data', () => {
+    expect(VERIFIED_BY_CATEGORY.home_kit).toEqual([]);
+    expect(VERIFIED_BY_CATEGORY.grab_bag_kit).toEqual([]);
+    for (const a of ['B00MCN9AJ0', 'B005GGMBI2', 'B09VTM8P2Z']) {
+      expect(catalogueProducts.find((p) => p.asin_uk === a)!.verification, a).toBe('unverified');
+      expect(KNOWN_UNVERIFIED, a).toContain(a);
+    }
+  });
+});
+
+describe('S1-10b display_name: ISO paper sizes', () => {
+  it('allows A0 to A10 (same rule as Web PAPER_SIZE_TOKEN) but still rejects model-like tokens', () => {
+    for (const n of ['OverBoard A3 waterproof document pouch', 'A4 document wallet', 'a10 notebook pouch', 'A0 map case']) expect(validateDisplayName(n), n).toEqual([]);
+    for (const n of ['A11 document pouch', 'AB3 pouch', 'A3X pouch', 'OB1105 pouch']) expect(validateDisplayName(n).length, n).toBeGreaterThan(0);
+  });
+  it('the OverBoard pouch keeps its A3 size_label spec', () => {
+    const p = catalogueProducts.find((x) => x.asin_uk === 'B07B19M6DB')!;
+    expect((p.specs as { size_label?: { value: string } }).size_label?.value).toBe('A3');
+  });
+});
+
 describe('S1-10b render gate (CR M1): rainwater_storage un-gated by S1-10b-web', () => {
   it('the verified water butts render, each carrying the exact drinking-water note in its public specs', () => {
     const rwAsins = VERIFIED_BY_CATEGORY.rainwater_storage!;
@@ -190,7 +254,7 @@ describe('S1-10b fake-tag library probe (counts only)', () => {
     .flatMap(([, a]) => a as readonly string[]);
   it('production = every verified, non-gated product, each linked once (derived; nothing gated after S1-10b-web)', () => {
     const l = links(PROD);
-    expect(VERIFIED_COUNT).toBe(67);
+    expect(VERIFIED_COUNT).toBe(49); // 67 - 19 unverified by the QA #24 buyability sweep + 1 Duronic radio
     expect(RENDERED).toHaveLength(VERIFIED_COUNT);
     expect(l).toHaveLength(RENDERED.length);
     expect(new Set(l.map((o) => o.link_url)).size).toBe(RENDERED.length);

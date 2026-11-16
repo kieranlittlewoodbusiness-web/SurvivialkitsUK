@@ -7,10 +7,10 @@ import { RENDER_GATED_CATEGORIES } from '../../src/lib/offers/types.ts';
 
 export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly string[]>> = {
   emergency_water: ['B0896Q8JXD', 'B07L142XSN'],
-  first_aid_kit: ['B00L7S9LU4', 'B005AQK6V2', 'B008XI72FC'],
-  torch: ['B075F3FBTB', 'B013P5S1KC', 'B016P27MGG'],
-  radio: ['B0DFVRT79C', 'B09VBFQNKK', 'B0987MCGXT'],
-  power_bank: ['B0CZ9LH53B', 'B0CSSRD4NT', 'B0DCZ82MGG'],
+  first_aid_kit: ['B00L7S9LU4', 'B008XI72FC'],
+  torch: ['B075F3FBTB', 'B016P27MGG'],
+  radio: ['B002XNGTOI'],
+  power_bank: ['B0CZ9LH53B'],
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
   emergency_blanket: ['B001FIQ7XU', 'B0CDBYT9WW', 'B0H761VV55'],
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
@@ -19,19 +19,19 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z'],
   // S1-10b (16 Nov 2026)
   water_container: ['B0036OW40Q', 'B003QAD4KY'],
-  rainwater_storage: ['B00ZUTJAHA', 'B00CRE5ZQG', 'B0CVL4W8CQ'],
-  gravity_filter: ['B0CMY1SQ3D', 'B07QFSVXZW', 'B0DWTDW914'],
+  rainwater_storage: ['B00ZUTJAHA', 'B0CVL4W8CQ'],
+  gravity_filter: ['B0DWTDW914'],
   flask: ['B00JOV3YDG', 'B000T21JFE', 'B00JOV3Z6W'],
   tin_opener: ['B00004OCJW', 'B000079XW2', 'B07NJHB97Y'],
-  electric_lighter: ['B088HF3TYP', 'B098X7PSQH', 'B0CHXZTBK9'],
+  electric_lighter: ['B088HF3TYP'],
   two_way_radio: ['B07DYGD8CH', 'B078C7TD7Z', 'B01FDI6OKS'],
   multi_tool: ['B079MJBP21', 'B007ERHM5S', 'B0CX32Q354'],
-  sleeping_bag: ['B07KRRFW9J', 'B0CLY3FR44', 'B0GQ4SQC9P'],
-  hygiene: ['B08DDY4GCS', 'B06XYH6966', 'B009A6VM1G'],
-  baby_care: ['B097JVCVMK', 'B08MXSBRSB', 'B0FFTNGFM9'],
-  document_pouch: ['B0065ISDR8', 'B07B19M6DB', 'B0HF7LWYV9'],
+  sleeping_bag: ['B0CLY3FR44', 'B0GQ4SQC9P'],
+  hygiene: ['B08DDY4GCS', 'B06XYH6966'],
+  baby_care: ['B08MXSBRSB', 'B0FFTNGFM9'],
+  document_pouch: ['B07B19M6DB'],
   home_kit: [], // Ready America B00MCN9AJ0 unverified 16 Nov (N1: not UK-sold)
-  grab_bag_kit: ['B005GGMBI2', 'B09VTM8P2Z'],
+  grab_bag_kit: [], // Mayday + First My Family unverified 16 Nov (buyability: low-rated sellers); no kit met the 16 Nov kit criteria
 };
 
 /**
@@ -78,8 +78,27 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B01F1LUW6Y', // Energizer torch (PR #17): not currently purchasable
   'B00SBD0WL0', // Energizer head torch (PR #17): not currently purchasable
   'B00MGM3K7A', // Simply warning triangle: unverified at Kieran sign-off (S1-10, CR nit on #21)
+  // S1-10b QA #24 buyability rule (16 Nov 2026): no Buy Box / not in stock / seller not Amazon or a well-rated UK seller.
+  'B005AQK6V2', 'B09VBFQNKK', 'B0987MCGXT', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B013P5S1KC', 'B0DFVRT79C',
+  'B098X7PSQH', 'B0CHXZTBK9', 'B0CMY1SQ3D', 'B07QFSVXZW', 'B005GGMBI2', 'B09VTM8P2Z', 'B009A6VM1G',
+  'B097JVCVMK', 'B07KRRFW9J', 'B0065ISDR8', 'B0HF7LWYV9', 'B00CRE5ZQG',
   'B0CMY1GRTZ', // LifeStraw Peak green (S1-10b): no Add to Basket on 16 Nov re-check
   'B004LWWFQ0', // Highlander 10L carrier (S1-10b): no Add to Basket on 16 Nov re-check
   'B0CHVPBJ29', // First My Family 1-person (S1-10b): pack-count conflict (36 vs 30)
   'B00MCN9AJ0', // Ready America 70510 (S1-10b N1): only offer is a US third-party seller, not UK-sold
 ];
+
+/** S1-10b (QA #24): a passing Buy Box check for synthetic verified fixtures in tests. */
+export const TEST_BUYABILITY = {
+  checked_at: '2026-11-15T09:00:00+00:00',
+  featured_offer: true,
+  in_stock: true,
+  add_to_basket: true,
+  seller_name: 'Amazon',
+  ships_from: 'Amazon',
+  seller_class: 'amazon' as const,
+  seller_rating_note: null,
+  availability_text_seen: 'In stock',
+  outcome: 'pass' as const,
+  reason: null,
+};

@@ -23,7 +23,7 @@ import {
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { HI_VIS_SIZE_CHILDREN, RENDERED_BY_CATEGORY, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { HI_VIS_SIZE_CHILDREN, RENDERED_BY_CATEGORY, TEST_BUYABILITY, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
   RENDER_GATED_CATEGORIES,
@@ -60,6 +60,7 @@ function evidence(asin: string, category: string) {
       | 'size'
     )[],
     note: 'TEST',
+    buyability: TEST_BUYABILITY,
   };
 }
 
@@ -185,7 +186,8 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
   it('migrated the three wind-up torch radios to radio, data otherwise preserved', () => {
     const migrated = ['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK'];
     const torchRadios = catalogueProducts.filter((p) => (p.specs as { device_type?: { value: string } }).device_type?.value === 'torch_radio');
-    expect(torchRadios.map((p) => p.asin_uk).sort()).toEqual(migrated);
+    // S1-10b: Duronic Apex (B002XNGTOI) is a new torch_radio added 16 Nov, not a migrated record.
+    expect(torchRadios.map((p) => p.asin_uk).filter((a) => a !== 'B002XNGTOI').sort()).toEqual(migrated);
     for (const p of torchRadios) expect(p.category).toBe('radio');
     for (const a of migrated) expect(catalogueOffers.find((o) => o.asin === a)!.category).toBe('radio');
     // Devices whose device_type is 'torch' all sit in torch (incl. the PR #17 Energizers ported from the old slug).
@@ -475,9 +477,9 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    // S1-10: 30; S1-10b adds 37 verified (14 categories) = 67. Rainwater was render-gated (CR M1) until
-    // S1-10b-web rendered its drinking-water note; the rendered count is derived from the gate list.
-    expect(n).toBe(67);
+    // S1-10: 30; S1-10b adds 37 verified (14 categories) = 67; the QA #24 buyability sweep (16 Nov) unverified 19
+    // and added 1 (Duronic radio) = 49. The rendered count is derived from the gate list.
+    expect(n).toBe(49);
     const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });

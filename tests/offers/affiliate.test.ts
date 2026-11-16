@@ -38,6 +38,7 @@ import {
 } from '../../src/lib/offers/data';
 import { NO_LINK_TEXT_EXACT_PRODUCT, NO_LINK_TEXT_PRODUCT_UNVERIFIED, PRODUCT_CATEGORIES, type AffiliateProgrammeRecord, type CatalogueProduct, type Offer } from '../../src/lib/offers/types';
 import { NOW, offer as v1Offer, variant as v1Variant } from './fixtures';
+import { TEST_BUYABILITY } from './verifiedSet';
 
 const T = '2026-11-14T20:00:00+00:00';
 const ASIN = 'B0CZ9LH53B';
@@ -75,6 +76,7 @@ function evidenceFor(asin: string | null, category: string) {
       ? ['title', 'brand', 'model', 'pack_contents', 'size']
       : ['title', 'brand', 'model', 'pack_contents']) as ('title' | 'brand' | 'model' | 'pack_contents' | 'size')[],
     note: 'TEST',
+    buyability: TEST_BUYABILITY,
   };
 }
 

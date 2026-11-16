@@ -20,7 +20,7 @@ import rawVariants from '../../src/data/kits/variants.json';
 import rawProgrammes from '../../src/data/affiliate/programmes.json';
 import type { AffiliateProgrammeRecord, CatalogueProduct, Offer } from '../../src/lib/offers/types';
 import { offer, variant } from './fixtures';
-import { KNOWN_UNVERIFIED, RENDERED_ASINS, RENDERED_COUNT, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
+import { KNOWN_UNVERIFIED, RENDERED_ASINS, TEST_BUYABILITY, RENDERED_COUNT, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
 
 const FAKE_TAG = 'TESTONLY-21';
 const NOW = '2026-11-15T12:00:00+00:00';
@@ -68,7 +68,8 @@ describe('verification pass (public amazon.co.uk listings, 15 Nov 2026)', () => 
     for (const p of catalogueProducts) {
       const ev = p.verification_evidence!;
       expect(ev.method).toBe('public_listing');
-      expect(ev.checked_on).toBe(S1_10B_CATEGORIES.includes(p.category) ? '2026-11-16' : '2026-11-15');
+      // S1-10b: Duronic radio B002XNGTOI was added 16 Nov (QA #24 replacement).
+      expect(ev.checked_on).toBe(S1_10B_CATEGORIES.includes(p.category) || p.asin_uk === 'B002XNGTOI' ? '2026-11-16' : '2026-11-15');
       expect(ev.source_url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
       expect(new URL(ev.source_url).search).toBe('');
       if (p.verification === 'verified') expect([...ev.checks_matched].sort()).toEqual([...requiredVerificationChecks(p.category)].sort());
@@ -128,13 +129,13 @@ describe('verification_evidence schema', () => {
     const th = catalogueProducts.find((p) => p.category === 'thermal_clothing')! as CatalogueProduct;
     const src = { name: 'TEST', url: `https://www.amazon.co.uk/dp/${th.asin_uk}` };
     const sized = { ...th, verification: 'verified', display_name: 'Heatwave thermal top (medium)', specs: { ...th.specs, size_label: { value: 'M', source: src, captured_at: th.captured_at } } };
-    const ev = { ...th.verification_evidence!, outcome: 'verified', checks_matched: ['title', 'brand', 'model', 'pack_contents'] };
+    const ev = { ...th.verification_evidence!, outcome: 'verified', checks_matched: ['title', 'brand', 'model', 'pack_contents'], buyability: TEST_BUYABILITY };
     expect(() => parseCatalogueProduct({ ...sized, verification_evidence: ev })).toThrow(/size/);
     expect(() => parseCatalogueProduct({ ...sized, verification_evidence: { ...ev, checks_matched: [...ev.checks_matched, 'size'] } })).not.toThrow();
   });
   it('kits: verified needs evidence for the kit\'s own asin_uk', () => {
     expect(() => parseVariant(variant({ verification: 'verified' }))).toThrow(/verification_evidence/);
-    const ev = { method: 'public_listing' as const, source_url: 'https://www.amazon.co.uk/dp/B075LHXZ55', checked_on: '2026-11-15', outcome: 'verified' as const, checks_matched: ['title', 'brand', 'model', 'pack_contents'] as ('title' | 'brand' | 'model' | 'pack_contents')[], note: 'TEST' };
+    const ev = { method: 'public_listing' as const, source_url: 'https://www.amazon.co.uk/dp/B075LHXZ55', checked_on: '2026-11-15', outcome: 'verified' as const, checks_matched: ['title', 'brand', 'model', 'pack_contents'] as ('title' | 'brand' | 'model' | 'pack_contents')[], note: 'TEST', buyability: TEST_BUYABILITY };
     expect(() => parseVariant(variant({ verification: 'verified', verification_evidence: ev }))).toThrow(/asin_uk/);
     expect(() => parseVariant(variant({ verification: 'verified', asin_uk: 'B075LHXZ55', verification_evidence: ev }))).not.toThrow();
   });
@@ -312,12 +313,14 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
     expect(o.mpn).toBeNull();
     expect(o.model_match_confirmed).toBe(true);
   });
-  it('still verified and still linked in a production build; the verified set is unchanged', () => {
-    expect(isProductVerified(ug())).toBe(true);
+  it('S1-10b QA #24: now unverified (Buy Box seller is HK-registered) and not linked; the verified set is derived', () => {
+    expect(ug().verification).toBe('unverified');
+    expect(ug().verification_evidence!.buyability).toMatchObject({ outcome: 'fail', seller_class: 'other' });
+    expect(isProductVerified(ug())).toBe(false);
     expect(catalogueProducts.filter((p) => p.verification === 'verified')).toHaveLength(VERIFIED_COUNT);
     const linked = run({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG }).filter((o) => o.link_url !== null);
     expect(linked).toHaveLength(RENDERED_COUNT);
-    expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(true);
+    expect(linked.some((o) => o.variant_id === ug().variant_id)).toBe(false);
   });
   it('schema: listing_mpn may not double as an identity key; blank values are rejected; both fields optional', () => {
     const p = ug();
@@ -332,7 +335,8 @@ describe('UGREEN Nexode B0CSSRD4NT identity keys', () => {
   });
   it('a different offer MPN does not break the ASIN match once the product mpn is null (listing MPN is ignored for identity)', () => {
     const o = { ...catalogueOffers.find((x) => x.asin === 'B0CSSRD4NT')!, mpn: 'TSADF7G5634' };
-    const d = toAffiliateDisplayOffer(o, ug(), { now: NOW, programmes: affiliateProgrammes, buildEnv: { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG } });
+    const verifiedCopy = { ...ug(), verification: 'verified' as const, verification_evidence: { ...ug().verification_evidence!, outcome: 'verified' as const, buyability: TEST_BUYABILITY } };
+    const d = toAffiliateDisplayOffer(o, verifiedCopy, { now: NOW, programmes: affiliateProgrammes, buildEnv: { SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG } });
     expect(d.model_match_confirmed).toBe(true);
     expect(d.link_url).not.toBeNull();
   });

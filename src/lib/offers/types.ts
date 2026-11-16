@@ -45,6 +45,20 @@ export type VerificationCheck = (typeof VERIFICATION_CHECKS)[number];
  * S1-8b: evidence for a product's `verification` value. Never holds prices,
  * images or tagged URLs: `source_url` is the tagless https://www.amazon.co.uk/dp/{ASIN}.
  */
+export interface BuyabilityCheck {
+  checked_at: LondonIsoDateTime;
+  featured_offer: boolean;
+  in_stock: boolean;
+  add_to_basket: boolean;
+  seller_name: string | null;
+  ships_from: string | null;
+  seller_class: 'amazon' | 'uk_seller_well_rated' | 'other';
+  seller_rating_note: string | null;
+  availability_text_seen: string;
+  outcome: 'pass' | 'fail';
+  reason: string | null;
+}
+
 export interface VerificationEvidence {
   method: 'public_listing';
   /** https://www.amazon.co.uk/dp/{ASIN} with no query string or fragment. */
@@ -60,6 +74,8 @@ export interface VerificationEvidence {
    */
   canonical_asin?: string;
   note: string;
+  /** S1-10b (QA #24): Buy Box check. Required (and passing) on a verified catalogue product. */
+  buyability?: BuyabilityCheck;
 }
 
 /** One exact kit variant. variant_id is unique per exact model code
