@@ -120,7 +120,7 @@ describe('starter kit basket', () => {
 describe('s1-10c exclusions', () => {
   it('match hotfix #28 removals exactly', () => {
     expect([...BASKET_EXCLUDED_ASINS].sort()).toEqual(
-      ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R', 'B002XNGTOI'].sort(),
+      ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R', 'B002XNGTOI', 'B005DEW1K0'].sort(),
     );
   });
 });

@@ -19,4 +19,5 @@ export const BASKET_EXCLUDED_ASINS: readonly string[] = [
   'B001FIQ7XU', // HypaGuard foil blankets: earliest delivery 6 Dec
   'B09SZB8Y4R', // Sangean radio: seller has 0 ratings in the last 12 months
   'B002XNGTOI', // Duronic Apex radio: the ASIN now shows a Duronic CT51 car tool (canonical B0GWJ4Y9B3)
+  'B005DEW1K0', // Blackrock hi-vis size child: Buy Box seller 51% positive in the last 12 months
 ];
