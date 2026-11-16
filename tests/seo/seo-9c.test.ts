@@ -3,9 +3,8 @@
  * citation/source dates (QA comment 6931066758 on #41). Checked on a real build in a temp copy.
  */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { spawnSync } from 'node:child_process';
+import { buildSiteCopy, type SiteBuild } from '../helpers/site-build';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { checkJsonLd } from '../../scripts/lib/jsonld-checks.mjs';
 import { checkContent } from '../../scripts/lib/dist-checks.mjs';
@@ -29,25 +28,21 @@ describe('Breadcrumb.astro separator CSS (source)', () => {
 });
 
 describe('built site', () => {
-  let tmp = '';
+  let site: SiteBuild | undefined;
   let dist = '';
-  let build: ReturnType<typeof spawnSync>;
+  let build: SiteBuild['result'];
   const read = (rel: string) => fs.readFileSync(path.join(dist, rel), 'utf8');
 
   beforeAll(() => {
-    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'seo-9c-'));
-    for (const entry of ['src', 'public', 'config', 'astro.config.mjs', 'package.json', 'tsconfig.json']) {
-      fs.cpSync(path.join(ROOT, entry), path.join(tmp, entry), { recursive: true });
-    }
-    fs.symlinkSync(path.join(ROOT, 'node_modules'), path.join(tmp, 'node_modules'), 'dir');
-    dist = path.join(tmp, 'dist');
-    const env: NodeJS.ProcessEnv = { ...process.env, TZ: 'UTC' };
-    for (const k of ['SITE_ENV', 'AMAZON_ASSOCIATES_UK_TAG', 'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL']) delete env[k];
-    build = spawnSync(path.join(ROOT, 'node_modules/.bin/astro'), ['build', '--outDir', dist], { cwd: tmp, env, encoding: 'utf8' });
+    site = buildSiteCopy('seo-9c-', {
+      tz: 'UTC',
+    });
+    dist = site.dist;
+    build = site.result;
   }, 180_000);
 
   afterAll(() => {
-    if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
+    site?.cleanup();
   });
 
   it('builds', () => {

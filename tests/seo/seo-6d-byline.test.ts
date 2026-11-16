@@ -5,14 +5,12 @@
  * never in the real content files.
  */
 import { afterAll, beforeAll, afterEach, describe, expect, it } from 'vitest';
-import { spawnSync } from 'node:child_process';
+import { buildSiteCopy, type SiteBuild } from '../helpers/site-build';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { publishedIfDifferent } from '../../src/lib/dates';
 import { checkJsonLd } from '../../scripts/lib/jsonld-checks.mjs';
 
-const ROOT = path.resolve('.');
 const NOW = new Date('2026-11-16T12:00:00Z');
 const PUBLISHED_MARKUP = ' · Published <time datetime="2026-11-14">14\u00a0November\u00a02026</time> · Last reviewed 15\u00a0November\u00a02026';
 const originalTz = process.env.TZ;
@@ -40,37 +38,31 @@ describe('publishedIfDifferent', () => {
 });
 
 describe('fixture build with lastReviewed bumped past pubDate', () => {
-  let tmp = '';
+  let site: SiteBuild | undefined;
   let dist = '';
-  let build: ReturnType<typeof spawnSync>;
+  let build: SiteBuild['result'];
   const page = (rel: string) => fs.readFileSync(path.join(dist, rel), 'utf8');
   const byline = (html: string) => /Edited by [\s\S]*?<\/span>/.exec(html)?.[0] ?? '';
 
   beforeAll(() => {
-    tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'seo-6d-byline-'));
-    for (const entry of ['src', 'public', 'config', 'astro.config.mjs', 'package.json', 'tsconfig.json']) {
-      fs.cpSync(path.join(ROOT, entry), path.join(tmp, entry), { recursive: true });
-    }
-    fs.symlinkSync(path.join(ROOT, 'node_modules'), path.join(tmp, 'node_modules'), 'dir');
-    for (const rel of ['src/content/gear/first-aid.md', 'src/content/scenarios/power-cuts.md']) {
-      const file = path.join(tmp, rel);
-      const md = fs.readFileSync(file, 'utf8');
-      expect(md).toMatch(/^pubDate: 2026-11-14$/m);
-      expect(md).toMatch(/^lastReviewed: 2026-11-14$/m);
-      fs.writeFileSync(file, md.replace(/^lastReviewed: 2026-11-14$/m, 'lastReviewed: 2026-11-15'));
-    }
-    dist = path.join(tmp, 'dist');
-    const env: NodeJS.ProcessEnv = { ...process.env, TZ: 'America/Los_Angeles' };
-    for (const k of ['SITE_ENV', 'AMAZON_ASSOCIATES_UK_TAG', 'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL']) delete env[k];
-    build = spawnSync(path.join(ROOT, 'node_modules/.bin/astro'), ['build', '--outDir', dist], {
-      cwd: tmp,
-      env,
-      encoding: 'utf8',
+    site = buildSiteCopy('seo-6d-byline-', {
+      tz: 'America/Los_Angeles',
+      mutate: (dir) => {
+        for (const rel of ['src/content/gear/first-aid.md', 'src/content/scenarios/power-cuts.md']) {
+          const file = path.join(dir, rel);
+          const md = fs.readFileSync(file, 'utf8');
+          expect(md).toMatch(/^pubDate: 2026-11-14$/m);
+          expect(md).toMatch(/^lastReviewed: 2026-11-14$/m);
+          fs.writeFileSync(file, md.replace(/^lastReviewed: 2026-11-14$/m, 'lastReviewed: 2026-11-15'));
+        }
+      },
     });
+    dist = site.dist;
+    build = site.result;
   }, 180_000);
 
   afterAll(() => {
-    if (tmp) fs.rmSync(tmp, { recursive: true, force: true });
+    site?.cleanup();
   });
 
   it('builds', () => {
