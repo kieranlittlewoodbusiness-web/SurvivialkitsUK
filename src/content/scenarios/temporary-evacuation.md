@@ -45,4 +45,4 @@ A grab bag is for **temporary** leave when authorities advise it—not an off-gr
 
 Agree a meeting point if you cannot return home. Add ICE or Medical ID on phones and tell the nominated contact. Keep the bag somewhere you can find it, and keep exits clear.
 
-Check the [checklist](/checklist) household-specific section, then [first-aid](/gear/first-aid) criteria if you need to top up sterile items.
+Check the [checklist](/checklist/) household-specific section, then [first-aid](/gear/first-aid/) criteria if you need to top up sterile items.

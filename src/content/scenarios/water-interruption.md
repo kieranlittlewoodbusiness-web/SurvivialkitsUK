@@ -31,4 +31,4 @@ In Scotland, Ready Scotland points to free text alerts from Scottish Water for s
 
 ## Storage without drama
 
-If you need dedicated carriers, choose food-grade containers you can lift and stack in a flat. See our [water storage criteria](/gear/water-storage). Rotate stored water on your six-month kit review.
+If you need dedicated carriers, choose food-grade containers you can lift and stack in a flat. See our [water storage criteria](/gear/water-storage/). Rotate stored water on your six-month kit review.

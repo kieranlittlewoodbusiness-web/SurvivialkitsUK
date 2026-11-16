@@ -37,7 +37,7 @@ A weather warning is information, not a cue to empty the shops. Read the **impac
 - Charge phones and power banks.
 - Check travel plans; delay non-essential journeys if advised.
 - If flooding is possible, check flood risk and move vehicles from known flood zones when safe.
-- Review your [checklist](/checklist) and paper contact numbers.
+- Review your [checklist](/checklist/) and paper contact numbers.
 - Sign up for Met Office warnings if you have not already.
 
 For flood messaging, use Environment Agency services in England and Wales, and SEPA Floodline in Scotland—do not mix the two systems.

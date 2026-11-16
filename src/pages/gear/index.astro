@@ -8,7 +8,7 @@ const gear = await getPublishedGear();
 <BaseLayout
   title="Gear criteria"
   description="Comparison criteria for torches, power banks, radios, water storage, first-aid kits and winter travel supplies."
-  canonicalPath="/gear"
+  canonicalPath="/gear/"
 >
   <section class="section">
     <div class="wrap">
@@ -22,7 +22,7 @@ const gear = await getPublishedGear();
         {
           gear.map((entry) => (
             <li>
-              <a href={`/gear/${entry.id}`}>
+              <a href={`/gear/${entry.id}/`}>
                 {entry.data.title}
                 <span>{entry.data.description}</span>
               </a>

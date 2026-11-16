@@ -27,7 +27,7 @@ A weather warning is information, not a cue to empty the shops. Read the **impac
 - Charge phones and power banks.
 - Check travel plans; delay non-essential journeys if advised.
 - If flooding is possible, check long-term flood risk and move vehicles out of known flood zones when safe.
-- Review your [checklist](/checklist) and paper contact numbers.
+- Review your [checklist](/checklist/) and paper contact numbers.
 - Sign up for Met Office warnings if you have not already.
 
 Yellow warnings cover a range of situations—always read which weather is meant. Amber means increased likelihood of disruption. Red means dangerous weather and action to protect life and property.
