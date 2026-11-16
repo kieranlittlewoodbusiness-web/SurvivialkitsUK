@@ -9,6 +9,7 @@ const O = 'https://uksurvivalkits.uk';
 const head = (p, { canonical = `${O}${p}`, og = `${O}${p}` } = {}) =>
   `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${og}">`;
 const doc = (p, body = '', opts) => `<!doctype html><html><head>${head(p, opts)}</head><body>${body}</body></html>`;
+const doc404 = (body = '') => `<!doctype html><html><head></head><body>${body}</body></html>`;
 const urlset = (entries) =>
   `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entries
     .map(([loc, lastmod]) => `<url><loc>${loc}</loc>${lastmod === null ? '' : `<lastmod>${lastmod ?? '2026-11-14T00:00:00.000Z'}</lastmod>`}</url>`)
@@ -23,7 +24,7 @@ function site(over = {}) {
     'about/index.html': doc('/about/', `${NAV}<a href="../gear/torches/">Relative</a>`),
     'gear/torches/index.html': doc('/gear/torches/', NAV),
     'compare/kits/index.html': doc('/compare/kits/', NAV),
-    '404.html': doc('/404', NAV),
+    '404.html': doc404(NAV),
     'favicon.ico': 'x',
     'sitemap-index.xml': INDEX,
     'sitemap-0.xml': urlset([[`${O}/`], [`${O}/about/`], [`${O}/gear/torches/`], [`${O}/compare/kits/`]]),
@@ -83,7 +84,7 @@ describe('checkTrailingSlash', () => {
     expect(r).toEqual(['about/index.html: internal link "/gear/torches" would get 308 -> /gear/torches/']);
   });
   it('fails a slash-less link in the 404 page and an absolute slash-less link', () => {
-    const r = reasons(site({ '404.html': doc('/404', `<a href="/about">About</a><a href="${O}/gear/torches#x">T</a>`) }));
+    const r = reasons(site({ '404.html': doc404(`<a href="/about">About</a><a href="${O}/gear/torches#x">T</a>`) }));
     expect(r).toHaveLength(2);
     expect(r.join('\n')).toMatch(/"\/about" would get 308/);
     expect(r.join('\n')).toMatch(/gear\/torches#x" would get 308/);
@@ -111,6 +112,11 @@ describe('checkTrailingSlash', () => {
     const r = reasons(site({ 'gear/torches/index.html': `<html><head></head><body>${NAV}</body></html>` }));
     expect(r).toContain('gear/torches/index.html: expected 1 canonical, found 0');
     expect(r).toContain('gear/torches/index.html: expected 1 og:url, found 0');
+  });
+  it('fails a 404 page that still has a canonical or og:url', () => {
+    const r = reasons(site({ '404.html': doc('/404', NAV) }));
+    expect(r).toContain('404.html: expected 0 canonicals on 404, found 1');
+    expect(r).toContain('404.html: expected 0 og:url on 404, found 1');
   });
   it('fails a slash-less sitemap loc (the old serialize()) even when the page agrees', () => {
     const r = reasons(
