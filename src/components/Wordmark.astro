@@ -1,5 +1,9 @@
 ---
-/** Wordmark: grab-bag tile + "U.K. Survival Kit Brief" (S1-7 approved). */
+/**
+ * UK Survival Kits wordmark (S1-11). Uses Kieran's supplied outlined SVGs, which read
+ * "UK Survival Kits.uk" and need no font. tone="default" follows the colour scheme
+ * (logo-on-light on Limestone, logo-on-dark in dark mode); tone="band" always sits on Forest.
+ */
 import { site } from '../data/site';
 
 interface Props {
@@ -8,69 +12,43 @@ interface Props {
 }
 const { tone = 'default', href = '/' } = Astro.props;
 const Tag = href ? 'a' : 'span';
+const alt = href ? `${site.name}, home` : site.name;
 ---
 
-<Tag class:list={['wordmark', `wordmark--${tone}`]} href={href ?? undefined} aria-label={href ? `${site.name}, home` : undefined}>
-  <svg class="wordmark__tile" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true" focusable="false">
-    <rect width="32" height="32" rx="9" class="wordmark__bg"></rect>
-    <g class="wordmark__glyph" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 12v-1.5a4 4 0 0 1 8 0V12"></path>
-      <rect x="7.5" y="12" width="17" height="13" rx="3.5"></rect>
-      <path d="m12.3 18.6 2.6 2.6 4.8-5" stroke-width="2.2"></path>
-    </g>
-  </svg>
-  <span class="wordmark__text">U.K. Survival Kit <b>Brief</b></span>
+<Tag class:list={['wordmark', `wordmark--${tone}`]} href={href ?? undefined}>
+  {
+    tone === 'band' ? (
+      <img class="wordmark__img" src="/brand/logo-on-dark.svg" width="426" height="64" alt={alt} decoding="async" />
+    ) : (
+      <picture>
+        <source srcset="/brand/logo-on-dark.svg" media="(prefers-color-scheme: dark)" width="426" height="64" />
+        <img class="wordmark__img" src="/brand/logo-on-light.svg" width="426" height="64" alt={alt} decoding="async" />
+      </picture>
+    )
+  }
 </Tag>
 
 <style>
   .wordmark {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
     min-height: var(--tap);
-    color: var(--ink);
     text-decoration: none;
-  }
-  .wordmark:hover {
-    color: var(--ink);
-  }
-  .wordmark__tile {
-    width: 32px;
-    height: 32px;
     flex: none;
   }
-  .wordmark__bg {
-    fill: var(--accent);
+  .wordmark picture {
+    display: block;
   }
-  .wordmark__glyph {
-    stroke: var(--on-accent);
+  /* Keep a quarter of the tile width clear around the mark (brand guide): the header gap handles it. */
+  .wordmark__img {
+    display: block;
+    width: auto;
+    height: 34px;
+    max-width: none;
   }
-  .wordmark__text {
-    font-weight: 800;
-    font-size: 1.0625rem;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-  .wordmark__text b {
-    font-weight: 800;
-    color: var(--accent);
-  }
-  .wordmark--band,
-  .wordmark--band:hover {
-    color: var(--on-band);
-  }
-  .wordmark--band .wordmark__bg {
-    fill: var(--band-accent);
-  }
-  .wordmark--band .wordmark__glyph {
-    stroke: var(--band);
-  }
-  .wordmark--band .wordmark__text b {
-    color: var(--band-accent);
-  }
-  @media (max-width: 359px) {
-    .wordmark__text {
-      font-size: 0.9375rem;
+  @media (max-width: 399px) {
+    .wordmark__img {
+      height: 27px;
     }
   }
 </style>

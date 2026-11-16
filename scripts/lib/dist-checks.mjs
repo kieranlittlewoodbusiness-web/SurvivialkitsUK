@@ -34,6 +34,7 @@ export const DEFAULT_BANNED = [
   'unverified specification',
   'coming soon',
   'household brief',
+  'survival kit brief',
   'evaq8',
   't-minus',
   'prepared britain',

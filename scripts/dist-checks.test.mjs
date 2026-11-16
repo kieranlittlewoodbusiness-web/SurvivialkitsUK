@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
-import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
+import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
 import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
@@ -192,13 +192,16 @@ describe('checkContent', () => {
 });
 
 const PER_CATEGORY = 3;
-const expectedAffiliate = Object.values(VERIFIED_BY_CATEGORY).reduce(
-  (n, asins) => n + Math.min(asins.length, PER_CATEGORY),
+const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
+  .filter(([cat, asins]) => cat !== 'kit' && asins.length > 0)
+  .map(([cat]) => cat);
+const expectedCompare = expectedCategories.reduce(
+  (n, cat) => n + Math.min(VERIFIED_BY_CATEGORY[cat].length, PER_CATEGORY),
   0,
 );
-const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
-  .filter(([, asins]) => asins.length > 0)
-  .map(([cat]) => cat);
+// S1-11: the homepage adds one top-pick button per compare category.
+const expectedHome = expectedCategories.length;
+const expectedAffiliate = expectedCompare + expectedHome;
 
 describe('verify:dist (production build with a dummy tag)', () => {
   it('builds production and passes links (derived affiliate count, sponsored + nofollow) and content (indexable) checks', () => {
@@ -216,10 +219,16 @@ describe('verify:dist (production build with a dummy tag)', () => {
     const realTag = process.env.AMAZON_ASSOCIATES_UK_TAG;
     if (realTag) expect(log.includes(realTag)).toBe(false);
     const compare = readCompareHtml(out);
-    expect(compare.match(/data-affiliate="amazon"/g)).toHaveLength(expectedAffiliate);
+    expect(compare.match(/data-affiliate="amazon"/g)).toHaveLength(expectedCompare);
     if (realTag) expect(compare.includes(realTag)).toBe(false);
+    const home = readHomeHtml(out);
+    expect(home.match(/data-affiliate="amazon"/g)).toHaveLength(expectedHome);
+    if (realTag) expect(home.includes(realTag)).toBe(false);
+    const homeRules = checkHomePage(home, { expectedButtons: expectedHome, expectedCategories, compareHtml: compare });
+    expect(homeRules.failures).toEqual([]);
+    expect(homeRules.picks).toHaveLength(expectedCategories.length);
     const rules = checkComparePage(compare, {
-      expectedButtons: expectedAffiliate,
+      expectedButtons: expectedCompare,
       expectedCategories,
       maxPerCategory: PER_CATEGORY,
       expectNoImages: true,
@@ -307,5 +316,47 @@ describe('pages.dev _headers patterns', () => {
           headersPatternMatches(r.pattern, 'https://uksurvivalkits.uk/'),
       ),
     ).toBe(false);
+  });
+});
+
+describe('S1-11 homepage rules (checkHomePage)', () => {
+  const LINK = 'https://www.amazon.co.uk/dp/B075F3FBTB?tag=verifydist-21';
+  const pick = (cat, { href = `/compare/72-hour-emergency-kits/#${cat}`, button = true, name = 'Plain torch' } = {}) =>
+    `<li><article class="pick" data-category="${cat}"><a class="pick__cat" href="${href}"><span>${cat}</span></a><p class="pick__name">${name}</p>` +
+    (button ? `<p class="pick__cta"><span class="badge badge--ad">Ad</span><a class="btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">Check ${name} on Amazon</a></p>` : '') +
+    '</article></li>';
+  const home = (body) =>
+    `<html><body><a class="btn btn--cta btn--lg" href="/compare/72-hour-emergency-kits/" data-cta="get-prepared">Get prepared here</a>` +
+    `<img class="hero__img" src="/images/hero-mobile-720.jpg" width="720" height="900" alt="" fetchpriority="high" loading="eager">` +
+    `${body}<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
+  const compare = '<section id="torch"></section><section id="radio"></section>';
+
+  it('passes one sponsored top pick per category linking to compare anchors', () => {
+    const r = checkHomePage(home(pick('torch') + pick('radio')), { expectedButtons: 2, expectedCategories: ['torch', 'radio'], compareHtml: compare });
+    expect(r.failures).toEqual([]);
+  });
+  it('fails a missing category, a wrong count, a broken anchor and a model number', () => {
+    const r = checkHomePage(home(pick('torch', { href: '/compare/72-hour-emergency-kits/#nope', name: 'Torch XT500' })), {
+      expectedButtons: 2,
+      expectedCategories: ['torch', 'radio'],
+      compareHtml: compare,
+    });
+    const text = r.failures.join('\n');
+    expect(text).toMatch(/expected 2 homepage affiliate buttons/);
+    expect(text).toMatch(/missing homepage pick for category: radio/);
+    expect(text).toMatch(/missing anchor/);
+    expect(text).toMatch(/model\/SKU-like token "XT500"/);
+  });
+  it('fails "Compare kits", a lazy hero, a non-lazy content image and a second disclosure', () => {
+    const html = home(pick('torch'))
+      .replace('Get prepared here', 'Compare kits')
+      .replace('loading="eager"', 'loading="lazy"')
+      .replace('<footer>', '<img src="/images/grab-bags-900.jpg" width="900" height="600" alt="x"><p>As an Amazon Associate I earn from qualifying purchases.</p><footer>');
+    const text = checkHomePage(html, { expectedButtons: 1, expectedCategories: ['torch'] }).failures.join('\n');
+    expect(text).toMatch(/Get prepared here/);
+    expect(text).toMatch(/Compare kits/);
+    expect(text).toMatch(/hero image is lazy-loaded/);
+    expect(text).toMatch(/grab-bags-900\.jpg is not lazy-loaded/);
+    expect(text).toMatch(/exactly 1 disclosure line/);
   });
 });
