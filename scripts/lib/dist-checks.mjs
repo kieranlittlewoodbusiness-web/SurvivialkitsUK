@@ -365,7 +365,8 @@ export function checkContent(dist, { production = false, banned = DEFAULT_BANNED
   for (const file of files) {
     const rel = path.relative(dist, file);
     const html = fs.readFileSync(file, 'utf8');
-    const text = decode(html).toLowerCase();
+    // U+00A0 (visible dates use it) counts as a space, so a banned phrase cannot hide behind it.
+    const text = decode(html).replace(/\u00a0/g, ' ').toLowerCase();
     for (const b of banned) {
       const re = new RegExp(`(^|[^a-z0-9])${b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([^a-z0-9]|$)`, 'g');
       const n = (text.match(re) || []).length;

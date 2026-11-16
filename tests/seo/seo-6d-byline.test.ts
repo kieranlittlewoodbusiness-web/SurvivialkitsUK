@@ -14,7 +14,7 @@ import { checkJsonLd } from '../../scripts/lib/jsonld-checks.mjs';
 
 const ROOT = path.resolve('.');
 const NOW = new Date('2026-11-16T12:00:00Z');
-const PUBLISHED_MARKUP = ' · Published <time datetime="2026-11-14">14 November 2026</time> · Last reviewed 15 November 2026';
+const PUBLISHED_MARKUP = ' · Published <time datetime="2026-11-14">14\u00a0November\u00a02026</time> · Last reviewed 15\u00a0November\u00a02026';
 const originalTz = process.env.TZ;
 
 afterEach(() => {
@@ -33,7 +33,7 @@ describe('publishedIfDifferent', () => {
       process.env.TZ = tz;
       expect(publishedIfDifferent(new Date('2026-11-14T00:00:00Z'), new Date('2026-11-15T00:00:00Z')), tz).toEqual({
         datetime: '2026-11-14',
-        label: '14 November 2026',
+        label: '14\u00a0November\u00a02026',
       });
     }
   });
@@ -88,7 +88,7 @@ describe('fixture build with lastReviewed bumped past pubDate', () => {
   it('keeps the label absent on pages whose dates are still equal', () => {
     for (const rel of ['gear/radios/index.html', 'scenarios/flood-england-wales/index.html']) {
       const b = byline(page(rel));
-      expect(b, rel).toMatch(/<\/a> · Last reviewed 14 November 2026<\/span>$/);
+      expect(b, rel).toMatch(/<\/a> · Last reviewed 14\u00a0November\u00a02026<\/span>$/);
       expect(b, rel).not.toContain('Published');
       expect(page(rel), rel).not.toContain('<time');
     }
