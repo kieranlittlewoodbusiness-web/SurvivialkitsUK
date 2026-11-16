@@ -2819,9 +2819,9 @@
         "url": "https://www.amazon.co.uk/dp/B09SZB8Y4R"
       },
       "captured_at": "2026-11-16T16:52:00+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Sangean wind-up solar emergency DAB radio",
-      "display_rank": 2,
+      "display_rank": null,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -2830,14 +2830,14 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B09SZB8Y4R",
         "checked_on": "2026-11-16",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sangean MMR-99 Emergency Radio, Crank, Solar Black with Dab+Med Dab+\". Brand Name \"Sangean\", Manufacturer \"Sangean\", Model Number / Manufacturer Part Number \"A500481\" (Sangean UK part code); title names the MMR-99 model. One radio (Number of Items 1). Canonical is the dp ASIN B09SZB8Y4R; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:52 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller ML&S Martin Lynch and Sons Ltd, ships from ML&S Martin Lynch and Sons Ltd; Seller page amazon.co.uk/sp?seller=AQ446SBQK5DYE: business ML&S MARTIN LYNCH & SONS LIMITED, country GB; 98% positive, 116 ratings (lifetime; no ratings in the last 12 months); availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sangean MMR-99 Emergency Radio, Crank, Solar Black with Dab+Med Dab+\". Brand Name \"Sangean\", Manufacturer \"Sangean\", Model Number / Manufacturer Part Number \"A500481\" (Sangean UK part code); title names the MMR-99 model. One radio (Number of Items 1). Canonical is the dp ASIN B09SZB8Y4R; Add to Basket posts this ASIN. Buyability check (2026-11-16 16:52 UK): featured offer yes; in stock yes; Add to Basket yes; Buy Box seller ML&S Martin Lynch and Sons Ltd, ships from ML&S Martin Lynch and Sons Ltd; Seller page amazon.co.uk/sp?seller=AQ446SBQK5DYE: business ML&S MARTIN LYNCH & SONS LIMITED, country GB; 98% positive, 116 ratings (lifetime; no ratings in the last 12 months); availability text seen \"In stock\"; delivery date shown Thursday, 19 November; outcome pass. Unverified (CR strict 12-month seller rule, re-checked 16 Nov 2026 17:13 UK): seller below the 12-month bar: ML&S Martin Lynch and Sons Ltd has 0 ratings in the last 12 months (needs >=20 ratings and >=85% positive in the last 12 months; lifetime figures do not count). Evidence: featured offer yes; in stock yes; Add to Basket yes; seller ML&S Martin Lynch and Sons Ltd; Seller page amazon.co.uk/sp?seller=AQ446SBQK5DYE: business ML&S MARTIN LYNCH & SONS LIMITED, country GB; last 12 months: 0 ratings (no 12-month percentage shown); lifetime 98% positive, 116 ratings (lifetime does not count); availability text seen \"In stock\"; delivery shown Thursday, 19 November; outcome fail.",
         "canonical_asin": "B09SZB8Y4R"
       },
       "notes": [
         "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
-        "Why picked: Sangean is an established radio maker; the MMR-99 is its emergency wind-up/solar DAB+ model. Replaces a radio that failed the buyability rule."
+        "Unverified (CR strict 12-month seller rule, re-checked 16 Nov 2026 17:13 UK): seller below the 12-month bar: ML&S Martin Lynch and Sons Ltd has 0 ratings in the last 12 months (needs >=20 ratings and >=85% positive in the last 12 months; lifetime figures do not count). Data kept."
       ]
     },
     {
@@ -2879,7 +2879,7 @@
       "captured_at": "2026-11-16T16:55:00+00:00",
       "verification": "verified",
       "display_name": "Roberts portable DAB and FM radio",
-      "display_rank": 3,
+      "display_rank": 2,
       "image_url": null,
       "image_width": null,
       "image_height": null,

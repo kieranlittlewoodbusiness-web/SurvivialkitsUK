@@ -460,8 +460,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    // S1-10: 30. S1-10c hotfix (16 Nov): 9 failed buyability, 8 replacements = 29 (emergency_blanket has 2; no third passed).
-    expect(n).toBe(29);
+    // S1-10: 30. S1-10c hotfix (16 Nov): 10 failed buyability (incl. Sangean, strict 12-month rule), 8 added = 28 (radio and emergency_blanket have 2).
+    expect(n).toBe(28);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
