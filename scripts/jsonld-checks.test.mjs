@@ -377,3 +377,99 @@ describe('checkJsonLd', () => {
     ).toMatch(/no matching id in the HTML/);
   });
 });
+
+describe('SEO-9b Person rules', () => {
+  const method = (nodes, extra = {}) =>
+    site({ 'method/index.html': html({ script: graph(nodes) }), ...extra });
+  const bio = (nodes) => html({ script: graph(nodes), heading: 'Kieran Littlewood', canonical: BIO_URL });
+
+  it('passes the valid fixture (Article author -> #person, bio ProfilePage)', () => {
+    expect(reasons(method(pageNodes()))).toBe('');
+  });
+
+  it('fails a second Person with a different @id', () => {
+    const nodes = pageNodes();
+    nodes.push({ ...EXPECTED_PERSON, '@id': 'https://uksurvivalkits.uk/about/#person', worksFor: { ...EXPECTED_PERSON.worksFor } });
+    expect(reasons(method(nodes))).toMatch(/Person @id "https:\/\/uksurvivalkits\.uk\/about\/#person" must be .*#person \(one Person site-wide\)/);
+  });
+
+  it.each(['sameAs', 'image', 'hasCredential', 'knowsAbout', 'alumniOf', 'award'])('fails a Person with %s', (key) => {
+    const nodes = pageNodes();
+    nodes[5] = { ...nodes[5], [key]: key === 'sameAs' ? ['https://uksurvivalkits.uk/'] : 'x' };
+    const r = reasons(method(nodes));
+    expect(r).toContain(`Person must not have "${key}"`);
+    expect(r).toMatch(/does not match the SEO-9b spec properties exactly/);
+  });
+
+  it('fails a Person whose description or jobTitle drifts from the spec', () => {
+    const nodes = pageNodes();
+    nodes[5] = { ...nodes[5], jobTitle: 'Expert editor' };
+    expect(reasons(method(nodes))).toMatch(/does not match the SEO-9b spec properties exactly/);
+  });
+
+  it('fails an Article with no author', () => {
+    const nodes = pageNodes();
+    delete nodes[3].author;
+    const r = reasons(method(nodes));
+    expect(r).toMatch(/Article is missing author/);
+    expect(r).toMatch(/Person is defined but nothing on this page references it/);
+  });
+
+  it('fails an Article whose author is the Organization, an embedded Person, or an array', () => {
+    for (const author of [
+      { '@id': 'https://uksurvivalkits.uk/#organization' },
+      { '@type': 'Person', name: 'Kieran Littlewood' },
+      [{ '@id': PERSON_ID }],
+    ]) {
+      const nodes = pageNodes();
+      nodes[3] = { ...nodes[3], author };
+      expect(reasons(method(nodes)), JSON.stringify(author)).toMatch(/Article\.author must be \{"@id":"https:\/\/uksurvivalkits\.uk\/about\/kieran-littlewood\/#person"\}/);
+    }
+  });
+
+  it('fails author on a non-Article node', () => {
+    const nodes = pageNodes();
+    nodes[2] = { ...nodes[2], author: { '@id': PERSON_ID } };
+    expect(reasons(method(nodes))).toMatch(/author is only allowed on Article nodes \(found on WebPage\)/);
+  });
+
+  it('fails a Person on a page with nothing that references it', () => {
+    const nodes = pageNodes().filter((n) => n['@type'] !== 'Article');
+    nodes[2] = { ...nodes[2], mainEntity: undefined };
+    delete nodes[2].mainEntity;
+    expect(reasons(method(nodes))).toMatch(/Person is defined but nothing on this page references it/);
+  });
+
+  it('fails an unresolved author when the page omits the Person node', () => {
+    const nodes = pageNodes().slice(0, 5);
+    expect(reasons(method(nodes))).toMatch(/unresolved @id reference https:\/\/uksurvivalkits\.uk\/about\/kieran-littlewood\/#person/);
+  });
+
+  it('fails a bio page that is a plain WebPage, or a ProfilePage with the wrong mainEntity', () => {
+    const asWebPage = bioNodes();
+    asWebPage[2] = { ...asWebPage[2], '@type': 'WebPage' };
+    expect(reasons(site({ [BIO_FILE]: bio(asWebPage) }))).toMatch(/the editor bio page node must be a ProfilePage \(got WebPage\)/);
+
+    const wrongMain = bioNodes();
+    wrongMain[2] = { ...wrongMain[2], mainEntity: { '@id': 'https://uksurvivalkits.uk/#organization' } };
+    expect(reasons(site({ [BIO_FILE]: bio(wrongMain) }))).toMatch(/ProfilePage\.mainEntity must be \{"@id":".*#person"\}/);
+  });
+
+  it('fails a ProfilePage on any page other than the bio page', () => {
+    const nodes = pageNodes();
+    nodes[2] = { ...nodes[2], '@type': 'ProfilePage', mainEntity: { '@id': PERSON_ID } };
+    expect(reasons(method(nodes))).toMatch(/ProfilePage is only for the editor bio page/);
+  });
+
+  it('fails conflicting Person definitions across pages', () => {
+    const bioDrift = bioNodes();
+    bioDrift[3] = { ...bioDrift[3], name: 'K. Littlewood' };
+    const r = reasons(site({ 'method/index.html': html(), [BIO_FILE]: bio(bioDrift) }));
+    expect(r).toMatch(/\(site\): 2 conflicting Person definitions across pages/);
+  });
+
+  it('fails when pages reference the Person but the bio page is not in the build', () => {
+    const r = reasons(site({ 'method/index.html': html(), [NO_BIO]: true }));
+    expect(r).toMatch(/\(site\): Person .*#person is referenced but the bio page about\/kieran-littlewood\/index\.html is not in the build/);
+  });
+});
