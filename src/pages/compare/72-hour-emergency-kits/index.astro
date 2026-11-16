@@ -109,6 +109,16 @@ const litresRows = [1, 2, 3, 4, 5, 6];
             </h2>
             <p class="meta">{s.cards.length} {s.cards.length === 1 ? 'product' : 'products'}</p>
           </div>
+          <p class="cat-section__dek">
+            {CATEGORY_META[s.category].dek}.
+            {CATEGORY_META[s.category].guide && (
+              <>
+                {' '}
+                <a href={CATEGORY_META[s.category].guide!.href}>{CATEGORY_META[s.category].guide!.label}</a>
+              </>
+            )}
+          </p>
+          {s.note && <p class="notice notice--info" data-safety-note="drinking-water">{s.note}</p>}
           <div class="pgrid">
             {s.cards.map((card) => <AmazonProductCard card={card} />)}
           </div>

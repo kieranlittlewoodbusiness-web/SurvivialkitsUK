@@ -33,21 +33,21 @@ export const HOME_THEMES: readonly HomeTheme[] = [
     title: 'Power cut essentials',
     guide: { href: '/scenarios/power-cuts', label: 'Power cut guide' },
     image: { name: 'power-cut-essentials', alt: 'Rechargeable lantern, torch and power bank beside a rain-streaked window.', width: 900, height: 600 },
-    categories: ['torch', 'power_bank', 'radio', 'batteries'],
+    categories: ['torch', 'power_bank', 'radio', 'batteries', 'electric_lighter', 'sleeping_bag'],
   },
   {
     id: 'winter-car',
     title: 'Winter car kits',
     guide: { href: '/scenarios/winter-car-shelf', label: 'Winter car guide' },
     image: { name: 'winter-car-kit', alt: 'Blanket, torch and emergency holdall in a car boot.', width: 900, height: 600 },
-    categories: ['jump_leads', 'warning_triangle', 'hi_vis', 'emergency_blanket'],
+    categories: ['jump_leads', 'warning_triangle', 'hi_vis', 'emergency_blanket', 'flask'],
   },
   {
     id: 'grab-bags',
     title: 'Grab bags',
     guide: { href: '/scenarios/leave-home-bag', label: 'Grab bag guide' },
     image: { name: 'grab-bags', alt: 'Open grab bag with a water bottle, torch and folded rain jacket.', width: 900, height: 600 },
-    categories: ['emergency_water', 'first_aid_kit', 'thermal_clothing'],
+    categories: ['grab_bag_kit', 'emergency_water', 'first_aid_kit', 'thermal_clothing', 'document_pouch', 'multi_tool', 'two_way_radio'],
   },
 ];
 
@@ -109,6 +109,11 @@ export function homeThemes(model: Pick<CatalogueModel, 'sections'>): HomeThemeMo
 /** Number of homepage buy buttons the model renders (one per top pick that has a contract link). */
 export function homeButtonCount(themes: HomeThemeModel[]): number {
   return themes.reduce((n, t) => n + t.picks.filter((p) => p.card.offers.some((o) => o.link)).length, 0);
+}
+
+/** Accessible name of a homepage buy button (CR N1 on #25: no space before the colon). */
+export function buyLabel(name: string): string {
+  return `Buy on Amazon: ${name.trim()} (affiliate link)`;
 }
 
 /** First contract link of a card (cards carry Amazon-only, model-matched offers). */

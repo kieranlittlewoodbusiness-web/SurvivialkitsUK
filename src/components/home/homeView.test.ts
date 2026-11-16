@@ -14,12 +14,14 @@ const card = (id: string, category: string, link = true): ProductCardModel => ({
   brand: 'Brand',
   buttonLabel: `Check Name ${id} on Amazon`,
   facts: [],
+  safetyNote: null,
   image: null,
   offers: [{ offer_id: `o-${id}`, price: null, link: link ? { href: `https://www.amazon.co.uk/dp/B000000${id.padStart(3, '0')}?tag=x-21`, rel: 'sponsored nofollow' } : null }],
 });
 const section = (category: string, ids: string[]): CatalogueSection => ({
   category: category as CatalogueSection['category'],
   category_label: category,
+  note: null,
   cards: ids.map((i) => card(i, category)),
 });
 
@@ -76,5 +78,22 @@ describe('homeThemes over the committed catalogue', () => {
     const themes = homeThemes(await loadCatalogue(PREVIEW, NOW));
     expect(themes.flatMap((t) => t.picks)).toHaveLength(verifiedCats.length);
     expect(homeButtonCount(themes)).toBe(0);
+  });
+});
+
+describe('S1-10b homepage additions', () => {
+  it('buy button accessible name has no space before the colon (CR N1 on #25)', async () => {
+    const { buyLabel } = await import('./homeView');
+    expect(buyLabel('Leatherman Wave+ multi-tool')).toBe('Buy on Amazon: Leatherman Wave+ multi-tool (affiliate link)');
+    expect(buyLabel(' Name ')).not.toMatch(/\s:/);
+  });
+  it('each category sits in at most one photo theme', () => {
+    const all = HOME_THEMES.flatMap((t) => t.categories);
+    expect(new Set(all).size).toBe(all.length);
+  });
+  it('the rainwater top pick carries its drinking-water note', async () => {
+    const model = await loadCatalogue(PROD, NOW);
+    const pick = homeThemes(model).flatMap((t) => t.picks).find((p) => p.category === 'rainwater_storage');
+    if ((VERIFIED_BY_CATEGORY.rainwater_storage?.length ?? 0) > 0) expect(pick?.card.safetyNote).toBeTruthy();
   });
 });
