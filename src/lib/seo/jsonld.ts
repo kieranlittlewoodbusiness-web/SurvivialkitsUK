@@ -103,16 +103,6 @@ export function isoDateTimeLondon(day: Date | string): string {
   return `${date}T00:00:00${londonOffset(date)}`;
 }
 
-/** Latest of the given dates as YYYY-MM-DD (updated / lastReviewed / pubDate). */
-export function dateModifiedOf(...dates: Array<Date | string | undefined | null>): string {
-  const days = dates
-    .filter((v): v is Date | string => v != null && v !== '')
-    .map(isoDate)
-    .sort();
-  if (!days.length) throw new Error('dateModifiedOf: no dates provided');
-  return days[days.length - 1]!;
-}
-
 export function crumbsForPage(canonicalPath: string, crumb: string, parent?: Crumb): Crumb[] {
   const crumbs: Crumb[] = [{ label: 'Home', href: '/' }];
   if (parent) crumbs.push(parent);

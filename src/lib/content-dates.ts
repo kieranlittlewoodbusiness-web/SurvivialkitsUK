@@ -32,7 +32,7 @@ export function reviewedDate(d: GuideDates): Date {
   return d[reviewedField(d)]!;
 }
 
-/** Human-readable problems, one per content date that is later than the reviewed day. */
+/** Human-readable problems: content dates later than the reviewed day, and updated before pubDate. */
 export function reviewedDateIssues(d: GuideDates): Array<{ path: Field; message: string }> {
   const shown = reviewedField(d);
   const shownDay = day(reviewedDate(d));
@@ -49,6 +49,16 @@ export function reviewedDateIssues(d: GuideDates): Array<{ path: Field; message:
           `Set ${shown} to ${day(value)} or later (SEO-6e).`,
       });
     }
+  }
+  // SEO-6f (CR nit on #43): with lastReviewed set, updated must still not be before pubDate. (Without
+  // lastReviewed, updated is the shown day and the loop above already covers it.)
+  if (shown === 'lastReviewed' && d.updated && day(d.updated) < day(d.pubDate)) {
+    issues.push({
+      path: 'updated',
+      message:
+        `updated (${day(d.updated)}) is before pubDate (${day(d.pubDate)}). A guide cannot be updated before it ` +
+        `was published, so updated must be on or after pubDate. Set updated to ${day(d.pubDate)} or later (SEO-6f).`,
+    });
   }
   return issues;
 }
