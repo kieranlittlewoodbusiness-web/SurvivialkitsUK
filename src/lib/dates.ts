@@ -9,6 +9,14 @@ import { isoDate } from './seo/jsonld';
  * (UTC parts) and format it at midday UTC with timeZone 'Europe/London' (UTC+0/+1, so midday never
  * crosses a day boundary).
  */
+/**
+ * QA nit on #40 (comment 6930618292): visible dates use U+00A0 NO-BREAK SPACE between day, month
+ * and year so a narrow line never strands the year on its own line ("14 Nov" / "2026"). The text
+ * reads the same; check:jsonld's visibleDates (\s) and check:content treat U+00A0 as a space.
+ */
+export const NBSP = '\u00a0';
+const keepTogether = (label: string) => label.replace(/\s+/g, NBSP);
+
 const londonLongDate = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'Europe/London',
   day: 'numeric',
@@ -17,7 +25,7 @@ const londonLongDate = new Intl.DateTimeFormat('en-GB', {
 });
 
 export function formatLondonDate(day: Date | string): string {
-  return londonLongDate.format(new Date(`${isoDate(day)}T12:00:00Z`));
+  return keepTogether(londonLongDate.format(new Date(`${isoDate(day)}T12:00:00Z`)));
 }
 
 const londonShortDate = new Intl.DateTimeFormat('en-GB', {
@@ -35,12 +43,12 @@ const londonMonthYear = new Intl.DateTimeFormat('en-GB', {
 
 /** SEO-6d: short visible date, e.g. "15 Nov 2026" (Europe/London, TZ-independent). */
 export function formatLondonShortDate(day: Date | string): string {
-  return londonShortDate.format(new Date(`${isoDate(day)}T12:00:00Z`));
+  return keepTogether(londonShortDate.format(new Date(`${isoDate(day)}T12:00:00Z`)));
 }
 
 /** SEO-6d: visible month and year, e.g. "Nov 2026" (Europe/London, TZ-independent). */
 export function formatLondonMonthYear(day: Date | string): string {
-  return londonMonthYear.format(new Date(`${isoDate(day)}T12:00:00Z`));
+  return keepTogether(londonMonthYear.format(new Date(`${isoDate(day)}T12:00:00Z`)));
 }
 
 /**

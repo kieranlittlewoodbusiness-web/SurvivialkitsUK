@@ -21,6 +21,24 @@ export const BANNED_TYPES = [
 ];
 export const BANNED_PRICE_KEYS = ['price', 'priceCurrency', 'lowPrice', 'highPrice', 'priceValidUntil'];
 
+/**
+ * SEO-9b (spec §1, /workspace/seo-9-brief/SEO-9b-person-author-spec.md): the one Person site-wide.
+ * tests/seo/seo-9b.test.ts asserts personNode() in src/lib/seo/jsonld.ts deep-equals this.
+ */
+export const BIO_PATH = '/about/kieran-littlewood/';
+export const BIO_FILE = 'about/kieran-littlewood/index.html';
+export const PERSON_ID = `${APEX}${BIO_PATH}#person`;
+export const EXPECTED_PERSON = Object.freeze({
+  '@type': 'Person',
+  '@id': PERSON_ID,
+  name: 'Kieran Littlewood',
+  url: `${APEX}${BIO_PATH}`,
+  jobTitle: 'Editor',
+  description: 'Editor of UK Survival Kits. Chooses the products on the site and uses them where he can before sharing them.',
+  worksFor: { '@id': `${APEX}/#organization` },
+});
+export const PERSON_FORBIDDEN_KEYS = ['image', 'sameAs', 'knowsAbout', 'alumniOf', 'award', 'hasCredential'];
+
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
 const ISO_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[+-]\d{2}:\d{2}$/;
 
@@ -67,7 +85,7 @@ export function visibleDates(html) {
   return [...out];
 }
 
-const WEBPAGE_TYPES = new Set(['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage']);
+const WEBPAGE_TYPES = new Set(['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage', 'ProfilePage']);
 
 const decode = (s) =>
   String(s)
@@ -314,6 +332,69 @@ function checkBreadcrumbVisibility(file, html, graph, canonical, failures) {
   }
 }
 
+const stable = (value) =>
+  JSON.stringify(value, (_k, v) =>
+    v && typeof v === 'object' && !Array.isArray(v) ? Object.fromEntries(Object.keys(v).sort().map((k) => [k, v[k]])) : v,
+  );
+
+const isPersonRef = (value) => value && typeof value === 'object' && !Array.isArray(value) && isRef(value) && value['@id'] === PERSON_ID;
+
+/** SEO-9b: Person, author and ProfilePage rules for one page graph. Returns this page's Person definitions. */
+function checkPerson(file, graph, page, failures) {
+  const persons = findByType(graph, 'Person');
+  for (const person of persons) {
+    if (person['@id'] !== PERSON_ID) {
+      failures.push({ file, reason: `Person @id "${person['@id'] ?? '(none)'}" must be ${PERSON_ID} (one Person site-wide)` });
+      continue;
+    }
+    for (const key of PERSON_FORBIDDEN_KEYS) {
+      if (key in person) failures.push({ file, reason: `Person must not have "${key}"` });
+    }
+    if (stable(person) !== stable(EXPECTED_PERSON)) {
+      failures.push({ file, reason: `Person ${PERSON_ID} does not match the SEO-9b spec properties exactly` });
+    }
+  }
+
+  let referenced = false;
+  walk(graph, (node) => {
+    if (isRef(node) || !('author' in node)) return;
+    const types = typesOf(node);
+    if (!types.includes('Article')) {
+      failures.push({ file, reason: `author is only allowed on Article nodes (found on ${types.join(', ') || 'an untyped node'})` });
+      return;
+    }
+    if (!isPersonRef(node.author)) {
+      failures.push({ file, reason: `Article.author must be {"@id":"${PERSON_ID}"} (got ${JSON.stringify(node.author)})` });
+      return;
+    }
+    referenced = true;
+  });
+  for (const art of findByType(graph, 'Article')) {
+    if (!('author' in art)) failures.push({ file, reason: `Article is missing author {"@id":"${PERSON_ID}"}` });
+  }
+
+  const profiles = findByType(graph, 'ProfilePage');
+  const isBio = page?.url === EXPECTED_PERSON.url;
+  if (isBio && !typesOf(page).includes('ProfilePage')) {
+    failures.push({ file, reason: `the editor bio page node must be a ProfilePage (got ${typesOf(page).join(', ')})` });
+  }
+  for (const profile of profiles) {
+    if (profile.url !== EXPECTED_PERSON.url) {
+      failures.push({ file, reason: `ProfilePage is only for the editor bio page (${EXPECTED_PERSON.url}), not ${profile.url}` });
+    }
+    if (!isPersonRef(profile.mainEntity)) {
+      failures.push({ file, reason: `ProfilePage.mainEntity must be {"@id":"${PERSON_ID}"} (got ${JSON.stringify(profile.mainEntity)})` });
+    } else {
+      referenced = true;
+    }
+  }
+
+  if (persons.length && !referenced) {
+    failures.push({ file, reason: 'Person is defined but nothing on this page references it (only the bio page and Article pages carry the Person node)' });
+  }
+  return persons;
+}
+
 function checkPage(file, html, { now } = {}, failures) {
   const scripts = extractLdJsonScripts(html);
   if (is404(file)) {
@@ -470,6 +551,7 @@ function checkPage(file, html, { now } = {}, failures) {
 
   if (canonical) checkBreadcrumbVisibility(file, html, graph, canonical, failures);
   checkAnchorsExist(file, html, graph, failures);
+  return { persons: checkPerson(file, graph, page, failures) };
 }
 
 /**
@@ -480,10 +562,26 @@ function checkPage(file, html, { now } = {}, failures) {
 export function checkJsonLd(dist, { now } = {}) {
   const files = htmlFiles(dist);
   const failures = [];
+  const personDefs = new Map();
+  let personPages = 0;
   for (const file of files) {
     const rel = path.relative(dist, file);
     const html = fs.readFileSync(file, 'utf8');
-    checkPage(rel, html, { now }, failures);
+    const result = checkPage(rel, html, { now }, failures);
+    for (const person of result?.persons ?? []) {
+      personPages += 1;
+      const key = stable(person);
+      if (!personDefs.has(key)) personDefs.set(key, []);
+      personDefs.get(key).push(rel);
+    }
+  }
+  // SEO-9b: one Person definition site-wide, and it must live on (and be the mainEntity of) the bio page.
+  if (personDefs.size > 1) {
+    const variants = [...personDefs.values()].map((pages) => pages.slice(0, 3).join(', ') + (pages.length > 3 ? ', ...' : ''));
+    failures.push({ file: '(site)', reason: `${personDefs.size} conflicting Person definitions across pages: ${variants.join(' | ')}` });
+  }
+  if (personPages && !fs.existsSync(path.join(dist, BIO_FILE))) {
+    failures.push({ file: '(site)', reason: `Person ${PERSON_ID} is referenced but the bio page ${BIO_FILE} is not in the build` });
   }
   return { files: files.length, failures };
 }

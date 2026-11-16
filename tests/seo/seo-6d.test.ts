@@ -26,10 +26,10 @@ describe('COMPARE_DATES (SEO-6d single source of truth)', () => {
   });
 
   it('gives visible labels and JSON-LD datetimes on the same calendar day', () => {
-    expect(formatLondonShortDate(COMPARE_DATES.published)).toBe('14 Nov 2026');
-    expect(formatLondonShortDate(COMPARE_DATES.updated)).toBe('15 Nov 2026');
-    expect(formatLondonDate(COMPARE_DATES.updated)).toBe('15 November 2026');
-    expect(formatLondonMonthYear(COMPARE_DATES.updated)).toBe('Nov 2026');
+    expect(formatLondonShortDate(COMPARE_DATES.published)).toBe('14\u00a0Nov\u00a02026');
+    expect(formatLondonShortDate(COMPARE_DATES.updated)).toBe('15\u00a0Nov\u00a02026');
+    expect(formatLondonDate(COMPARE_DATES.updated)).toBe('15\u00a0November\u00a02026');
+    expect(formatLondonMonthYear(COMPARE_DATES.updated)).toBe('Nov\u00a02026');
     expect(isoDateTimeLondon(COMPARE_DATES.published)).toBe('2026-11-14T00:00:00+00:00');
     expect(isoDateTimeLondon(COMPARE_DATES.updated)).toBe('2026-11-15T00:00:00+00:00');
   });
@@ -55,9 +55,9 @@ describe('short-date and month-year formatters are TZ-independent', () => {
   ])('%s', (day, short, monthYear) => {
     for (const tz of ZONES) {
       const utcMidnight = new Date(`${day}T00:00:00.000Z`);
-      expect(underTz(tz, () => formatLondonShortDate(utcMidnight)), tz).toBe(short);
-      expect(underTz(tz, () => formatLondonShortDate(day)), tz).toBe(short);
-      expect(underTz(tz, () => formatLondonMonthYear(utcMidnight)), tz).toBe(monthYear);
+      expect(underTz(tz, () => formatLondonShortDate(utcMidnight)), tz).toBe(short.replace(/ /g, '\u00a0'));
+      expect(underTz(tz, () => formatLondonShortDate(day)), tz).toBe(short.replace(/ /g, '\u00a0'));
+      expect(underTz(tz, () => formatLondonMonthYear(utcMidnight)), tz).toBe(monthYear.replace(/ /g, '\u00a0'));
     }
   });
 });

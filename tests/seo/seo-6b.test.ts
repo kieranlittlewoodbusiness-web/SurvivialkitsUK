@@ -40,8 +40,8 @@ describe('formatLondonDate (SEO-6b L1)', () => {
   ])('gives the same label for %s in every build TZ', (day, label) => {
     for (const tz of ZONES) {
       // Astro content collections parse YYYY-MM-DD frontmatter as UTC midnight.
-      expect(underTz(tz, () => formatLondonDate(new Date(`${day}T00:00:00.000Z`))), tz).toBe(label);
-      expect(underTz(tz, () => formatLondonDate(day)), tz).toBe(label);
+      expect(underTz(tz, () => formatLondonDate(new Date(`${day}T00:00:00.000Z`))), tz).toBe(label.replace(/ /g, '\u00a0'));
+      expect(underTz(tz, () => formatLondonDate(day)), tz).toBe(label.replace(/ /g, '\u00a0'));
     }
   });
 
@@ -56,7 +56,7 @@ describe('formatLondonDate (SEO-6b L1)', () => {
         expect(label).toBe(
           new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', day: 'numeric', month: 'long', year: 'numeric' }).format(
             new Date(iso),
-          ),
+          ).replace(/ /g, '\u00a0'),
         );
       }
     }

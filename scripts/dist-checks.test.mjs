@@ -87,6 +87,16 @@ describe('checkContent', () => {
       expect(DEFAULT_BANNED).toContain(t);
     }
   });
+  it('treats U+00A0 and &nbsp; as spaces when matching banned phrases (visible dates use U+00A0)', () => {
+    for (const body of ['<p>Coming\u00a0soon</p>', '<p>Coming&nbsp;soon</p>', '<p>Coming&#160;soon</p>', '<p>Not\u00a0live\u00a0yet</p>']) {
+      const r = checkContent(site({ 'index.html': page(body) }));
+      expect(r.failures.length, body).toBe(1);
+    }
+  });
+  it('passes a page whose dates use U+00A0', () => {
+    const body = `<p>Edited by <a href="/about/kieran-littlewood/">Kieran Littlewood</a> · Last reviewed 15\u00a0November\u00a02026</p>${card('sponsored nofollow')}`;
+    expect(checkContent(site({ 'index.html': page(body) })).failures).toEqual([]);
+  });
   it('decodes entities before matching', () => {
     const r = checkContent(site({ 'index.html': page('<p>Not&#32;live yet</p>') }));
     expect(r.failures.length).toBe(1);
