@@ -47,6 +47,8 @@ describe('content schema refine (src/lib/content-dates.ts)', () => {
     expect(m.map((x) => x.split('.')[0])).toEqual([
       'lastReviewed: lastReviewed (2026-11-14) is before updated (2026-11-15)',
       'lastReviewed: lastReviewed (2026-11-14) is before pubDate (2026-11-16)',
+      // SEO-6f (CR nit on #43): updated before pubDate is reported too.
+      'updated: updated (2026-11-15) is before pubDate (2026-11-16)',
     ]);
   });
 
@@ -132,7 +134,8 @@ describe('compare page nbsp style (CR nit)', () => {
   it('uses the NBSP constant only: no \\u00a0 escapes and no &nbsp; entities', () => {
     expect(src).not.toMatch(/\\u00a0/i);
     expect(src).not.toMatch(/&nbsp;|&#160;/);
-    expect(src).toContain('(22${NBSP}Oct${NBSP}2026)');
+    // SEO-6f: the citation labels get their NBSPs from keepCitationYear where they render.
+    expect(src).toContain('{keepCitationYear(s.label)}');
     expect(src).toContain('(Oct{NBSP}2026)');
   });
 });
