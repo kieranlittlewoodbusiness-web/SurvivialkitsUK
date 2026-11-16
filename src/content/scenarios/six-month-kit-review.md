@@ -1,5 +1,6 @@
 ---
 title: "Six-month emergency kit review: expiry dates, batteries and changing households"
+crumb: "Six-month kit review"
 seoTitle: "Six-month emergency kit review UK"
 description: "A six-month review of a UK household emergency kit: rotate food and water, test torches and batteries, and update contacts when your household changes."
 scenario: Routine maintenance after moving, new baby, new pet or season change

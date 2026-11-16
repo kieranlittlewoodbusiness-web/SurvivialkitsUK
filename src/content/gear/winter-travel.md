@@ -1,5 +1,6 @@
 ---
 title: Winter travel supplies
+crumb: "Winter driving gear"
 seoTitle: "Winter driving gear criteria UK"
 heading: "Winter driving gear criteria"
 description: "Criteria for a modest UK winter car kit—hi-vis, warmth, shovel and charge leads for delays."

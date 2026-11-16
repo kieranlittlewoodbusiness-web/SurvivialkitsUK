@@ -1,17 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EvidenceBadge from '../components/EvidenceBadge.astro';
+import { standardPageNodes } from '../lib/seo/jsonld';
+
+const title = 'How we source and label claims';
+const heading = 'How we source and label';
+const description =
+  'How UK Survival Kits labels official guidance, desk research, firsthand tests, reader tips and advertising, so you can see what kind of claim you are reading.';
+const canonicalPath = '/method/';
+const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Method' });
 ---
 
 <BaseLayout
-  title="How we source and label claims"
-  description="How UK Survival Kits labels official guidance, desk research, firsthand tests, reader tips and advertising, so you can see what kind of claim you are reading."
-  canonicalPath="/method/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap wrap--narrow prose">
       <p class="eyebrow">Method</p>
-      <h1>How we source and label</h1>
+      <h1>{heading}</h1>
       <p class="lede">
         Readers should always know whether a claim is government guidance, our research, a physical
         test, or advertising.

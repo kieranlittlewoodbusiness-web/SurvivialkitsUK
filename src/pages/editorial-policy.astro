@@ -1,16 +1,25 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { standardPageNodes } from '../lib/seo/jsonld';
+
+const title = 'Editorial policy';
+const heading = 'Editorial policy';
+const description =
+  'How UK Survival Kits sources official UK guidance, labels evidence, separates Amazon Associates advertising from editorial criteria, and handles corrections.';
+const canonicalPath = '/editorial-policy/';
+const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Editorial policy' });
 ---
 
 <BaseLayout
-  title="Editorial policy"
-  description="How UK Survival Kits sources official UK guidance, labels evidence, separates Amazon Associates advertising from editorial criteria, and handles corrections."
-  canonicalPath="/editorial-policy/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap wrap--narrow prose">
       <p class="eyebrow">Policy</p>
-      <h1>Editorial policy</h1>
+      <h1>{heading}</h1>
       <h2>Purpose</h2>
       <p>
         We help UK households plan for disruption using official guidance first, then practical

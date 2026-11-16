@@ -1,5 +1,6 @@
 ---
 title: "Emergency food: three days from your cupboard, not a speciality shop"
+crumb: "Emergency food"
 seoTitle: "Emergency food: a 3-day cupboard list"
 description: "How to build a calm three-day emergency food buffer from what you already eat at home, without a speciality shop or panic bulk buying."
 scenario: Stay-home disruption when shops or cooking are limited

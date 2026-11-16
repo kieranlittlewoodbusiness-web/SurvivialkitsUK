@@ -1,5 +1,6 @@
 ---
 title: Power banks
+crumb: "Power banks"
 seoTitle: "Power banks for UK power cuts"
 heading: "Power banks for UK power cuts"
 description: "Criteria for household power banks used in UK outages—capacity, USB-C, self-discharge and medical-device cautions."

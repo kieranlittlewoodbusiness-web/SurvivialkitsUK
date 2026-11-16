@@ -1,17 +1,26 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { AMAZON_DISCLOSURE } from '../components/catalogue/catalogueView';
+import { standardPageNodes } from '../lib/seo/jsonld';
+
+const title = 'Affiliate disclosure';
+const heading = 'Affiliate disclosure';
+const description =
+  'How UK Survival Kits labels its Amazon Associates links under UK CAP and ASA rules, including the single-line affiliate disclosure in every page footer.';
+const canonicalPath = '/affiliate-disclosure/';
+const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Affiliate disclosure' });
 ---
 
 <BaseLayout
-  title="Affiliate disclosure"
-  description="How UK Survival Kits labels its Amazon Associates links under UK CAP and ASA rules, including the single-line affiliate disclosure in every page footer."
-  canonicalPath="/affiliate-disclosure/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap wrap--narrow prose">
       <p class="eyebrow">Disclosure</p>
-      <h1>Affiliate disclosure</h1>
+      <h1>{heading}</h1>
       <p>
         Some links on this site are affiliate links. If you click and buy, we may earn a commission
         at no extra cost to you. Under the UK CAP Code, marketing must be obviously identifiable.

@@ -1,5 +1,6 @@
 ---
 title: "Flood kit and Floodline for Scottish households"
+crumb: "Flooding: Scotland"
 seoTitle: "Flood kit and Floodline for Scotland"
 description: "How Scottish households can prepare for flooding with Ready Scotland and SEPA Floodline: an emergency plan, a kit, and waterproof grab-bag items."
 scenario: SEPA flood messaging and Ready Scotland planning

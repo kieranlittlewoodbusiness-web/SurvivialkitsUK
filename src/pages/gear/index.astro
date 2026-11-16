@@ -1,19 +1,45 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedGear } from '../../lib/content';
+import { breadcrumbList, crumbsForPage, itemList, pageUrl, webPage } from '../../lib/seo/jsonld';
 
 const gear = await getPublishedGear();
+const title = 'Gear criteria for UK emergency kits';
+const heading = 'Gear criteria for a UK emergency kit';
+const description =
+  'Comparison criteria for torches, power banks, wind-up radios, water storage, first-aid kits and winter car supplies, written for UK emergency planning.';
+const canonicalPath = '/gear/';
+const url = pageUrl(canonicalPath);
+const jsonLd = [
+  webPage({
+    url,
+    name: heading,
+    description,
+    type: 'CollectionPage',
+    breadcrumb: true,
+    mainEntity: `${url}#guides`,
+  }),
+  breadcrumbList(url, crumbsForPage(canonicalPath, 'Gear criteria')),
+  itemList({
+    id: `${url}#guides`,
+    items: gear.map((entry) => ({
+      name: entry.data.heading ?? entry.data.title,
+      url: pageUrl(`/gear/${entry.id}/`),
+    })),
+  }),
+];
 ---
 
 <BaseLayout
-  title="Gear criteria for UK emergency kits"
-  description="Comparison criteria for torches, power banks, wind-up radios, water storage, first-aid kits and winter car supplies, written for UK emergency planning."
-  canonicalPath="/gear/"
+  title={title}
+  description={description}
+  canonicalPath={canonicalPath}
+  jsonLd={jsonLd}
 >
   <section class="section">
     <div class="wrap">
       <p class="eyebrow">Gear</p>
-      <h1>Gear criteria for a UK emergency kit</h1>
+      <h1>{heading}</h1>
       <p class="lede">
         Criteria first. Product links appear only on our 72-hour kit guide, as labelled Amazon
         affiliate links.
