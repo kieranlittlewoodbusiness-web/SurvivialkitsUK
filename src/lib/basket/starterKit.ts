@@ -8,7 +8,6 @@ import { z } from 'zod';
 import raw from '../../data/starter-kit/starterKit.json';
 import type { BuildEnv } from '../offers/types';
 import { basketLink, type BasketLink } from './cartUrl';
-import { BASKET_EXCLUDED_ASINS } from './exclusions';
 
 const asin = z.string().regex(/^[A-Z0-9]{10}$/);
 const nonEmpty = z.string().trim().min(1);
@@ -86,7 +85,6 @@ export const starterKitFileSchema = z
     if (positions.length !== 17 || positions.some((p, i) => p !== i + 1)) ctx.addIssue({ code: 'custom', message: 'items + gaps must cover positions 1..17 exactly once' });
     const asins = f.items.map((i) => i.asin);
     if (new Set(asins).size !== asins.length) ctx.addIssue({ code: 'custom', message: 'duplicate ASIN in starter kit' });
-    for (const a of asins) if (BASKET_EXCLUDED_ASINS.includes(a)) ctx.addIssue({ code: 'custom', message: `${a} is excluded (s1-10c)` });
   });
 
 export type StarterKitFile = z.infer<typeof starterKitFileSchema>;

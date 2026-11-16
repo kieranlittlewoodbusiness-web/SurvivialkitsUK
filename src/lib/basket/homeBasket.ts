@@ -2,12 +2,12 @@
  * S1-12 basket 2: "Add all home picks to basket". Derived from the homepage model itself
  * (homeThemes -> TopPick -> topPickLink), so it always matches the buttons the homepage renders:
  * only picks that get an affiliate link (verified, model-matched, production build, tag) are
- * included, in homepage order. No ASIN is copied here.
+ * included, in homepage order. No ASIN is copied here. Unverified products (including the S1-10c
+ * removals, now unverified on main) never get a link, so they never reach this basket.
  */
 import { topPickLink, type HomeThemeModel } from '../../components/home/homeView';
 import type { BuildEnv } from '../offers/types';
 import { basketLink, type BasketLink } from './cartUrl';
-import { BASKET_EXCLUDED_ASINS } from './exclusions';
 
 /** The contract link is https://www.amazon.co.uk/dp/{ASIN}?tag=...; the ASIN is read from it. */
 const DP_ASIN = /^https:\/\/www\.amazon\.co\.uk\/dp\/([A-Z0-9]{10})\?/;
@@ -19,7 +19,7 @@ export function homeBasketAsins(themes: readonly HomeThemeModel[]): string[] {
     for (const p of t.picks) {
       const href = topPickLink(p.card)?.href;
       const asin = href ? DP_ASIN.exec(href)?.[1] : undefined;
-      if (asin && !BASKET_EXCLUDED_ASINS.includes(asin) && !out.includes(asin)) out.push(asin);
+      if (asin && !out.includes(asin)) out.push(asin);
     }
   }
   return out;

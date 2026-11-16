@@ -5,7 +5,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   AMAZON_UK_CART_ADD_URL,
-  BASKET_EXCLUDED_ASINS,
   BASKET_LINK_REL,
   MAX_BASKET_URL_LENGTH,
   STARTER_KIT,
@@ -21,6 +20,16 @@ import {
 import { homeThemes, topPickLink } from '../../src/components/home/homeView';
 import { loadCatalogue } from '../../src/components/catalogue/catalogueView';
 import raw from '../../src/data/starter-kit/starterKit.json';
+import catalogueRaw from '../../src/data/catalogue/products.json';
+import { KNOWN_UNVERIFIED, VERIFIED_ASINS } from '../offers/verifiedSet';
+
+/**
+ * The 12 ASINs #27 used to exclude explicitly (src/lib/basket/exclusions.ts, deleted after #28 merged).
+ * Main now keeps all 12 unverified, so neither basket can contain them; these tests prove it.
+ */
+const FORMER_S1_10C_EXCLUSIONS = ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R', 'B002XNGTOI', 'B005DEW1K0'];
+const catalogue = (catalogueRaw as unknown as { products: { asin_uk: string; verification: string }[] }).products;
+const catalogueStatus = new Map(catalogue.map((p) => [p.asin_uk, p.verification]));
 
 const FAKE_TAG = 'FAKETESTONLY-21';
 const NOW = new Date('2026-11-16T17:00:00Z');
@@ -100,15 +109,19 @@ describe('starter kit basket', () => {
     for (let i = 1; i <= asins.length; i++) expect(params(url).get(`Quantity.${i}`)).toBe('1');
     expect(new Set(asins).size).toBe(asins.length);
   });
-  it('excludes the s1-10c (#28) removals', () => {
-    for (const a of BASKET_EXCLUDED_ASINS) expect(asins).not.toContain(a);
+  it('contains none of the former s1-10c exclusions and no product main keeps unverified', () => {
+    for (const a of FORMER_S1_10C_EXCLUSIONS) expect(asins).not.toContain(a);
+    for (const a of asins) {
+      expect(KNOWN_UNVERIFIED, a).not.toContain(a);
+      // Kit items that are also catalogue products must be verified there (items not in main's catalogue
+      // are S1-10b picks or S1-12 research, carrying their own verification and buyability evidence).
+      if (catalogueStatus.has(a)) expect(catalogueStatus.get(a), a).toBe('verified');
+    }
   });
-  it('schema rejects a duplicate, an excluded ASIN and a missing position', () => {
+  it('schema rejects a duplicate and a missing position', () => {
     const clone = () => JSON.parse(JSON.stringify(raw));
     const dup = clone(); dup.items[1].asin = dup.items[0].asin;
     expect(() => parseStarterKitFile(dup)).toThrow();
-    const excl = clone(); excl.items[0].asin = BASKET_EXCLUDED_ASINS[0];
-    expect(() => parseStarterKitFile(excl)).toThrow();
     const missing = clone(); missing.items.pop();
     expect(() => parseStarterKitFile(missing)).toThrow();
   });
@@ -117,11 +130,14 @@ describe('starter kit basket', () => {
   });
 });
 
-describe('s1-10c exclusions', () => {
-  it('match hotfix #28 removals exactly', () => {
-    expect([...BASKET_EXCLUDED_ASINS].sort()).toEqual(
-      ['B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B005AQK6V2', 'B013P5S1KC', 'B0896Q8JXD', 'B001FIQ7XU', 'B09SZB8Y4R', 'B002XNGTOI', 'B005DEW1K0'].sort(),
-    );
+describe('former s1-10c exclusions are covered by main data (exclusions.ts deleted)', () => {
+  it('all 12 are unverified on main: in the catalogue as unverified, in KNOWN_UNVERIFIED, not in verifiedSet', () => {
+    expect(FORMER_S1_10C_EXCLUSIONS).toHaveLength(12);
+    for (const a of FORMER_S1_10C_EXCLUSIONS) {
+      expect(catalogueStatus.get(a), a).toBe('unverified');
+      expect(KNOWN_UNVERIFIED, a).toContain(a);
+      expect(VERIFIED_ASINS, a).not.toContain(a);
+    }
   });
 });
 
@@ -132,17 +148,18 @@ describe('home picks basket (derived from homeView)', () => {
       .flatMap((t) => t.picks)
       .map((p) => topPickLink(p.card)?.href)
       .filter((h): h is string => !!h)
-      .map((h) => /\/dp\/([A-Z0-9]{10})\?/.exec(h)![1]!)
-      .filter((a) => !BASKET_EXCLUDED_ASINS.includes(a));
-    // Main today: 11 home picks; 3 are #28 removals (Philips radio, Cano 500ml, HypaGuard) and are dropped until #28 lands.
-    expect(expected).toHaveLength(8);
+      .map((h) => /\/dp\/([A-Z0-9]{10})\?/.exec(h)![1]!);
+    // Main after #28: 11 home picks, every one with a buy link (each category's rank-1 verified product).
+    expect(expected).toHaveLength(11);
     expect(homeBasketAsins(themes)).toEqual(expected);
     const link = homeBasketLink(themes, PROD)!;
     expect(numberedAsins(link.url)).toEqual(expected);
     expect(new Set(expected).size).toBe(expected.length);
     expect(link.url.length).toBeLessThanOrEqual(MAX_BASKET_URL_LENGTH);
     expect(link.rel).toBe('sponsored nofollow noopener');
-    for (const a of BASKET_EXCLUDED_ASINS) expect(link.asins).not.toContain(a);
+    // No basket ASIN is outside main's verified set, and none of the former exclusions appears.
+    for (const a of link.asins) expect(VERIFIED_ASINS, a).toContain(a);
+    for (const a of FORMER_S1_10C_EXCLUSIONS) expect(link.asins).not.toContain(a);
   });
   it('is null in preview (top picks have no links there)', async () => {
     const themes = homeThemes(await loadCatalogue(NON_PROD.preview!, NOW));
