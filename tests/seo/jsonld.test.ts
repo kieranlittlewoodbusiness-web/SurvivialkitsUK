@@ -87,7 +87,7 @@ describe('sitewide nodes', () => {
 });
 
 describe('article', () => {
-  it('omits author and points publisher, image and mainEntityOfPage at stable ids', () => {
+  it('SEO-9b: points author at #person, and publisher, image and mainEntityOfPage at stable ids', () => {
     const url = pageUrl('/scenarios/power-cuts/');
     const node = article({
       url,
@@ -96,7 +96,7 @@ describe('article', () => {
       datePublished: '2026-11-14',
       dateModified: '2026-11-14',
     });
-    expect(node).not.toHaveProperty('author');
+    expect(node.author).toEqual({ '@id': 'https://uksurvivalkits.uk/about/kieran-littlewood/#person' });
     expect(node.publisher).toEqual({ '@id': ORG_ID });
     expect(node.mainEntityOfPage).toEqual({ '@id': `${url}#webpage` });
     expect(node.datePublished).toBe('2026-11-14T00:00:00+00:00');
@@ -106,11 +106,9 @@ describe('article', () => {
     expect((node.image as { height: number }).height).toBe(630);
   });
 
-  it('keeps the SEO-9 author placeholder comment next to the builder', () => {
+  it('keeps the SEO-9 author rule comment next to the builder', () => {
     const src = fs.readFileSync(path.resolve('src/lib/seo/jsonld.ts'), 'utf8');
-    expect(src).toMatch(
-      /SEO-9 \(Kieran\): add "author" ONLY when a real, named, accountable editor exists/,
-    );
+    expect(src).toMatch(/SEO-9 \(Kieran\): "author" only for a real, named, accountable editor shown on the page/);
   });
 });
 

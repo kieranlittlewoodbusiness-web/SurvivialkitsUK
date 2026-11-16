@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { editor } from '../../data/editor';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import { breadcrumbList, crumbsForPage, pageUrl, webPage } from '../../lib/seo/jsonld';
+import { PERSON_ID, breadcrumbList, crumbsForPage, pageUrl, personNode, webPage } from '../../lib/seo/jsonld';
 
 const canonicalPath = editor.path;
 const url = pageUrl(canonicalPath);
@@ -11,8 +11,11 @@ const jsonLd = [
     url,
     name: editor.name,
     description: editor.description,
+    type: 'ProfilePage',
     breadcrumb: true,
+    mainEntity: PERSON_ID,
   }),
+  personNode(),
   breadcrumbList(url, crumbsForPage(canonicalPath, editor.name, { label: 'About', href: '/about/' })),
 ];
 ---

@@ -11,6 +11,7 @@ import {
   dateModifiedOf,
   isoDate,
   pageUrl,
+  personNode,
   webPage,
 } from '../../lib/seo/jsonld';
 import { formatLondonDate, publishedIfDifferent } from '../../lib/dates';
@@ -42,6 +43,7 @@ const jsonLd = [
     mainEntity: `${url}#article`,
   }),
   article({ url, headline: heading, description, datePublished, dateModified }),
+  personNode(),
   breadcrumbList(url, crumbsForPage(canonicalPath, crumb, { label: 'Gear criteria', href: '/gear/' })),
 ];
 const reviewed = formatLondonDate(entry.data.lastReviewed ?? entry.data.updated ?? entry.data.pubDate);

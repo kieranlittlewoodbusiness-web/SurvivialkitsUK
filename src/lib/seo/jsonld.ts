@@ -5,18 +5,22 @@
  * description, canonical). Do not hand-type a second copy of those strings at the call site.
  */
 import { site } from '../../data/site';
+import { editor } from '../../data/editor';
 
 export const JSONLD_CONTEXT = 'https://schema.org';
 export const APEX = site.siteUrl;
 export const ORG_ID = `${APEX}/#organization`;
 export const LOGO_ID = `${APEX}/#logo`;
 export const WEBSITE_ID = `${APEX}/#website`;
+/** SEO-9b: the one Person @id site-wide (the editor's bio page). */
+export const PERSON_URL = `${APEX}${editor.path}`;
+export const PERSON_ID = `${PERSON_URL}#person`;
 
 export type JsonLdNode = Record<string, unknown>;
 
 export type Crumb = { label: string; href: string };
 
-export type WebPageType = 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage';
+export type WebPageType = 'WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage' | 'ProfilePage';
 
 /** Short breadcrumb labels (SEO-6 JSON-LD; visible crumbs land in SEO-8, except compare which already has them). */
 export const CRUMB_LABELS: Record<string, string> = {
@@ -136,6 +140,22 @@ export function organizationNode(): JsonLdNode {
   };
 }
 
+/**
+ * SEO-9b spec §1: the editor as a Person, sourced from src/data/editor.ts. Emitted on the bio page
+ * and every Article page (never home, hubs or trust pages). No image, sameAs or credentials.
+ */
+export function personNode(): JsonLdNode {
+  return {
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    name: editor.name,
+    url: PERSON_URL,
+    jobTitle: editor.jobTitle,
+    description: editor.personDescription,
+    worksFor: { '@id': ORG_ID },
+  };
+}
+
 export function websiteNode(): JsonLdNode {
   return {
     '@type': 'WebSite',
@@ -190,7 +210,8 @@ export function article(opts: {
   datePublished: string;
   dateModified: string;
 }): JsonLdNode {
-  // SEO-9 (Kieran): add "author" ONLY when a real, named, accountable editor exists and is shown on the page (Person with name + url to a real bio page). No invented personas. Google lists author as recommended, not required, for Article.
+  // SEO-9 (Kieran): "author" only for a real, named, accountable editor shown on the page (Person with name + url to a real bio page). No invented personas.
+  // SEO-9b: author -> the one Person (#person); the page's graph must include personNode().
   return {
     '@type': 'Article',
     '@id': `${opts.url}#article`,
@@ -201,6 +222,7 @@ export function article(opts: {
     inLanguage: 'en-GB',
     mainEntityOfPage: { '@id': `${opts.url}#webpage` },
     isPartOf: { '@id': `${opts.url}#webpage` },
+    author: { '@id': PERSON_ID },
     publisher: { '@id': ORG_ID },
     image: ogImageObject(),
   };

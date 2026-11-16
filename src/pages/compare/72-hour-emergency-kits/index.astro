@@ -14,6 +14,7 @@ import {
   crumbsForPage,
   itemList,
   pageUrl,
+  personNode,
   webPage,
 } from '../../../lib/seo/jsonld';
 
@@ -58,6 +59,7 @@ const jsonLd = [
     datePublished: PUBLISHED_ON,
     dateModified: UPDATED_ON,
   }),
+  personNode(),
   breadcrumbList(url, crumbsForPage(comparePath, '72-hour emergency kit')),
   itemList({
     id: `${url}#essentials`,

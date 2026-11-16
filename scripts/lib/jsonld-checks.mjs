@@ -67,7 +67,7 @@ export function visibleDates(html) {
   return [...out];
 }
 
-const WEBPAGE_TYPES = new Set(['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage']);
+const WEBPAGE_TYPES = new Set(['WebPage', 'AboutPage', 'ContactPage', 'CollectionPage', 'ProfilePage']);
 
 const decode = (s) =>
   String(s)

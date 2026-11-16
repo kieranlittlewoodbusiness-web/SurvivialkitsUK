@@ -11,6 +11,7 @@ import {
   dateModifiedOf,
   isoDate,
   pageUrl,
+  personNode,
   webPage,
 } from '../../lib/seo/jsonld';
 import { formatLondonDate, publishedIfDifferent } from '../../lib/dates';
@@ -43,6 +44,7 @@ const jsonLd = [
     mainEntity: `${url}#article`,
   }),
   article({ url, headline: heading, description, datePublished, dateModified }),
+  personNode(),
   breadcrumbList(url, crumbsForPage(canonicalPath, crumb, { label: 'Scenarios', href: '/scenarios/' })),
 ];
 
