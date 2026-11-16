@@ -389,3 +389,11 @@ export async function loadCatalogue(env: Env = process.env, now = new Date()): P
     stats: { cards: cards.length, withButton, withoutButton: cards.length - withButton, withPrice: cards.filter((c) => c.offers.some((o) => o.price)).length },
   };
 }
+
+/**
+ * Category sections that the compare page renders (one anchor each): every section with at least
+ * one card, except the legacy `kit` bucket. The homepage links only to these anchors.
+ */
+export function productSections(model: Pick<CatalogueModel, 'sections'>): CatalogueSection[] {
+  return model.sections.filter((s) => s.category !== 'kit' && s.cards.length > 0);
+}

@@ -1,5 +1,5 @@
 /**
- * S1-10 rule-based checks over built compare-page HTML. Counts are passed in from the
+ * S1-10 rule-based checks over built compare-page HTML, plus S1-11 homepage top-pick rules. Counts are passed in from the
  * data / verifiedSet; this file never hard-codes 9 or 30.
  */
 import fs from 'node:fs';
@@ -156,6 +156,96 @@ export function checkComparePage(html, opts) {
   }
 
   return { failures, sections, cards, ctas, disclosureCount };
+}
+
+/* ---------- S1-11 homepage: top pick per category ---------- */
+
+export const COMPARE_PATH = '/compare/72-hour-emergency-kits/';
+
+export function extractPicks(html) {
+  const picks = [];
+  const re = /<article\b([^>]*)class="[^"]*\bpick\b[^"]*"([^>]*)>([\s\S]*?)<\/article>/gi;
+  for (const m of html.matchAll(re)) {
+    const attrs = `${m[1]} ${m[2]}`;
+    const catLink = m[0].match(/<a\b[^>]*class="[^"]*\bpick__cat\b[^"]*"[^>]*>/i);
+    picks.push({
+      category: attr(attrs, 'data-category'),
+      html: m[0],
+      text: visibleText(m[0]),
+      catHref: catLink ? attr(catLink[0], 'href') : null,
+      ctas: extractCtAs(m[0]),
+      adBadges: (m[0].match(/\bbadge--ad\b/g) || []).length,
+    });
+  }
+  return picks;
+}
+
+/**
+ * Homepage rules (S1-11): one top pick per compare-page category, each linking to that category's
+ * anchor on the compare page, with exactly one tagged sponsored Amazon button and one Ad label when
+ * buttons are expected. Plus the brand CTA, image loading rules and the single footer disclosure.
+ * @param {string} html homepage HTML
+ * @param {{ expectedButtons: number, expectedCategories: string[], compareHtml?: string }} opts
+ */
+export function checkHomePage(html, opts) {
+  const failures = [];
+  const picks = extractPicks(html);
+  const ctas = extractCtAs(html);
+  if (ctas.length !== opts.expectedButtons) {
+    failures.push(`expected ${opts.expectedButtons} homepage affiliate buttons (derived), found ${ctas.length}`);
+  }
+  for (const cta of ctas) {
+    if (!cta.href || !AFFILIATE_RE.test(cta.href)) failures.push('homepage CTA is not the tagged amazon.co.uk/dp shape');
+    if (!cta.rel.includes('sponsored') || !cta.rel.includes('nofollow')) failures.push('homepage CTA rel missing sponsored nofollow');
+  }
+  const cats = picks.map((p) => p.category);
+  if (new Set(cats).size !== cats.length) failures.push('a category has more than one homepage top pick');
+  const expected = new Set(opts.expectedCategories);
+  for (const c of cats) if (!expected.has(c)) failures.push(`unexpected homepage pick category: ${c}`);
+  for (const c of expected) if (!cats.includes(c)) failures.push(`missing homepage pick for category: ${c}`);
+  const anchors = opts.compareHtml ? new Set([...opts.compareHtml.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1])) : null;
+  for (const p of picks) {
+    if (!p.catHref || !p.catHref.startsWith(`${COMPARE_PATH}#`)) failures.push(`pick ${p.category} does not link to a compare-page category anchor`);
+    else if (anchors && !anchors.has(p.catHref.split('#')[1])) failures.push(`pick ${p.category} links to missing anchor ${p.catHref}`);
+    if (p.ctas.length > 1) failures.push(`pick ${p.category} has ${p.ctas.length} buttons`);
+    if (p.ctas.length !== p.adBadges) failures.push(`pick ${p.category} has ${p.ctas.length} buttons but ${p.adBadges} Ad labels`);
+    if (STANDARDS_RE.test(p.text)) failures.push(`pick ${p.category} visible text contains a standards code`);
+    const models = modelNumberTokens(p.text);
+    if (models.length) failures.push(`pick ${p.category} visible text contains model/SKU-like token "${models[0]}"`);
+    if (p.text.includes(DISCLOSURE)) failures.push(`pick ${p.category} repeats the disclosure`);
+  }
+  if ((html.match(/class="pcard__amount"/g) || []).length > 0 || /£\s?\d/.test(picks.map((p) => p.text).join(' '))) {
+    failures.push('homepage shows a price');
+  }
+  const disclosureCount = html.split(DISCLOSURE).length - 1;
+  if (disclosureCount !== 1) failures.push(`expected exactly 1 disclosure line on the homepage, found ${disclosureCount}`);
+  // Brand CTA: Kieran's wording, Amber CTA class, to the compare page.
+  const heroCta = [...html.matchAll(/<a\b([^>]*\bdata-cta="get-prepared"[^>]*)>([\s\S]*?)<\/a>/gi)];
+  if (!heroCta.some((m) => /\bbtn--cta\b/.test(m[1]) && attr(m[1], 'href') === COMPARE_PATH && visibleText(m[2]) === 'Get prepared here')) {
+    failures.push('no Amber "Get prepared here" CTA to the compare page');
+  }
+  if (/>\s*Compare kits\s*</i.test(html)) failures.push('"Compare kits" CTA text found (Kieran\'s wording is "Get prepared here")');
+  // Images: explicit size; the hero is eager + fetchpriority=high; every other content image is lazy.
+  for (const m of html.matchAll(/<img\b([^>]*)>/gi)) {
+    const a = m[1];
+    const src = attr(a, 'src') ?? '';
+    if (!attr(a, 'width') || !attr(a, 'height')) failures.push(`img ${src} has no explicit width/height`);
+    if (/^https?:/i.test(src)) failures.push(`img ${src} is not a local image`);
+    const isHero = /\bhero__img\b/.test(attr(a, 'class') ?? '');
+    const isLogo = /\bwordmark__img\b/.test(attr(a, 'class') ?? '');
+    if (isHero) {
+      if (attr(a, 'fetchpriority') !== 'high') failures.push('hero image lacks fetchpriority="high"');
+      if (attr(a, 'loading') === 'lazy') failures.push('hero image is lazy-loaded');
+    } else if (!isLogo && attr(a, 'loading') !== 'lazy') {
+      failures.push(`img ${src} is not lazy-loaded`);
+    }
+    if (attr(a, 'alt') === null) failures.push(`img ${src} has no alt attribute`);
+  }
+  return { failures, picks, ctas, disclosureCount };
+}
+
+export function readHomeHtml(distDir) {
+  return fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
 }
 
 export function readCompareHtml(distDir) {

@@ -3,8 +3,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { affiliateAsins, compareAsinSets, checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
-import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
+import { affiliateAsins, affiliateAsinsByPage, checkAffiliatePlacement, COMPARE_PAGE_FILE, HOME_PAGE_FILE, compareAsinSets, checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
+import { checkComparePage, checkHomePage, checkRainwaterNotes, extractCards, extractSections, modelNumberTokens, rainwaterNoteFromData, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
 import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
 
 const cfg = JSON.parse(fs.readFileSync(new URL('../config/outbound-allowlist.json', import.meta.url), 'utf8'));
@@ -192,13 +192,16 @@ describe('checkContent', () => {
 });
 
 const PER_CATEGORY = 3;
-const expectedAffiliate = Object.values(VERIFIED_BY_CATEGORY).reduce(
-  (n, asins) => n + Math.min(asins.length, PER_CATEGORY),
+const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
+  .filter(([cat, asins]) => cat !== 'kit' && asins.length > 0)
+  .map(([cat]) => cat);
+const expectedCompare = expectedCategories.reduce(
+  (n, cat) => n + Math.min(VERIFIED_BY_CATEGORY[cat].length, PER_CATEGORY),
   0,
 );
-const expectedCategories = Object.entries(VERIFIED_BY_CATEGORY)
-  .filter(([, asins]) => asins.length > 0)
-  .map(([cat]) => cat);
+// S1-11: the homepage adds one top-pick button per compare category.
+const expectedHome = expectedCategories.length;
+const expectedAffiliate = expectedCompare + expectedHome;
 
 describe('verify:dist (production build with a dummy tag)', () => {
   it('builds production and passes links (derived affiliate count, sponsored + nofollow) and content (indexable) checks', () => {
@@ -213,16 +216,23 @@ describe('verify:dist (production build with a dummy tag)', () => {
     expect(log).toMatch(new RegExp(`exactly ${expectedAffiliate} affiliate links`));
     expect(log).toMatch(/robots\.txt allows crawling/);
     // S1-10b (CR L1): exact ASIN set, not just the count.
-    expect(log).toMatch(new RegExp(`affiliate ASIN set equals verifiedSet\\.ts exactly \\(${expectedAffiliate} ASINs`));
+    expect(log).toMatch(new RegExp(`affiliate ASIN set equals verifiedSet\\.ts exactly \\(${expectedCompare} ASINs, each linked once on the compare page; ${expectedHome} homepage top picks`));
+    expect(log).toMatch(/PASS: rainwater drinking-water note on the rainwater section and every rainwater card/);
     expect(r.status).toBe(0);
     expect(affiliateAsins(out).asins).toEqual(Object.values(VERIFIED_BY_CATEGORY).flatMap((a) => a.slice(0, PER_CATEGORY)).sort());
     const realTag = process.env.AMAZON_ASSOCIATES_UK_TAG;
     if (realTag) expect(log.includes(realTag)).toBe(false);
     const compare = readCompareHtml(out);
-    expect(compare.match(/data-affiliate="amazon"/g)).toHaveLength(expectedAffiliate);
+    expect(compare.match(/data-affiliate="amazon"/g)).toHaveLength(expectedCompare);
     if (realTag) expect(compare.includes(realTag)).toBe(false);
+    const home = readHomeHtml(out);
+    expect(home.match(/data-affiliate="amazon"/g)).toHaveLength(expectedHome);
+    if (realTag) expect(home.includes(realTag)).toBe(false);
+    const homeRules = checkHomePage(home, { expectedButtons: expectedHome, expectedCategories, compareHtml: compare });
+    expect(homeRules.failures).toEqual([]);
+    expect(homeRules.picks).toHaveLength(expectedCategories.length);
     const rules = checkComparePage(compare, {
-      expectedButtons: expectedAffiliate,
+      expectedButtons: expectedCompare,
       expectedCategories,
       maxPerCategory: PER_CATEGORY,
       expectNoImages: true,
@@ -331,5 +341,150 @@ describe('S1-10b (CR L1): exact affiliate ASIN set', () => {
   it('same count but a different ASIN fails; identical sets pass', () => {
     expect(compareAsinSets(['A000000001', 'A000000002'], ['A000000001', 'A000000003'])).toEqual({ ok: false, missing: ['A000000003'], extra: ['A000000002'] });
     expect(compareAsinSets(['A000000002', 'A000000001'], ['A000000001', 'A000000002']).ok).toBe(true);
+  });
+});
+
+describe('S1-11 homepage rules (checkHomePage)', () => {
+  const LINK = 'https://www.amazon.co.uk/dp/B075F3FBTB?tag=verifydist-21';
+  const pick = (cat, { href = `/compare/72-hour-emergency-kits/#${cat}`, button = true, name = 'Plain torch' } = {}) =>
+    `<li><article class="pick" data-category="${cat}"><a class="pick__cat" href="${href}"><span>${cat}</span></a><p class="pick__name">${name}</p>` +
+    (button ? `<p class="pick__cta"><span class="badge badge--ad">Ad</span><a class="btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">Check ${name} on Amazon</a></p>` : '') +
+    '</article></li>';
+  const home = (body) =>
+    `<html><body><a class="btn btn--cta btn--lg" href="/compare/72-hour-emergency-kits/" data-cta="get-prepared">Get prepared here</a>` +
+    `<img class="hero__img" src="/images/hero-mobile-720.jpg" width="720" height="900" alt="" fetchpriority="high" loading="eager">` +
+    `${body}<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
+  const compare = '<section id="torch"></section><section id="radio"></section>';
+
+  it('passes one sponsored top pick per category linking to compare anchors', () => {
+    const r = checkHomePage(home(pick('torch') + pick('radio')), { expectedButtons: 2, expectedCategories: ['torch', 'radio'], compareHtml: compare });
+    expect(r.failures).toEqual([]);
+  });
+  it('fails a missing category, a wrong count, a broken anchor and a model number', () => {
+    const r = checkHomePage(home(pick('torch', { href: '/compare/72-hour-emergency-kits/#nope', name: 'Torch XT500' })), {
+      expectedButtons: 2,
+      expectedCategories: ['torch', 'radio'],
+      compareHtml: compare,
+    });
+    const text = r.failures.join('\n');
+    expect(text).toMatch(/expected 2 homepage affiliate buttons/);
+    expect(text).toMatch(/missing homepage pick for category: radio/);
+    expect(text).toMatch(/missing anchor/);
+    expect(text).toMatch(/model\/SKU-like token "XT500"/);
+  });
+  it('fails "Compare kits", a lazy hero, a non-lazy content image and a second disclosure', () => {
+    const html = home(pick('torch'))
+      .replace('Get prepared here', 'Compare kits')
+      .replace('loading="eager"', 'loading="lazy"')
+      .replace('<footer>', '<img src="/images/grab-bags-900.jpg" width="900" height="600" alt="x"><p>As an Amazon Associate I earn from qualifying purchases.</p><footer>');
+    const text = checkHomePage(html, { expectedButtons: 1, expectedCategories: ['torch'] }).failures.join('\n');
+    expect(text).toMatch(/Get prepared here/);
+    expect(text).toMatch(/Compare kits/);
+    expect(text).toMatch(/hero image is lazy-loaded/);
+    expect(text).toMatch(/grab-bags-900\.jpg is not lazy-loaded/);
+    expect(text).toMatch(/exactly 1 disclosure line/);
+  });
+});
+
+describe('S1-10b: A3 paper sizes, link placement rule, rainwater note, buy-button names', () => {
+  it('modelNumberTokens allows ISO paper sizes A0 to A10 but still flags model codes', () => {
+    expect(modelNumberTokens('OverBoard A3 waterproof pouch, Size A4, A0 or A10')).toEqual([]);
+    expect(modelNumberTokens('Pouch A11 T42 XT500')).toEqual(['A11', 'T42', 'XT500']);
+  });
+
+  // Derived from verifiedSet, the same way verify:dist does it.
+  const byCategory = Object.fromEntries(expectedCategories.map((c) => [c, VERIFIED_BY_CATEGORY[c].slice(0, PER_CATEGORY)]));
+  const topPicks = Object.fromEntries(expectedCategories.map((c) => [c, VERIFIED_BY_CATEGORY[c][0]]));
+  const counts = (list) => list.reduce((m, a) => m.set(a, (m.get(a) ?? 0) + 1), new Map());
+  const pages = (compareList, homeList, extra = {}) => {
+    const m = new Map([[COMPARE_PAGE_FILE, counts(compareList)]]);
+    if (homeList.length) m.set(HOME_PAGE_FILE, counts(homeList));
+    for (const [f, l] of Object.entries(extra)) m.set(f, counts(l));
+    return m;
+  };
+  const compareAll = Object.values(byCategory).flat();
+  const homeAll = Object.values(topPicks);
+
+  it('passes with no homepage links (pre-S1-11) and with one top pick per category (S1-11)', () => {
+    expect(checkAffiliatePlacement(pages(compareAll, []), { byCategory, topPicks })).toMatchObject({ ok: true, homeLinks: 0, compareLinks: compareAll.length });
+    expect(checkAffiliatePlacement(pages(compareAll, homeAll), { byCategory, topPicks })).toMatchObject({ ok: true, homeLinks: expectedCategories.length });
+  });
+  it('fails a duplicate on the compare page', () => {
+    const r = checkAffiliatePlacement(pages([...compareAll, compareAll[0]], homeAll), { byCategory, topPicks });
+    expect(r.ok).toBe(false);
+    expect(r.failures.join('\n')).toMatch(new RegExp(`compare page: ${compareAll[0]} linked 2 times`));
+  });
+  it('fails a non-top pick on the homepage', () => {
+    const cat = expectedCategories.find((c) => byCategory[c].length > 1);
+    const second = byCategory[cat][1];
+    const r = checkAffiliatePlacement(pages(compareAll, [...homeAll.filter((a) => a !== topPicks[cat]), second]), { byCategory, topPicks });
+    expect(r.ok).toBe(false);
+    expect(r.failures.join('\n')).toMatch(new RegExp(`homepage: ${second} is not the top-ranked verified pick`));
+  });
+  it('fails a duplicated homepage link, a missing compare ASIN and links on other pages', () => {
+    const r = checkAffiliatePlacement(pages(compareAll.slice(1), [...homeAll, homeAll[0]], { 'gear/torches/index.html': [compareAll[1]] }), { byCategory, topPicks });
+    const text = r.failures.join('\n');
+    expect(text).toMatch(new RegExp(`homepage: ${homeAll[0]} linked 2 times`));
+    expect(text).toMatch(new RegExp(`compare page: missing ${compareAll[0]}`));
+    expect(text).toMatch(/gear\/torches\/index\.html: affiliate links are only allowed/);
+  });
+  it('affiliateAsinsByPage reads per-page counts from a dist folder', () => {
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'placement-'));
+    fs.mkdirSync(path.join(d, 'compare/72-hour-emergency-kits'), { recursive: true });
+    const a = (asin) => `<a href="https://www.amazon.co.uk/dp/${asin}?tag=verifydist-21" rel="sponsored nofollow">x</a>`;
+    fs.writeFileSync(path.join(d, COMPARE_PAGE_FILE), compareAll.map(a).join(''));
+    fs.writeFileSync(path.join(d, HOME_PAGE_FILE), homeAll.map(a).join(''));
+    fs.writeFileSync(path.join(d, 'about.html'), '<a href="https://www.amazon.co.uk/dp/B000000001">untagged</a>');
+    const byPage = affiliateAsinsByPage(d);
+    expect([...byPage.keys()].sort()).toEqual([COMPARE_PAGE_FILE, HOME_PAGE_FILE].sort());
+    expect(checkAffiliatePlacement(byPage, { byCategory, topPicks }).ok).toBe(true);
+    fs.rmSync(d, { recursive: true, force: true });
+  });
+
+  const NOTE = 'Rainwater note from the data.';
+  const note = (t = NOTE) => `<p class="notice notice--info" data-safety-note="drinking-water">${t}</p>`;
+  const rcard = (id, withNote = true) => `<article class="pcard" id="${id}" data-category="rainwater_storage"><h3>Water butt</h3>${withNote ? note() : ''}</article>`;
+  const rsection = (sectionNote, cards) =>
+    `<section class="cat-section" id="rainwater" data-category="rainwater_storage"><h2>Rainwater storage</h2>${sectionNote ? note() : ''}<div class="pgrid">${cards}</div></section>`;
+
+  it('rainwater: passes with the section note and a note on every card', () => {
+    const r = checkRainwaterNotes(extractSections(rsection(true, rcard('a') + rcard('b'))), extractCards(rsection(true, rcard('a') + rcard('b'))), NOTE);
+    expect(r).toEqual({ failures: [], rainwaterCards: 2 });
+  });
+  it('rainwater: fails a section without its note, a card without its note, and different wording', () => {
+    const h1 = rsection(false, rcard('a'));
+    expect(checkRainwaterNotes(extractSections(h1), extractCards(h1), NOTE).failures).toEqual(['rainwater section has no section-level drinking-water note']);
+    const h2 = rsection(true, rcard('a') + rcard('b', false));
+    expect(checkRainwaterNotes(extractSections(h2), extractCards(h2), NOTE).failures).toEqual(['rainwater card b has no drinking-water note']);
+    const h3 = rsection(true, rcard('a'));
+    expect(checkRainwaterNotes(extractSections(h3), extractCards(h3), 'Different wording.').failures).toHaveLength(2);
+  });
+  it('rainwater: checkComparePage applies the rule when given the note', () => {
+    const html = `<html><body>${rsection(true, rcard('a', false))}<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
+    const r = checkComparePage(html, { expectedButtons: 0, rainwaterNote: NOTE });
+    expect(r.failures).toContain('rainwater card a has no drinking-water note');
+  });
+  it('rainwaterNoteFromData returns the one note shared by verified rainwater records', () => {
+    const n = rainwaterNoteFromData();
+    if ((VERIFIED_BY_CATEGORY.rainwater_storage?.length ?? 0) > 0) expect(n).toMatch(/\S/);
+  });
+
+  const LINK = 'https://www.amazon.co.uk/dp/B075F3FBTB?tag=verifydist-21';
+  const homePick = (btn, extra = '') =>
+    `<html><body><a class="btn btn--cta btn--lg" href="/compare/72-hour-emergency-kits/" data-cta="get-prepared">Get prepared here</a>` +
+    `<li><article class="pick" data-category="rainwater_storage"><a class="pick__cat" href="/compare/72-hour-emergency-kits/#rainwater"><span>Rainwater</span></a><p class="pick__name">Water butt</p>${extra}` +
+    `<p class="pick__cta"><span class="badge badge--ad">Ad</span>${btn}</p></article></li>` +
+    `<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
+  const opts = { expectedButtons: 1, expectedCategories: ['rainwater_storage'], rainwaterNote: NOTE };
+
+  it('home: fails "Buy on Amazon : name" (CR N1) and passes "Buy on Amazon: name"', () => {
+    const bad = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">Buy on Amazon<span class="visually-hidden">: Water butt</span></a>`;
+    expect(checkHomePage(homePick(bad, note()), opts).failures.join('\n')).toMatch(/space before punctuation: "Buy on Amazon : Water butt"/);
+    const good = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="Buy on Amazon: Water butt (affiliate link)">Buy on Amazon</a>`;
+    expect(checkHomePage(homePick(good, note()), opts).failures).toEqual([]);
+  });
+  it('home: fails a rainwater pick without its note', () => {
+    const good = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="Buy on Amazon: Water butt (affiliate link)">Buy on Amazon</a>`;
+    expect(checkHomePage(homePick(good), opts).failures).toContain('rainwater homepage pick has no drinking-water note');
   });
 });

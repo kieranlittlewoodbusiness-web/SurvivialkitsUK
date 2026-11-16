@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * WCAG 2.x contrast check for src/styles/tokens.css, light and dark token sets.
+ * WCAG 2.x contrast check for src/styles/tokens.css, light and dark token sets (S1-11 brand:
+ * Forest / Pine / Limestone / Amber / Ink).
  * Text pairs need 4.5:1; focus ring and control borders need 3:1 (WCAG 1.4.11).
  * Usage: node scripts/check-contrast.mjs [--md out.md]
  */
@@ -35,6 +36,15 @@ const pairs = [
   ['on-band-2', 'band', 'Hero / footer secondary', 4.5],
   ['band-accent', 'band', 'Kicker on dark band', 4.5],
   ['band', 'on-band', 'Light button on band', 4.5],
+  ['on-cta', 'cta', 'Get prepared here CTA label (Ink on Amber)', 4.5],
+  ['on-cta', 'cta-hover', 'CTA label on hover', 4.5],
+  ['on-band', 'band-2', 'Text on Pine panel', 4.5],
+  ['band-accent', 'band-2', 'Amber accent on Pine', 4.5],
+  ['accent', 'surface-2', 'Links on sunken surfaces', 4.5],
+  ['on-accent', 'accent', 'Buy button label', 4.5],
+  ['ad', 'surface', 'Ad label text on card (S1-11)', 4.5],
+  ['focus-on-band', 'band', 'Focus ring on Forest hero/footer (1.4.11)', 3],
+  ['line-strong', 'surface-2', 'Control border on sunken (1.4.11)', 3],
   ['success', 'success-soft', 'Badge / price panel', 4.5],
   ['success', 'surface', 'Price figure on card', 4.5],
   ['warning', 'warning-soft', 'Warning badge', 4.5],

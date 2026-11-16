@@ -1,0 +1,13 @@
+{
+  "name": "UK Survival Kits",
+  "short_name": "UK Survival Kits",
+  "description": "Ready for the unexpected. UK household emergency planning and kit comparisons.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#f4efe5",
+  "theme_color": "#183329",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

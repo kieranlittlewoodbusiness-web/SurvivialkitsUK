@@ -1,17 +1,24 @@
 /**
- * Site-wide configuration for U.K. Survival Kit Brief.
+ * Site-wide configuration for UK Survival Kits (renamed from U.K. Survival Kit Brief in S1-11).
  * Production canonical host: uksurvivalkits.uk
  */
 export const site = {
-  name: 'U.K. Survival Kit Brief',
-  tagline: 'Calm, practical readiness for UK homes',
+  name: 'UK Survival Kits',
+  tagline: 'Ready for the unexpected.',
   description:
     'Independent guides to household readiness in the UK, grounded in official advice and practical product criteria.',
   /** Production canonical origin (no trailing slash). */
   siteUrl: 'https://uksurvivalkits.uk',
   locale: 'en-GB',
-  author: 'U.K. Survival Kit Brief',
+  author: 'UK Survival Kits',
   contactEmail: 'editors@uksurvivalkits.uk',
+  /** Open Graph / Twitter share image (public/images/social-share.jpg), served from the apex. */
+  ogImage: {
+    path: '/images/social-share.jpg',
+    width: 1200,
+    height: 630,
+    alt: 'UK Survival Kits: an olive emergency backpack, torch and flask on a stone bench in the rain.',
+  },
 } as const;
 
 export type SiteConfig = typeof site;

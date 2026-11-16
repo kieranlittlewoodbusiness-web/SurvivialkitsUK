@@ -1,15 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CategoryGrid from '../components/catalogue/CategoryGrid.astro';
+import GetPreparedCta from '../components/GetPreparedCta.astro';
 import { site, comparePath } from '../data/site';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
-import { loadCatalogue } from '../components/catalogue/catalogueView';
+import { loadCatalogue, productSections } from '../components/catalogue/catalogueView';
+import { homeThemes, topPickLink } from '../components/home/homeView';
 
 const scenarios = await getPublishedScenarios();
 const featured = scenarios.filter((s) => s.data.featured).slice(0, 6);
 const gear = await getPublishedGear();
 const catalogue = await loadCatalogue(process.env, new Date());
-const counts = Object.fromEntries(catalogue.sections.map((s) => [s.category, s.cards.length]));
+const themes = homeThemes(catalogue);
 
 const artFor = (id: string) =>
   id.includes('power') ? 'power'
@@ -29,37 +30,131 @@ const kickerFor = (id: string) =>
   : id.includes('winter') ? 'Winter travel'
   : 'Scenario';
 
+const srcset = (name: string, widths: number[], ext: string) => widths.map((w) => `/images/${name}-${w}.${ext} ${w}w`).join(', ');
+const HERO_DESKTOP = [960, 1280, 1600];
+const HERO_MOBILE = [480, 720];
+const CARD = [450, 900];
+const heroDesktopSizes = '(min-width: 1280px) 1216px, calc(100vw - 64px)';
+const cardSizes = '(min-width: 1100px) 380px, (min-width: 768px) 46vw, calc(100vw - 32px)';
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: site.name,
+  alternateName: 'UK Survival Kits.uk',
   url: `${site.siteUrl}/`,
   inLanguage: 'en-GB',
-  publisher: { '@type': 'Organization', name: site.name, url: site.siteUrl },
+  publisher: {
+    '@type': 'Organization',
+    name: site.name,
+    url: site.siteUrl,
+    logo: { '@type': 'ImageObject', url: `${site.siteUrl}/icon-192.png`, width: 192, height: 192 },
+  },
 };
 ---
 
 <BaseLayout
-  title="UK household emergency planning and 72-hour kits"
+  title="Emergency kits for UK homes, cars and travel"
   description="Plan for 3 days of disruption in a UK home: a free 72-hour checklist, scenario guides, and emergency essentials on Amazon UK compared by what their listings state."
   canonicalPath="/"
 >
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <div class="wrap">
-    <section class="lead" aria-labelledby="lead-h">
-      <div class="hero">
-        <p class="kicker">Start here</p>
-        <h1 id="lead-h">Know what you already own. Fill the gaps calmly.</h1>
-        <p class="lede">
-          Practical household planning for UK power cuts, severe weather, supply disruption and temporary evacuation,
-          grounded in official guidance.
-        </p>
-        <div class="btn-row">
-          <a class="btn btn--band btn--lg" href="/start-here">Start here</a>
-          <a class="btn btn--band-outline btn--lg" href="/checklist">Open the checklist</a>
+    <section class="hero" aria-labelledby="hero-h">
+      <div class="hero__copy">
+        <h1 id="hero-h">Ready for the unexpected.</h1>
+        <p class="hero__lede">Compare emergency kits for home, car and travel.</p>
+        <div class="btn-row hero__actions">
+          <GetPreparedCta size="lg" />
+          <a class="btn btn--band-outline btn--lg" href="/start-here">Start here</a>
         </div>
       </div>
+      <picture class="hero__media">
+        <source media="(min-width: 768px)" type="image/avif" srcset={srcset('hero-desktop', HERO_DESKTOP, 'avif')} sizes={heroDesktopSizes} width="1600" height="900" />
+        <source media="(min-width: 768px)" type="image/webp" srcset={srcset('hero-desktop', HERO_DESKTOP, 'webp')} sizes={heroDesktopSizes} width="1600" height="900" />
+        <source media="(min-width: 768px)" srcset={srcset('hero-desktop', HERO_DESKTOP, 'jpg')} sizes={heroDesktopSizes} width="1600" height="900" />
+        <source type="image/avif" srcset={srcset('hero-mobile', HERO_MOBILE, 'avif')} sizes="100vw" width="720" height="900" />
+        <source type="image/webp" srcset={srcset('hero-mobile', HERO_MOBILE, 'webp')} sizes="100vw" width="720" height="900" />
+        <img
+          class="hero__img"
+          src="/images/hero-mobile-720.jpg"
+          srcset={srcset('hero-mobile', HERO_MOBILE, 'jpg')}
+          sizes="100vw"
+          width="720"
+          height="900"
+          alt=""
+          fetchpriority="high"
+          loading="eager"
+        />
+      </picture>
+    </section>
+
+    {
+      themes.length > 0 && (
+        <section class="section picks-section" aria-labelledby="picks-h">
+          <div class="section-head">
+            <h2 id="picks-h">Top picks by category</h2>
+            <a href={comparePath}>Compare all {catalogue.stats.cards} products</a>
+          </div>
+          <p class="picks-intro">The first pick in each category of our 72-hour kit comparison, checked against its Amazon UK listing.</p>
+          <div class="themes">
+            {themes.map((t) => (
+              <section class:list={['theme', !t.image && 'theme--plain']} id={`theme-${t.id}`} aria-labelledby={`theme-h-${t.id}`}>
+                {t.image && (
+                  <picture class="theme__media">
+                    <source type="image/avif" srcset={srcset(t.image.name, CARD, 'avif')} sizes={cardSizes} width={t.image.width} height={t.image.height} />
+                    <source type="image/webp" srcset={srcset(t.image.name, CARD, 'webp')} sizes={cardSizes} width={t.image.width} height={t.image.height} />
+                    <img
+                      src={`/images/${t.image.name}-900.jpg`}
+                      srcset={srcset(t.image.name, CARD, 'jpg')}
+                      sizes={cardSizes}
+                      width={t.image.width}
+                      height={t.image.height}
+                      alt={t.image.alt}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
+                )}
+                <div class="theme__body">
+                  <div class="theme__head">
+                    <h3 id={`theme-h-${t.id}`}>{t.title}</h3>
+                    {t.guide && <a class="theme__guide" href={t.guide.href}>{t.guide.label}</a>}
+                  </div>
+                  <ul class="picks" role="list">
+                    {t.picks.map((p) => {
+                      const link = topPickLink(p.card);
+                      return (
+                        <li>
+                          <article class="pick" data-category={p.category} aria-labelledby={`pick-${p.category}`}>
+                            <a class="pick__cat" href={p.href}>
+                              <span id={`pick-${p.category}`}>{p.categoryLabel}</span>
+                              <span class="pick__count">{p.count === 1 ? 'See the pick' : `See all ${p.count} picks`}</span>
+                            </a>
+                            <p class="pick__name">{p.card.name}</p>
+                            {link && (
+                              <p class="pick__cta">
+                                <span class="badge badge--ad">Ad</span>
+                                <a class="btn pick__btn" href={link.href} rel={`${link.rel} noopener`} data-affiliate="amazon">
+                                  Buy on Amazon<span class="visually-hidden">: {p.card.name} (affiliate link)</span>
+                                </a>
+                              </p>
+                            )}
+                          </article>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <section class="section section--flush intro-grid" aria-label="Why it matters and the 72-hour kit guide">
       <aside class="brief card" aria-labelledby="brief-h">
         <p class="kicker">The short version</p>
         <h2 id="brief-h">Why it matters</h2>
@@ -70,9 +165,6 @@ const jsonLd = {
         </ol>
         <p><a href="/method">How we label evidence</a></p>
       </aside>
-    </section>
-
-    <section class="section feature-wrap" aria-labelledby="feat-h">
       <div class="feature card">
         <div class="feature__media" aria-hidden="true"><div class="art art--kit"></div></div>
         <div>
@@ -84,7 +176,7 @@ const jsonLd = {
           </p>
           <ul class="chips" aria-label="About this comparison">
             <li class="chip chip--static">{catalogue.stats.cards} products</li>
-            <li class="chip chip--static">{catalogue.sections.filter((s) => s.category !== 'kit').length} categories</li>
+            <li class="chip chip--static">{productSections(catalogue).length} categories</li>
             <li class="chip chip--static">Researched from listings, not tested</li>
           </ul>
           <div class="btn-row">
@@ -92,14 +184,6 @@ const jsonLd = {
           </div>
         </div>
       </div>
-    </section>
-
-    <section class="section section--flush" aria-labelledby="cat-h">
-      <div class="section-head">
-        <h2 id="cat-h">Browse by category</h2>
-        <a href={comparePath}>All products</a>
-      </div>
-      <CategoryGrid counts={counts} />
     </section>
 
     <section class="section" aria-labelledby="scen-h">
@@ -167,41 +251,95 @@ const jsonLd = {
 </BaseLayout>
 
 <style>
-  .lead { display: grid; gap: var(--s-4); padding-top: var(--s-4); }
-  .hero { position: relative; isolation: isolate; overflow: hidden; padding: var(--s-6) var(--s-5); border-radius: var(--r-lg); background: var(--band); color: var(--on-band); }
-  .hero::after { content: ''; position: absolute; z-index: -1; right: -80px; bottom: -120px; width: 320px; height: 320px; border-radius: 50%; background: radial-gradient(circle, rgb(127 214 184 / 0.28), transparent 70%); }
-  .hero h1 { color: var(--on-band); font-size: var(--step-5); max-width: 14ch; margin-top: var(--s-3); }
-  .hero .kicker { color: var(--band-accent); }
-  .hero .lede { color: var(--on-band-2); max-width: 36ch; }
-  .btn--band { background: var(--on-band); border-color: var(--on-band); color: var(--band); }
-  .btn--band:hover { background: #ffffff; border-color: #ffffff; color: var(--band); }
+  /* ---------- Hero (brand guide: desktop copy left over a dark gradient; mobile copy above the image on Forest) ---------- */
+  .hero { position: relative; isolation: isolate; overflow: hidden; margin-top: var(--s-4); border-radius: var(--r-lg); background: var(--band); color: var(--on-band); display: grid; }
+  .hero__copy { padding: var(--s-6) var(--s-5) var(--s-5); }
+  .hero h1 { color: var(--on-band); max-width: 12ch; margin: 0 0 var(--s-3); }
+  .hero__lede { color: var(--on-band); font-size: var(--step-1); line-height: 1.45; max-width: 30ch; margin: 0; }
+  .hero__actions { margin-top: var(--s-5); }
+  .hero :focus-visible { outline-color: var(--focus-on-band); }
+  .hero__media { display: block; }
+  .hero__img { width: 100%; height: auto; aspect-ratio: 6 / 5; object-fit: cover; object-position: 50% 62%; }
   .btn--band-outline { background: transparent; border-color: var(--on-band-2); color: var(--on-band); }
-  .btn--band-outline:hover { background: rgb(255 255 255 / 0.08); border-color: var(--on-band); color: var(--on-band); }
-  .hero :focus-visible { outline-color: var(--band-accent); }
+  .btn--band-outline:hover { background: rgb(244 239 229 / 0.1); border-color: var(--on-band); color: var(--on-band); }
+  @media (max-width: 359px) {
+    .hero__actions .btn { flex: 1 1 100%; }
+  }
+  @media (min-width: 768px) {
+    /* 768-1023: the desktop image (16:9) sits under the copy, still on Forest. */
+    .hero__img { aspect-ratio: 16 / 9; object-position: 70% 50%; }
+    .hero__copy { padding: var(--s-7) var(--s-7) var(--s-6); }
+  }
+  @media (min-width: 1024px) {
+    .hero { min-height: clamp(440px, 44vw, 560px); align-items: center; }
+    .hero__media { position: absolute; inset: 0; z-index: -2; }
+    .hero__img { width: 100%; height: 100%; aspect-ratio: auto; object-fit: cover; object-position: 72% 50%; }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(90deg, rgb(24 51 41 / 0.97) 0%, rgb(24 51 41 / 0.93) 45%, rgb(24 51 41 / 0.6) 62%, rgb(24 51 41 / 0) 80%);
+    }
+    .hero__copy { padding: var(--s-7); max-width: 30rem; }
+  }
+  @media (min-width: 1200px) {
+    .hero__copy { padding-inline: var(--s-8); max-width: 36rem; }
+  }
+
+  /* ---------- Top picks by category ---------- */
+  .picks-section { padding-bottom: var(--s-6); }
+  .picks-intro { color: var(--ink-2); margin-top: calc(-1 * var(--s-2)); }
+  .themes { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+  .theme { display: grid; align-content: start; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-1); overflow: hidden; min-width: 0; }
+  .theme__media img { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+  .theme__body { padding: var(--s-5); display: grid; gap: var(--s-4); }
+  .theme__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 var(--s-3); }
+  .theme__head h3 { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: var(--step-3); line-height: 1.1; letter-spacing: 0; }
+  .theme__guide { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 600; font-size: 0.9375rem; }
+  .picks { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+  .pick { display: grid; gap: var(--s-2); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+  .picks li:first-child .pick { border-top: 0; padding-top: 0; }
+  .pick__cat { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0 var(--s-3); min-height: var(--tap); color: var(--ink); font-weight: 600; text-decoration: none; }
+  .pick__cat:hover { color: var(--ink); text-decoration: underline; }
+  .pick__count { color: var(--accent); font-size: var(--step--1); font-weight: 600; text-decoration: underline; text-underline-offset: 0.18em; }
+  .pick__name { margin: 0; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.45; }
+  .pick__cta { display: flex; align-items: center; gap: var(--s-2); margin: 0; max-width: none; }
+  .pick__btn { flex: 1 1 auto; justify-content: center; white-space: nowrap; }
+  @media (min-width: 768px) {
+    .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1100px) {
+    .themes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .theme--plain { grid-column: 1 / -1; }
+    .theme--plain .picks { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--s-5); }
+    .theme--plain .picks li:nth-child(-n + 3) .pick { border-top: 0; padding-top: 0; }
+  }
+
+  /* ---------- Intro grid (why it matters + 72-hour kit guide) ---------- */
+  .intro-grid { display: grid; gap: var(--s-4); }
   .brief { padding: var(--s-5); border-radius: var(--r-lg); }
-  .brief h2 { font-size: var(--step-1); }
+  .brief h2 { font-size: var(--step-3); }
   .brief ol { list-style: none; counter-reset: b; margin: var(--s-3) 0 var(--s-2); padding: 0; display: grid; gap: var(--s-3); }
   .brief li { counter-increment: b; display: grid; grid-template-columns: 32px 1fr; gap: var(--s-3); align-items: start; }
-  .brief li::before { content: counter(b); width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 750; display: grid; place-items: center; font-size: 0.9375rem; }
-  .brief p { margin: 0; font-weight: 650; }
+  .brief li::before { content: counter(b); width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 600; display: grid; place-items: center; font-size: 0.9375rem; }
+  .brief p { margin: 0; font-weight: 600; }
   .feature { display: grid; gap: var(--s-5); padding: var(--s-5); border-radius: var(--r-lg); }
   .feature__media { position: relative; border-radius: var(--r-md); overflow: hidden; aspect-ratio: 16 / 9; }
   .feature .chips { margin-top: var(--s-2); }
   .section--flush { padding-top: 0; }
   .steps { list-style: none; padding: 0; margin: 0; }
   .steps p { margin: 0; color: var(--ink-2); }
-  .steps__n { display: inline-grid; place-items: center; width: 40px; height: 40px; margin-bottom: var(--s-3); border-radius: var(--r-sm); background: var(--ink); color: var(--canvas); font-weight: 800; }
+  .steps__n { display: inline-grid; place-items: center; width: 40px; height: 40px; margin-bottom: var(--s-3); border-radius: var(--r-sm); background: var(--ink); color: var(--canvas); font-weight: 600; }
   .link-list--grid { grid-template-columns: minmax(0, 1fr); }
   .notice__title { font-size: var(--step-1); margin: 0; }
   @media (min-width: 768px) {
     .feature { grid-template-columns: 1.1fr 1fr; align-items: center; padding: var(--s-6); }
     .link-list--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (min-width: 960px) {
-    .lead { grid-template-columns: 2fr 1fr; }
-    .hero { padding: var(--s-8) var(--s-7); }
-  }
   @media (min-width: 1100px) {
+    .intro-grid { grid-template-columns: 1fr 2fr; align-items: stretch; }
+    .feature { grid-template-columns: 1fr 1fr; }
     .link-list--grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
 </style>

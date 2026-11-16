@@ -3,7 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import EvidenceBadge from '../../../components/EvidenceBadge.astro';
 import AmazonProductCard from '../../../components/catalogue/AmazonProductCard.astro';
 import CategoryIcon from '../../../components/catalogue/CategoryIcon.astro';
-import { CATEGORY_META, loadCatalogue } from '../../../components/catalogue/catalogueView';
+import { CATEGORY_META, loadCatalogue, productSections as compareSections } from '../../../components/catalogue/catalogueView';
 import { site, comparePath } from '../../../data/site';
 
 const UPDATED_ON = '2026-11-15';
@@ -13,7 +13,7 @@ const description =
 
 const now = new Date();
 const catalogue = await loadCatalogue(process.env, now);
-const productSections = catalogue.sections.filter((s) => s.category !== 'kit' && s.cards.length > 0);
+const productSections = compareSections(catalogue);
 
 const official = [
   { label: 'Be Ready: be ready for emergencies (GOV.UK campaign)', url: 'https://beready.campaign.gov.uk/be-ready-for-emergencies/' },
@@ -287,7 +287,7 @@ const litresRows = [1, 2, 3, 4, 5, 6];
   .pgrid { display: grid; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
   .small-print { font-size: var(--step--1); color: var(--ink-2); margin-top: var(--s-5); }
   .litres { border-collapse: collapse; width: 100%; }
-  .litres caption { text-align: left; font-weight: 650; padding-bottom: var(--s-2); }
+  .litres caption { text-align: left; font-weight: 600; padding-bottom: var(--s-2); }
   .litres th, .litres td { padding: var(--s-2) var(--s-3); border-top: 1px solid var(--line); text-align: left; }
   .grid ul { padding-left: 1.15rem; margin: 0; }
   .grid li { margin-bottom: var(--s-2); }
