@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile } from './lib/dist-checks.mjs';
+import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
 import { checkComparePage, checkHomePage, readCompareHtml, readHomeHtml } from './lib/s1-10-card-rules.mjs';
 import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
 
@@ -21,6 +21,11 @@ function site(files) {
 const DP = 'https://www.amazon.co.uk/dp/B0CZ9LH53B?tag=example-21';
 const card = (rel, badge = true) =>
   `<article class="pcard"><h3>Item</h3>${badge ? '<span class="badge badge--ad">Ad</span>' : ''}<a class="btn" href="${DP}" rel="${rel}">Check on Amazon</a></article>`;
+
+const PAGES_DEV_NOINDEX =
+  'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n\nhttps://:version.uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n';
+const STAR_SECURITY =
+  '/*\n  X-Frame-Options: DENY\n  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n';
 
 describe('checkLinks', () => {
   it('requires both "sponsored" and "nofollow" on affiliate links', () => {
@@ -132,12 +137,35 @@ describe('checkContent', () => {
     );
     expect(r.failures.map((f) => `${f.file}: ${f.reason}`)).toContain('_headers: missing');
   });
-  it('production: passes an indexable site with robots.txt Allow and pages.dev-only noindex headers', () => {
+  it('production: fails when /* omits X-Frame-Options or Permissions-Policy', () => {
     const r = checkContent(
       site({
         'index.html': page('<p>x</p>'),
         'robots.txt': 'User-agent: *\nAllow: /\n',
-        '_headers': 'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n\nhttps://:version.uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
+        '_headers': PAGES_DEV_NOINDEX,
+      }),
+      { production: true },
+    );
+    const reasons = r.failures.map((f) => `${f.file}: ${f.reason}`);
+    expect(reasons).toContain('_headers: /* rule is missing');
+    const partial = checkContent(
+      site({
+        'index.html': page('<p>x</p>'),
+        'robots.txt': 'User-agent: *\nAllow: /\n',
+        '_headers': `/*\n  X-Content-Type-Options: nosniff\n\n${PAGES_DEV_NOINDEX}`,
+      }),
+      { production: true },
+    );
+    const partialReasons = partial.failures.map((f) => `${f.file}: ${f.reason}`);
+    expect(partialReasons).toContain('_headers: /* must send X-Frame-Options: DENY (or SAMEORIGIN)');
+    expect(partialReasons).toContain('_headers: /* must send Permissions-Policy');
+  });
+  it('production: passes an indexable site with robots.txt Allow, /* security headers and pages.dev-only noindex headers', () => {
+    const r = checkContent(
+      site({
+        'index.html': page('<p>x</p>'),
+        'robots.txt': 'User-agent: *\nAllow: /\n',
+        '_headers': `${STAR_SECURITY}\n${PAGES_DEV_NOINDEX}`,
       }),
       { production: true },
     );
@@ -151,7 +179,7 @@ describe('checkContent', () => {
           '<link rel="canonical" href="https://www.uksurvivalkits.uk/"><meta property="og:url" content="https://uksurvivalkits.pages.dev/"></head>',
         ),
         'robots.txt': 'User-agent: *\nAllow: /\n',
-        '_headers': 'https://uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n\nhttps://:version.uksurvivalkits.pages.dev/*\n  X-Robots-Tag: noindex\n',
+        '_headers': `${STAR_SECURITY}\n${PAGES_DEV_NOINDEX}`,
         'sitemap-0.xml': '<?xml version="1.0"?><urlset><url><loc>https://www.uksurvivalkits.uk/start-here</loc></url></urlset>',
       }),
       { production: true },
@@ -206,6 +234,12 @@ describe('verify:dist (production build with a dummy tag)', () => {
       expectNoImages: true,
     });
     expect(rules.failures).toEqual([]);
+    const headersText = fs.readFileSync(path.join(out, '_headers'), 'utf8');
+    const headerRules = parseHeadersFile(headersText);
+    expect(headersText).toContain('https://uksurvivalkits.pages.dev/*');
+    expect(headersText).toContain('https://:version.uksurvivalkits.pages.dev/*');
+    expect(checkStarRuleSecurityHeaders(headerRules)).toEqual([]);
+    expect(REQUIRED_PERMISSIONS_POLICY.length).toBeGreaterThan(0);
     for (const [cat, asins] of Object.entries(VERIFIED_BY_CATEGORY)) {
       if (asins.length > 0 && asins.length < PER_CATEGORY) {
         expect(rules.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
@@ -239,6 +273,49 @@ describe('pages.dev _headers patterns', () => {
       'https://uksurvivalkits.pages.dev/*',
       'https://:version.uksurvivalkits.pages.dev/*',
     ]);
+  });
+  it('requires DENY or SAMEORIGIN on /* and the restrictive Permissions-Policy tokens', () => {
+    expect(checkStarRuleSecurityHeaders(parseHeadersFile(PAGES_DEV_NOINDEX))).toEqual([
+      { file: '_headers', reason: '/* rule is missing' },
+    ]);
+    expect(
+      checkStarRuleSecurityHeaders(parseHeadersFile('/*\n  X-Frame-Options: ALLOWALL\n')).map((f) => f.reason),
+    ).toEqual([
+      '/* must send X-Frame-Options: DENY (or SAMEORIGIN)',
+      '/* must send Permissions-Policy',
+    ]);
+    expect(checkStarRuleSecurityHeaders(parseHeadersFile(STAR_SECURITY))).toEqual([]);
+  });
+  it('reads security and noindex rules from public/_headers', () => {
+    const source = fs.readFileSync(path.resolve(new URL('..', import.meta.url).pathname, 'public/_headers'), 'utf8');
+    const rules = parseHeadersFile(source);
+    expect(checkStarRuleSecurityHeaders(rules)).toEqual([]);
+    const xfo = rules.find((r) => r.pattern === '/*').headers.find((h) => /^X-Frame-Options$/i.test(h.name));
+    expect(xfo.value).toBe('DENY');
+    const policy = rules.find((r) => r.pattern === '/*').headers.find((h) => /^Permissions-Policy$/i.test(h.name)).value;
+    for (const token of REQUIRED_PERMISSIONS_POLICY) expect(policy).toContain(token);
+    expect(policy).not.toMatch(/interest-cohort/i);
+    expect(headersPatternMatches('https://uksurvivalkits.pages.dev/*', 'https://uksurvivalkits.pages.dev/')).toBe(true);
+    const noindexUrls = [
+      'https://uksurvivalkits.pages.dev/',
+      'https://preview-sha.uksurvivalkits.pages.dev/',
+    ];
+    for (const url of noindexUrls) {
+      expect(
+        rules.some(
+          (r) =>
+            r.headers.some((h) => /^X-Robots-Tag$/i.test(h.name) && /noindex/i.test(h.value)) &&
+            headersPatternMatches(r.pattern, url),
+        ),
+      ).toBe(true);
+    }
+    expect(
+      rules.some(
+        (r) =>
+          r.headers.some((h) => /^X-Robots-Tag$/i.test(h.name) && /noindex/i.test(h.value)) &&
+          headersPatternMatches(r.pattern, 'https://uksurvivalkits.uk/'),
+      ),
+    ).toBe(false);
   });
 });
 

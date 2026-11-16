@@ -15,8 +15,11 @@
  *     contains an <a rel="sponsored …"> link. A legend badge must opt out with data-badge-legend.
  *   - Exactly one <meta name="robots"> per page.
  *   - production: no noindex on any page except 404.html; robots.txt allows crawling;
- *     _headers must exist and send X-Robots-Tag: noindex for the production
- *     pages.dev alias and preview subdomains, never for uksurvivalkits.uk.
+ *     _headers must exist, /* must send X-Frame-Options (DENY or SAMEORIGIN)
+ *     and a Permissions-Policy that includes camera=(), microphone=(),
+ *     geolocation=(), payment=() and usb=(), and X-Robots-Tag: noindex must
+ *     apply to the production pages.dev alias and preview subdomains, never
+ *     for uksurvivalkits.uk.
  *     Canonical, og:url and sitemap URLs must use the apex https://uksurvivalkits.uk
  *     and must not contain www.uksurvivalkits.uk or pages.dev.
  */
@@ -252,6 +255,52 @@ function headersNoindexApplies(rules, url) {
   return noindexRules(rules).some((r) => headersPatternMatches(r.pattern, url));
 }
 
+/** Directives a restrictive Permissions-Policy on /* must include. */
+export const REQUIRED_PERMISSIONS_POLICY = [
+  'camera=()',
+  'microphone=()',
+  'geolocation=()',
+  'payment=()',
+  'usb=()',
+];
+
+function headerValues(headers, name) {
+  return headers.filter((h) => h.name.toLowerCase() === name.toLowerCase()).map((h) => h.value);
+}
+
+/** Assert /* sends X-Frame-Options and a restrictive Permissions-Policy. */
+export function checkStarRuleSecurityHeaders(rules) {
+  const failures = [];
+  const star = rules.filter((r) => r.pattern === '/*');
+  if (!star.length) {
+    failures.push({ file: '_headers', reason: '/* rule is missing' });
+    return failures;
+  }
+  const headers = star.flatMap((r) => r.headers);
+  const xfo = headerValues(headers, 'X-Frame-Options');
+  if (!xfo.some((v) => /^(DENY|SAMEORIGIN)$/i.test(v.trim()))) {
+    failures.push({
+      file: '_headers',
+      reason: '/* must send X-Frame-Options: DENY (or SAMEORIGIN)',
+    });
+  }
+  const policy = headerValues(headers, 'Permissions-Policy');
+  if (!policy.length) {
+    failures.push({ file: '_headers', reason: '/* must send Permissions-Policy' });
+  } else {
+    const combined = policy.join(', ');
+    for (const token of REQUIRED_PERMISSIONS_POLICY) {
+      if (!combined.includes(token)) {
+        failures.push({
+          file: '_headers',
+          reason: `/* Permissions-Policy must include ${token}`,
+        });
+      }
+    }
+  }
+  return failures;
+}
+
 
 const APEX_ORIGIN = 'https://uksurvivalkits.uk';
 
@@ -318,6 +367,7 @@ export function checkContent(dist, { production = false, banned = DEFAULT_BANNED
       failures.push({ file: '_headers', reason: 'missing' });
     } else {
       const rules = parseHeadersFile(fs.readFileSync(headers, 'utf8'));
+      failures.push(...checkStarRuleSecurityHeaders(rules));
       for (const r of noindexRules(rules)) {
         if (!/^https:\/\/[^/]*\.pages\.dev\//.test(r.pattern)) {
           failures.push({ file: '_headers', reason: `X-Robots-Tag noindex applies to "${r.pattern}", which can match the production host` });
