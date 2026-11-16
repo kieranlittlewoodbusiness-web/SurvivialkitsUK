@@ -23,7 +23,7 @@ import {
 } from '../../src/lib/offers/schema';
 import { affiliateProgrammes, allOffers, allProducts, catalogueOffers, catalogueProducts } from '../../src/lib/offers/data';
 import rawProducts from '../../src/data/catalogue/products.json';
-import { HI_VIS_SIZE_CHILDREN, RENDERED_BY_CATEGORY, TEST_BUYABILITY, THERMAL_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
+import { HI_VIS_SIZE_CHILDREN, RENDERED_BY_CATEGORY, TEST_BUYABILITY, THERMAL_SIZE_CHILDREN, UNVERIFIED_SIZE_CHILDREN, VERIFIED_ASINS, VERIFIED_BY_CATEGORY, VERIFIED_COUNT } from './verifiedSet';
 import rawOffers from '../../src/data/catalogue/offers.json';
 import {
   RENDER_GATED_CATEGORIES,
@@ -481,7 +481,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
     // and added 1 (Duronic radio) = 49. The rendered count is derived from the gate list.
     // S1-10c (16 Nov): - 2 delivery failures (Cano 500ml, HypaGuard) + 7 replacements = 54.
     // CR strict 12-month seller rule: - Sangean, - OverBoard = 52. QA: - Duronic (ASIN reused), + Sony, + Panasonic = 53.
-    expect(n).toBe(53);
+    // QA 18:00: - Blackrock hi-vis B005DEW1K0 (seller 51%), - OXO B000079XW2 (no delivery date) = 51.
+    expect(n).toBe(51);
     const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });
@@ -580,6 +581,24 @@ describe('S1-10 verified-set invariants (committed data)', () => {
 
   it('only thermal_clothing and hi_vis records use size_child_of', () => {
     for (const p of catalogueProducts.filter((x) => x.size_child_of)) expect(['thermal_clothing', 'hi_vis']).toContain(p.category);
+  });
+
+  it('the size children are exactly the listed verified and unverified ones', () => {
+    const verified = Object.fromEntries(catalogueProducts.filter((x) => x.size_child_of && x.verification === 'verified').map((x) => [x.asin_uk, x.size_child_of]));
+    const unverified = Object.fromEntries(catalogueProducts.filter((x) => x.size_child_of && x.verification !== 'verified').map((x) => [x.asin_uk, x.size_child_of]));
+    expect(verified).toEqual({ ...THERMAL_SIZE_CHILDREN, ...HI_VIS_SIZE_CHILDREN });
+    expect(unverified).toEqual(UNVERIFIED_SIZE_CHILDREN);
+  });
+
+  it('an unverified size child keeps its parent link and parent canonical (data kept), and is not ranked', () => {
+    for (const [child, parent] of Object.entries(UNVERIFIED_SIZE_CHILDREN)) {
+      const p = catalogueProducts.find((x) => x.asin_uk === child)!;
+      expect(p.verification).toBe('unverified');
+      expect(p.display_rank ?? null).toBeNull();
+      expect(p.size_child_of).toBe(parent);
+      expect(p.verification_evidence!.canonical_asin).toBe(parent);
+      expect(p.verification_evidence!.outcome).toBe('not_verified');
+    }
   });
 });
 

@@ -14,7 +14,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
   emergency_blanket: ['B0CDBYT9WW', 'B0H761VV55'],
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
-  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B005DEW1K0'],
+  hi_vis: ['B00KHN3DZE', 'B09V5JXY6D'], // Blackrock long-sleeve B005DEW1K0 unverified (QA: Buy Box seller 51% in 12 months); PM: hi-vis ships with 2
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
   warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z'],
   // S1-10b (16 Nov 2026)
@@ -22,7 +22,7 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   rainwater_storage: ['B00ZUTJAHA', 'B0CVL4W8CQ'],
   gravity_filter: ['B0DWTDW914'],
   flask: ['B00JOV3YDG', 'B000T21JFE', 'B00JOV3Z6W'],
-  tin_opener: ['B00004OCJW', 'B000079XW2', 'B07NJHB97Y'],
+  tin_opener: ['B00004OCJW', 'B07NJHB97Y'], // OXO smooth edge B000079XW2 unverified (QA: no delivery date shown, Amazon Global Store)
   electric_lighter: ['B088HF3TYP'],
   two_way_radio: ['B07DYGD8CH', 'B078C7TD7Z', 'B01FDI6OKS'],
   multi_tool: ['B079MJBP21', 'B007ERHM5S', 'B0CX32Q354'],
@@ -63,8 +63,11 @@ export const THERMAL_SIZE_CHILDREN: Readonly<Record<string, string>> = {
 };
 
 /** Hi-vis size children (PM ruling extending size_child_of to hi_vis): child ASIN -> parent canonical. */
-export const HI_VIS_SIZE_CHILDREN: Readonly<Record<string, string>> = {
-  B005DEW1K0: 'B0GZ3CPMWB',
+export const HI_VIS_SIZE_CHILDREN: Readonly<Record<string, string>> = {};
+
+/** Size children kept UNVERIFIED (data kept, size_child_of and parent canonical unchanged): child ASIN -> parent canonical. */
+export const UNVERIFIED_SIZE_CHILDREN: Readonly<Record<string, string>> = {
+  B005DEW1K0: 'B0GZ3CPMWB', // hi-vis: Buy Box seller Image To Suit You Ltd, 51% of 43 in the last 12 months (QA, 16 Nov)
 };
 
 /** Records kept UNVERIFIED on purpose, with the reason in verification_evidence. */
@@ -91,6 +94,8 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B00MCN9AJ0', // Ready America 70510 (S1-10b N1): only offer is a US third-party seller, not UK-sold
   'B0896Q8JXD', 'B001FIQ7XU', // S1-10c (16 Nov 17:05): earliest delivery 12 Dec / 6 Dec, more than 10 days out
   'B09SZB8Y4R', 'B07B19M6DB', // CR strict 12-month seller rule (16 Nov 17:13): fewer than 20 ratings in the last 12 months
+  'B005DEW1K0', // Blackrock hi-vis size child: Buy Box seller 51% positive in the last 12 months (QA, 16 Nov)
+  'B000079XW2', // OXO smooth edge tin opener: no delivery date shown (Amazon Global Store, sold from abroad) (QA, 16 Nov)
   'B002XNGTOI', // Duronic: the ASIN now shows a Duronic CT51 car tool (canonical B0GWJ4Y9B3), not the Apex radio (QA, 16 Nov)
 ];
 
