@@ -340,6 +340,51 @@ describe('verify:dist (production build with a dummy tag)', () => {
         expect(rules.sections.find((s) => s.category === cat)?.cards).toHaveLength(asins.length);
       }
     }
+    // S1-13a: visible label on every affiliate button equals the link count; no leftover Buy copy.
+    // Price-string checks are scoped to the button label and aria-label only: #31 (S1-13b) may
+    // render live prices elsewhere on the card when PRICE_DISPLAY_ENABLED is on, and that behaviour is unchanged.
+    const LABEL = "See today's price on Amazon";
+    const decode = (s) => s.replace(/&#(?:39|x27);|&apos;|&amp;/gi, (m) => ({ '&#39;': "'", '&#x27;': "'", '&apos;': "'", '&amp;': '&' }[m.toLowerCase()] ?? m));
+    const htmlFiles = fs.readdirSync(out, { recursive: true })
+      .filter((f) => String(f).endsWith('.html'))
+      .map((f) => fs.readFileSync(path.join(out, String(f)), 'utf8'));
+    const all = htmlFiles.join('\n');
+    const buttons = [...all.matchAll(/<a\b([^>]*\bdata-affiliate="amazon"[^>]*)>([\s\S]*?)<\/a>/gi)];
+    expect(buttons).toHaveLength(expectedAffiliate);
+    for (const b of buttons) {
+      const visible = decode(b[2].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+      expect(visible).toBe(LABEL);
+      const aria = decode((b[1].match(/aria-label="([^"]*)"/) || [])[1] ?? '');
+      expect(aria).toMatch(/^See today's price on Amazon: .+ \(affiliate link\)$/);
+      expect(visible).not.toMatch(/£\s?\d/);
+      expect(visible).not.toMatch(/price:/i);
+      expect(aria).not.toMatch(/£\s?\d/);
+      expect(aria).not.toMatch(/price:/i);
+      expect(b[1]).toMatch(/\bbtn--cta\b/);
+    }
+    expect(all).not.toMatch(/Buy on Amazon/);
+    fs.rmSync(out, { recursive: true, force: true });
+  }, 180_000);
+
+  it('S1-13a: preview build without the affiliate tag has 0 price-button labels', () => {
+    const out = fs.mkdtempSync(path.join(os.tmpdir(), 's1-13a-preview-'));
+    const env = { ...process.env, SITE_ENV: 'preview' };
+    delete env.AMAZON_ASSOCIATES_UK_TAG;
+    for (const k of ['CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL']) delete env[k];
+    const r = spawnSync('npx', ['astro', 'build', '--outDir', out], {
+      cwd: path.resolve(new URL('..', import.meta.url).pathname),
+      env,
+      encoding: 'utf8',
+    });
+    expect(r.status, `${r.stdout}\n${r.stderr}`).toBe(0);
+    const LABEL = "See today's price on Amazon";
+    const all = fs.readdirSync(out, { recursive: true })
+      .filter((f) => String(f).endsWith('.html'))
+      .map((f) => fs.readFileSync(path.join(out, String(f)), 'utf8'))
+      .join('\n');
+    expect(all.split(LABEL).length - 1).toBe(0);
+    expect(all).not.toMatch(/data-affiliate="amazon"/);
+    expect(all).not.toMatch(/Buy on Amazon/);
     fs.rmSync(out, { recursive: true, force: true });
   }, 180_000);
 });
@@ -439,7 +484,7 @@ describe('S1-11 homepage rules (checkHomePage)', () => {
   const LINK = 'https://www.amazon.co.uk/dp/B075F3FBTB?tag=verifydist-21';
   const pick = (cat, { href = `/compare/72-hour-emergency-kits/#${cat}`, button = true, name = 'Plain torch' } = {}) =>
     `<li><article class="pick" data-category="${cat}"><a class="pick__cat" href="${href}"><span>${cat}</span></a><p class="pick__name">${name}</p>` +
-    (button ? `<p class="pick__cta"><span class="badge badge--ad">Ad</span><a class="btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">Check ${name} on Amazon</a></p>` : '') +
+    (button ? `<p class="pick__cta"><span class="badge badge--ad">Ad</span><a class="btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">See today's price on Amazon</a></p>` : '') +
     '</article></li>';
   const home = (body) =>
     `<html><body><a class="btn btn--cta btn--lg" href="/compare/72-hour-emergency-kits/" data-cta="get-prepared">Get prepared here</a>` +
@@ -564,14 +609,14 @@ describe('S1-10b: A3 paper sizes, link placement rule, rainwater note, buy-butto
     `<footer><p data-testid="amazon-disclosure">As an Amazon Associate I earn from qualifying purchases.</p></footer></body></html>`;
   const opts = { expectedButtons: 1, expectedCategories: ['rainwater_storage'], rainwaterNote: NOTE };
 
-  it('home: fails "Buy on Amazon : name" (CR N1) and passes "Buy on Amazon: name"', () => {
-    const bad = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">Buy on Amazon<span class="visually-hidden">: Water butt</span></a>`;
-    expect(checkHomePage(homePick(bad, note()), opts).failures.join('\n')).toMatch(/space before punctuation: "Buy on Amazon : Water butt"/);
-    const good = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="Buy on Amazon: Water butt (affiliate link)">Buy on Amazon</a>`;
+  it('home: fails "See today\'s price on Amazon : name" (CR N1) and passes the no-space aria-label', () => {
+    const bad = `<a class="btn btn--cta pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon">See today's price on Amazon<span class="visually-hidden">: Water butt</span></a>`;
+    expect(checkHomePage(homePick(bad, note()), opts).failures.join('\n')).toMatch(/space before punctuation: "See today's price on Amazon : Water butt"/);
+    const good = `<a class="btn btn--cta pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="See today's price on Amazon: Water butt (affiliate link)">See today's price on Amazon</a>`;
     expect(checkHomePage(homePick(good, note()), opts).failures).toEqual([]);
   });
   it('home: fails a rainwater pick without its note', () => {
-    const good = `<a class="btn pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="Buy on Amazon: Water butt (affiliate link)">Buy on Amazon</a>`;
+    const good = `<a class="btn btn--cta pick__btn" href="${LINK}" rel="sponsored nofollow noopener" data-affiliate="amazon" aria-label="See today's price on Amazon: Water butt (affiliate link)">See today's price on Amazon</a>`;
     expect(checkHomePage(homePick(good), opts).failures).toContain('rainwater homepage pick has no drinking-water note');
   });
 });

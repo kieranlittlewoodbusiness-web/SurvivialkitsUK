@@ -5,6 +5,7 @@ import { site, comparePath } from '../data/site';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
 import { loadCatalogue, productSections } from '../components/catalogue/catalogueView';
 import { buyLabel, homeThemes, topPickLink } from '../components/home/homeView';
+import { PRICE_BUTTON_LABEL } from '../components/catalogue/catalogueView';
 
 const scenarios = await getPublishedScenarios();
 const featured = scenarios.filter((s) => s.data.featured).slice(0, 6);
@@ -138,8 +139,8 @@ const jsonLd = {
                             {link && (
                               <p class="pick__cta">
                                 <span class="badge badge--ad">Ad</span>
-                                <a class="btn pick__btn" href={link.href} rel={`${link.rel} noopener`} data-affiliate="amazon" aria-label={buyLabel(p.card.name)}>
-                                  Buy on Amazon
+                                <a class="btn btn--cta pick__btn" href={link.href} rel={`${link.rel} noopener`} data-affiliate="amazon" aria-label={buyLabel(p.card.name)}>
+                                  {PRICE_BUTTON_LABEL}
                                 </a>
                               </p>
                             )}
@@ -309,7 +310,7 @@ const jsonLd = {
   .pick__name { margin: 0; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.45; }
   .pick__note { padding: var(--s-3); font-size: 0.9375rem; line-height: 1.45; }
   .pick__cta { display: flex; align-items: center; gap: var(--s-2); margin: 0; max-width: none; }
-  .pick__btn { flex: 1 1 auto; justify-content: center; white-space: nowrap; }
+  .pick__btn { flex: 1 1 auto; justify-content: center; white-space: normal; text-wrap: balance; }
   @media (min-width: 768px) {
     .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
