@@ -16,7 +16,8 @@
     "check:links": "node scripts/check-outbound-links.mjs dist",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:content": "node scripts/check-content.mjs dist",
-    "check:dist": "npm run -s check:links && npm run -s check:content",
+    "check:slash": "node scripts/check-trailing-slash.mjs dist",
+    "check:dist": "npm run -s check:links && npm run -s check:content && npm run -s check:slash",
     "verify:dist": "node scripts/verify-dist.mjs"
   },
   "dependencies": {
