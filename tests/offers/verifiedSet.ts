@@ -6,13 +6,13 @@ import type { ProductCategory } from '../../src/lib/offers/types';
 import { RENDER_GATED_CATEGORIES } from '../../src/lib/offers/types.ts';
 
 export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly string[]>> = {
-  emergency_water: ['B0896Q8JXD', 'B07L142XSN'],
-  first_aid_kit: ['B00L7S9LU4', 'B008XI72FC'],
-  torch: ['B075F3FBTB', 'B016P27MGG'],
-  radio: ['B002XNGTOI'],
-  power_bank: ['B0CZ9LH53B'],
+  emergency_water: ['B07L142XSN', 'B0BBSP1QVC'],
+  first_aid_kit: ['B00L7S9LU4', 'B008XI72FC', 'B001MG6WJ4'],
+  torch: ['B075F3FBTB', 'B016P27MGG', 'B0BV7HHSMX'],
+  radio: ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2'],
+  power_bank: ['B0CZ9LH53B', 'B0CNWT16R8', 'B09NTNTVRJ'],
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
-  emergency_blanket: ['B001FIQ7XU', 'B0CDBYT9WW', 'B0H761VV55'],
+  emergency_blanket: ['B0CDBYT9WW', 'B0H761VV55'],
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
   hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B005DEW1K0'],
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
@@ -41,6 +41,9 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
  */
 export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEGORY).flat().sort();
 export const VERIFIED_COUNT = VERIFIED_ASINS.length;
+
+/** S1-10c hotfix (16 Nov 2026): buyability replacements, evidence checked 16 Nov. */
+export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC'];
 
 /**
  * S1-10b (CR M1): what renders = VERIFIED_BY_CATEGORY minus RENDER_GATED_CATEGORIES (derived, never
@@ -86,6 +89,7 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B004LWWFQ0', // Highlander 10L carrier (S1-10b): no Add to Basket on 16 Nov re-check
   'B0CHVPBJ29', // First My Family 1-person (S1-10b): pack-count conflict (36 vs 30)
   'B00MCN9AJ0', // Ready America 70510 (S1-10b N1): only offer is a US third-party seller, not UK-sold
+  'B0896Q8JXD', 'B001FIQ7XU', // S1-10c (16 Nov 17:05): earliest delivery 12 Dec / 6 Dec, more than 10 days out
 ];
 
 /** S1-10b (QA #24): a passing Buy Box check for synthetic verified fixtures in tests. */

@@ -133,9 +133,9 @@
         "url": "https://www.amazon.co.uk/dp/B0896Q8JXD"
       },
       "captured_at": "2026-11-15T00:04:07+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "Cano still spring water cans (12 x 500ml)",
-      "display_rank": 1,
+      "display_rank": null,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -144,12 +144,12 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B0896Q8JXD",
         "checked_on": "2026-11-15",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand Cano Water; Model Number and Part Number STXO500 match; pack 12 x 500 ml (Number of Items 12) matches pack_quantity 12. S1-10 recheck 15 Nov 2026: Title, brand (Cano Water), model STXO500 and pack (12 x 500 ml) match the listing. Canonical is the dp ASIN.",
+        "note": "Title matches exactly; brand Cano Water; Model Number and Part Number STXO500 match; pack 12 x 500 ml (Number of Items 12) matches pack_quantity 12. S1-10 recheck 15 Nov 2026: Title, brand (Cano Water), model STXO500 and pack (12 x 500 ml) match the listing. Canonical is the dp ASIN. Unverified (S1-10c buyability re-check, 16 Nov 2026 17:05 UK): delivery not reasonable: earliest delivery 12 December (quote 12 December - 22 January), more than 10 days after the check.",
         "canonical_asin": "B0896Q8JXD",
         "buyability": {
-          "checked_at": "2026-11-16T16:25:00+00:00",
+          "checked_at": "2026-11-16T17:05:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -158,13 +158,14 @@
           "seller_class": "amazon",
           "seller_rating_note": null,
           "availability_text_seen": "Only 9 left in stock (more on the way).",
-          "outcome": "pass",
-          "reason": null
+          "outcome": "fail",
+          "reason": "delivery not reasonable: earliest delivery 12 December (quote 12 December - 22 January), more than 10 days after the check"
         }
       },
       "notes": [
         "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
-        "Everyday canned spring water, not marketed as long-life emergency water. Shelf life not shown on the listing (left unknown)."
+        "Everyday canned spring water, not marketed as long-life emergency water. Shelf life not shown on the listing (left unknown).",
+        "Unverified (S1-10c buyability re-check, 16 Nov 2026 17:05 UK): delivery not reasonable: earliest delivery 12 December (quote 12 December - 22 January), more than 10 days after the check. Data kept; replaced in the S1-10c hotfix."
       ]
     },
     {
@@ -312,10 +313,10 @@
         "checked_on": "2026-11-15",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed. S1-10 recheck 15 Nov 2026: Title, brand, model F30801 and kit match. Canonical is the dp ASIN.",
+        "note": "Title matches exactly; brand St John Ambulance; Model Number and Manufacturer Part Number F30801 match; single kit (Number of Pieces 1) with BS 8599-2 contents listed. S1-10 recheck 15 Nov 2026: Title, brand, model F30801 and kit match. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:06 UK (S1-10c): still passes; delivery date shown Tomorrow, 17 November.",
         "canonical_asin": "B00L7S9LU4",
         "buyability": {
-          "checked_at": "2026-11-16T16:25:00+00:00",
+          "checked_at": "2026-11-16T17:06:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -556,10 +557,10 @@
         "checked_on": "2026-11-16",
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Duronic Solar Radio Apex, Wind Up Radio, ...\". Brand Name \"Duronic\", Manufacturer \"Duronic\", Model Number \"APEX\", Manufacturer Part Number \"Apex\". One radio. Add to Basket present; canonical B002XNGTOI.",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Duronic Solar Radio Apex, Wind Up Radio, ...\". Brand Name \"Duronic\", Manufacturer \"Duronic\", Model Number \"APEX\", Manufacturer Part Number \"Apex\". One radio. Add to Basket present; canonical B002XNGTOI. Re-checked 16 Nov 2026 16:52 UK (S1-10c): still passes; delivery date shown Saturday, 21 November.",
         "canonical_asin": "B002XNGTOI",
         "buyability": {
-          "checked_at": "2026-11-16T16:39:00+00:00",
+          "checked_at": "2026-11-16T16:52:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -567,7 +568,7 @@
           "ships_from": "DURONIC",
           "seller_class": "uk_seller_well_rated",
           "seller_rating_note": "Seller page amazon.co.uk/sp?seller=APLJ5AXPSKRV0: business Shine-Mart Ltd, country GB; 91% positive, 1016 ratings (last 12 months).",
-          "availability_text_seen": "Only 4 left in stock.",
+          "availability_text_seen": "Only 1 left in stock.",
           "outcome": "pass",
           "reason": null
         }
@@ -1019,9 +1020,9 @@
         "url": "https://www.amazon.co.uk/dp/B001FIQ7XU"
       },
       "captured_at": "2026-11-15T00:05:05+00:00",
-      "verification": "verified",
+      "verification": "unverified",
       "display_name": "HypaGuard foil survival blankets (pack of 6)",
-      "display_rank": 1,
+      "display_rank": null,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -1030,12 +1031,12 @@
         "method": "public_listing",
         "source_url": "https://www.amazon.co.uk/dp/B001FIQ7XU",
         "checked_on": "2026-11-15",
-        "outcome": "verified",
+        "outcome": "not_verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
-        "note": "Title matches exactly; brand Safety First Aid Group; Model Number and Manufacturer Part Number Q2023T match; pack of 6 (Number of Items 6) matches pack_quantity 6. S1-10 recheck 15 Nov 2026: Title, brand, model Q2023T and pack (6) match. Canonical is the dp ASIN.",
+        "note": "Title matches exactly; brand Safety First Aid Group; Model Number and Manufacturer Part Number Q2023T match; pack of 6 (Number of Items 6) matches pack_quantity 6. S1-10 recheck 15 Nov 2026: Title, brand, model Q2023T and pack (6) match. Canonical is the dp ASIN. Unverified (S1-10c buyability re-check, 16 Nov 2026 17:05 UK): delivery not reasonable: earliest delivery 6 December (quote 6 December - 13 January), more than 10 days after the check.",
         "canonical_asin": "B001FIQ7XU",
         "buyability": {
-          "checked_at": "2026-11-16T16:26:00+00:00",
+          "checked_at": "2026-11-16T17:05:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -1044,12 +1045,13 @@
           "seller_class": "amazon",
           "seller_rating_note": null,
           "availability_text_seen": "Only 1 left in stock (more on the way).",
-          "outcome": "pass",
-          "reason": null
+          "outcome": "fail",
+          "reason": "delivery not reasonable: earliest delivery 6 December (quote 6 December - 13 January), more than 10 days after the check"
         }
       },
       "notes": [
-        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence)."
+        "ASIN confirmed in the amazon.co.uk URL and the page's Product details (ASIN field). GTIN not shown on the listing. VERIFIED 15 Nov 2026 against the tagless public listing (see verification_evidence).",
+        "Unverified (S1-10c buyability re-check, 16 Nov 2026 17:05 UK): delivery not reasonable: earliest delivery 6 December (quote 6 December - 13 January), more than 10 days after the check. Data kept; replaced in the S1-10c hotfix."
       ]
     },
     {
@@ -1280,7 +1282,7 @@
       "captured_at": "2026-11-15T09:31:00+00:00",
       "verification": "verified",
       "display_name": "Cano still spring water cans (24 x 330ml)",
-      "display_rank": 2,
+      "display_rank": 1,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -1292,9 +1294,9 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B07L142XSN",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\". Brand Cano Water, model STRP330 and pack (24 x 330 ml) match the listing. The title omits the brand, but the byline and Product details show Cano Water. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Still Spring Water Multipack Cans (24 x 330ml), Ringpull Lids\". Brand Cano Water, model STRP330 and pack (24 x 330 ml) match the listing. The title omits the brand, but the byline and Product details show Cano Water. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:01 UK (S1-10c): still passes; delivery date shown Thursday, 19 November.",
         "buyability": {
-          "checked_at": "2026-11-16T16:26:00+00:00",
+          "checked_at": "2026-11-16T17:01:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -1406,9 +1408,9 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B008XI72FC",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"St John Ambulance Supplies Universal First Aid Kit\". Title, brand, model F30557 (Model and MPN agree) and 23 pieces match. Listing shows \"Only 2 left in stock\". Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"St John Ambulance Supplies Universal First Aid Kit\". Title, brand, model F30557 (Model and MPN agree) and 23 pieces match. Listing shows \"Only 2 left in stock\". Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Thursday, 19 November.",
         "buyability": {
-          "checked_at": "2026-11-16T16:26:00+00:00",
+          "checked_at": "2026-11-16T17:02:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -1784,7 +1786,7 @@
       "captured_at": "2026-11-15T09:31:00+00:00",
       "verification": "verified",
       "display_name": "Reliance Medical foil blankets (pack of 3)",
-      "display_rank": 2,
+      "display_rank": 1,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -1796,9 +1798,9 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0CDBYT9WW",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\". Title, brand, model LP760-PACK OF 3 and pack (3, matching Number of Items and Unit Count) match. NOTE: Product details colour says \"Pink\" for a foil blanket; not an identity check. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Reliance Medical Adult Foil Blanket, Heat-Reflective and Insulating, Wind and Rain Protection (Pack of 3)\". Title, brand, model LP760-PACK OF 3 and pack (3, matching Number of Items and Unit Count) match. NOTE: Product details colour says \"Pink\" for a foil blanket; not an identity check. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Friday, 20 November.",
         "buyability": {
-          "checked_at": "2026-11-16T16:26:00+00:00",
+          "checked_at": "2026-11-16T17:02:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -1864,7 +1866,7 @@
       "captured_at": "2026-11-15T09:31:00+00:00",
       "verification": "verified",
       "display_name": "Steroplast foil blanket",
-      "display_rank": 3,
+      "display_rank": 2,
       "image_url": null,
       "image_width": null,
       "image_height": null,
@@ -1876,9 +1878,9 @@
         "outcome": "verified",
         "checks_matched": ["title", "brand", "model", "pack_contents"],
         "canonical_asin": "B0H761VV55",
-        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\". Title, brand, model 1805, pack (1) and size (130 x 210 cm) match. NOTE: Material Type says \"Cotton\", while the filling says metallised polyester film; not an identity check. Canonical is the dp ASIN.",
+        "note": "Amazon listing title (verbatim, 15 Nov 2026): \"Steroplast Emergency Foil Blankets – 130cm x 210cm - Silver Insulation, Waterproof & Windproof (1)\". Title, brand, model 1805, pack (1) and size (130 x 210 cm) match. NOTE: Material Type says \"Cotton\", while the filling says metallised polyester film; not an identity check. Canonical is the dp ASIN. Re-checked 16 Nov 2026 17:02 UK (S1-10c): still passes; delivery date shown Friday, 20 November.",
         "buyability": {
-          "checked_at": "2026-11-16T16:26:00+00:00",
+          "checked_at": "2026-11-16T17:02:00+00:00",
           "featured_offer": true,
           "in_stock": true,
           "add_to_basket": true,
@@ -5718,6 +5720,536 @@
         "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
         "Unverified: First My Family 1-person kit (FMF1P): Set Name says \"36-Piece\" but Number of Pieces says 30, and the listing is an international (sold from abroad) item. Pack contents conflict, so unverified.",
         "US-made kit sold on Amazon UK. Food/water packing date is not stated on the listing."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b09szb8y4r",
+      "category": "radio",
+      "product_name": "Sangean MMR-99 Emergency Radio, Crank, Solar Black with Dab+Med Dab+",
+      "brand": "Sangean",
+      "asin_uk": "B09SZB8Y4R",
+      "gtin": null,
+      "mpn": "A500481",
+      "model_code": "MMR-99",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Emergency Radio\"",
+            "url": "https://www.amazon.co.uk/dp/B09SZB8Y4R"
+          },
+          "captured_at": "2026-11-16T16:52:00+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "wind_up",
+            "solar"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Crank, Solar\"",
+            "url": "https://www.amazon.co.uk/dp/B09SZB8Y4R"
+          },
+          "captured_at": "2026-11-16T16:52:00+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "DAB"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Dab+\"",
+            "url": "https://www.amazon.co.uk/dp/B09SZB8Y4R"
+          },
+          "captured_at": "2026-11-16T16:52:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B09SZB8Y4R"
+      },
+      "captured_at": "2026-11-16T16:52:00+00:00",
+      "verification": "verified",
+      "display_name": "Sangean wind-up solar emergency DAB radio",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B09SZB8Y4R",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sangean MMR-99 Emergency Radio, Crank, Solar Black with Dab+Med Dab+\". Brand Name \"Sangean\", Manufacturer \"Sangean\", Model Number / Manufacturer Part Number \"A500481\" (Sangean UK part code); title names the MMR-99 model. One radio (Number of Items 1). Canonical is the dp ASIN B09SZB8Y4R; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "canonical_asin": "B09SZB8Y4R",
+        "buyability": {
+          "checked_at": "2026-11-16T16:52:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "ML&S Martin Lynch and Sons Ltd",
+          "ships_from": "ML&S Martin Lynch and Sons Ltd",
+          "seller_class": "uk_seller_well_rated",
+          "seller_rating_note": "Seller page amazon.co.uk/sp?seller=AQ446SBQK5DYE: business ML&S MARTIN LYNCH & SONS LIMITED, country GB; 98% positive, 116 ratings (lifetime; no ratings in the last 12 months).",
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Sangean is an established radio maker; the MMR-99 is its emergency wind-up/solar DAB+ model. Replaces a radio that failed the buyability rule."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b091yfb8n2",
+      "category": "radio",
+      "product_name": "Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black",
+      "brand": "Roberts",
+      "asin_uk": "B091YFB8N2",
+      "gtin": null,
+      "mpn": "PLAY20BK",
+      "model_code": "PLAY20BK",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "radio",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Digital Portable Radio\"",
+            "url": "https://www.amazon.co.uk/dp/B091YFB8N2"
+          },
+          "captured_at": "2026-11-16T16:55:00+00:00"
+        },
+        "radio_bands": {
+          "value": [
+            "FM",
+            "DAB"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"FM/DAB/DAB+\"",
+            "url": "https://www.amazon.co.uk/dp/B091YFB8N2"
+          },
+          "captured_at": "2026-11-16T16:55:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B091YFB8N2"
+      },
+      "captured_at": "2026-11-16T16:55:00+00:00",
+      "verification": "verified",
+      "display_name": "Roberts portable DAB and FM radio",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B091YFB8N2",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Roberts PLAY20 FM/DAB/DAB+ Digital Portable Radio, Rubber-Protected, Full Colour Screen, Black\". Brand Name \"Roberts\", Manufacturer \"Roberts\", Model Number / Manufacturer Part Number \"PLAY20BK\" (PLAY20, black). One radio (Number of Items 1); bullet \"Portable battery power or mains plug in\". Canonical is the dp ASIN B091YFB8N2; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "canonical_asin": "B091YFB8N2",
+        "buyability": {
+          "checked_at": "2026-11-16T16:55:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Roberts is a long-established UK radio brand; battery-powered portable DAB/FM radio sold by Amazon. Replaces a radio that failed the buyability rule."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cnwt16r8",
+      "category": "power_bank",
+      "product_name": "Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige",
+      "brand": "Samsung",
+      "asin_uk": "B0CNWT16R8",
+      "gtin": null,
+      "mpn": "EB-P4520XUEGEU",
+      "model_code": "EB-P4520",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_mah": {
+          "value": 20000,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"20,000 mAh\"",
+            "url": "https://www.amazon.co.uk/dp/B0CNWT16R8"
+          },
+          "captured_at": "2026-11-16T16:53:00+00:00"
+        },
+        "max_output_w": {
+          "value": 45,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"45W\"",
+            "url": "https://www.amazon.co.uk/dp/B0CNWT16R8"
+          },
+          "captured_at": "2026-11-16T16:53:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CNWT16R8"
+      },
+      "captured_at": "2026-11-16T16:53:00+00:00",
+      "verification": "verified",
+      "display_name": "Samsung 20,000mAh power bank",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CNWT16R8",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Samsung Galaxy Official 20,000 mAh Battery Pack, 45W Super Fast Charging (with USB-C to C Data Cable), Beige\". Brand Name \"Samsung\", Manufacturer \"Samsung\", Model Number / Manufacturer Part Number \"EB-P4520XUEGEU\". One power bank with a USB-C cable. Canonical is the dp ASIN B0CNWT16R8; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "canonical_asin": "B0CNWT16R8",
+        "buyability": {
+          "checked_at": "2026-11-16T16:53:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Official Samsung power bank sold by Amazon. Replaces a power bank that failed the buyability rule."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b09ntntvrj",
+      "category": "power_bank",
+      "product_name": "Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A",
+      "brand": "Belkin",
+      "asin_uk": "B09NTNTVRJ",
+      "gtin": null,
+      "mpn": "BPB012btBK",
+      "model_code": "BPB012",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_mah": {
+          "value": 20000,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"20000mAh\"",
+            "url": "https://www.amazon.co.uk/dp/B09NTNTVRJ"
+          },
+          "captured_at": "2026-11-16T16:53:00+00:00"
+        },
+        "max_output_w": {
+          "value": 15,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"15W\"",
+            "url": "https://www.amazon.co.uk/dp/B09NTNTVRJ"
+          },
+          "captured_at": "2026-11-16T16:53:00+00:00"
+        },
+        "ports": {
+          "value": [
+            "USB-C",
+            "USB-A",
+            "USB-A"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"1 USB-C port and 2 USB-A\"",
+            "url": "https://www.amazon.co.uk/dp/B09NTNTVRJ"
+          },
+          "captured_at": "2026-11-16T16:53:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B09NTNTVRJ"
+      },
+      "captured_at": "2026-11-16T16:53:00+00:00",
+      "verification": "verified",
+      "display_name": "Belkin 20,000mAh power bank",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B09NTNTVRJ",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Belkin BoostCharge 20000mAh 15W Power Bank with 1 USB-C port and 2 USB-A\". Brand Name \"Belkin\", Manufacturer \"Belkin\", Model Number \"BPB012\", Manufacturer Part Number \"BPB012btBK\". One power bank plus a USB-A to USB-C cable. Canonical is the dp ASIN B09NTNTVRJ; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "canonical_asin": "B09NTNTVRJ",
+        "buyability": {
+          "checked_at": "2026-11-16T16:53:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Belkin is an established accessory brand; sold by Amazon. Replaces a power bank that failed the buyability rule."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b001mg6wj4",
+      "category": "first_aid_kit",
+      "product_name": "Reliance Medical Family First Aid Kit in Green Copenhagen Bag",
+      "brand": "Reliance Medical",
+      "asin_uk": "B001MG6WJ4",
+      "gtin": null,
+      "mpn": "157",
+      "model_code": "157",
+      "pack_quantity": null,
+      "specs": {
+        "item_count": {
+          "value": 83,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Product details \"Number of pieces: 83\"",
+            "url": "https://www.amazon.co.uk/dp/B001MG6WJ4"
+          },
+          "captured_at": "2026-11-16T16:57:00+00:00"
+        },
+        "kit_size_label": {
+          "value": "Family",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Family First Aid Kit\"",
+            "url": "https://www.amazon.co.uk/dp/B001MG6WJ4"
+          },
+          "captured_at": "2026-11-16T16:57:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B001MG6WJ4"
+      },
+      "captured_at": "2026-11-16T16:57:00+00:00",
+      "verification": "verified",
+      "display_name": "Reliance Medical family first aid kit",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B001MG6WJ4",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Reliance Medical Family First Aid Kit in Green Copenhagen Bag\". Brand Name \"Reliance Medical\", Manufacturer \"Reliance Medical\", Model Number / Manufacturer Part Number \"157\" (REL157 in the canonical slug). One family kit, 83 pieces. Canonical is the dp ASIN B001MG6WJ4; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "canonical_asin": "B001MG6WJ4",
+        "buyability": {
+          "checked_at": "2026-11-16T16:57:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "Only 10 left in stock.",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Same UK first aid maker as the replaced kit, but a home (family) kit sold by Amazon. Replaces the Reliance workplace kit that failed the buyability rule."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0bv7hhsmx",
+      "category": "torch",
+      "product_name": "PETZL E069AA00 Aria 1 Headlamp Black/Yellow",
+      "brand": "Petzl",
+      "asin_uk": "B0BV7HHSMX",
+      "gtin": null,
+      "mpn": "E069AA00",
+      "model_code": "E069AA00",
+      "pack_quantity": null,
+      "specs": {
+        "device_type": {
+          "value": "torch",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"Headlamp\"",
+            "url": "https://www.amazon.co.uk/dp/B0BV7HHSMX"
+          },
+          "captured_at": "2026-11-16T16:54:00+00:00"
+        },
+        "power_sources": {
+          "value": [
+            "aaa"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Product details \"3 AAA batteries required. (included)\"",
+            "url": "https://www.amazon.co.uk/dp/B0BV7HHSMX"
+          },
+          "captured_at": "2026-11-16T16:54:00+00:00"
+        },
+        "lumens": {
+          "value": 350,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): Product details \"Light Output Maximum: 350 Lumens\"",
+            "url": "https://www.amazon.co.uk/dp/B0BV7HHSMX"
+          },
+          "captured_at": "2026-11-16T16:54:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0BV7HHSMX"
+      },
+      "captured_at": "2026-11-16T16:54:00+00:00",
+      "verification": "verified",
+      "display_name": "Petzl head torch",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0BV7HHSMX",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"PETZL E069AA00 Aria 1 Headlamp Black/Yellow\". Brand Name \"Petzl\", Manufacturer \"Petzl\", Model Number / Manufacturer Part Number \"E069AA00\" (Aria 1). One head torch with 3 AAA batteries. Canonical is the dp ASIN B0BV7HHSMX; Add to Basket posts this ASIN. Delivery date shown: Tuesday, 24 November.",
+        "canonical_asin": "B0BV7HHSMX",
+        "buyability": {
+          "checked_at": "2026-11-16T16:54:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon EU",
+          "ships_from": "Amazon EU",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Petzl is a leading head torch maker; sold by Amazon. Replaces the Energizer head torch, which has no featured offer."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0bbsp1qvc",
+      "category": "emergency_water",
+      "product_name": "Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count",
+      "brand": "Icelandic Glacial",
+      "asin_uk": "B0BBSP1QVC",
+      "gtin": null,
+      "mpn": "UN3681",
+      "model_code": "UN3681",
+      "pack_quantity": null,
+      "specs": {
+        "pack_format": {
+          "value": "can",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"330 ml Cans\"",
+            "url": "https://www.amazon.co.uk/dp/B0BBSP1QVC"
+          },
+          "captured_at": "2026-11-16T17:03:00+00:00"
+        },
+        "unit_volume_ml": {
+          "value": 330,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"330 ml\"",
+            "url": "https://www.amazon.co.uk/dp/B0BBSP1QVC"
+          },
+          "captured_at": "2026-11-16T17:03:00+00:00"
+        },
+        "units_per_pack": {
+          "value": 10,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): title \"10 Count\"; Product details \"Number of Items: 10\"",
+            "url": "https://www.amazon.co.uk/dp/B0BBSP1QVC"
+          },
+          "captured_at": "2026-11-16T17:03:00+00:00"
+        },
+        "total_litres": {
+          "value": 3.3,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026): derived: 10 x 330 ml",
+            "url": "https://www.amazon.co.uk/dp/B0BBSP1QVC"
+          },
+          "captured_at": "2026-11-16T17:03:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10c research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0BBSP1QVC"
+      },
+      "captured_at": "2026-11-16T17:03:00+00:00",
+      "verification": "verified",
+      "display_name": "Icelandic Glacial spring water cans (10 x 330ml)",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0BBSP1QVC",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Icelandic Glacial Natural Spring Alkaline Water, 330 ml Cans, 10 Count\". Brand Name \"Icelandic Glacial\"; Item model number / Part Number \"UN3681\" as shown on the listing; manufacturer contact Icelandic Water Limited (UK). One pack of 10 x 330 ml cans (Number of Items 10). Canonical is the dp ASIN B0BBSP1QVC; Add to Basket posts this ASIN. Delivery date shown: Thursday, 19 November.",
+        "canonical_asin": "B0BBSP1QVC",
+        "buyability": {
+          "checked_at": "2026-11-16T17:03:00+00:00",
+          "featured_offer": true,
+          "in_stock": true,
+          "add_to_basket": true,
+          "seller_name": "Amazon",
+          "ships_from": "Amazon",
+          "seller_class": "amazon",
+          "seller_rating_note": null,
+          "availability_text_seen": "In stock",
+          "outcome": "pass",
+          "reason": null
+        }
+      },
+      "notes": [
+        "Identity and buyability from the tagless public listing (S1-10c research, 16 Nov 2026, Firefox UA). No price or image stored; the availability text seen is kept only as unrendered audit evidence in verification_evidence.",
+        "Why picked: Recognised spring-water brand in cans, sold by Amazon. Replaces the Cano 500 ml pack, whose earliest delivery is 12 December."
       ]
     }
   ]

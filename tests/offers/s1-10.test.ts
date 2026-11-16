@@ -479,7 +479,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
     const n = VERIFIED_COUNT;
     // S1-10: 30; S1-10b adds 37 verified (14 categories) = 67; the QA #24 buyability sweep (16 Nov) unverified 19
     // and added 1 (Duronic radio) = 49. The rendered count is derived from the gate list.
-    expect(n).toBe(49);
+    // S1-10c (16 Nov): - 2 delivery failures (Cano 500ml, HypaGuard) + 7 replacements = 54.
+    expect(n).toBe(54);
     const r = n - RENDER_GATED_CATEGORIES.reduce((k, c) => k + (VERIFIED_BY_CATEGORY[c]?.length ?? 0), 0);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: r, shown: r, sponsored: r, tagged: r, dp: r });
   });

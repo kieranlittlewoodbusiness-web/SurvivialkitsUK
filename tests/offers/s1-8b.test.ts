@@ -20,7 +20,7 @@ import rawVariants from '../../src/data/kits/variants.json';
 import rawProgrammes from '../../src/data/affiliate/programmes.json';
 import type { AffiliateProgrammeRecord, CatalogueProduct, Offer } from '../../src/lib/offers/types';
 import { offer, variant } from './fixtures';
-import { KNOWN_UNVERIFIED, RENDERED_ASINS, TEST_BUYABILITY, RENDERED_COUNT, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
+import { KNOWN_UNVERIFIED, RENDERED_ASINS, S1_10C_REPLACEMENTS, TEST_BUYABILITY, RENDERED_COUNT, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet';
 
 const FAKE_TAG = 'TESTONLY-21';
 const NOW = '2026-11-15T12:00:00+00:00';
@@ -69,7 +69,8 @@ describe('verification pass (public amazon.co.uk listings, 15 Nov 2026)', () => 
       const ev = p.verification_evidence!;
       expect(ev.method).toBe('public_listing');
       // S1-10b: Duronic radio B002XNGTOI was added 16 Nov (QA #24 replacement).
-      expect(ev.checked_on).toBe(S1_10B_CATEGORIES.includes(p.category) || p.asin_uk === 'B002XNGTOI' ? '2026-11-16' : '2026-11-15');
+      // S1-10c: buyability replacements (incl. Duronic) were checked 16 Nov.
+      expect(ev.checked_on).toBe(S1_10B_CATEGORIES.includes(p.category) || S1_10C_REPLACEMENTS.includes(p.asin_uk!) ? '2026-11-16' : '2026-11-15');
       expect(ev.source_url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
       expect(new URL(ev.source_url).search).toBe('');
       if (p.verification === 'verified') expect([...ev.checks_matched].sort()).toEqual([...requiredVerificationChecks(p.category)].sort());
