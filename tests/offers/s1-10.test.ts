@@ -169,7 +169,8 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
   it('migrated the three wind-up torch radios to radio, data otherwise preserved', () => {
     const migrated = ['B08V17BPBC', 'B0987MCGXT', 'B09VBFQNKK'];
     const torchRadios = catalogueProducts.filter((p) => (p.specs as { device_type?: { value: string } }).device_type?.value === 'torch_radio');
-    expect(torchRadios.map((p) => p.asin_uk).sort()).toEqual(migrated);
+    // S1-10c hotfix: Duronic Apex (B002XNGTOI) is a new torch_radio added 16 Nov, not a migrated record.
+    expect(torchRadios.map((p) => p.asin_uk).filter((a) => a !== 'B002XNGTOI').sort()).toEqual(migrated);
     for (const p of torchRadios) expect(p.category).toBe('radio');
     for (const a of migrated) expect(catalogueOffers.find((o) => o.asin === a)!.category).toBe('radio');
     // Devices whose device_type is 'torch' all sit in torch (incl. the PR #17 Energizers ported from the old slug).
@@ -191,7 +192,7 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
 
   it('the pre-migration products file still parses, with identical records apart from category', () => {
     const legacyFile = JSON.parse(JSON.stringify(rawProducts).replaceAll('"category":"radio"', `"category":"${LEGACY_CATEGORY_WIND_UP_TORCH_RADIO}"`));
-    const parsed = parseCatalogueProductsFile(legacyFile, { now: NOW });
+    const parsed = parseCatalogueProductsFile(legacyFile, { now: '2026-11-16T12:00:00+00:00' }); // S1-10c evidence is dated 16 Nov
     expect(parsed.products).toEqual(catalogueProducts);
   });
 
@@ -459,7 +460,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    expect(n).toBe(30);
+    // S1-10: 30. S1-10c hotfix (16 Nov): 9 failed buyability, 8 replacements = 29 (emergency_blanket has 2; no third passed).
+    expect(n).toBe(29);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
@@ -510,7 +512,8 @@ describe('S1-10 verified-set invariants (committed data)', () => {
         expect(o.price_origin).toBe('none');
         expect(o.affiliate_url).toBe('');
       }
-      expect(p.verification_evidence!.checked_on).toBe('2026-11-15');
+      // S1-10 research 15 Nov; S1-10c hotfix replacements 16 Nov.
+      expect(['2026-11-15', '2026-11-16']).toContain(p.verification_evidence!.checked_on);
       expect(p.verification_evidence!.canonical_asin).toBe(p.size_child_of ?? p.asin_uk);
     }
   });

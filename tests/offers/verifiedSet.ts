@@ -5,13 +5,13 @@
 import type { ProductCategory } from '../../src/lib/offers/types';
 
 export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly string[]>> = {
-  emergency_water: ['B0896Q8JXD', 'B07L142XSN'],
-  first_aid_kit: ['B00L7S9LU4', 'B005AQK6V2', 'B008XI72FC'],
-  torch: ['B075F3FBTB', 'B013P5S1KC', 'B016P27MGG'],
-  radio: ['B0DFVRT79C', 'B09VBFQNKK', 'B0987MCGXT'],
-  power_bank: ['B0CZ9LH53B', 'B0CSSRD4NT', 'B0DCZ82MGG'],
+  emergency_water: ['B07L142XSN', 'B0BBSP1QVC'],
+  first_aid_kit: ['B00L7S9LU4', 'B001MG6WJ4', 'B008XI72FC'],
+  torch: ['B075F3FBTB', 'B0BV7HHSMX', 'B016P27MGG'],
+  radio: ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2'],
+  power_bank: ['B0CZ9LH53B', 'B0CNWT16R8', 'B09NTNTVRJ'],
   batteries: ['B093C9B1HK', 'B07L49RDJH', 'B07WSS27QT'],
-  emergency_blanket: ['B001FIQ7XU', 'B0CDBYT9WW', 'B0H761VV55'],
+  emergency_blanket: ['B0CDBYT9WW', 'B0H761VV55'],
   thermal_clothing: ['B004KMGZG2', 'B0887LWT53', 'B013LFW3WS'],
   hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B005DEW1K0'],
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
@@ -21,6 +21,9 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
 /** Every verified ASIN, sorted. */
 export const VERIFIED_ASINS: readonly string[] = Object.values(VERIFIED_BY_CATEGORY).flat().sort();
 export const VERIFIED_COUNT = VERIFIED_ASINS.length;
+
+/** S1-10c hotfix (16 Nov 2026): buyability replacements, evidence checked 16 Nov. */
+export const S1_10C_REPLACEMENTS: readonly string[] = ['B002XNGTOI', 'B09SZB8Y4R', 'B091YFB8N2', 'B0CNWT16R8', 'B09NTNTVRJ', 'B001MG6WJ4', 'B0BV7HHSMX', 'B0BBSP1QVC'];
 
 /** Thermal size children (PM ruling b): child ASIN -> parent canonical (size_child_of). */
 export const THERMAL_SIZE_CHILDREN: Readonly<Record<string, string>> = {
@@ -47,4 +50,7 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B00DNSDDI2', // AA jump leads: model fields hold a barcode (S1-10)
   'B01F1LUW6Y', // Energizer torch (PR #17): not currently purchasable
   'B00SBD0WL0', // Energizer head torch (PR #17): not currently purchasable
+  // S1-10c hotfix (16 Nov 2026): failed the buyability rule (no Buy Box / not in stock / seller not Amazon or a well-rated UK seller); replaced.
+  'B005AQK6V2', 'B09VBFQNKK', 'B0987MCGXT', 'B0DFVRT79C', 'B0CSSRD4NT', 'B0DCZ82MGG', 'B013P5S1KC',
+  'B0896Q8JXD', 'B001FIQ7XU', // earliest delivery more than 10 days out (12 Dec / 6 Dec)
 ];
