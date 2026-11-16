@@ -13,10 +13,10 @@ evidence: [official-guidance]
 sources:
   - label: Priority Services Register
     url: https://www.thepsr.co.uk/
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
-  - label: Prepare – Power cuts
-    url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
+  - label: Be Ready – Power cuts
+    url: https://beready.campaign.gov.uk/be-informed-about-hazards/power-cuts/
   - label: Ready Scotland – Emergency plan
     url: https://ready.campaign.gov.scot/emergency-plan
 ---

@@ -13,8 +13,8 @@ evidence: [official-guidance]
 sources:
   - label: Ready Scotland – Emergency kit (car section)
     url: https://ready.campaign.gov.scot/emergency-kit
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Met Office – UK warnings
     url: https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings
 startHere: false
@@ -24,7 +24,7 @@ Plan ahead and avoid travel unless essential when severe weather is forecast. Ch
 
 ## Boot kit checklist
 
-Ready Scotland and Prepare-style guidance commonly include:
+Ready Scotland and Be Ready guidance commonly include:
 
 - Torch and spare batteries
 - Warm clothes, boots and a blanket

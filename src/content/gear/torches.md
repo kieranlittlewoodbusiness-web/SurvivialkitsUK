@@ -15,8 +15,8 @@ criteria:
   - "Headlamp option for hands-free tasks"
   - "Clear labelling of measured runtime versus manufacturer claim"
 sources:
-  - label: Prepare – Power cuts
-    url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
+  - label: Be Ready – Power cuts
+    url: https://beready.campaign.gov.uk/be-informed-about-hazards/power-cuts/
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
 ---

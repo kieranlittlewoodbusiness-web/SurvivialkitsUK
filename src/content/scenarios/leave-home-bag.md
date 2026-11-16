@@ -11,8 +11,8 @@ order: 7
 gearCategories: [first-aid, power-banks, water-storage]
 evidence: [official-guidance]
 sources:
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
   - label: GOV.UK – Help during a flood

@@ -17,8 +17,8 @@ criteria:
 sources:
   - label: National Resilience / Be Ready checklist (PDF)
     url: https://beready.campaign.gov.uk/wp-content/uploads/sites/252/2026/10/Be-Ready-Checklist_English.pdf
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
 ---
 
 Bottled water you already buy often covers short interruptions. Dedicated carriers help larger households or known shut-offs—size them so you can actually lift them.
