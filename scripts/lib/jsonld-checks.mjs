@@ -49,7 +49,7 @@ const MONTHS = {
   november: '11', nov: '11', december: '12', dec: '12',
 };
 
-/** Calendar dates from <time datetime> and visible "Last reviewed" / "Updated" / "Last checked" labels. */
+/** Calendar dates from <time datetime> and visible "Published" / "Last reviewed" / "Updated" / "Last checked" labels. */
 export function visibleDates(html) {
   const out = new Set();
   for (const m of html.matchAll(/<time\b[^>]*\bdatetime\s*=\s*["']([^"']+)["']/gi)) {
@@ -57,7 +57,7 @@ export function visibleDates(html) {
     if (ISO_DAY.test(value) || ISO_DATETIME.test(value)) out.add(datePart(value));
   }
   const text = decode(html.replace(/<[^>]+>/g, ' '));
-  const label = /(?:Last reviewed|Updated|Last checked)\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/gi;
+  const label = /(?:Published|Last reviewed|Updated|Last checked)\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/gi;
   let m;
   while ((m = label.exec(text))) {
     const month = MONTHS[m[2].toLowerCase()];
@@ -444,6 +444,16 @@ function checkPage(file, html, { now } = {}, failures) {
         failures.push({
           file,
           reason: `Article.dateModified date ${modified} does not match the visible date (${visible.join(', ')})`,
+        });
+      }
+    }
+    // SEO-6d (QA comment 6928192150 on #37): a page that shows dates must also show its datePublished.
+    if (visible.length && ISO_DATETIME.test(String(art.datePublished ?? ''))) {
+      const published = datePart(art.datePublished);
+      if (!visible.includes(published)) {
+        failures.push({
+          file,
+          reason: `Article.datePublished date ${published} is not shown on the page (visible: ${visible.join(', ')})`,
         });
       }
     }

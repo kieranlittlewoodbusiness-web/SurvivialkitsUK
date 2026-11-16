@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GetPreparedCta from '../components/GetPreparedCta.astro';
 import { comparePath } from '../data/site';
+import { COMPARE_DATES } from '../data/compareDates';
+import { formatLondonMonthYear } from '../lib/dates';
 import { pageUrl, webPage } from '../lib/seo/jsonld';
 import { getPublishedScenarios, getPublishedGear } from '../lib/content';
 import { loadCatalogue, productSections } from '../components/catalogue/catalogueView';
@@ -172,7 +174,7 @@ const jsonLd = [
       <div class="feature card">
         <div class="feature__media" aria-hidden="true"><div class="art art--kit"></div></div>
         <div>
-          <p class="kicker">72-hour kit · Updated Nov 2026</p>
+          <p class="kicker">72-hour kit · Updated {formatLondonMonthYear(COMPARE_DATES.updated)}</p>
           <h2 id="feat-h">Build a 72-hour kit from essentials on Amazon UK</h2>
           <p class="lede">
             Water, first aid, wind-up radios, power banks, blankets and thermals, compared by what each listing states and

@@ -291,9 +291,18 @@ describe('checkJsonLd', () => {
     expect(reasons(site({ 'method/index.html': mismatch }))).toMatch(/does not match the visible date/);
 
     const match = html({
-      body: 'Updated <time datetime="2026-11-15">15 Nov 2026</time>',
+      body: 'Published <time datetime="2026-11-14">14 Nov 2026</time> · Updated <time datetime="2026-11-15">15 Nov 2026</time>',
     });
     expect(checkJsonLd(site({ 'method/index.html': match, '404.html': html({ robots: 'noindex, nofollow', script: '', canonical: null, heading: 'Page not found' }) }), { now: NOW }).failures).toEqual([]);
+  });
+
+  it('SEO-6d: fails when datePublished is not shown on a page that shows dates, and passes when it is', () => {
+    const missing = html({ body: 'Updated <time datetime="2026-11-15">15 Nov 2026</time>' });
+    expect(reasons(site({ 'method/index.html': missing }))).toMatch(
+      /Article\.datePublished date 2026-11-14 is not shown on the page \(visible: 2026-11-15\)/,
+    );
+    const labelOnly = html({ body: '<p>Published 14 November 2026 · Updated 15 Nov 2026</p>' });
+    expect(reasons(site({ 'method/index.html': labelOnly }))).toBe('');
   });
 
   it('fails when the last breadcrumb item is not the canonical', () => {
