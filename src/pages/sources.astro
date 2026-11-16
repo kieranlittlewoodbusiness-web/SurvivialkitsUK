@@ -1,7 +1,8 @@
 ---
+// SEO-6f: keep this import above BaseLayout; importing it after reorders the page's inline <style> after the layout stylesheet.
+import { keepCitationYear, NBSP } from '../lib/dates';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { standardPageNodes } from '../lib/seo/jsonld';
-import { keepCitationYear, NBSP } from '../lib/dates';
 
 const title = 'Official sources for UK emergency kits';
 const heading = 'Official sources we cite';
