@@ -16,6 +16,21 @@ export const VERIFIED_BY_CATEGORY: Partial<Record<ProductCategory, readonly stri
   hi_vis: ['B00KHN3DZE', 'B09V5JXY6D', 'B005DEW1K0'],
   jump_leads: ['B008RXAX0E', 'B000UZGUFE'],
   warning_triangle: ['B001NLVA6S', 'B0DHW4RF9Z'],
+  // S1-10b (16 Nov 2026)
+  water_container: ['B0036OW40Q', 'B003QAD4KY'],
+  rainwater_storage: ['B00ZUTJAHA', 'B00CRE5ZQG', 'B0CVL4W8CQ'],
+  gravity_filter: ['B0CMY1SQ3D', 'B07QFSVXZW', 'B0DWTDW914'],
+  flask: ['B00JOV3YDG', 'B000T21JFE', 'B00JOV3Z6W'],
+  tin_opener: ['B00004OCJW', 'B000079XW2', 'B07NJHB97Y'],
+  electric_lighter: ['B088HF3TYP', 'B098X7PSQH', 'B0CHXZTBK9'],
+  two_way_radio: ['B07DYGD8CH', 'B078C7TD7Z', 'B01FDI6OKS'],
+  multi_tool: ['B079MJBP21', 'B007ERHM5S', 'B0CX32Q354'],
+  sleeping_bag: ['B07KRRFW9J', 'B0CLY3FR44', 'B0GQ4SQC9P'],
+  hygiene: ['B08DDY4GCS', 'B06XYH6966', 'B009A6VM1G'],
+  baby_care: ['B097JVCVMK', 'B08MXSBRSB', 'B0FFTNGFM9'],
+  document_pouch: ['B0065ISDR8', 'B07B19M6DB', 'B0HF7LWYV9'],
+  home_kit: ['B00MCN9AJ0'],
+  grab_bag_kit: ['B005GGMBI2', 'B09VTM8P2Z'],
 };
 
 /** Every verified ASIN, sorted. */
@@ -47,4 +62,8 @@ export const KNOWN_UNVERIFIED: readonly string[] = [
   'B00DNSDDI2', // AA jump leads: model fields hold a barcode (S1-10)
   'B01F1LUW6Y', // Energizer torch (PR #17): not currently purchasable
   'B00SBD0WL0', // Energizer head torch (PR #17): not currently purchasable
+  'B00MGM3K7A', // Simply warning triangle: unverified at Kieran sign-off (S1-10, CR nit on #21)
+  'B0CMY1GRTZ', // LifeStraw Peak green (S1-10b): no Add to Basket on 16 Nov re-check
+  'B004LWWFQ0', // Highlander 10L carrier (S1-10b): no Add to Basket on 16 Nov re-check
+  'B0CHVPBJ29', // First My Family 1-person (S1-10b): pack-count conflict (36 vs 30)
 ];

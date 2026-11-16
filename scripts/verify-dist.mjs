@@ -3,12 +3,15 @@
  * S1-10 production verification. Builds a production site into .verify-dist with a DUMMY
  * Associates tag (never the real one), then runs the link check (expected affiliate count
  * derived from the verified set, capped at 3 per category) and the content check with
- * production rules (no noindex, robots.txt allows crawling). Usage:
+ * production rules (no noindex, robots.txt allows crawling). S1-10b (CR L1): the exact set of ASINs
+ * behind tagged affiliate links must equal the ASINs in VERIFIED_BY_CATEGORY (tests/offers/verifiedSet.ts),
+ * each linked once; a matching count alone is not enough. Usage:
  *   npm run verify:dist [-- --expect-affiliate N]
  */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
+import { affiliateAsins, compareAsinSets } from './lib/dist-checks.mjs';
 
 const OUT = process.env.VERIFY_OUT_DIR || '.verify-dist';
 const DUMMY_TAG = 'verifydist-21';
@@ -22,8 +25,8 @@ const run = (cmd, a) => {
   return r;
 };
 
-function derivedExpect() {
-  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts'], {
+function derive(extra = []) {
+  const r = spawnSync(process.execPath, ['--experimental-strip-types', 'scripts/derive-affiliate-count.ts', ...extra], {
     env,
     encoding: 'utf8',
   });
@@ -31,7 +34,26 @@ function derivedExpect() {
     console.error(r.stderr || r.stdout || 'derive-affiliate-count failed');
     process.exit(r.status ?? 1);
   }
-  const n = (r.stdout || '').trim();
+  return (r.stdout || '').trim();
+}
+
+function derivedAsins() {
+  const out = derive(['--asins']);
+  let list;
+  try {
+    list = JSON.parse(out);
+  } catch {
+    list = null;
+  }
+  if (!Array.isArray(list) || !list.every((a) => typeof a === 'string' && /^[A-Z0-9]{10}$/.test(a))) {
+    console.error('derive-affiliate-count --asins did not print a JSON array of ASINs');
+    process.exit(1);
+  }
+  return list;
+}
+
+function derivedExpect() {
+  const n = derive();
   if (!/^\d+$/.test(n)) {
     console.error('derive-affiliate-count did not print a number');
     process.exit(1);
@@ -49,6 +71,20 @@ fs.rmSync(OUT, { recursive: true, force: true });
 run('npx', ['astro', 'build', '--outDir', OUT]);
 run('node', ['scripts/check-outbound-links.mjs', OUT, '--expect-affiliate', String(expect)]);
 run('node', ['scripts/check-content.mjs', OUT, '--production']);
+
+// S1-10b (CR L1): the exact ASIN set, not just the count.
+const expectedAsins = derivedAsins();
+const built = affiliateAsins(OUT);
+const set = compareAsinSets(built.asins, expectedAsins);
+const repeated = [...built.counts].filter(([, n]) => n !== 1).map(([a, n]) => `${a} x${n}`);
+if (!set.ok || repeated.length || new Set(expectedAsins).size !== expectedAsins.length) {
+  console.error(`FAIL: affiliate ASIN set does not match verifiedSet.ts (built ${built.asins.length}, expected ${expectedAsins.length})`);
+  if (set.missing.length) console.error(`  missing from dist: ${set.missing.join(', ')}`);
+  if (set.extra.length) console.error(`  not in verifiedSet: ${set.extra.join(', ')}`);
+  if (repeated.length) console.error(`  linked more than once: ${repeated.join(', ')}`);
+  process.exit(1);
+}
+console.log(`PASS: affiliate ASIN set equals verifiedSet.ts exactly (${expectedAsins.length} ASINs, each linked once).`);
 
 const html = readCompareHtml(OUT);
 const rules = checkComparePage(html, {

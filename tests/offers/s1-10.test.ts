@@ -105,6 +105,21 @@ describe('S1-10 categories', () => {
       'hi_vis',
       'jump_leads',
       'warning_triangle',
+      // S1-10b
+      'water_container',
+      'rainwater_storage',
+      'gravity_filter',
+      'flask',
+      'tin_opener',
+      'electric_lighter',
+      'two_way_radio',
+      'multi_tool',
+      'sleeping_bag',
+      'hygiene',
+      'baby_care',
+      'document_pouch',
+      'home_kit',
+      'grab_bag_kit',
     ]);
     expect(PRODUCT_CATEGORIES).not.toContain(LEGACY_CATEGORY_WIND_UP_TORCH_RADIO);
   });
@@ -191,7 +206,7 @@ describe('S1-10 category migration (wind_up_torch_radio)', () => {
 
   it('the pre-migration products file still parses, with identical records apart from category', () => {
     const legacyFile = JSON.parse(JSON.stringify(rawProducts).replaceAll('"category":"radio"', `"category":"${LEGACY_CATEGORY_WIND_UP_TORCH_RADIO}"`));
-    const parsed = parseCatalogueProductsFile(legacyFile, { now: NOW });
+    const parsed = parseCatalogueProductsFile(legacyFile, { now: '2026-11-16T12:00:00+00:00' }); // S1-10b evidence is dated 16 Nov
     expect(parsed.products).toEqual(catalogueProducts);
   });
 
@@ -459,7 +474,8 @@ describe('S1-10 production-link probe (fake tag)', () => {
 
   it('production: exactly VERIFIED_COUNT links, all sponsored nofollow amazon.co.uk/dp with the tag', () => {
     const n = VERIFIED_COUNT;
-    expect(n).toBe(30);
+    // S1-10: 30; S1-10b adds 38 (14 categories). Derived from verifiedSet.ts.
+    expect(n).toBe(68);
     expect(linkCount({ SITE_ENV: 'production', AMAZON_ASSOCIATES_UK_TAG: FAKE_TAG })).toEqual({ all: n, shown: n, sponsored: n, tagged: n, dp: n });
   });
 
@@ -510,7 +526,8 @@ describe('S1-10 verified-set invariants (committed data)', () => {
         expect(o.price_origin).toBe('none');
         expect(o.affiliate_url).toBe('');
       }
-      expect(p.verification_evidence!.checked_on).toBe('2026-11-15');
+      // S1-10 research 15 Nov; S1-10b research 16 Nov.
+      expect(['2026-11-15', '2026-11-16']).toContain(p.verification_evidence!.checked_on);
       expect(p.verification_evidence!.canonical_asin).toBe(p.size_child_of ?? p.asin_uk);
     }
   });

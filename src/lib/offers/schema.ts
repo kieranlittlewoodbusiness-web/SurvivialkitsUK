@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { LEGACY_CATEGORY_WIND_UP_TORCH_RADIO, PRODUCT_CATEGORIES, VERIFICATION_CHECKS } from './types';
+import { KIT_CATEGORIES, LEGACY_CATEGORY_WIND_UP_TORCH_RADIO, PRODUCT_CATEGORIES, RAINWATER_DRINKING_WATER_NOTE, VERIFICATION_CHECKS } from './types';
 import type {
   AffiliateProgrammeRecord,
   AffiliateProgrammesFile,
@@ -424,6 +424,18 @@ const torchRadioSpecs = z
   .partial()
   .strict();
 
+const capacitySpecs = z.object({ capacity_l: sourced(pos) }).partial().strict();
+const kitSpecs = z
+  .object({
+    people: sourced(posInt),
+    stated_contents: sourced(z.array(z.string().min(1)).min(1)),
+    contains_blade: sourced(z.boolean()),
+    contains_food_water: sourced(z.boolean()),
+    food_water_shelf_life_years: sourced(pos.nullable()),
+  })
+  .partial()
+  .strict();
+
 const specsByCategory = {
   emergency_water: z
     .object({
@@ -508,7 +520,31 @@ const specsByCategory = {
     })
     .partial()
     .strict(),
+  // S1-10b (issue #11): every spec optional; absent = not stated on the listing.
+  water_container: capacitySpecs,
+  flask: capacitySpecs,
+  gravity_filter: capacitySpecs,
+  rainwater_storage: z
+    .object({ capacity_l: sourced(pos), drinking_water_note: sourced(z.string().min(1)) })
+    .partial()
+    .strict(),
+  tin_opener: z.object({}).strict(),
+  electric_lighter: z.object({ rechargeable: sourced(z.boolean()) }).partial().strict(),
+  two_way_radio: z
+    .object({ channels: sourced(posInt), pmr446_stated: sourced(z.boolean()), pack_count: sourced(posInt) })
+    .partial()
+    .strict(),
+  multi_tool: z.object({ locking_blade: sourced(z.boolean()) }).partial().strict(),
+  sleeping_bag: z.object({ size_label: sourced(z.string().min(1)) }).partial().strict(),
+  hygiene: z.object({ pack_count: sourced(posInt) }).partial().strict(),
+  baby_care: z.object({ pack_count: sourced(posInt), size: sourced(z.string().min(1)) }).partial().strict(),
+  document_pouch: z.object({ size_label: sourced(z.string().min(1)) }).partial().strict(),
+  home_kit: kitSpecs,
+  grab_bag_kit: kitSpecs,
 } as const;
+
+/** S1-10b: specs a verified home_kit / grab_bag_kit must carry (from the listing only). */
+export const REQUIRED_KIT_SPECS = ['people', 'stated_contents', 'contains_blade', 'contains_food_water'] as const;
 
 /* ---------- S1-10: display_name and image rules ---------- */
 
@@ -651,6 +687,20 @@ const catalogueProductUnion = z
     z.object({ ...productBase, category: z.literal('hi_vis'), specs: specsByCategory.hi_vis }).strict(),
     z.object({ ...productBase, category: z.literal('jump_leads'), specs: specsByCategory.jump_leads }).strict(),
     z.object({ ...productBase, category: z.literal('warning_triangle'), specs: specsByCategory.warning_triangle }).strict(),
+    z.object({ ...productBase, category: z.literal('water_container'), specs: specsByCategory.water_container }).strict(),
+    z.object({ ...productBase, category: z.literal('rainwater_storage'), specs: specsByCategory.rainwater_storage }).strict(),
+    z.object({ ...productBase, category: z.literal('gravity_filter'), specs: specsByCategory.gravity_filter }).strict(),
+    z.object({ ...productBase, category: z.literal('flask'), specs: specsByCategory.flask }).strict(),
+    z.object({ ...productBase, category: z.literal('tin_opener'), specs: specsByCategory.tin_opener }).strict(),
+    z.object({ ...productBase, category: z.literal('electric_lighter'), specs: specsByCategory.electric_lighter }).strict(),
+    z.object({ ...productBase, category: z.literal('two_way_radio'), specs: specsByCategory.two_way_radio }).strict(),
+    z.object({ ...productBase, category: z.literal('multi_tool'), specs: specsByCategory.multi_tool }).strict(),
+    z.object({ ...productBase, category: z.literal('sleeping_bag'), specs: specsByCategory.sleeping_bag }).strict(),
+    z.object({ ...productBase, category: z.literal('hygiene'), specs: specsByCategory.hygiene }).strict(),
+    z.object({ ...productBase, category: z.literal('baby_care'), specs: specsByCategory.baby_care }).strict(),
+    z.object({ ...productBase, category: z.literal('document_pouch'), specs: specsByCategory.document_pouch }).strict(),
+    z.object({ ...productBase, category: z.literal('home_kit'), specs: specsByCategory.home_kit }).strict(),
+    z.object({ ...productBase, category: z.literal('grab_bag_kit'), specs: specsByCategory.grab_bag_kit }).strict(),
   ])
   .superRefine((p, ctx) => {
     if (p.asin_uk === null && p.gtin === null) {
@@ -662,6 +712,17 @@ const catalogueProductUnion = z
     }
     if (p.category === 'warning_triangle' && p.verification === 'verified' && p.specs.e_marked?.value !== true && p.specs.ece_r27?.value !== true) {
       ctx.addIssue({ code: 'custom', path: ['specs', 'e_marked'], message: 'a verified warning_triangle needs e_marked or ece_r27 === true from the listing' });
+    }
+    // S1-10b: verified pre-packed kits state people, contents, blade and food/water from the listing.
+    if (KIT_CATEGORIES.includes(p.category) && p.verification === 'verified') {
+      const specs = p.specs as Record<string, unknown>;
+      for (const k of REQUIRED_KIT_SPECS) {
+        if (specs[k] === undefined) ctx.addIssue({ code: 'custom', path: ['specs', k], message: `verified ${p.category} needs specs.${k} from the listing` });
+      }
+    }
+    // S1-10b: rainwater is not drinking water; a verified rainwater_storage carries the fixed note.
+    if (p.category === 'rainwater_storage' && p.verification === 'verified' && p.specs.drinking_water_note?.value !== RAINWATER_DRINKING_WATER_NOTE) {
+      ctx.addIssue({ code: 'custom', path: ['specs', 'drinking_water_note'], message: 'a verified rainwater_storage needs specs.drinking_water_note === RAINWATER_DRINKING_WATER_NOTE' });
     }
     if (p.listing_mpn && (p.listing_mpn === p.mpn || p.listing_mpn === p.manufacturer_sku || p.listing_mpn === p.model_code)) {
       // A listing-only number must not double as an identity key.

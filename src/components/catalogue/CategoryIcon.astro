@@ -14,6 +14,21 @@ const paths: Record<ProductCategory, string> = {
   power_bank: '<rect x="10" y="5" width="20" height="30" rx="6"/><path d="m21 12-4 8h6l-4 8"/>',
   emergency_blanket: '<path d="M7 9h26v22H7z"/><path d="M7 16l26 8M7 24l26-8"/>',
   thermal_clothing: '<path d="M14 6 6 11l3 7 4-2v18h14V16l4 2 3-7-8-5c-1 3-3 4-6 4s-5-1-6-4Z"/>',
+  // S1-10b: minimal compile fix by Backend; reuses existing icons until Web draws new ones.
+  water_container: '<path d="M20 5c6 8 11 14 11 20a11 11 0 0 1-22 0c0-6 5-12 11-20Z"/><path d="M14 26a6 6 0 0 0 6 6"/>',
+  rainwater_storage: '<path d="M20 5c6 8 11 14 11 20a11 11 0 0 1-22 0c0-6 5-12 11-20Z"/><path d="M14 26a6 6 0 0 0 6 6"/>',
+  gravity_filter: '<path d="M20 5c6 8 11 14 11 20a11 11 0 0 1-22 0c0-6 5-12 11-20Z"/><path d="M14 26a6 6 0 0 0 6 6"/>',
+  flask: '<path d="M20 5c6 8 11 14 11 20a11 11 0 0 1-22 0c0-6 5-12 11-20Z"/><path d="M14 26a6 6 0 0 0 6 6"/>',
+  tin_opener: '<path d="M12 18v-3a8 8 0 0 1 16 0v3"/><rect x="6" y="18" width="28" height="18" rx="6"/><path d="m15 27 4 4 7-7"/>',
+  electric_lighter: '<rect x="4" y="16" width="15" height="8" rx="2"/><path d="M19 15v10l5 2.5V12.5Z"/><path d="M28 16l6-3M28 20h7M28 24l6 3"/>',
+  two_way_radio: '<rect x="6" y="14" width="28" height="18" rx="3"/><circle cx="16" cy="23" r="4"/><path d="M24 19h6M24 23h6M24 27h4M12 14V7l10 4"/>',
+  multi_tool: '<path d="M12 18v-3a8 8 0 0 1 16 0v3"/><rect x="6" y="18" width="28" height="18" rx="6"/><path d="m15 27 4 4 7-7"/>',
+  sleeping_bag: '<path d="M7 9h26v22H7z"/><path d="M7 16l26 8M7 24l26-8"/>',
+  hygiene: '<rect x="5" y="11" width="30" height="23" rx="6"/><path d="M15 11V8h10v3M20 17v11M14.5 22.5h11"/>',
+  baby_care: '<rect x="5" y="11" width="30" height="23" rx="6"/><path d="M15 11V8h10v3M20 17v11M14.5 22.5h11"/>',
+  document_pouch: '<path d="M12 18v-3a8 8 0 0 1 16 0v3"/><rect x="6" y="18" width="28" height="18" rx="6"/><path d="m15 27 4 4 7-7"/>',
+  home_kit: '<path d="M12 18v-3a8 8 0 0 1 16 0v3"/><rect x="6" y="18" width="28" height="18" rx="6"/><path d="m15 27 4 4 7-7"/>',
+  grab_bag_kit: '<path d="M12 18v-3a8 8 0 0 1 16 0v3"/><rect x="6" y="18" width="28" height="18" rx="6"/><path d="m15 27 4 4 7-7"/>',
 };
 ---
 <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" set:html={paths[Astro.props.category]} />

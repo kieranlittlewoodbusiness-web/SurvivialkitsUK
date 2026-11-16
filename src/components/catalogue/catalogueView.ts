@@ -104,6 +104,21 @@ export const CATEGORY_META: Record<ProductCategory, { title: string; short: stri
   power_bank: { title: CATEGORY_LABELS.power_bank, short: 'power bank', dek: 'Keep phones charged', anchor: 'power-banks' },
   emergency_blanket: { title: CATEGORY_LABELS.emergency_blanket, short: 'blankets', dek: 'Foil and thermal blankets', anchor: 'blankets' },
   thermal_clothing: { title: CATEGORY_LABELS.thermal_clothing, short: 'thermals', dek: 'Base layers for cold homes', anchor: 'thermals' },
+  // S1-10b: minimal compile fix by Backend (placeholder copy; Web owns final wording).
+  water_container: { title: CATEGORY_LABELS.water_container, short: 'water container', dek: 'Carriers and jerrycans', anchor: 'water-containers' },
+  rainwater_storage: { title: CATEGORY_LABELS.rainwater_storage, short: 'water butt', dek: 'Not drinking water until treated', anchor: 'rainwater' },
+  gravity_filter: { title: CATEGORY_LABELS.gravity_filter, short: 'water filter', dek: 'Filter water without power', anchor: 'water-filters' },
+  flask: { title: CATEGORY_LABELS.flask, short: 'flask', dek: 'Hot drinks without power', anchor: 'flasks' },
+  tin_opener: { title: CATEGORY_LABELS.tin_opener, short: 'tin opener', dek: 'Open tinned food by hand', anchor: 'tin-openers' },
+  electric_lighter: { title: CATEGORY_LABELS.electric_lighter, short: 'lighter', dek: 'Rechargeable windproof lighters', anchor: 'lighters' },
+  two_way_radio: { title: CATEGORY_LABELS.two_way_radio, short: 'two-way radio', dek: 'Licence-free walkie-talkies', anchor: 'two-way-radios' },
+  multi_tool: { title: CATEGORY_LABELS.multi_tool, short: 'multi-tool', dek: 'Pocket tools for repairs', anchor: 'multi-tools' },
+  sleeping_bag: { title: CATEGORY_LABELS.sleeping_bag, short: 'sleeping bag', dek: 'Warmth if the heating fails', anchor: 'sleeping-bags' },
+  hygiene: { title: CATEGORY_LABELS.hygiene, short: 'hygiene', dek: 'Sanitiser, wipes and toilet bags', anchor: 'hygiene' },
+  baby_care: { title: CATEGORY_LABELS.baby_care, short: 'baby care', dek: 'Nappies and wipes', anchor: 'baby-care' },
+  document_pouch: { title: CATEGORY_LABELS.document_pouch, short: 'document pouch', dek: 'Keep papers dry', anchor: 'document-pouches' },
+  home_kit: { title: CATEGORY_LABELS.home_kit, short: 'home kit', dek: 'Ready-made kits for staying put', anchor: 'home-kits' },
+  grab_bag_kit: { title: CATEGORY_LABELS.grab_bag_kit, short: 'grab bag', dek: 'Ready-made bags for leaving fast', anchor: 'grab-bags' },
 };
 
 /** All categories, in Backend's PRODUCT_CATEGORIES order (for the home grid, including empty ones). */

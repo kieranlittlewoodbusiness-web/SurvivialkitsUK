@@ -408,3 +408,25 @@ export function checkContent(dist, { production = false, banned = DEFAULT_BANNED
   }
   return { dist, files: files.length, production, adBadges, hits, site, failures };
 }
+
+/* ---------- S1-10b (Code Reviewer L1): exact affiliate ASIN set ---------- */
+
+const AFFILIATE_HREF_RX = /href\s*=\s*["']https:\/\/www\.amazon\.co\.uk\/dp\/([A-Z0-9]{10})\?tag=[^"'#\s]+["']/g;
+
+/** Every ASIN that a tagged amazon.co.uk/dp affiliate link points at, across all HTML in `dist`. Never returns the tag. */
+export function affiliateAsins(dist) {
+  const counts = new Map();
+  for (const f of htmlFiles(dist)) {
+    for (const m of fs.readFileSync(f, 'utf8').matchAll(AFFILIATE_HREF_RX)) counts.set(m[1], (counts.get(m[1]) ?? 0) + 1);
+  }
+  return { asins: [...counts.keys()].sort(), counts };
+}
+
+/** Compares the built ASIN set with the expected set. ok only when both sets are identical. */
+export function compareAsinSets(actual, expected) {
+  const a = new Set(actual);
+  const e = new Set(expected);
+  const missing = [...e].filter((x) => !a.has(x)).sort();
+  const extra = [...a].filter((x) => !e.has(x)).sort();
+  return { ok: missing.length === 0 && extra.length === 0, missing, extra };
+}

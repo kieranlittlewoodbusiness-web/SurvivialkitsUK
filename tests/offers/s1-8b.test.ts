@@ -24,6 +24,8 @@ import { KNOWN_UNVERIFIED, VERIFIED_ASINS, VERIFIED_COUNT } from './verifiedSet'
 
 const FAKE_TAG = 'TESTONLY-21';
 const NOW = '2026-11-15T12:00:00+00:00';
+/** S1-10b categories (evidence checked 16 Nov 2026). */
+const S1_10B_CATEGORIES: string[] = ['water_container', 'rainwater_storage', 'gravity_filter', 'flask', 'tin_opener', 'electric_lighter', 'two_way_radio', 'multi_tool', 'sleeping_bag', 'hygiene', 'baby_care', 'document_pouch', 'home_kit', 'grab_bag_kit'];
 
 /** S1-10: the verified set lives in one place (tests/offers/verifiedSet.ts). */
 const EXPECTED_VERIFIED = [...VERIFIED_ASINS];
@@ -60,11 +62,11 @@ describe('verification pass (public amazon.co.uk listings, 15 Nov 2026)', () => 
     }
   });
 
-  it('every record carries tagless evidence dated 2026-11-15, with no price or image stored', () => {
+  it('every record carries tagless evidence dated 2026-11-15 (S1-10b: 2026-11-16), with no price or image stored', () => {
     for (const p of catalogueProducts) {
       const ev = p.verification_evidence!;
       expect(ev.method).toBe('public_listing');
-      expect(ev.checked_on).toBe('2026-11-15');
+      expect(ev.checked_on).toBe(S1_10B_CATEGORIES.includes(p.category) ? '2026-11-16' : '2026-11-15');
       expect(ev.source_url).toBe(`https://www.amazon.co.uk/dp/${p.asin_uk}`);
       expect(new URL(ev.source_url).search).toBe('');
       if (p.verification === 'verified') expect([...ev.checks_matched].sort()).toEqual([...requiredVerificationChecks(p.category)].sort());
@@ -289,7 +291,8 @@ describe('L1: verification_evidence.checked_on cannot be in the future (Europe/L
     expect(() => parseVariant(kitFuture, { now: NOW })).toThrow(/in the future/);
     expect(() => parseVariantsFile({ ...(rawVariants as object), variants: [kitFuture] }, { now: NOW })).toThrow(/in the future/);
     expect(() => parseVariantsFile(rawVariants, { now: NOW })).not.toThrow();
-    expect(() => parseCatalogueProductsFile(rawProducts, { now: NOW })).not.toThrow();
+    expect(() => parseCatalogueProductsFile(rawProducts, { now: '2026-11-16T12:00:00+00:00' })).not.toThrow();
+    expect(() => parseCatalogueProductsFile(rawProducts, { now: NOW })).toThrow(/2026-11-16 is in the future/);
   });
 });
 

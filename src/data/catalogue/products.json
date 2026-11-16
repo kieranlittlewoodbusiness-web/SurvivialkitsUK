@@ -7,7 +7,8 @@
     "S1-8b (15 Nov 2026): identity checked against each tagless public listing (title, brand, model, pack contents). 9 verified; 7 stay unverified with the reason in verification_evidence. GTIN/EAN is still not shown on Amazon listings.",
     "Datrex B0134DAXJ2: listing conflict on pack quantity (title 18 packs vs details pack of 1).",
     "S1-10 (15 Nov 2026): up to 3 verified products per category from the tagless public listings (candidates in the PR body). Gaps: emergency_water 2 (Mayday B08GYLB55H volume conflict, unverified), hi_vis 2, jump_leads 2 (AA B00DNSDDI2 model unconfirmed; alternates lacked full evidence).",
-    "Thermal clothing: size-child ASINs verify against the parent canonical (size_child_of, PM ruling b). Heatwave B01LX282CT and B01LYD385A stay unverified (no model number)."
+    "Thermal clothing: size-child ASINs verify against the parent canonical (size_child_of, PM ruling b). Heatwave B01LX282CT and B01LYD385A stay unverified (no model number).",
+    "S1-10b (16 Nov 2026): 14 more categories from tagless public listings (picks and gaps in the PR body). Gaps: water_container 2, home_kit 1, grab_bag_kit 2. LifeStraw B0CMY1GRTZ and Highlander B004LWWFQ0 lost Add to Basket on re-check (unverified); First My Family B0CHVPBJ29 pack-count conflict (unverified). Legacy kit/EVAQ8 data never renders."
   ],
   "products": [
     {
@@ -2691,6 +2692,2050 @@
       "image_width": null,
       "image_height": null,
       "image_source": null
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b088hf3typ",
+      "category": "electric_lighter",
+      "product_name": "Zippo - Stick Lighter, Rose Gold, Rechargeable, with Long Flexible Neck, Plasma Arc, Ideal Lighter for Candles",
+      "brand": "Zippo",
+      "asin_uk": "B088HF3TYP",
+      "gtin": null,
+      "mpn": "2006828",
+      "model_code": "2006828",
+      "pack_quantity": null,
+      "specs": {
+        "rechargeable": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Rechargeable\"",
+            "url": "https://www.amazon.co.uk/dp/B088HF3TYP"
+          },
+          "captured_at": "2026-11-16T12:21:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B088HF3TYP"
+      },
+      "captured_at": "2026-11-16T12:21:00+00:00",
+      "verification": "verified",
+      "display_name": "Zippo rechargeable plasma arc stick lighter",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B088HF3TYP",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B088HF3TYP",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Zippo - Stick Lighter, Rose Gold, Rechargeable, with Long Flexible Neck, Plasma Arc, Ideal Lighter for Candles\". Brand \"Zippo\", model \"2006828\". Pack: 1 lighter with USB charging. Add to Basket present; canonical B088HF3TYP."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Only established heritage brand found selling a complete USB arc lighter on Amazon UK"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b098x7psqh",
+      "category": "electric_lighter",
+      "product_name": "SUPRUS Electric Lighter Arc Windproof Flameless USB Rechargeable Lighter with Safety Lock for Candle BBQ Camping (Black)",
+      "brand": "SUPRUS",
+      "asin_uk": "B098X7PSQH",
+      "gtin": null,
+      "mpn": "601",
+      "model_code": "601",
+      "pack_quantity": null,
+      "specs": {
+        "rechargeable": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"USB Rechargeable\"",
+            "url": "https://www.amazon.co.uk/dp/B098X7PSQH"
+          },
+          "captured_at": "2026-11-16T12:21:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B098X7PSQH"
+      },
+      "captured_at": "2026-11-16T12:21:00+00:00",
+      "verification": "verified",
+      "display_name": "SUPRUS windproof USB rechargeable arc lighter",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B098X7PSQH",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B098X7PSQH",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"SUPRUS Electric Lighter Arc Windproof Flameless USB Rechargeable Lighter with Safety Lock for Candle BBQ Camping (Black)\". Brand \"SUPRUS\", model \"601\". Pack: 1 lighter, USB cable, gift box, manual. Add to Basket present; canonical B098X7PSQH."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Large-review Amazon brand (flagged for Kieran: Amazon-native brand)"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0chxztbk9",
+      "category": "electric_lighter",
+      "product_name": "VVAY Electric Arc Lighter Rechargeable USB C - Windproof Flameless",
+      "brand": "VVAY",
+      "asin_uk": "B0CHXZTBK9",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "VX 206",
+      "listing_mpn": "206",
+      "pack_quantity": null,
+      "specs": {
+        "rechargeable": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Rechargeable USB C\"",
+            "url": "https://www.amazon.co.uk/dp/B0CHXZTBK9"
+          },
+          "captured_at": "2026-11-16T12:21:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CHXZTBK9"
+      },
+      "captured_at": "2026-11-16T12:21:00+00:00",
+      "verification": "verified",
+      "display_name": "VVAY windproof USB-C rechargeable arc lighter",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CHXZTBK9",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0CHXZTBK9",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"VVAY Electric Arc Lighter Rechargeable USB C - Windproof Flameless\". Brand \"VVAY\", model \"VX 206\" (listing MPN \"206\"). Pack: 1 lighter. Add to Basket present; canonical B0CHXZTBK9."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Pocket dual-arc lighter (flagged for Kieran: Amazon-native brand)"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cmy1sq3d",
+      "category": "gravity_filter",
+      "product_name": "LifeStraw Peak Series - Compact Gravity Water Filter System - 3L for Backpacking, Group Camping, Hiking and Travel, Mountain Blue",
+      "brand": "LifeStraw",
+      "asin_uk": "B0CMY1SQ3D",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "LSPSF3MBWW",
+      "listing_mpn": "LSPSFX3LMB1",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 3,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"3L\"",
+            "url": "https://www.amazon.co.uk/dp/B0CMY1SQ3D"
+          },
+          "captured_at": "2026-11-16T12:28:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CMY1SQ3D"
+      },
+      "captured_at": "2026-11-16T12:28:00+00:00",
+      "verification": "verified",
+      "display_name": "LifeStraw Peak compact gravity water filter, 3L",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CMY1SQ3D",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0CMY1SQ3D",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"LifeStraw Peak Series - Compact Gravity Water Filter System - 3L for Backpacking, Group Camping, Hiking and Travel, Mountain Blue\". Brand \"LifeStraw\", model \"LSPSF3MBWW\" (listing MPN \"LSPSFX3LMB1\"). Pack: 3L bag, micromembrane filter, hose, backwash syringe. Add to Basket present; canonical B0CMY1SQ3D."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Replaces green B0CMY1GRTZ (no Add to Basket on 16 Nov); same Peak Series 3L system"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b07qfsvxzw",
+      "category": "gravity_filter",
+      "product_name": "Sawyer Products One-Gallon Gravity Water Filtration System",
+      "brand": "Sawyer",
+      "asin_uk": "B07QFSVXZW",
+      "gtin": null,
+      "mpn": "SP160",
+      "model_code": "SP160",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B07QFSVXZW"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Sawyer one-gallon gravity water filter system",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B07QFSVXZW",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B07QFSVXZW",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sawyer Products One-Gallon Gravity Water Filtration System\". Brand \"Sawyer\", model \"SP160\". Pack: 1-gallon bladder, MINI filter, plunger, coupling, gravity hose. Add to Basket present; canonical B07QFSVXZW."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand; model SP160 shown"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0dwtdw914",
+      "category": "gravity_filter",
+      "product_name": "Katadyn Water Filter's Befree Gravity 3.0 Liter",
+      "brand": "Katadyn",
+      "asin_uk": "B0DWTDW914",
+      "gtin": null,
+      "mpn": "8020471",
+      "model_code": "8020471",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 3,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"3.0 Liter\"",
+            "url": "https://www.amazon.co.uk/dp/B0DWTDW914"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0DWTDW914"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Katadyn BeFree gravity water filter, 3L",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0DWTDW914",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0DWTDW914",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Katadyn Water Filter's Befree Gravity 3.0 Liter\". Brand \"Katadyn\", model \"8020471\". Pack: BeFree Gravity 3.0 litre system. Add to Basket present; canonical B0DWTDW914."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand; model 8020471"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b07dygd8ch",
+      "category": "two_way_radio",
+      "product_name": "Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio’s (One Pack of 3), Green, Blue and Orange",
+      "brand": "Motorola",
+      "asin_uk": "B07DYGD8CH",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "T42",
+      "listing_mpn": "PNI-MTAT42-3",
+      "pack_quantity": null,
+      "specs": {
+        "pmr446_stated": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"PMR446\"",
+            "url": "https://www.amazon.co.uk/dp/B07DYGD8CH"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "pack_count": {
+          "value": 3,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"One Pack of 3\"",
+            "url": "https://www.amazon.co.uk/dp/B07DYGD8CH"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B07DYGD8CH"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Motorola Talkabout two-way radios, 3 pack",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B07DYGD8CH",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B07DYGD8CH",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola Moto T42 Talkabout PMR446 2-Way Walkie Talkie Portable Radio’s (One Pack of 3), Green, Blue and Orange\". Brand \"Motorola\", model \"T42\" (listing MPN \"PNI-MTAT42-3\"). Pack: 3 radios (green, blue, orange). Add to Basket present; canonical B07DYGD8CH."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Motorola Talkabout 3-pack suits a household"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b078c7td7z",
+      "category": "two_way_radio",
+      "product_name": "Motorola TALKABOUT T82 Extreme Two-Way Radios",
+      "brand": "Motorola Solutions",
+      "asin_uk": "B078C7TD7Z",
+      "gtin": null,
+      "mpn": "B8P00810YDEMAG",
+      "model_code": "B8P00810YDEMAG",
+      "pack_quantity": null,
+      "specs": {
+        "pmr446_stated": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing \"PMR446\"",
+            "url": "https://www.amazon.co.uk/dp/B078C7TD7Z"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "pack_count": {
+          "value": 2,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing \"pair\"",
+            "url": "https://www.amazon.co.uk/dp/B078C7TD7Z"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B078C7TD7Z"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Motorola Talkabout Extreme two-way radios (pair)",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B078C7TD7Z",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B078C7TD7Z",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola TALKABOUT T82 Extreme Two-Way Radios\". Brand \"Motorola Solutions\", model \"B8P00810YDEMAG\". Pack: 2 radios (pair per listing). Add to Basket present; canonical B078C7TD7Z."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Motorola Talkabout; licence-free PMR446 stated"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b01fdi6oks",
+      "category": "two_way_radio",
+      "product_name": "Motorola Tlkr T92 H2O PMR446 2-Way Walkie Talkie Waterproof Radio Twin Pack with Travel Case",
+      "brand": "Motorola Solutions",
+      "asin_uk": "B01FDI6OKS",
+      "gtin": null,
+      "mpn": "A9P00811YWCMAG",
+      "model_code": "A9P00811YWCMAG",
+      "pack_quantity": null,
+      "specs": {
+        "pmr446_stated": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"PMR446\"",
+            "url": "https://www.amazon.co.uk/dp/B01FDI6OKS"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "pack_count": {
+          "value": 2,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Twin Pack\"",
+            "url": "https://www.amazon.co.uk/dp/B01FDI6OKS"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B01FDI6OKS"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Motorola waterproof two-way radios (pair)",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B01FDI6OKS",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B01FDI6OKS",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Motorola Tlkr T92 H2O PMR446 2-Way Walkie Talkie Waterproof Radio Twin Pack with Travel Case\". Brand \"Motorola Solutions\", model \"A9P00811YWCMAG\". Pack: 2 radios with travel case. Add to Basket present; canonical B01FDI6OKS."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Motorola waterproof twin pack"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b079mjbp21",
+      "category": "multi_tool",
+      "product_name": "Leatherman Wave+ Multi-Tool, Stainless Steel",
+      "brand": "Leatherman",
+      "asin_uk": "B079MJBP21",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "832524",
+      "pack_quantity": null,
+      "specs": {
+        "locking_blade": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing: locking blades",
+            "url": "https://www.amazon.co.uk/dp/B079MJBP21"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B079MJBP21"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Leatherman Wave+ multi-tool",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B079MJBP21",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B079MJBP21",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Wave+ Multi-Tool, Stainless Steel\". Brand \"Leatherman\", model \"832524\". Pack: 1 multi-tool. Add to Basket present; canonical B079MJBP21."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Leatherman flagship (\"Weatherman\" read as Leatherman)"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b007erhm5s",
+      "category": "multi_tool",
+      "product_name": "Leatherman Rebar Multi-Tool, Black Stainless Steel, Silver.",
+      "brand": "Leatherman",
+      "asin_uk": "B007ERHM5S",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "831557",
+      "pack_quantity": null,
+      "specs": {
+        "locking_blade": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing: locking features",
+            "url": "https://www.amazon.co.uk/dp/B007ERHM5S"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B007ERHM5S"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Leatherman Rebar multi-tool",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B007ERHM5S",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B007ERHM5S",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Rebar Multi-Tool, Black Stainless Steel, Silver.\". Brand \"Leatherman\", model \"831557\". Pack: 1 multi-tool. Add to Basket present; canonical B007ERHM5S."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Leatherman mid-size"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cx32q354",
+      "category": "multi_tool",
+      "product_name": "Leatherman Skeletool CX, Stainless Steel, Onyx",
+      "brand": "Leatherman",
+      "asin_uk": "B0CX32Q354",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "LEAT-833131",
+      "pack_quantity": null,
+      "specs": {
+        "locking_blade": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing: locking blade",
+            "url": "https://www.amazon.co.uk/dp/B0CX32Q354"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CX32Q354"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Leatherman Skeletool CX multi-tool",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CX32Q354",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0CX32Q354",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Leatherman Skeletool CX, Stainless Steel, Onyx\". Brand \"Leatherman\", model \"LEAT-833131\". Pack: 1 multi-tool. Add to Basket present; canonical B0CX32Q354."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Lightweight Leatherman"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00mcn9aj0",
+      "category": "home_kit",
+      "product_name": "Ready America 70510 Shelter-in-Place/Lockdown Kit for 5-Person",
+      "brand": "Ready America",
+      "asin_uk": "B00MCN9AJ0",
+      "gtin": null,
+      "mpn": "70510",
+      "model_code": "70510",
+      "pack_quantity": null,
+      "specs": {
+        "people": {
+          "value": 5,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"for 5-Person\"",
+            "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "stated_contents": {
+          "value": [
+            "5 food bars (400 calories)",
+            "30 water pouches",
+            "5 emergency lightsticks",
+            "5 emergency whistles",
+            "1 first aid kit (107 pieces)",
+            "5 survival blankets",
+            "5 tissue pocket packs",
+            "10 nitrile gloves",
+            "5 disposable dust masks",
+            "5 bio-hazard bags",
+            "15 pre-moistened towelettes",
+            "5 toothbrushes",
+            "5 tubes of toothpaste",
+            "5 bottles of mouthwash",
+            "1 5-gallon plastic bucket",
+            "1 emergency contact card"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): description \"Kit Contains: ...\"",
+            "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "contains_blade": {
+          "value": false,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): no knife or blade in the stated contents",
+            "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "contains_food_water": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): \"5-Year shelf-life food and water\"",
+            "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "food_water_shelf_life_years": {
+          "value": 5,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): bullet \"5-Year shelf-life food and water\"",
+            "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B00MCN9AJ0"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Ready America shelter-in-place kit for 5 people",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00MCN9AJ0",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B00MCN9AJ0",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Ready America 70510 Shelter-in-Place/Lockdown Kit for 5-Person\". Brand \"Ready America\", model \"70510\". Pack: Per listing: 5 food bars, 30 water pouches, 5 lightsticks, 5 whistles, 107-pc first aid kit, 5 survival blankets, 5 tissue packs, 10 nitrile gloves, 5 dust masks, 5 bio-hazard bags, 15 towelettes, 5 toothbrushes, 5 toothpastes, 5 mouthwash, 5-gallon bucket, contact card. Add to Basket present; canonical B00MCN9AJ0."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised US preparedness brand; home bucket kit with a full contents list",
+        "US-made kit sold on Amazon UK. Food/water packing date is not stated on the listing."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b005ggmbi2",
+      "category": "grab_bag_kit",
+      "product_name": "Mayday 4 Person Deluxe Emergency Backpack Kit",
+      "brand": "Mayday",
+      "asin_uk": "B005GGMBI2",
+      "gtin": null,
+      "mpn": "KEX4",
+      "model_code": "KEX4",
+      "pack_quantity": null,
+      "specs": {
+        "people": {
+          "value": 4,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"4 Person\"",
+            "url": "https://www.amazon.co.uk/dp/B005GGMBI2"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "stated_contents": {
+          "value": [
+            "Emergency food",
+            "First aid kit",
+            "Flashlight",
+            "Glove",
+            "Knife",
+            "Light stick",
+            "Whistle"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): Included Components",
+            "url": "https://www.amazon.co.uk/dp/B005GGMBI2"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "contains_blade": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): Included Components \"Knife\"",
+            "url": "https://www.amazon.co.uk/dp/B005GGMBI2"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "contains_food_water": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): bullet \"Food and water has a 5 year shelf life\"",
+            "url": "https://www.amazon.co.uk/dp/B005GGMBI2"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        },
+        "food_water_shelf_life_years": {
+          "value": 5,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): bullet \"5 year shelf life\"",
+            "url": "https://www.amazon.co.uk/dp/B005GGMBI2"
+          },
+          "captured_at": "2026-11-16T12:22:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B005GGMBI2"
+      },
+      "captured_at": "2026-11-16T12:22:00+00:00",
+      "verification": "verified",
+      "display_name": "Mayday emergency backpack kit for 4 people",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B005GGMBI2",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B005GGMBI2",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Mayday 4 Person Deluxe Emergency Backpack Kit\". Brand \"Mayday\", model \"KEX4\". Pack: Listed components: emergency food, first aid kit, flashlight, glove, knife, light stick, whistle (54 pieces stated). Add to Basket present; canonical B005GGMBI2."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised US emergency-supplies brand; pre-packed backpack",
+        "US-made kit sold on Amazon UK. Food/water packing date is not stated on the listing."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b09vtm8p2z",
+      "category": "grab_bag_kit",
+      "product_name": "First My Family All-in-One Premium Disaster Preparedness Survival Kit with 72 Hours of Survival and First-Aid Supplies",
+      "brand": "First My Family",
+      "asin_uk": "B09VTM8P2Z",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "FMF2P",
+      "listing_mpn": "FMF2PR",
+      "pack_quantity": null,
+      "specs": {
+        "people": {
+          "value": 2,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): Set Name \"2-Person Survival Kit\"",
+            "url": "https://www.amazon.co.uk/dp/B09VTM8P2Z"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        },
+        "stated_contents": {
+          "value": [
+            "72-hour survival backpack",
+            "Lifeline 53-piece first aid kit",
+            "Glow sticks",
+            "Work gloves",
+            "Surgical masks",
+            "5-in-1 whistle",
+            "Blankets",
+            "Ponchos",
+            "Knife",
+            "Flashlight",
+            "Body warmers",
+            "Food and water rations"
+          ],
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing contents",
+            "url": "https://www.amazon.co.uk/dp/B09VTM8P2Z"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        },
+        "contains_blade": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing contents \"knife\"",
+            "url": "https://www.amazon.co.uk/dp/B09VTM8P2Z"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        },
+        "contains_food_water": {
+          "value": true,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing \"food and water rations\"",
+            "url": "https://www.amazon.co.uk/dp/B09VTM8P2Z"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        },
+        "food_water_shelf_life_years": {
+          "value": null,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): no shelf life stated",
+            "url": "https://www.amazon.co.uk/dp/B09VTM8P2Z"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B09VTM8P2Z"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "First My Family survival backpack for 2 people",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B09VTM8P2Z",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B09VTM8P2Z",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"First My Family All-in-One Premium Disaster Preparedness Survival Kit with 72 Hours of Survival and First-Aid Supplies\". Brand \"First My Family\", model \"FMF2P\" (listing MPN \"FMF2PR\"). Pack: Per listing: 2-person 72-hour backpack (50 pieces stated). Add to Basket present; canonical B09VTM8P2Z."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised US preparedness brand; model FMF2P (MPN shown as FMF2PR, recorded as listing_mpn)",
+        "US-made kit sold on Amazon UK. Food/water packing date is not stated on the listing."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0036ow40q",
+      "category": "water_container",
+      "product_name": "Vango 8L Collapsible Water Container, Foldable Water Carrier with Tap, Household Storage Water Bucket Lightweight Portable Water Carrier with Handle for Camping BBQ Picnic Outdoor Use",
+      "brand": "Vango",
+      "asin_uk": "B0036OW40Q",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "ACXWATERC3OIZ01",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 8,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"8L\"",
+            "url": "https://www.amazon.co.uk/dp/B0036OW40Q"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0036OW40Q"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Vango 8L collapsible water carrier with tap",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0036OW40Q",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0036OW40Q",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Vango 8L Collapsible Water Container, Foldable Water Carrier with Tap, Household Storage Water Bucket Lightweight Portable Water Carrier with Handle for Camping BBQ Picnic Outdoor Use\". Brand \"Vango\", model \"ACXWATERC3OIZ01\". Pack: 1 carrier. Add to Basket present; canonical B0036OW40Q."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised UK outdoor brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b003qad4ky",
+      "category": "water_container",
+      "product_name": "Vango 12L Expandable Camping Water Container with Tap, Compact Portable Water Bottle Carrier for Camping Hiking Outdoor",
+      "brand": "Vango",
+      "asin_uk": "B003QAD4KY",
+      "gtin": null,
+      "mpn": "ACXWATERC3OCZ01",
+      "model_code": "ACXWATERC3OCZ01",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 12,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"12L\"",
+            "url": "https://www.amazon.co.uk/dp/B003QAD4KY"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B003QAD4KY"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Vango 12L expandable water carrier with tap",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B003QAD4KY",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B003QAD4KY",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Vango 12L Expandable Camping Water Container with Tap, Compact Portable Water Bottle Carrier for Camping Hiking Outdoor\". Brand \"Vango\", model \"ACXWATERC3OCZ01\". Pack: 1 carrier. Add to Basket present; canonical B003QAD4KY."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised UK outdoor brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00jov3ydg",
+      "category": "flask",
+      "product_name": "Thermos Stainless King Matt Black Drinks Flask (1.2L) 24h Hot | 24h Cold",
+      "brand": "Thermos",
+      "asin_uk": "B00JOV3YDG",
+      "gtin": null,
+      "mpn": "190754",
+      "model_code": "190754",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 1.2,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"1.2L\"",
+            "url": "https://www.amazon.co.uk/dp/B00JOV3YDG"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B00JOV3YDG"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Thermos Stainless King drinks flask, 1.2L",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00JOV3YDG",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B00JOV3YDG",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Thermos Stainless King Matt Black Drinks Flask (1.2L) 24h Hot | 24h Cold\". Brand \"Thermos\", model \"190754\". Pack: 1 flask with cup. Add to Basket present; canonical B00JOV3YDG."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b000t21jfe",
+      "category": "flask",
+      "product_name": "Stanley 1913 Classic Legendary Thermal Flask 1.0L - Hammertone Green",
+      "brand": "STANLEY",
+      "asin_uk": "B000T21JFE",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "100000129575",
+      "listing_mpn": "10-01254-038",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 1,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"1.0L\"",
+            "url": "https://www.amazon.co.uk/dp/B000T21JFE"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B000T21JFE"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Stanley Classic vacuum flask, 1L",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B000T21JFE",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B000T21JFE",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Stanley 1913 Classic Legendary Thermal Flask 1.0L - Hammertone Green\". Brand \"STANLEY\", model \"100000129575\" (listing MPN \"10-01254-038\"). Pack: 1 flask. Add to Basket present; canonical B000T21JFE."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00jov3z6w",
+      "category": "flask",
+      "product_name": "Thermos Stainless King Matt Black Drinks Flask (470ml) 18h Hot | 24h Cold",
+      "brand": "Thermos",
+      "asin_uk": "B00JOV3Z6W",
+      "gtin": null,
+      "mpn": "190755",
+      "model_code": "190755",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 0.47,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"470ml\"",
+            "url": "https://www.amazon.co.uk/dp/B00JOV3Z6W"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B00JOV3Z6W"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Thermos Stainless King drinks flask, 470ml",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00JOV3Z6W",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B00JOV3Z6W",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Thermos Stainless King Matt Black Drinks Flask (470ml) 18h Hot | 24h Cold\". Brand \"Thermos\", model \"190755\". Pack: 1 flask with cup. Add to Basket present; canonical B00JOV3Z6W."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00004ocjw",
+      "category": "tin_opener",
+      "product_name": "OXO Good Grips Soft Handled Tin Opener",
+      "brand": "OXO",
+      "asin_uk": "B00004OCJW",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "28081",
+      "listing_mpn": "28081V5",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B00004OCJW"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "OXO Good Grips tin opener",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00004OCJW",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B00004OCJW",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"OXO Good Grips Soft Handled Tin Opener\". Brand \"OXO\", model \"28081\" (listing MPN \"28081V5\"). Pack: 1 can opener. Add to Basket present; canonical B00004OCJW."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b000079xw2",
+      "category": "tin_opener",
+      "product_name": "Oxo Can Opener Smooth Edge in black, Nylon, 6.22 x 16.89 x 27.31 cm",
+      "brand": "OXO",
+      "asin_uk": "B000079XW2",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "1049953",
+      "listing_mpn": "1049953V2",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B000079XW2"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "OXO smooth edge can opener",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B000079XW2",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B000079XW2",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Oxo Can Opener Smooth Edge in black, Nylon, 6.22 x 16.89 x 27.31 cm\". Brand \"OXO\", model \"1049953\" (listing MPN \"1049953V2\"). Pack: 1 can opener. Add to Basket present; canonical B000079XW2."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b07njhb97y",
+      "category": "tin_opener",
+      "product_name": "Brabantia Tasty+ Can & Bottle Opener, Ergonomic Design, Dark Grey",
+      "brand": "Brabantia",
+      "asin_uk": "B07NJHB97Y",
+      "gtin": null,
+      "mpn": "121869",
+      "model_code": "121869",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B07NJHB97Y"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Brabantia Tasty+ tin and bottle opener",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B07NJHB97Y",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B07NJHB97Y",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Brabantia Tasty+ Can & Bottle Opener, Ergonomic Design, Dark Grey\". Brand \"Brabantia\", model \"121869\". Pack: 1 can opener. Add to Basket present; canonical B07NJHB97Y."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b08ddy4gcs",
+      "category": "hygiene",
+      "product_name": "CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12, with Anti Viral action* Hand Gel and 70 Percent Alcohol that Cleans, Cares and Protects, 50 ml",
+      "brand": "Cussons Carex",
+      "asin_uk": "B08DDY4GCS",
+      "gtin": null,
+      "mpn": "05000101507083_100108726",
+      "model_code": "05000101507083_100108726",
+      "pack_quantity": null,
+      "specs": {
+        "pack_count": {
+          "value": 12,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Pack of 12\"",
+            "url": "https://www.amazon.co.uk/dp/B08DDY4GCS"
+          },
+          "captured_at": "2026-11-16T12:23:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B08DDY4GCS"
+      },
+      "captured_at": "2026-11-16T12:23:00+00:00",
+      "verification": "verified",
+      "display_name": "Carex antibacterial hand sanitiser gel, 12 x 50ml",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B08DDY4GCS",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B08DDY4GCS",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"CAREX Complete Original Anti Bacterial Hand Sanitiser Gel Pack of 12, with Anti Viral action* Hand Gel and 70 Percent Alcohol that Cleans, Cares and Protects, 50 ml\". Brand \"Cussons Carex\", model \"05000101507083_100108726\". Pack: 12 x 50 ml gel. Add to Basket present; canonical B08DDY4GCS."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b06xyh6966",
+      "category": "hygiene",
+      "product_name": "Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135",
+      "brand": "Dettol",
+      "asin_uk": "B06XYH6966",
+      "gtin": null,
+      "mpn": "3075819",
+      "model_code": "3075819",
+      "pack_quantity": null,
+      "specs": {
+        "pack_count": {
+          "value": 9,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"(9 x 15)\"",
+            "url": "https://www.amazon.co.uk/dp/B06XYH6966"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B06XYH6966"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Dettol antibacterial hand wipes, 9 packs of 15",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B06XYH6966",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B06XYH6966",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Dettol Antibacterial Hand Wipes, Fresh Scent (9 x 15) 135\". Brand \"Dettol\", model \"3075819\". Pack: 9 x 15 wipes (135). Add to Basket present; canonical B06XYH6966."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b009a6vm1g",
+      "category": "hygiene",
+      "product_name": "Cleanwaste Toilet in a Bag - DIY Kit 15 pack",
+      "brand": "Cleanwaste",
+      "asin_uk": "B009A6VM1G",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "D415W15",
+      "pack_quantity": null,
+      "specs": {
+        "pack_count": {
+          "value": 15,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"15 pack\"",
+            "url": "https://www.amazon.co.uk/dp/B009A6VM1G"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B009A6VM1G"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Cleanwaste toilet in a bag, 15 pack",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B009A6VM1G",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B009A6VM1G",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Cleanwaste Toilet in a Bag - DIY Kit 15 pack\". Brand \"Cleanwaste\", model \"D415W15\". Pack: 15 handled bags, 15 Poo Powder treatments, 1 scoop. Add to Basket present; canonical B009A6VM1G."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised emergency-toilet brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b097jvcvmk",
+      "category": "baby_care",
+      "product_name": "Pampers Premium Protection Nappies Size 4",
+      "brand": "Pampers",
+      "asin_uk": "B097JVCVMK",
+      "gtin": null,
+      "mpn": "YG0618502",
+      "model_code": "YG0618502",
+      "pack_quantity": null,
+      "specs": {
+        "size": {
+          "value": "Size 4",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Size 4\"",
+            "url": "https://www.amazon.co.uk/dp/B097JVCVMK"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        },
+        "pack_count": {
+          "value": 174,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing \"174\"",
+            "url": "https://www.amazon.co.uk/dp/B097JVCVMK"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B097JVCVMK"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Pampers Premium Protection nappies, size 4",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B097JVCVMK",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B097JVCVMK",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Pampers Premium Protection Nappies Size 4\". Brand \"Pampers\", model \"YG0618502\". Pack: 174 nappies. Add to Basket present; canonical B097JVCVMK."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand; no formula or baby food"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b08mxsbrsb",
+      "category": "baby_care",
+      "product_name": "WaterWipes Sensitive+ Newborn & Baby Wipes, 99.9% Water, Unscented, 12 Pack",
+      "brand": "WaterWipes",
+      "asin_uk": "B08MXSBRSB",
+      "gtin": null,
+      "mpn": "440001",
+      "model_code": "440001",
+      "pack_quantity": null,
+      "specs": {
+        "pack_count": {
+          "value": 12,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"12 Pack\"",
+            "url": "https://www.amazon.co.uk/dp/B08MXSBRSB"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B08MXSBRSB"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "WaterWipes baby wipes, 12 pack",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B08MXSBRSB",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B08MXSBRSB",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"WaterWipes Sensitive+ Newborn & Baby Wipes, 99.9% Water, Unscented, 12 Pack\". Brand \"WaterWipes\", model \"440001\". Pack: 12 packs, 720 wipes. Add to Basket present; canonical B08MXSBRSB."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0fftngfm9",
+      "category": "baby_care",
+      "product_name": "Huggies Pure Plastic Free Baby Wipes - Pack of 18 (864 Wipes) - 99% Water Wet Wipes, Fragrance Free, Hypoallergenic, Better Cleaning, Soft and Gentle on Babies' Delicate Skin",
+      "brand": "HUGGIES",
+      "asin_uk": "B0FFTNGFM9",
+      "gtin": null,
+      "mpn": "02434915",
+      "model_code": "02434915",
+      "pack_quantity": null,
+      "specs": {
+        "pack_count": {
+          "value": 18,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Pack of 18\"",
+            "url": "https://www.amazon.co.uk/dp/B0FFTNGFM9"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0FFTNGFM9"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Huggies Pure baby wipes, 18 pack",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0FFTNGFM9",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0FFTNGFM9",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Huggies Pure Plastic Free Baby Wipes - Pack of 18 (864 Wipes) - 99% Water Wet Wipes, Fragrance Free, Hypoallergenic, Better Cleaning, Soft and Gentle on Babies' Delicate Skin\". Brand \"HUGGIES\", model \"02434915\". Pack: 18 x 48 wipes (864). Add to Basket present; canonical B0FFTNGFM9."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b07krrfw9j",
+      "category": "sleeping_bag",
+      "product_name": "Highlander XL Sleeping Bag - Extra Wide Sleeping Bags for Adults - Rectangular, Lightweight & Water-Resistant - Soft Inner Lining - Indoor & Outdoor Use - Ideal for Camping",
+      "brand": "Highlander",
+      "asin_uk": "B07KRRFW9J",
+      "gtin": null,
+      "mpn": "SB181-BK",
+      "model_code": "SB181-BK",
+      "pack_quantity": null,
+      "specs": {
+        "size_label": {
+          "value": "XL",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"XL\"",
+            "url": "https://www.amazon.co.uk/dp/B07KRRFW9J"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B07KRRFW9J"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Highlander extra wide sleeping bag, XL",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B07KRRFW9J",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B07KRRFW9J",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Highlander XL Sleeping Bag - Extra Wide Sleeping Bags for Adults - Rectangular, Lightweight & Water-Resistant - Soft Inner Lining - Indoor & Outdoor Use - Ideal for Camping\". Brand \"Highlander\", model \"SB181-BK\". Pack: 1 sleeping bag with stuff sack. Add to Basket present; canonical B07KRRFW9J."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised UK outdoor brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cly3fr44",
+      "category": "sleeping_bag",
+      "product_name": "Snugpak The Sleeping Bag WGTE with Isofibre Insulation, Cold Weather Rated",
+      "brand": "Snugpak",
+      "asin_uk": "B0CLY3FR44",
+      "gtin": null,
+      "mpn": "10107700209WGTE",
+      "model_code": "10107700209WGTE",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CLY3FR44"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Snugpak The Sleeping Bag, left zip",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CLY3FR44",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0CLY3FR44",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Snugpak The Sleeping Bag WGTE with Isofibre Insulation, Cold Weather Rated\". Brand \"Snugpak\", model \"10107700209WGTE\". Pack: 1 sleeping bag with compression sack. Add to Basket present; canonical B0CLY3FR44."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised UK brand; MPN 10107700209WGTE"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0gq4sqc9p",
+      "category": "sleeping_bag",
+      "product_name": "Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy Design Holds Insulation, Breathable, Cosy Lining Fabric, Smaller Pack Size for Camping Trips, Backpacking, Hiking",
+      "brand": "Vango",
+      "asin_uk": "B0GQ4SQC9P",
+      "gtin": null,
+      "mpn": "SBPCADAIRAB5163",
+      "model_code": "SBPCADAIRAB5163",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0GQ4SQC9P"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Vango Cadair single sleeping bag",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0GQ4SQC9P",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0GQ4SQC9P",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Cadair 250 Sleeping Bag for Adults (Amazon Exclusive), 3 Season Mummy Design Holds Insulation, Breathable, Cosy Lining Fabric, Smaller Pack Size for Camping Trips, Backpacking, Hiking\". Brand \"Vango\", model \"SBPCADAIRAB5163\". Pack: Sleeping bag, carry bag. Add to Basket present; canonical B0GQ4SQC9P."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised UK outdoor brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0065isdr8",
+      "category": "document_pouch",
+      "product_name": "Sea to Summit Waterproof TPU Guide Map Case",
+      "brand": "Sea to Summit",
+      "asin_uk": "B0065ISDR8",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "385",
+      "listing_mpn": "AMAPTPUM",
+      "pack_quantity": null,
+      "specs": {
+        "size_label": {
+          "value": "Medium",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): listing size \"Medium\"",
+            "url": "https://www.amazon.co.uk/dp/B0065ISDR8"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0065ISDR8"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Sea to Summit waterproof map and document case",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0065ISDR8",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0065ISDR8",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Sea to Summit Waterproof TPU Guide Map Case\". Brand \"Sea to Summit\", model \"385\" (listing MPN \"AMAPTPUM\"). Pack: 1 TPU case. Add to Basket present; canonical B0065ISDR8."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b07b19m6db",
+      "category": "document_pouch",
+      "product_name": "OverBoard 100% Waterproof Map / Document Pouch",
+      "brand": "Overboard",
+      "asin_uk": "B07B19M6DB",
+      "gtin": null,
+      "mpn": "OB1105BLK",
+      "model_code": "OB1105BLK",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B07B19M6DB"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "OverBoard large waterproof document pouch",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B07B19M6DB",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B07B19M6DB",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"OverBoard 100% Waterproof Map / Document Pouch\". Brand \"Overboard\", model \"OB1105BLK\". Pack: 1 pouch (A3 size per listing). Add to Basket present; canonical B07B19M6DB."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Recognised UK waterproof brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0hf7lwyv9",
+      "category": "document_pouch",
+      "product_name": "Aquapac Waterproof Map Holder, Small",
+      "brand": "Aquapac",
+      "asin_uk": "B0HF7LWYV9",
+      "gtin": null,
+      "mpn": "809",
+      "model_code": "809",
+      "pack_quantity": null,
+      "specs": {
+        "size_label": {
+          "value": "Small",
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): title \"Small\"",
+            "url": "https://www.amazon.co.uk/dp/B0HF7LWYV9"
+          },
+          "captured_at": "2026-11-16T12:25:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0HF7LWYV9"
+      },
+      "captured_at": "2026-11-16T12:25:00+00:00",
+      "verification": "verified",
+      "display_name": "Aquapac waterproof map and document holder, small",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0HF7LWYV9",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0HF7LWYV9",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Aquapac Waterproof Map Holder, Small\". Brand \"Aquapac\", model \"809\". Pack: 1 holder with lanyard. Add to Basket present; canonical B0HF7LWYV9."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: UK-made, recognised brand"
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00zutjaha",
+      "category": "rainwater_storage",
+      "product_name": "168 litre Water Butt + Raintrap Diverter + Stand",
+      "brand": "Harcostar",
+      "asin_uk": "B00ZUTJAHA",
+      "gtin": null,
+      "mpn": "HS168WBKIT",
+      "model_code": "HS168WBKIT",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 168,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): Capacity \"168 litres\"",
+            "url": "https://www.amazon.co.uk/dp/B00ZUTJAHA"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        },
+        "drinking_water_note": {
+          "value": "Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.",
+          "source": {
+            "name": "Prepare (UK government): water supply interruptions or outages",
+            "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B00ZUTJAHA"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Harcostar 168L water butt with stand and diverter",
+      "display_rank": 1,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00ZUTJAHA",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B00ZUTJAHA",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"168 litre Water Butt + Raintrap Diverter + Stand\". Brand \"Harcostar\", model \"HS168WBKIT\". Pack: 168L water butt, stand, hose connector tap, Universal Rain Trap. Add to Basket present; canonical B00ZUTJAHA."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Harcostar is the UK market-leading water butt brand; complete kit",
+        "Rainwater is not drinking water: filter or treat it before drinking (pairs with gravity_filter). See specs.drinking_water_note."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b00cre5zqg",
+      "category": "rainwater_storage",
+      "product_name": "Strata pro Ward 250L Slimline Water Butt including Tap and Lid",
+      "brand": "Ward",
+      "asin_uk": "B00CRE5ZQG",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "GN340",
+      "listing_mpn": "548461",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 250,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): Capacity \"250 litres\"",
+            "url": "https://www.amazon.co.uk/dp/B00CRE5ZQG"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        },
+        "drinking_water_note": {
+          "value": "Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.",
+          "source": {
+            "name": "Prepare (UK government): water supply interruptions or outages",
+            "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
+          },
+          "captured_at": "2026-11-16T12:24:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B00CRE5ZQG"
+      },
+      "captured_at": "2026-11-16T12:24:00+00:00",
+      "verification": "verified",
+      "display_name": "Ward 250L slimline water butt with tap and lid",
+      "display_rank": 2,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B00CRE5ZQG",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B00CRE5ZQG",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Strata pro Ward 250L Slimline Water Butt including Tap and Lid\". Brand \"Ward\", model \"GN340\" (listing MPN \"548461\"). Pack: 1 water butt with tap and lid. Add to Basket present; canonical B00CRE5ZQG."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Ward (Strata Products Ltd), UK-made; model GN340",
+        "Rainwater is not drinking water: filter or treat it before drinking (pairs with gravity_filter). See specs.drinking_water_note."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cvl4w8cq",
+      "category": "rainwater_storage",
+      "product_name": "Stewart 238976 235 L Oak Effect Water Butt, Size Diameter Widest Point x H: 66x86 cm, Black/Brown",
+      "brand": "Stewart",
+      "asin_uk": "B0CVL4W8CQ",
+      "gtin": null,
+      "mpn": "238976",
+      "model_code": "238976",
+      "pack_quantity": null,
+      "specs": {
+        "capacity_l": {
+          "value": 235,
+          "source": {
+            "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026): Capacity \"235 litres\"",
+            "url": "https://www.amazon.co.uk/dp/B0CVL4W8CQ"
+          },
+          "captured_at": "2026-11-16T12:25:00+00:00"
+        },
+        "drinking_water_note": {
+          "value": "Do not drink rainwater as collected: it can contain bacteria. Use it to flush toilets or water plants, or filter and treat it before drinking, for example with a gravity water filter.",
+          "source": {
+            "name": "Prepare (UK government): water supply interruptions or outages",
+            "url": "https://prepare.campaign.gov.uk/be-informed-about-hazards/water-supply-interruptions-or-outages/"
+          },
+          "captured_at": "2026-11-16T12:25:00+00:00"
+        }
+      },
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CVL4W8CQ"
+      },
+      "captured_at": "2026-11-16T12:25:00+00:00",
+      "verification": "verified",
+      "display_name": "Stewart 235L oak-effect water butt with tap",
+      "display_rank": 3,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CVL4W8CQ",
+        "checked_on": "2026-11-16",
+        "outcome": "verified",
+        "checks_matched": ["title", "brand", "model", "pack_contents"],
+        "canonical_asin": "B0CVL4W8CQ",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Stewart 238976 235 L Oak Effect Water Butt, Size Diameter Widest Point x H: 66x86 cm, Black/Brown\". Brand \"Stewart\", model \"238976\". Pack: 1 water butt with child safety lid and drain-off tap. Add to Basket present; canonical B0CVL4W8CQ."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Why picked: Stewart Garden, established UK garden brand; model 238976",
+        "Rainwater is not drinking water: filter or treat it before drinking (pairs with gravity_filter). See specs.drinking_water_note."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0cmy1grtz",
+      "category": "gravity_filter",
+      "product_name": "LifeStraw Peak Series - Compact Gravity Water Filter System - 3L for Backpacking, Group Camping, Hiking and Travel, Dark Mountain Gray",
+      "brand": "LifeStraw",
+      "asin_uk": "B0CMY1GRTZ",
+      "gtin": null,
+      "mpn": null,
+      "model_code": "LSPSF3GRWW",
+      "listing_mpn": "LSPSFX3LAN1",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CMY1GRTZ"
+      },
+      "captured_at": "2026-11-16T12:26:00+00:00",
+      "verification": "unverified",
+      "display_name": "LifeStraw Peak compact gravity water filter, 3L",
+      "display_rank": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CMY1GRTZ",
+        "checked_on": "2026-11-16",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model"],
+        "canonical_asin": "B0CMY1GRTZ",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"LifeStraw Peak Series - Compact Gravity Water Filter System - 3L for Backpacking, Group Camping, Hiking and Travel, Dark Mountain Gray\". Re-check 16 Nov 2026: listing shows no featured offer / no Add to Basket, so it is not currently buyable. Replaced by B0CMY1SQ3D (same system, Mountain Blue)."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Unverified: Re-check 16 Nov 2026: listing shows no featured offer / no Add to Basket, so it is not currently buyable. Replaced by B0CMY1SQ3D (same system, Mountain Blue)."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b004lwwfq0",
+      "category": "water_container",
+      "product_name": "Highlander Accordion 10 Water Carrier, Clear",
+      "brand": "Highlander",
+      "asin_uk": "B004LWWFQ0",
+      "gtin": null,
+      "mpn": "CP107",
+      "model_code": "CP107",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B004LWWFQ0"
+      },
+      "captured_at": "2026-11-16T12:26:00+00:00",
+      "verification": "unverified",
+      "display_name": "Highlander 10L collapsible water carrier with tap",
+      "display_rank": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B004LWWFQ0",
+        "checked_on": "2026-11-16",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model"],
+        "canonical_asin": "B004LWWFQ0",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"Highlander Accordion 10 Water Carrier, Clear\". Re-check 16 Nov 2026: listing shows no featured offer / no Add to Basket, so it is not currently buyable."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Unverified: Re-check 16 Nov 2026: listing shows no featured offer / no Add to Basket, so it is not currently buyable."
+      ]
+    },
+    {
+      "schema_version": 2,
+      "variant_id": "amazon-uk-b0chvpbj29",
+      "category": "grab_bag_kit",
+      "product_name": "First My Family All-in-One Premium Disaster Preparedness Survival Kit with 72 Hours of Survival and First-Aid Supplies",
+      "brand": "First My Family",
+      "asin_uk": "B0CHVPBJ29",
+      "gtin": null,
+      "mpn": "FMF1P",
+      "model_code": "FMF1P",
+      "pack_quantity": null,
+      "specs": {},
+      "source": {
+        "name": "Amazon UK product page (public listing, S1-10b research 16 Nov 2026)",
+        "url": "https://www.amazon.co.uk/dp/B0CHVPBJ29"
+      },
+      "captured_at": "2026-11-16T12:28:00+00:00",
+      "verification": "unverified",
+      "display_name": null,
+      "display_rank": null,
+      "image_url": null,
+      "image_width": null,
+      "image_height": null,
+      "image_source": null,
+      "verification_evidence": {
+        "method": "public_listing",
+        "source_url": "https://www.amazon.co.uk/dp/B0CHVPBJ29",
+        "checked_on": "2026-11-16",
+        "outcome": "not_verified",
+        "checks_matched": ["title", "brand", "model"],
+        "canonical_asin": "B0CHVPBJ29",
+        "note": "Amazon listing title (verbatim, 16 Nov 2026): \"First My Family All-in-One Premium Disaster Preparedness Survival Kit with 72 Hours of Survival and First-Aid Supplies\". First My Family 1-person kit (FMF1P): Set Name says \"36-Piece\" but Number of Pieces says 30, and the listing is an international (sold from abroad) item. Pack contents conflict, so unverified."
+      },
+      "notes": [
+        "Identity from the tagless public listing (S1-10b research, 16 Nov 2026, Firefox UA). No price, availability or image stored.",
+        "Unverified: First My Family 1-person kit (FMF1P): Set Name says \"36-Piece\" but Number of Pieces says 30, and the listing is an international (sold from abroad) item. Pack contents conflict, so unverified.",
+        "US-made kit sold on Amazon UK. Food/water packing date is not stated on the listing."
+      ]
     }
   ]
 }

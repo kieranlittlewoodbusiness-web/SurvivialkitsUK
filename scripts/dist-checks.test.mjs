@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
+import { affiliateAsins, compareAsinSets, checkContent, checkLinks, DEFAULT_BANNED, orphanAdBadges, headersPatternMatches, parseHeadersFile, checkStarRuleSecurityHeaders, REQUIRED_PERMISSIONS_POLICY } from './lib/dist-checks.mjs';
 import { checkComparePage, readCompareHtml } from './lib/s1-10-card-rules.mjs';
 import { VERIFIED_BY_CATEGORY } from '../tests/offers/verifiedSet.ts';
 
@@ -212,7 +212,10 @@ describe('verify:dist (production build with a dummy tag)', () => {
     expect(log).toMatch(new RegExp(`affiliate ${expectedAffiliate}\\)`));
     expect(log).toMatch(new RegExp(`exactly ${expectedAffiliate} affiliate links`));
     expect(log).toMatch(/robots\.txt allows crawling/);
+    // S1-10b (CR L1): exact ASIN set, not just the count.
+    expect(log).toMatch(new RegExp(`affiliate ASIN set equals verifiedSet\\.ts exactly \\(${expectedAffiliate} ASINs`));
     expect(r.status).toBe(0);
+    expect(affiliateAsins(out).asins).toEqual(Object.values(VERIFIED_BY_CATEGORY).flatMap((a) => a.slice(0, PER_CATEGORY)).sort());
     const realTag = process.env.AMAZON_ASSOCIATES_UK_TAG;
     if (realTag) expect(log.includes(realTag)).toBe(false);
     const compare = readCompareHtml(out);
@@ -307,5 +310,26 @@ describe('pages.dev _headers patterns', () => {
           headersPatternMatches(r.pattern, 'https://uksurvivalkits.uk/'),
       ),
     ).toBe(false);
+  });
+});
+
+describe('S1-10b (CR L1): exact affiliate ASIN set', () => {
+  const dist = (pages) => {
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), 'asin-set-'));
+    pages.forEach((html, i) => fs.writeFileSync(path.join(d, `p${i}.html`), html));
+    return d;
+  };
+  const a = (asin) => `<a href="https://www.amazon.co.uk/dp/${asin}?tag=TESTONLY-21" rel="sponsored nofollow">x</a>`;
+
+  it('collects tagged dp ASINs across pages and ignores untagged or other links', () => {
+    const d = dist([a('B000000001') + a('B000000002'), a('B000000002') + '<a href="https://www.amazon.co.uk/dp/B000000003">plain</a>']);
+    const r = affiliateAsins(d);
+    expect(r.asins).toEqual(['B000000001', 'B000000002']);
+    expect(r.counts.get('B000000002')).toBe(2);
+  });
+
+  it('same count but a different ASIN fails; identical sets pass', () => {
+    expect(compareAsinSets(['A000000001', 'A000000002'], ['A000000001', 'A000000003'])).toEqual({ ok: false, missing: ['A000000003'], extra: ['A000000002'] });
+    expect(compareAsinSets(['A000000002', 'A000000001'], ['A000000001', 'A000000002']).ok).toBe(true);
   });
 });
