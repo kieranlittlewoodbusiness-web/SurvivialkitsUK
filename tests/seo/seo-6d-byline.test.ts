@@ -60,7 +60,7 @@ describe('fixture build with lastReviewed bumped past pubDate', () => {
       fs.writeFileSync(file, md.replace(/^lastReviewed: 2026-11-14$/m, 'lastReviewed: 2026-11-15'));
     }
     dist = path.join(tmp, 'dist');
-    const env = { ...process.env, TZ: 'America/Los_Angeles' };
+    const env: NodeJS.ProcessEnv = { ...process.env, TZ: 'America/Los_Angeles' };
     for (const k of ['SITE_ENV', 'AMAZON_ASSOCIATES_UK_TAG', 'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL']) delete env[k];
     build = spawnSync(path.join(ROOT, 'node_modules/.bin/astro'), ['build', '--outDir', dist], {
       cwd: tmp,
