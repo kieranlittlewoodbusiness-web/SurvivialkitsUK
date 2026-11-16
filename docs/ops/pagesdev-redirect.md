@@ -4,6 +4,10 @@ The Cloudflare Pages production alias `https://uksurvivalkits.pages.dev` should 
 
 This cannot be done in the repo with Pages `_redirects`. Apply the Bulk Redirect below in the Cloudflare dashboard (K55).
 
+## Applied
+
+Applied on 16 November 2026 by K55 after Kieran's approval: Bulk Redirect list `032bf450`, ruleset `1049172870504a5aaee3002682f4c281`, rule `a0f0b8cd`. On 16 November 2026 at 19:08 Europe/London, `curl -sI` returned a 301 from `https://uksurvivalkits.pages.dev/` to `https://uksurvivalkits.uk/`, and from `/checklist/?x=1` to `https://uksurvivalkits.uk/checklist/?x=1`, while the apex, a branch preview and a versioned alias returned 200 ([evidence on #33](https://github.com/kieranlittlewoodbusiness-web/SurvivialkitsUK/pull/33#issuecomment-6926295424)). The plain `http://` check was not run: the network used for the check can't make plain HTTP requests.
+
 ## Why not `_redirects` or a Pages Function
 
 Pages `_redirects` cannot match on host. The source of each rule is a file path, and [domain-level redirects are unsupported](https://developers.cloudflare.com/pages/configuration/redirects/):
@@ -33,7 +37,7 @@ In the Cloudflare dashboard, go to **Bulk redirects** (account level), or **Work
 - **List name:** `pagesdev_to_apex` (or similar; must be unique on the account)
 - **Description:** `301 uksurvivalkits.pages.dev to https://uksurvivalkits.uk, exact host only`
 
-Add one URL redirect. Expand **Edit parameters** and set the flags below; the three default-off flags that must be on are easy to miss.
+Add one URL redirect. Expand **Edit parameters** and set the flags below; the two default-off flags that must be on (Preserve query string and Subpath matching) are easy to miss.
 
 | Field | Value |
 | --- | --- |
