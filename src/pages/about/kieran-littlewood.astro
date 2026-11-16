@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { editor } from '../../data/editor';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 import { breadcrumbList, crumbsForPage, pageUrl, webPage } from '../../lib/seo/jsonld';
 
 const canonicalPath = editor.path;
@@ -24,13 +25,15 @@ const jsonLd = [
 >
   <section class="section">
     <div class="wrap wrap--narrow">
-      <nav aria-label="Breadcrumb">
-        <ol class="crumbs">
-          <li><a href="/">Home</a></li>
-          <li><a href="/about/">About</a></li>
-          <li aria-current="page">{editor.name}</li>
-        </ol>
-      </nav>
+      <Breadcrumb
+        separator="›"
+        pad="end"
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'About', href: '/about/' },
+          { label: editor.name },
+        ]}
+      />
 
       <div class="prose">
         <h1>{editor.name}</h1>
@@ -59,31 +62,3 @@ const jsonLd = [
     </div>
   </section>
 </BaseLayout>
-
-<style>
-  .crumbs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-1) var(--s-2);
-    list-style: none;
-    padding: 0 0 var(--s-4);
-    margin: 0;
-    font-size: var(--step--1);
-    color: var(--ink-2);
-  }
-  .crumbs a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tap);
-    color: var(--ink-2);
-  }
-  .crumbs li {
-    display: inline-flex;
-    align-items: center;
-  }
-  .crumbs li + li::before {
-    content: '/';
-    margin-right: var(--s-2);
-    color: var(--ink-3);
-  }
-</style>
