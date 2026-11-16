@@ -397,7 +397,7 @@ export const LEGACY_KIT_CATEGORY = 'kit' as const;
  *   (Web follow-up PR s1-10b-rendering removes it from this list). verify:dist then requires the note
  *   whenever a rainwater card renders, and its expected ASIN set drops gated categories automatically.
  */
-export const RENDER_GATED_CATEGORIES: readonly ProductCategory[] = ['rainwater_storage'];
+export const RENDER_GATED_CATEGORIES: readonly ProductCategory[] = [];
 
 /** S1-10b: every category that may appear in rendered output (PRODUCT_CATEGORIES minus legacy 'kit' and RENDER_GATED_CATEGORIES). */
 export const RENDERABLE_CATEGORIES: readonly ProductCategory[] = PRODUCT_CATEGORIES.filter(

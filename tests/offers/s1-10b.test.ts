@@ -39,13 +39,13 @@ describe('S1-10b categories', () => {
       expect(CATEGORY_LABELS[c]).toMatch(/^[A-Z][a-z -]+$/);
     }
     expect(RENDERABLE_CATEGORIES).not.toContain('kit');
-    expect(RENDER_GATED_CATEGORIES).toEqual(['rainwater_storage']);
-    expect(RENDERABLE_CATEGORIES).not.toContain('rainwater_storage');
+    // S1-10b-web un-gates rainwater_storage: Web renders the drinking-water note (section + every card).
+    expect(RENDER_GATED_CATEGORIES).toEqual([]);
+    expect(RENDERABLE_CATEGORIES).toContain('rainwater_storage');
     expect(KIT_CATEGORIES).toEqual(['home_kit', 'grab_bag_kit']);
     const groups = groupComparisonsByCategory(build(PROD));
     const order = groups.map((g) => g.category);
     expect(order).toEqual(RENDERABLE_CATEGORIES.filter((c) => (VERIFIED_BY_CATEGORY[c]?.length ?? 0) > 0));
-    expect(order).not.toContain('rainwater_storage');
     for (const g of groups) expect(g.comparisons.map((c) => c.product.asin_uk)).toEqual(VERIFIED_BY_CATEGORY[g.category]);
   });
 
@@ -155,19 +155,18 @@ describe('S1-10b legacy kit / EVAQ8 data never renders', () => {
   });
 });
 
-describe('S1-10b render gate (CR M1): rainwater_storage', () => {
-  it('the 3 water butts stay verified in the data but produce 0 comparisons, sections or links', () => {
+describe('S1-10b render gate (CR M1): rainwater_storage un-gated by S1-10b-web', () => {
+  it('the verified water butts render, each carrying the exact drinking-water note in its public specs', () => {
     const rwAsins = VERIFIED_BY_CATEGORY.rainwater_storage!;
-    expect(rwAsins).toHaveLength(3);
+    expect(rwAsins.length).toBeGreaterThan(0);
     for (const a of rwAsins) expect(catalogueProducts.find((p) => p.asin_uk === a)!.verification).toBe('verified');
     for (const env of [PROD, {}]) {
-      const built = build(env);
-      expect(built.comparisons.filter((c) => c.category === 'rainwater_storage')).toHaveLength(0);
-      expect(built.unknown.filter((o) => rwAsins.some((a) => o.variant_id.includes(a.toLowerCase())))).toHaveLength(0);
-      const grouped = groupComparisonsByCategory(built);
-      expect(grouped.map((g) => g.category_label)).not.toContain('Rainwater storage');
-      const json = JSON.stringify(grouped);
-      for (const a of rwAsins) expect(json.includes(a)).toBe(false);
+      const grouped = groupComparisonsByCategory(build(env));
+      const g = grouped.find((x) => x.category === 'rainwater_storage');
+      expect(g?.comparisons.map((c) => c.product.asin_uk)).toEqual(rwAsins.slice(0, 3));
+      for (const c of g!.comparisons) {
+        expect((c.product.specs as { drinking_water_note?: string }).drinking_water_note).toBe(RAINWATER_DRINKING_WATER_NOTE);
+      }
     }
   });
 });
@@ -189,10 +188,10 @@ describe('S1-10b fake-tag library probe (counts only)', () => {
   const RENDERED = Object.entries(VERIFIED_BY_CATEGORY)
     .filter(([c]) => !(RENDER_GATED_CATEGORIES as readonly string[]).includes(c))
     .flatMap(([, a]) => a as readonly string[]);
-  it('production = every verified, non-gated product, each linked once (67 verified - 3 gated rainwater = 64)', () => {
+  it('production = every verified, non-gated product, each linked once (derived; nothing gated after S1-10b-web)', () => {
     const l = links(PROD);
     expect(VERIFIED_COUNT).toBe(67);
-    expect(RENDERED).toHaveLength(64);
+    expect(RENDERED).toHaveLength(VERIFIED_COUNT);
     expect(l).toHaveLength(RENDERED.length);
     expect(new Set(l.map((o) => o.link_url)).size).toBe(RENDERED.length);
     const expected = RENDERED.map((a) => `https://www.amazon.co.uk/dp/${a}?tag=${FAKE_TAG}`).sort();
