@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { refineGuideDates } from './lib/content-dates';
 
 const sourceSchema = z.object({
   label: z.string(),
@@ -47,7 +48,7 @@ const scenarios = defineCollection({
         ]),
       )
       .default([]),
-  }),
+  }).superRefine(refineGuideDates),
 });
 
 const gear = defineCollection({
@@ -80,7 +81,7 @@ const gear = defineCollection({
     criteria: z.array(z.string()).min(1),
     sources: z.array(sourceSchema).default([]),
     reviewFlags: z.array(z.string()).default([]),
-  }),
+  }).superRefine(refineGuideDates),
 });
 
 export const collections = { scenarios, gear };

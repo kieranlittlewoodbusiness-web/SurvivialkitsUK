@@ -334,6 +334,23 @@ describe('checkJsonLd', () => {
     expect(checkJsonLd(site({ 'method/index.html': match, '404.html': html({ robots: 'noindex, nofollow', script: '', canonical: null, heading: 'Page not found' }) }), { now: NOW }).failures).toEqual([]);
   });
 
+  it('SEO-6e: dateModified must equal the visible Last reviewed / Updated day, not just the Published day', () => {
+    // Byline shows Published 14 Nov and Last reviewed 15 Nov, but dateModified is 14 Nov: before SEO-6e this
+    // passed because 14 Nov is visible (as Published); now it fails against the Last reviewed day.
+    const stale = pageNodes();
+    stale[3].dateModified = '2026-11-14T00:00:00+00:00';
+    const byline = '<span>Edited by <a href="/about/kieran-littlewood/">Kieran Littlewood</a> · Published <time datetime="2026-11-14">14\u00a0November\u00a02026</time> · Last reviewed 15\u00a0November\u00a02026</span>';
+    expect(reasons(site({ 'method/index.html': html({ script: graph(stale), body: byline }) }))).toMatch(
+      /Article\.dateModified date 2026-11-14 does not match the visible date \(Last reviewed \/ Updated \/ Last checked: 2026-11-15\)/,
+    );
+
+    // dateModified 15 Nov matches the Last reviewed day: passes.
+    expect(reasons(site({ 'method/index.html': html({ body: byline }) }))).toBe('');
+
+    // Pages without a Last reviewed / Updated / Last checked label keep the older rule (any visible date).
+    expect(reasons(site({ 'method/index.html': html({ body: 'Published <time datetime="2026-11-14">14 Nov 2026</time> <time datetime="2026-11-15">15 Nov</time>' }) }))).toBe('');
+  });
+
   it('SEO-6d: fails when datePublished is not shown on a page that shows dates, and passes when it is', () => {
     const missing = html({ body: 'Updated <time datetime="2026-11-15">15 Nov 2026</time>' });
     expect(reasons(site({ 'method/index.html': missing }))).toMatch(

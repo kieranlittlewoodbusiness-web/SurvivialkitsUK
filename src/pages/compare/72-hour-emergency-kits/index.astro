@@ -8,7 +8,7 @@ import CategoryIcon from '../../../components/catalogue/CategoryIcon.astro';
 import { CATEGORY_META, loadCatalogue, productSections as compareSections } from '../../../components/catalogue/catalogueView';
 import { comparePath } from '../../../data/site';
 import { COMPARE_DATES } from '../../../data/compareDates';
-import { formatLondonDate, formatLondonShortDate } from '../../../lib/dates';
+import { formatLondonDate, formatLondonShortDate, NBSP } from '../../../lib/dates';
 import {
   article,
   breadcrumbList,
@@ -33,7 +33,7 @@ const productSections = compareSections(catalogue);
 const official = [
   { label: 'Be Ready: be ready for emergencies (GOV.UK campaign)', url: 'https://beready.campaign.gov.uk/be-ready-for-emergencies/' },
   { label: 'Be Ready checklist (PDF)', url: 'https://beready.campaign.gov.uk/wp-content/uploads/sites/252/2026/10/Be-Ready-Checklist_English.pdf' },
-  { label: 'GOV.UK: households encouraged to take small, simple steps (22\u00a0Oct\u00a02026)', url: 'https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency' },
+  { label: `GOV.UK: households encouraged to take small, simple steps (22${NBSP}Oct${NBSP}2026)`, url: 'https://www.gov.uk/government/news/households-encouraged-to-take-small-simple-steps-to-stay-prepared-in-an-emergency' },
   { label: 'British Red Cross: prepare an emergency kit', url: 'https://www.redcross.org.uk/get-help/prepare-for-emergencies/prepare-an-emergency-kit' },
   { label: 'Cabinet Office: UK Public Survey of Risk Perception, Resilience and Preparedness 2026', url: 'https://www.gov.uk/government/statistics/uk-public-survey-of-risk-perception-resilience-and-preparedness-2026/uk-public-survey-of-risk-perception-resilience-and-preparedness-2026-headline-findings-html' },
   { label: 'Power Cut 105 (GB)', url: 'https://www.powercut105.com/en/' },
@@ -104,7 +104,7 @@ const litresRows = [1, 2, 3, 4, 5, 6];
         A 72-hour kit should cover 3 litres of drinking water per person per day, no-cook food, a torch, a battery or
         wind-up radio, a charged power bank, first aid, your medication, cash, warm layers and copies of documents.
       </p>
-      <p><EvidenceBadge kind="official-guidance" /> Benchmark: the government's Be Ready checklist (Oct&nbsp;2026).</p>
+      <p><EvidenceBadge kind="official-guidance" /> Benchmark: the government's Be Ready checklist (Oct{NBSP}2026).</p>
     </section>
 
     <nav class="jump" aria-label="Jump to a category">
