@@ -14,10 +14,10 @@ gearCategories: [torches, power-banks, radios]
 evidence: [official-guidance]
 reviewFlags: []
 sources:
-  - label: Prepare – Power cuts
-    url: https://prepare.campaign.gov.uk/be-informed-about-hazards/power-cuts/
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Power cuts
+    url: https://beready.campaign.gov.uk/be-informed-about-hazards/power-cuts/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
 ---

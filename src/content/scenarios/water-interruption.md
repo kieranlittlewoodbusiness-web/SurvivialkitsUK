@@ -11,8 +11,8 @@ order: 3
 gearCategories: [water-storage]
 evidence: [official-guidance]
 sources:
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Ready Scotland – Find and share information
     url: https://ready.campaign.gov.scot/find-share-information-emergency
   - label: National Resilience / Be Ready checklist (PDF)

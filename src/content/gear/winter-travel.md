@@ -17,8 +17,8 @@ criteria:
 sources:
   - label: Ready Scotland – Emergency kit
     url: https://ready.campaign.gov.scot/emergency-kit
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
 ---
 
 A boot shelf of basics helps if you are delayed. It is not a reason to drive into a red warning. Inventory coats, scrapers and torches you already own first.

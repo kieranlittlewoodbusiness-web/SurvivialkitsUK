@@ -16,8 +16,8 @@ reviewFlags: []
 sources:
   - label: Ready Scotland – Emergency kit (car section)
     url: https://ready.campaign.gov.scot/emergency-kit
-  - label: Prepare – Get prepared for emergencies
-    url: https://prepare.campaign.gov.uk/get-prepared-for-emergencies/
+  - label: Be Ready – Be ready for emergencies
+    url: https://beready.campaign.gov.uk/be-ready-for-emergencies/
   - label: Met Office – UK warnings
     url: https://weather.metoffice.gov.uk/warnings-and-advice/uk-warnings
 ---
