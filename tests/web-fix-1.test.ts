@@ -34,7 +34,7 @@ function assertSpace(html: string, label: string) {
   expect(normalized, label).not.toContain('ouraffiliate');
   const text = visibleText(html);
   expect(text, label).toContain('our affiliate disclosure');
-  expect(text.replace(/\s+/g, ''), label).not.toContain('ouraffiliate');
+  expect(text, label).not.toContain('ouraffiliate');
 }
 
 let plain: SiteBuild;
