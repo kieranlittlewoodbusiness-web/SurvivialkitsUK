@@ -40,8 +40,9 @@ A build without the tag (or a non-production `SITE_ENV`) has 0 affiliate links. 
 
 **`npm run verify:dist`** (`scripts/verify-dist.mjs`) is the production gate. Run it before every production deploy. It builds with `SITE_ENV=production` and the dummy tag `verifydist-21` into `.verify-dist/` (the real tag is never used or printed), then runs:
 
-- `check:links --expect-affiliate 9`: exactly 9 affiliate links, all with `sponsored` and `nofollow`;
-- `check:content --production`: no `noindex` on any page except `404.html`, `robots.txt` contains `Allow: /` and no `Disallow: /`, `_headers` exists and sends `X-Robots-Tag: noindex` for `uksurvivalkits.pages.dev` and `*.uksurvivalkits.pages.dev` only, never for `uksurvivalkits.uk`, and every canonical, `og:url` and sitemap URL uses the apex `https://uksurvivalkits.uk` (never `www` or `pages.dev`).
+- `check:links --expect-affiliate <derived>`: the expected affiliate count is derived from `tests/offers/verifiedSet.ts` (compare page capped at 3 per category, plus one homepage top pick per category). With the current set that is **75 links** (compare 53, home 22), all with `sponsored` and `nofollow`. The dummy tag used for this build is `verifydist-21`;
+- `check:content --production`: no `noindex` on any page except `404.html`, `robots.txt` contains `Allow: /` and no `Disallow: /`, `_headers` exists and sends `X-Robots-Tag: noindex` for `uksurvivalkits.pages.dev` and `*.uksurvivalkits.pages.dev` only, never for `uksurvivalkits.uk`, and every canonical, `og:url` and sitemap URL uses the apex `https://uksurvivalkits.uk` (never `www` or `pages.dev`);
+- then the exact ASIN set and placement (every expected ASIN once on the compare page; homepage top picks are each category's first-ranked product, at most once; no affiliate links on any other page), the rainwater drinking-water note, and the compare/homepage card rules.
 
 `npm test` runs the same `verify:dist` path, plus mutation tests for both checkers (`scripts/dist-checks.test.mjs`). There is no CI workflow in this repo yet. Run `npm run check`, `npm test` and `npm run verify:dist` locally before merging and deploying. Preview builds stay `noindex` with `robots.txt` `Disallow: /`.
 
@@ -55,6 +56,8 @@ A build without the tag (or a non-production `SITE_ENV`) has 0 affiliate links. 
 | Build output directory | `dist` |
 | Node version | `22` (or matching `engines` in `package.json`) |
 | Framework preset | None / Astro static |
+
+Production is deployed by Direct Upload of a locally built `dist` (see `docs/ops/pages-headers.md`), so Cloudflare Pages dashboard environment variables are not applied to the production build. Export `SITE_ENV` and any IDs in the shell that runs `npm run build` — see item 1 under [What you still need to supply](#what-you-still-need-to-supply).
 
 Canonical URLs, Open Graph, sitemap and `robots.txt` read `siteUrl` from `src/data/site.ts`.
 
@@ -112,11 +115,24 @@ BUILD_BRIEF.md
 
 - Mobile-first CSS; keyboard menu with Escape to close; visible `:focus-visible`
 - Print stylesheet hides header/footer, toolbars and `.no-print`
-- No third-party scripts or fonts (Barlow Condensed 700 and Inter 400/600 are self-hosted from @fontsource in `public/fonts`, OFL 1.1)
+- Fonts (Barlow Condensed 700 and Inter 400/600) are self-hosted from @fontsource in `public/fonts`, OFL 1.1. Tracking scripts load only when `SITE_ENV=production` and at least one `PUBLIC_*` ID are set at build time, and only after the visitor consents. With no IDs (the current production setup) there are no third-party scripts.
 
 ## What you still need to supply
 
-1. `AMAZON_ASSOCIATES_UK_TAG` set in the Cloudflare Pages production environment, with `SITE_ENV=production`
+1. Export `SITE_ENV=production` and `AMAZON_ASSOCIATES_UK_TAG` in the shell that runs `npm run build` before you upload `dist`. Production is deployed by Direct Upload (see `docs/ops/pages-headers.md`), so Cloudflare Pages dashboard variables do not reach the build. Optionally, only with Kieran's yes when tracking is switched on, also export `PUBLIC_GA4_ID`, `PUBLIC_GOOGLE_ADS_ID` and `PUBLIC_META_PIXEL_ID`. Tracking needs `SITE_ENV=production` **and** at least one of those IDs; previews (`*.pages.dev`) never load tags. Example (placeholder IDs only, clearly not real accounts — omit the `PUBLIC_*` lines until tracking is switched on):
+
+   ```bash
+   export SITE_ENV=production
+   # Replace the placeholder with the real Associates tag in this shell, then export it.
+   # example-21 is a placeholder only — never print or commit the real tag.
+   # A bare `export AMAZON_ASSOCIATES_UK_TAG` (no value) or an empty value builds with 0 affiliate links.
+   export AMAZON_ASSOCIATES_UK_TAG=example-21
+   # Optional examples only, and only with Kieran's yes when tracking is switched on:
+   export PUBLIC_GA4_ID=G-TEST000000
+   export PUBLIC_GOOGLE_ADS_ID=AW-000000000
+   export PUBLIC_META_PIXEL_ID=000000000000000
+   npm run build
+   ```
 2. Contact inbox if not `editors@uksurvivalkits.uk`
 3. Cloudflare Pages DNS for `uksurvivalkits.uk`
 4. Clear or rewrite the claims behind any `reviewFlags` (internal notes, not rendered)
