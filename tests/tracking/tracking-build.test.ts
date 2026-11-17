@@ -118,7 +118,7 @@ describe('dummy IDs on a production build', () => {
     expect(html.match(/<th scope="row"/g)).toHaveLength(3);
     expect(html).not.toContain('does not include third-party');
     expect(html).toContain('UK Survival Kits is the controller of the personal data described on this page.');
-    expect(html).toContain('We use optional analytics and advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.');
+    expect(html).toContain('We use optional analytics and advertising cookies only with your consent, which you can withdraw at any time through <a href="/privacy/#cookies" data-consent-open>Cookie settings</a>. If you email us, we use what you send to reply to you.');
     expect(html).toContain('Google and Meta may process this data outside the UK, including in the United States, under their own safeguards.');
     expect(html.indexOf('United States')).toBeGreaterThan(html.indexOf('</table>'));
     expect(html).not.toMatch(/TODO|postal address/i);
@@ -141,7 +141,7 @@ describe('dummy IDs on a production build', () => {
 describe('partial-ID builds name only the tools in use (CR M1)', () => {
   it('GA4 only: analytics / Google, no Meta or advertising wording in the new lines, one table row', () => {
     const html = read(ga4Only, 'privacy/index.html');
-    expect(html).toContain('<p>We use optional analytics cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p>');
+    expect(html).toContain('<p>We use optional analytics cookies only with your consent, which you can withdraw at any time through <a href="/privacy/#cookies" data-consent-open>Cookie settings</a>. If you email us, we use what you send to reply to you.</p>');
     expect(html).toContain('<p>Google may process this data outside the UK, including in the United States, under their own safeguards.</p>');
     expect(html).not.toContain('Google and Meta');
     expect(html).toContain('<meta name="description" content="Privacy notice for UK Survival Kits: optional analytics cookies, what arrives if you email us, and how to change your cookie choices.">');
@@ -156,7 +156,7 @@ describe('partial-ID builds name only the tools in use (CR M1)', () => {
 
   it('Pixel only: advertising / Meta, one table row, "The Meta Pixel measures"', () => {
     const html = read(pixelOnly, 'privacy/index.html');
-    expect(html).toContain('<p>We use optional advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p>');
+    expect(html).toContain('<p>We use optional advertising cookies only with your consent, which you can withdraw at any time through <a href="/privacy/#cookies" data-consent-open>Cookie settings</a>. If you email us, we use what you send to reply to you.</p>');
     expect(html).toContain('<p>Meta may process this data outside the UK, including in the United States, under their own safeguards.</p>');
     expect(html).not.toContain('Google and Meta');
     expect(html).toContain('<meta name="description" content="Privacy notice for UK Survival Kits: optional advertising cookies, what arrives if you email us, and how to change your cookie choices.">');
@@ -169,11 +169,21 @@ describe('partial-ID builds name only the tools in use (CR M1)', () => {
     expect(banner).not.toContain('name="analytics"');
   });
 
+  it('QA: both "Cookie settings" mentions in the privacy Cookies section are consent-panel controls like the footer link', () => {
+    const html = read(dummy, 'privacy/index.html');
+    const main = html.slice(html.indexOf('<main'), html.indexOf('</main>'));
+    const links = main.match(/<a href="\/privacy\/#cookies" data-consent-open[^>]*>Cookie settings<\/a>/g) ?? [];
+    expect(links).toHaveLength(2);
+    expect(main).toContain('use <a href="/privacy/#cookies" data-consent-open>Cookie settings</a> at the bottom of any page.');
+    expect(main).toContain('withdraw at any time through <a href="/privacy/#cookies" data-consent-open>Cookie settings</a>. If you email us');
+    for (const b of [plain, noSiteEnv]) expect(read(b, 'privacy/index.html')).not.toContain('data-consent-open');
+  });
+
   it('all IDs: the approved sentences byte for byte', () => {
     const html = read(dummy, 'privacy/index.html');
     expect(html).toContain('<meta name="description" content="Privacy notice for UK Survival Kits: optional analytics and advertising cookies, what arrives if you email us, and how to change your cookie choices.">');
     expect(html).toContain('<h1>Privacy</h1><p>UK Survival Kits is published as a static site. With your permission, we use the analytics and advertising tools listed under Cookies below. They stay off until you choose to turn them on, and you can change your mind at any time.</p>');
     expect(html).toContain('<p>Optional cookies are off until you choose them in the cookie banner. Reject all keeps them off. Accept all turns on every tool in the table. Manage lets you choose analytics and advertising separately.</p>');
-    expect(html).toContain('</table></div><p>We use optional analytics and advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p><p>Google and Meta may process this data outside the UK, including in the United States, under their own safeguards.</p>');
+    expect(html.replace(/<a href="\/privacy\/#cookies" data-consent-open>(Cookie settings)<\/a>/g, '$1')).toContain('</table></div><p>We use optional analytics and advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p><p>Google and Meta may process this data outside the UK, including in the United States, under their own safeguards.</p>');
   });
 });

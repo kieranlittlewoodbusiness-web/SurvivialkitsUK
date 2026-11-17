@@ -259,6 +259,70 @@ describe('CR nits', () => {
   });
 });
 
+describe('Escape (QA)', () => {
+  const esc = (c: ReturnType<typeof boot>, el: Element) =>
+    el.dispatchEvent(new c.win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }) as unknown as Event);
+  const q = <T extends HTMLElement>(c: ReturnType<typeof boot>, s: string) => c.doc.querySelector<T>(s)!;
+
+  it('first layer: hides for this page view only, stores nothing, grants nothing, focus to #main', () => {
+    const c = boot();
+    const accept = q(c, '[data-consent="accept"]');
+    accept.focus();
+    esc(c, accept);
+    expect(c.doc.getElementById('uksk-consent')!.hidden).toBe(true);
+    expect(c.win.localStorage.getItem('uksk-consent')).toBeNull();
+    expect(c.dl()).toHaveLength(1); // only the denied default
+    expect(c.scripts()).toEqual([]);
+    expect(c.doc.activeElement?.id).toBe('main');
+    // next page: asked again
+    const next = boot();
+    expect(next.doc.getElementById('uksk-consent')!.hidden).toBe(false);
+  });
+
+  it('Manage opened from the first layer: Escape closes the panel only and focuses Manage', () => {
+    const c = boot();
+    const manage = q(c, '[data-consent="manage"]');
+    manage.click();
+    const an = q<HTMLInputElement>(c, 'input[name="analytics"]');
+    an.checked = true; // ticked but not saved
+    an.focus();
+    esc(c, an);
+    expect(c.doc.getElementById('uksk-consent')!.hidden).toBe(false);
+    expect(c.doc.getElementById('uksk-consent-manage')!.hidden).toBe(true);
+    expect(manage.getAttribute('aria-expanded')).toBe('false');
+    expect(c.doc.activeElement).toBe(manage);
+    expect(c.api.state).toEqual({ analytics: false, advertising: false });
+    expect(c.win.localStorage.getItem('uksk-consent')).toBeNull();
+    expect(c.scripts()).toEqual([]);
+    // a second Escape on the first layer hides the banner, still nothing stored
+    esc(c, manage);
+    expect(c.doc.getElementById('uksk-consent')!.hidden).toBe(true);
+    expect(c.win.localStorage.getItem('uksk-consent')).toBeNull();
+  });
+
+  it('reopened from Cookie settings: Escape closes the banner, focus back to the link, stored choice unchanged', () => {
+    const stored = { v: 1, ts: Date.now() - 1000, analytics: true, advertising: false };
+    const c = boot({ stored });
+    const before = c.dl().length;
+    click(c, 'settings');
+    q<HTMLInputElement>(c, 'input[name="advertising"]').checked = true; // not saved
+    esc(c, q(c, 'input[name="advertising"]'));
+    expect(c.doc.getElementById('uksk-consent')!.hidden).toBe(true);
+    expect(c.doc.activeElement?.id).toBe('settings');
+    expect(JSON.parse(c.win.localStorage.getItem('uksk-consent')!)).toEqual(stored);
+    expect(c.api.state).toEqual({ analytics: true, advertising: false });
+    expect(c.dl()).toHaveLength(before);
+    expect(c.reloads()).toBe(0);
+  });
+
+  it('other keys do nothing', () => {
+    const c = boot();
+    const accept = q(c, '[data-consent="accept"]');
+    accept.dispatchEvent(new c.win.KeyboardEvent('keydown', { key: 'Tab', bubbles: true }) as unknown as Event);
+    expect(c.doc.getElementById('uksk-consent')!.hidden).toBe(false);
+  });
+});
+
 it('ALL fixture uses only dummy IDs', () => {
   expect(ALL).toEqual({ ga4: 'G-TEST000000', ads: 'AW-000000000', pixel: '000000000000000' });
 });
