@@ -24,21 +24,29 @@ function pages(dist: string): string[] {
   walk(dist);
   return out;
 }
+const bannerOf = (html: string) => {
+  const i = html.indexOf('<section id="uksk-consent"');
+  return html.slice(i, html.indexOf('</section>', i));
+};
 const read = (b: SiteBuild, rel: string) => fs.readFileSync(path.join(b.dist, rel), 'utf8');
 
 let plain: SiteBuild;
 let dummy: SiteBuild;
 let preview: SiteBuild;
+let ga4Only: SiteBuild;
+let pixelOnly: SiteBuild;
 
 beforeAll(() => {
   plain = buildSiteCopy('webads-plain-');
   dummy = buildSiteCopy('webads-dummy-', { env: DUMMY });
   preview = buildSiteCopy('webads-preview-', { env: { ...DUMMY, CF_PAGES: '1', CF_PAGES_BRANCH: 'web-ads-1-4-tracking' } });
-  for (const b of [plain, dummy, preview]) expect(b.result.status, b.result.stderr).toBe(0);
-}, 240_000);
+  ga4Only = buildSiteCopy('webads-ga4-', { env: { PUBLIC_GA4_ID: DUMMY.PUBLIC_GA4_ID } });
+  pixelOnly = buildSiteCopy('webads-pixel-', { env: { PUBLIC_META_PIXEL_ID: DUMMY.PUBLIC_META_PIXEL_ID } });
+  for (const b of [plain, dummy, preview, ga4Only, pixelOnly]) expect(b.result.status, b.result.stderr).toBe(0);
+}, 360_000);
 
 afterAll(() => {
-  for (const b of [plain, dummy, preview]) b?.cleanup();
+  for (const b of [plain, dummy, preview, ga4Only, pixelOnly]) b?.cleanup();
 });
 
 describe.each([
@@ -123,5 +131,34 @@ describe('dummy IDs on a production build', () => {
     expect(banner).not.toMatch(/checked/);
     expect(banner.match(/type="checkbox"/g)).toHaveLength(2);
     expect(banner).toContain('Google Ads and the Meta Pixel measure whether our adverts lead to visits and clicks to Amazon.');
+  });
+});
+
+describe('partial-ID builds name only the tools in use (CR M1)', () => {
+  it('GA4 only: analytics / Google, no Meta or advertising wording in the new lines, one table row', () => {
+    const html = read(ga4Only, 'privacy/index.html');
+    expect(html).toContain('<p>We use optional analytics cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p>');
+    expect(html).toContain('<p>Google may process this data outside the UK, including in the United States, under their own safeguards.</p>');
+    expect(html).not.toContain('Google and Meta');
+    expect(html.match(/<th scope="row"/g)).toHaveLength(1);
+    const banner = bannerOf(read(ga4Only, 'index.html'));
+    expect(banner).toContain('type="checkbox" name="analytics"');
+    expect(banner).not.toContain('name="advertising"');
+  });
+
+  it('Pixel only: advertising / Meta, one table row, "The Meta Pixel measures"', () => {
+    const html = read(pixelOnly, 'privacy/index.html');
+    expect(html).toContain('<p>We use optional advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p>');
+    expect(html).toContain('<p>Meta may process this data outside the UK, including in the United States, under their own safeguards.</p>');
+    expect(html).not.toContain('Google and Meta');
+    expect(html.match(/<th scope="row"/g)).toHaveLength(1);
+    const banner = bannerOf(read(pixelOnly, 'index.html'));
+    expect(banner).toContain('The Meta Pixel measures whether our adverts lead to visits and clicks to Amazon.');
+    expect(banner).not.toContain('name="analytics"');
+  });
+
+  it('all IDs: the approved sentences byte for byte', () => {
+    const html = read(dummy, 'privacy/index.html');
+    expect(html).toContain('</table></div><p>We use optional analytics and advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.</p><p>Google and Meta may process this data outside the UK, including in the United States, under their own safeguards.</p>');
   });
 });

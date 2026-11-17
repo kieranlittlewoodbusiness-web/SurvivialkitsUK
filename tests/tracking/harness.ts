@@ -14,6 +14,8 @@ export interface Api {
   loaded: Record<string, boolean>;
   choose: (c: { analytics: boolean; advertising: boolean }) => void;
   open: (from?: Element) => void;
+  reload: () => void;
+  wire: () => void;
   uuid: () => string;
   mapping: (c: { analytics: boolean; advertising: boolean }) => Record<string, string>;
 }
@@ -33,7 +35,7 @@ export const BANNER = `
 </section>`;
 
 export const PAGE = `${BANNER}
-<main>
+<main id="main">
   <article class="pcard" id="torch-x" data-category="torch">
     <a id="card" class="btn btn--cta" href="https://www.amazon.co.uk/dp/B0TESTASIN?tag=example-21" rel="sponsored nofollow noopener" data-affiliate="amazon"><span id="inner">View on Amazon</span></a>
   </article>
@@ -49,6 +51,7 @@ export interface Ctx {
   doc: Document;
   api: Api;
   prevented: boolean[];
+  reloads: () => number;
   scripts: () => string[];
   dl: () => unknown[][];
   fbq: () => unknown[][];
@@ -67,6 +70,9 @@ export function boot(opts: { cfg?: Cfg; url?: string; stored?: unknown; html?: s
     configurable: true,
   });
   const api = uksTracking(win, opts.cfg ?? ALL);
+  // CR M2: count reloads instead of letting happy-dom navigate.
+  let reloads = 0;
+  api.reload = () => { reloads++; };
   // Record whether anything cancelled the navigation before the page's own handlers finish, then
   // stop happy-dom actually navigating to Amazon so the test page (and its cookies) stay put.
   const prevented: boolean[] = [];
@@ -75,6 +81,7 @@ export function boot(opts: { cfg?: Cfg; url?: string; stored?: unknown; html?: s
     win.addEventListener(type, (e: any) => { if (e.target?.closest?.('a[href^="https://"]')) e.preventDefault(); });
   }
   return {
+    reloads: () => reloads,
     prevented,
     win,
     doc,

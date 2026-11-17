@@ -123,7 +123,7 @@ describe('consent update mapping (AC4)', () => {
 });
 
 describe('preview gate at runtime (AC6)', () => {
-  it.each(['https://uksurvivalkits.pages.dev/', 'https://abc123.uksurvivalkits.pages.dev/compare/72-hour-emergency-kits/'])(
+  it.each(['https://uksurvivalkits.pages.dev/', 'https://abc123.uksurvivalkits.pages.dev/compare/72-hour-emergency-kits/', 'https://uksurvivalkits.pages.dev./', 'https://X.UKSURVIVALKITS.PAGES.DEV/'])(
     '%s loads no tags, sets no consent state and never shows the banner',
     (url) => {
       const c = boot({ url, stored: { v: 1, ts: Date.now(), analytics: true, advertising: true } });
@@ -147,7 +147,7 @@ describe('Cookie settings link and withdrawal (AC3)', () => {
     expect(c.doc.activeElement?.id).toBe('uksk-consent-title');
   });
 
-  it('withdrawing sends denied at once, disables GA, revokes the Pixel, deletes cookies and stops events, without a reload', () => {
+  it('withdrawing sends denied at once, disables GA, revokes the Pixel, deletes cookies, stops events, then reloads once (CR M2)', () => {
     const c = boot();
     c.api.choose({ analytics: true, advertising: true });
     c.doc.cookie = '_ga=GA1.1.1; path=/';
@@ -167,6 +167,7 @@ describe('Cookie settings link and withdrawal (AC3)', () => {
     c.doc.querySelector<HTMLElement>('#uksk-consent-manage button[type="submit"]')!.click();
 
     expect(c.dl().at(-1)).toEqual(['consent', 'update', DENIED]);
+    expect(c.reloads()).toBe(1);
     expect(c.win['ga-disable-G-TEST000000']).toBe(true);
     expect(c.win['ga-disable-AW-000000000']).toBe(true);
     expect(c.fbq().at(-1)).toEqual(['consent', 'revoke']);
@@ -185,7 +186,9 @@ describe('Cookie settings link and withdrawal (AC3)', () => {
     c.api.choose({ analytics: true, advertising: true });
     c.doc.cookie = '_ga=GA1.1.1; path=/';
     c.doc.cookie = '_gcl_au=1.1.1; path=/';
+    expect(c.reloads()).toBe(0);
     c.api.choose({ analytics: true, advertising: false });
+    expect(c.reloads()).toBe(1);
     expect(c.doc.cookie).toBe('_ga=GA1.1.1');
     expect(c.win['ga-disable-G-TEST000000']).toBe(false);
     click(c, 'card');
@@ -199,10 +202,60 @@ describe('Cookie settings link and withdrawal (AC3)', () => {
     c.api.choose({ analytics: true, advertising: true });
     c.api.choose({ analytics: false, advertising: false });
     c.api.choose({ analytics: true, advertising: true });
+    expect(c.reloads()).toBe(1); // only the downgrade reloads
     expect(c.scripts()).toHaveLength(2);
     expect(c.fbq().filter((e) => e[0] === 'init')).toHaveLength(1);
     expect(c.fbq().at(-1)).toEqual(['consent', 'grant']);
     expect(c.win['ga-disable-G-TEST000000']).toBe(false);
+  });
+});
+
+describe('reload on downgrade only (CR M2)', () => {
+  it.each([
+    ['first Accept all', [{ analytics: true, advertising: true }], 0],
+    ['first Reject all', [{ analytics: false, advertising: false }], 0],
+    ['upgrade analytics -> all', [{ analytics: true, advertising: false }, { analytics: true, advertising: true }], 0],
+    ['same choice saved again', [{ analytics: true, advertising: true }, { analytics: true, advertising: true }], 0],
+    ['withdraw analytics only', [{ analytics: true, advertising: true }, { analytics: false, advertising: true }], 1],
+    ['withdraw everything', [{ analytics: true, advertising: true }, { analytics: false, advertising: false }], 1],
+  ])('%s -> %i reload(s)', (_l, choices, n) => {
+    const c = boot();
+    for (const ch of choices) c.api.choose(ch);
+    expect(c.reloads()).toBe(n);
+  });
+
+  it('the denied update and cookie deletion happen before the reload', () => {
+    const c = boot();
+    c.api.choose({ analytics: true, advertising: true });
+    c.doc.cookie = '_ga=GA1.1.1; path=/';
+    let seen: { last: unknown; cookie: string } | null = null;
+    c.api.reload = () => { seen = { last: c.dl().at(-1), cookie: c.doc.cookie }; };
+    c.api.choose({ analytics: false, advertising: false });
+    expect(seen).toEqual({ last: ['consent', 'update', DENIED], cookie: '' });
+  });
+
+  it('a returning visitor with a stored refusal loads nothing and never reloads', () => {
+    const c = boot({ stored: { v: 1, ts: Date.now(), analytics: false, advertising: false } });
+    expect(c.scripts()).toEqual([]);
+    expect(c.reloads()).toBe(0);
+  });
+});
+
+describe('CR nits', () => {
+  it('first-visit choice moves focus to #main instead of <body>', () => {
+    const c = boot();
+    const accept = c.doc.querySelector<HTMLElement>('[data-consent="accept"]')!;
+    accept.focus();
+    accept.click();
+    expect(c.doc.activeElement?.id).toBe('main');
+    expect(c.doc.getElementById('main')!.getAttribute('tabindex')).toBe('-1');
+  });
+
+  it('wire() is idempotent: a second call adds no second listener', () => {
+    const c = boot();
+    c.api.wire();
+    c.doc.querySelector<HTMLElement>('[data-consent="accept"]')!.click();
+    expect(c.dl().filter((e) => e[1] === 'update')).toHaveLength(1);
   });
 });
 
