@@ -19,7 +19,8 @@
     "check:slash": "node scripts/check-trailing-slash.mjs dist",
     "check:dist": "npm run -s check:links && npm run -s check:content && npm run -s check:slash && npm run -s check:jsonld",
     "verify:dist": "node scripts/verify-dist.mjs",
-    "check:jsonld": "node scripts/check-jsonld.mjs dist"
+    "check:jsonld": "node scripts/check-jsonld.mjs dist",
+    "test:e2e": "node tests/e2e/consent.e2e.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
@@ -28,7 +29,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
     "happy-dom": "^21.0.4",
+    "playwright": "^1.65.1",
     "typescript": "^5.9.3",
     "vitest": "^5.1.0"
   }
