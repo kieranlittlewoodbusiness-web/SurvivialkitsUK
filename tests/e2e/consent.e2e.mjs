@@ -98,6 +98,7 @@ try {
     await page.goto(ORIGIN + PAGE);
     await page.focus('[data-consent="reject"]');
     await page.keyboard.press('Enter');
+    check('after Reject all by keyboard: focus moves to #main, not <body>', (await page.evaluate(() => document.activeElement?.id)) === 'main');
     await page.waitForTimeout(800);
     const a = page.locator('a[rel~="sponsored"]').first();
     await a.click({ noWaitAfter: true }).catch(() => {});
@@ -144,22 +145,40 @@ try {
     ev = await clicks(page);
     check('keyboard Enter: exactly one more', ev.length === 3, `${ev.length}`);
 
-    // withdrawal without reload
-    await page.evaluate(() => { window.__noReload = 1; document.cookie = '_ga=GA1.1.1; path=/'; document.cookie = '_gcl_au=1.1.1; path=/'; document.cookie = '_fbp=fb.1.1.1; path=/'; });
+    // withdrawal (CR M2): denied update + cookie deletion, then the script reloads the page itself
+    await page.evaluate(() => {
+      window.__beforeWithdraw = 1;
+      document.cookie = '_ga=GA1.1.1; path=/'; document.cookie = '_gcl_au=1.1.1; path=/'; document.cookie = '_fbp=fb.1.1.1; path=/';
+      // Record what the page looked like at unload, i.e. after apply() and just before the reload.
+      addEventListener('pagehide', () => {
+        const last = (window.dataLayer || []).map((a) => Array.from(a)).filter((e) => e[0] === 'consent').at(-1);
+        sessionStorage.setItem('__atUnload', JSON.stringify({ last: last?.[2] ?? null, cookie: document.cookie }));
+      });
+    });
     await page.click('[data-consent-open]');
     check('Cookie settings reopens panel with choices ticked', (await page.locator('#uksk-consent-manage').isVisible()) && (await page.isChecked('input[name="analytics"]')) && (await page.isChecked('input[name="advertising"]')));
     await page.uncheck('input[name="analytics"]');
     await page.uncheck('input[name="advertising"]');
-    await page.click('#uksk-consent-manage button[type="submit"]');
-    await page.waitForTimeout(200);
-    const last = (await dl(page)).filter((e) => e[0] === 'consent').at(-1);
-    check('withdrawal: consent update all denied', JSON.stringify(last?.[2]) === JSON.stringify({ analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }));
-    check('withdrawal: no reload', (await page.evaluate(() => window.__noReload)) === 1);
-    check('withdrawal: _ga/_gcl/_fbp deleted', (await page.evaluate(() => document.cookie)).split(';').filter((c) => /^\s*(_ga|_gcl|_fbp)/.test(c)).length === 0);
-    const before = (await clicks(page)).length;
-    await link.click({ noWaitAfter: true });
-    await page.waitForTimeout(300);
-    check('withdrawal: no further affiliate_click', (await clicks(page)).length === before);
+    const reloaded = page.waitForEvent('load', { timeout: 10000 }).then(() => true, () => false);
+    await page.click('#uksk-consent-manage button[type="submit"]', { noWaitAfter: true });
+    check('withdrawal: page reloads by itself', await reloaded);
+    await page.waitForTimeout(500);
+    const hitsAfterReload = hits.length;
+    check('withdrawal: same URL, fresh page (no pre-withdrawal state)', page.url() === href && (await page.evaluate(() => window.__beforeWithdraw)) === undefined);
+    const atUnload = JSON.parse((await page.evaluate(() => sessionStorage.getItem('__atUnload'))) || '{}');
+    check('withdrawal: consent update all denied before the reload', JSON.stringify(atUnload.last) === JSON.stringify({ analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' }));
+    check('withdrawal: _ga/_gcl/_fbp deleted before the reload', typeof atUnload.cookie === 'string' && !/(^|;\s*)(_ga|_gcl|_fbp)/.test(atUnload.cookie));
+    check('withdrawal: _ga/_gcl/_fbp absent after the reload', (await page.evaluate(() => document.cookie)).split(';').filter((c) => /^\s*(_ga|_gcl|_fbp)/.test(c)).length === 0);
+    const scriptsLeft = await page.evaluate(() => [...document.querySelectorAll('script[src]')].map((s) => s.src).filter((s) => /googletagmanager|fbevents|facebook\.net/.test(s)).length);
+    check('withdrawal: no gtag.js or fbevents.js script in the reloaded page', scriptsLeft === 0, `${scriptsLeft}`);
+    check('withdrawal: no fbq and only the consent default + stored denied update in dataLayer', await page.evaluate(() => !window.fbq && (window.dataLayer || []).every((a) => a[0] === 'consent')));
+    check('withdrawal: banner stays hidden after the reload', !(await page.locator('#uksk-consent').isVisible()));
+    await page.locator('.pcard a[rel~="sponsored"]').first().click({ noWaitAfter: true });
+    await page.locator('.pcard a[rel~="sponsored"]').first().click({ button: 'middle', noWaitAfter: true }).catch(() => {});
+    await page.waitForTimeout(600);
+    for (const pg of ctx.pages()) if (pg !== page) await pg.close();
+    check('withdrawal: no affiliate_click after the reload', (await clicks(page)).length === 0);
+    check('withdrawal: no further tag requests after the reload', hits.length === hitsAfterReload, `${hits.length - hitsAfterReload}`);
     await ctx.close();
   }
 
