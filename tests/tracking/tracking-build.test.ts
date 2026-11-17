@@ -57,6 +57,7 @@ describe.each([
 
   it('keeps today\'s footer, privacy and contact copy', () => {
     const b = get();
+    expect(read(b, 'privacy/index.html')).not.toMatch(/controller of the personal data|United States|only with your consent/);
     expect(read(b, 'index.html')).toContain('No third-party tracking scripts on this launch build.');
     expect(read(b, 'privacy/index.html')).toContain('This launch build does not include third-party');
     expect(read(b, 'contact/index.html')).toContain('no contact form backend and no third-party tracking scripts');
@@ -104,6 +105,11 @@ describe('dummy IDs on a production build', () => {
     expect(html).toContain('id="cookies"');
     expect(html.match(/<th scope="row"/g)).toHaveLength(3);
     expect(html).not.toContain('does not include third-party');
+    expect(html).toContain('UK Survival Kits is the controller of the personal data described on this page.');
+    expect(html).toContain('We use optional analytics and advertising cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.');
+    expect(html).toContain('Google and Meta may process this data outside the UK, including in the United States, under their own safeguards.');
+    expect(html.indexOf('United States')).toBeGreaterThan(html.indexOf('</table>'));
+    expect(html).not.toMatch(/TODO|postal address/i);
     const contact = read(dummy, 'contact/index.html');
     expect(contact).toContain('This site has no contact form backend.');
     expect(contact).not.toContain('no third-party tracking scripts');
@@ -116,5 +122,6 @@ describe('dummy IDs on a production build', () => {
     expect(buttons).toEqual([['accept', 'btn btn--secondary'], ['reject', 'btn btn--secondary'], ['manage', 'btn btn--secondary']]);
     expect(banner).not.toMatch(/checked/);
     expect(banner.match(/type="checkbox"/g)).toHaveLength(2);
+    expect(banner).toContain('Google Ads and the Meta Pixel measure whether our adverts lead to visits and clicks to Amazon.');
   });
 });
