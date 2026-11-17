@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import { trackingConfig } from '../../src/lib/tracking/config';
 
-const IDS = { PUBLIC_GA4_ID: 'G-TEST000000', PUBLIC_GOOGLE_ADS_ID: 'AW-000000000', PUBLIC_META_PIXEL_ID: '000000000000000' };
+const IDS = { PUBLIC_GA4_ID: 'G-TEST000000', PUBLIC_GOOGLE_ADS_ID: 'AW-000000000', PUBLIC_META_PIXEL_ID: '000000000000000', SITE_ENV: 'production' };
 
 describe('trackingConfig', () => {
   it('no IDs (or blank IDs): disabled', () => {
@@ -18,8 +18,8 @@ describe('trackingConfig', () => {
   });
 
   it('one ID offers only its category', () => {
-    expect(trackingConfig({ PUBLIC_GA4_ID: 'G-TEST000000' }, { production: true })).toMatchObject({ analytics: true, advertising: false });
-    expect(trackingConfig({ PUBLIC_META_PIXEL_ID: '000000000000000' }, { production: true })).toMatchObject({ analytics: false, advertising: true });
+    expect(trackingConfig({ PUBLIC_GA4_ID: 'G-TEST000000', SITE_ENV: 'production' }, { production: true })).toMatchObject({ analytics: true, advertising: false });
+    expect(trackingConfig({ PUBLIC_META_PIXEL_ID: '000000000000000', SITE_ENV: 'production' }, { production: true })).toMatchObject({ analytics: false, advertising: true });
   });
 
   it.each([
@@ -28,6 +28,18 @@ describe('trackingConfig', () => {
     ['a branch preview even with SITE_ENV=production', { SITE_ENV: 'production', CF_PAGES: '1', CF_PAGES_BRANCH: 'feature' }],
   ])('%s never enables tags', (_l, env) => {
     expect(trackingConfig({ ...IDS, ...env }, { production: true }).enabled).toBe(false);
+  });
+
+  it.each([
+    ['unset', undefined],
+    ['empty', ''],
+    ['preview', 'preview'],
+  ])('SITE_ENV %s never enables tags, even with IDs on an astro build (PM K55)', (_l, value) => {
+    expect(trackingConfig({ ...IDS, SITE_ENV: value }, { production: true }).enabled).toBe(false);
+  });
+
+  it('an unknown SITE_ENV fails the build (siteEnv validation)', () => {
+    expect(() => trackingConfig({ ...IDS, SITE_ENV: 'Production' }, { production: true })).toThrow(/Unknown SITE_ENV/);
   });
 
   it('a non-production (dev) build never enables tags', () => {

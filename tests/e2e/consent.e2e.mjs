@@ -4,6 +4,7 @@
  *   SITE_ENV=production AMAZON_ASSOCIATES_UK_TAG=verifydist-21 PUBLIC_GA4_ID=G-TEST000000 \
  *   PUBLIC_GOOGLE_ADS_ID=AW-000000000 PUBLIC_META_PIXEL_ID=000000000000000 npx astro build --outDir /tmp/e2e-dist
  *   node tests/e2e/consent.e2e.mjs --dist /tmp/e2e-dist [--browser chromium|webkit] [--shots DIR]
+ * SITE_ENV=production is required: without it tracking stays off and the banner check fails.
  * Every request to a Google/Meta tag host (and to Amazon) is intercepted and aborted, so nothing
  * leaves the machine. Logs never print affiliate URLs or the tag. Exit code 1 on any failed check.
  */
