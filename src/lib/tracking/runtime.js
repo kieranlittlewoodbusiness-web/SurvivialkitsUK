@@ -9,10 +9,11 @@ function uksTracking(w, cfg) {
   var MAX_AGE = 365 * 864e5;
   var hasGoogle = !!(cfg.ga4 || cfg.ads);
   var offerAnalytics = !!cfg.ga4;
-  var offerAdvertising = !!cfg.ads;
+  var offerAdvertising = !!(cfg.ads || cfg.pixel);
   var state = { analytics: false, advertising: false };
   var loaded = {};
   var configured = {};
+  var pixelOn = false;
   var api = { state: state, loaded: loaded, disabled: false };
 
   // Runtime preview gate: *.pages.dev (production alias and previews) never loads tags or shows the banner.
@@ -34,6 +35,20 @@ function uksTracking(w, cfg) {
       wait_for_update: 500,
     });
   }
+
+  function uuid() {
+    var c = w.crypto;
+    if (c && typeof c.randomUUID === 'function') return c.randomUUID();
+    var b = new Uint8Array(16);
+    if (c && c.getRandomValues) c.getRandomValues(b);
+    else for (var i = 0; i < 16; i++) b[i] = Math.floor(Math.random() * 256);
+    b[6] = (b[6] & 15) | 64;
+    b[8] = (b[8] & 63) | 128;
+    var h = '';
+    for (var j = 0; j < 16; j++) h += (b[j] + 256).toString(16).slice(1) + (j === 3 || j === 5 || j === 7 || j === 9 ? '-' : '');
+    return h;
+  }
+  api.uuid = uuid;
 
   function loadScript(src, key) {
     if (loaded[key]) return;
@@ -60,6 +75,28 @@ function uksTracking(w, cfg) {
       configured[id] = true;
       gtag('config', id);
     }
+  }
+
+  function startPixel() {
+    if (!w.fbq) {
+      var n = (w.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      });
+      if (!w._fbq) w._fbq = n;
+      n.push = n;
+      n.loaded = true;
+      n.version = '2.0';
+      n.queue = [];
+    }
+    if (!loaded.pixel) {
+      loadScript('https://connect.facebook.net/en_US/fbevents.js', 'pixel');
+      w.fbq('consent', 'grant');
+      w.fbq('init', cfg.pixel);
+      w.fbq('track', 'PageView', {}, { eventID: uuid() });
+    } else {
+      w.fbq('consent', 'grant');
+    }
+    pixelOn = true;
   }
 
   function deleteCookies(rx) {
@@ -91,8 +128,15 @@ function uksTracking(w, cfg) {
       if (state.advertising) configure(cfg.ads);
       else w['ga-disable-' + cfg.ads] = true;
     }
+    if (cfg.pixel) {
+      if (state.advertising) startPixel();
+      else if (pixelOn) {
+        w.fbq('consent', 'revoke');
+        pixelOn = false;
+      }
+    }
     if (prev.analytics && !state.analytics) deleteCookies(/^(_ga|_ga_.+|_gid|_gat.*)$/);
-    if (prev.advertising && !state.advertising) deleteCookies(/^(_gcl_.+|_gac_.+)$/);
+    if (prev.advertising && !state.advertising) deleteCookies(/^(_gcl_.+|_gac_.+|_fbp|_fbc)$/);
   }
 
   function read() {
@@ -138,7 +182,7 @@ function uksTracking(w, cfg) {
     var targets = [];
     if (cfg.ga4 && state.analytics) targets.push(cfg.ga4);
     if (cfg.ads && state.advertising) targets.push(cfg.ads);
-    if (!targets.length) return;
+    if (!targets.length && !pixelOn) return;
     var p = affiliateParams(a);
     if (!p) return;
     if (targets.length) {
@@ -146,6 +190,11 @@ function uksTracking(w, cfg) {
         link_domain: p.link_domain, asin: p.asin, product_category: p.product_category,
         placement: p.placement, page_path: p.page_path, send_to: targets, transport_type: 'beacon',
       });
+    }
+    if (pixelOn) {
+      w.fbq('trackCustom', 'AffiliateClick',
+        { link_domain: p.link_domain, asin: p.asin, product_category: p.product_category, placement: p.placement, page_path: p.page_path },
+        { eventID: uuid() });
     }
   }
   // Capture phase, passive: never delays or cancels navigation. Enter on a link fires 'click'.
