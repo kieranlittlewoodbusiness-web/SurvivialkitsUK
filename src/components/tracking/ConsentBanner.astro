@@ -6,9 +6,10 @@
  * Copy needs Kieran's OK before tracking is switched on (see the PR body).
  */
 import { siteTracking } from '../../lib/tracking/config';
+import { advertisingDescription } from '../../lib/tracking/cookies';
 
 const t = siteTracking();
-const adTools = t.adsId && t.pixelId ? 'Google Ads and the Meta Pixel' : t.adsId ? 'Google Ads' : 'The Meta Pixel';
+const adDesc = advertisingDescription(t);
 const intro =
   t.analytics && t.advertising
     ? 'We would like to use optional cookies to count visits (analytics) and to measure our adverts (advertising).'
@@ -45,7 +46,7 @@ const intro =
               <label>
                 <input type="checkbox" name="advertising" />
                 <span class="consent__name">Advertising</span>
-                <span class="consent__desc">{adTools} measure whether our adverts lead to visits and clicks to Amazon.</span>
+                <span class="consent__desc">{adDesc}</span>
               </label>
             )}
           </fieldset>

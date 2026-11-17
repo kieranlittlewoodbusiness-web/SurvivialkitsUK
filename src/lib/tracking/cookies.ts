@@ -44,3 +44,9 @@ export function cookieRows(t: Pick<TrackingConfig, 'ga4Id' | 'adsId' | 'pixelId'
   }
   return rows;
 }
+
+/** Manage-panel Advertising description: "measures" for one tool, "measure" for both (copy review 17 Nov). */
+export function advertisingDescription(t: Pick<TrackingConfig, 'adsId' | 'pixelId'>): string {
+  const subject = t.adsId && t.pixelId ? 'Google Ads and the Meta Pixel measure' : t.adsId ? 'Google Ads measures' : 'The Meta Pixel measures';
+  return `${subject} whether our adverts lead to visits and clicks to Amazon.`;
+}

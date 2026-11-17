@@ -88,6 +88,14 @@ const rows = cookieRows(tracking);
                 </tbody>
               </table>
             </div>
+            <p>
+              We use optional analytics and advertising cookies only with your consent, which you can withdraw at any
+              time through Cookie settings. If you email us, we use what you send to reply to you.
+            </p>
+            <p>
+              Google and Meta may process this data outside the UK, including in the United States, under their own
+              safeguards.
+            </p>
           </>
         ) : (
           <>
@@ -107,6 +115,7 @@ const rows = cookieRows(tracking);
         <a href="/affiliate-disclosure/">affiliate disclosure</a>.
       </p>
       <h2>Contact</h2>
+      {tracking.enabled && <p>{site.name} is the controller of the personal data described on this page.</p>}
       <p>
         Privacy questions: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
       </p>
