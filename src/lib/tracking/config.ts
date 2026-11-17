@@ -11,6 +11,13 @@
  * "Cookie settings" link, no tag code, and the footer/privacy/contact copy stays as it is today, so
  * the default build is byte-identical to the pre-tracking site. A malformed ID fails the build
  * rather than shipping a broken tag. The runtime adds a second gate: *.pages.dev never loads tags.
+ *
+ * Notes (CR nits):
+ * - IDs are read from process.env only, so a local .env file does NOT enable tracking; set them as
+ *   Cloudflare Pages build variables (or export them in the shell).
+ * - "Production" means `astro build` (import.meta.env.PROD), not SITE_ENV=production: a local
+ *   `npm run build` with IDs exported does enable tags. SITE_ENV=production is not required, so
+ *   adding IDs to the Pages project cannot silently do nothing if SITE_ENV is unset there.
  */
 import { isPreviewBuild } from '../../data/site';
 

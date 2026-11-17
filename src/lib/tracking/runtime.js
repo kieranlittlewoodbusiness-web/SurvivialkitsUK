@@ -17,7 +17,7 @@ function uksTracking(w, cfg) {
   var api = { state: state, loaded: loaded, disabled: false };
 
   // Runtime preview gate: *.pages.dev (production alias and previews) never loads tags or shows the banner.
-  if (/(^|\.)pages\.dev$/i.test(w.location.hostname)) {
+  if (/(^|\.)pages\.dev\.?$/i.test(w.location.hostname)) {
     api.disabled = true;
     return api;
   }
@@ -235,6 +235,14 @@ function uksTracking(w, cfg) {
     var hadFocus = box.contains(d.activeElement);
     box.hidden = true;
     if (hadFocus && opener && opener.focus) opener.focus();
+    else if (hadFocus) {
+      // First-visit choice: keep focus in the page instead of dropping it to <body>.
+      var m = d.getElementById('main');
+      if (m) {
+        if (!m.hasAttribute('tabindex')) m.setAttribute('tabindex', '-1');
+        m.focus({ preventScroll: true });
+      }
+    }
     opener = null;
   }
   api.open = function (from) {
@@ -243,7 +251,10 @@ function uksTracking(w, cfg) {
     var h = q('[data-consent-title]');
     if (h && h.focus) h.focus();
   };
+  var wired = false;
   function wire() {
+    if (wired) return;
+    wired = true;
     box = d.getElementById('uksk-consent');
     if (!box) return;
     panel = q('#uksk-consent-manage');
