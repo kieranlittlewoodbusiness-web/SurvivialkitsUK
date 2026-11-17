@@ -2,12 +2,14 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
 import { standardPageNodes } from '../lib/seo/jsonld';
+import { siteTracking } from '../lib/tracking/config';
 
 const title = 'Contact and corrections';
 const heading = 'Contact';
 const description =
   'Contact UK Survival Kits about corrections, sources or editorial questions. We do not provide emergency advice by email—call 999 if you are in danger.';
 const canonicalPath = '/contact/';
+const tracking = siteTracking().enabled;
 const jsonLd = standardPageNodes({
   canonicalPath,
   heading,
@@ -40,9 +42,15 @@ const jsonLd = standardPageNodes({
         Please include page URLs for corrections. We aim to update factual errors promptly and note
         significant revisions on the page.
       </p>
-      <p>
-        This static launch build has no contact form backend and no third-party tracking scripts.
-      </p>
+      {
+        tracking ? (
+          <p>This site has no contact form backend.</p>
+        ) : (
+          <p>
+            This static launch build has no contact form backend and no third-party tracking scripts.
+          </p>
+        )
+      }
     </div>
   </section>
 </BaseLayout>

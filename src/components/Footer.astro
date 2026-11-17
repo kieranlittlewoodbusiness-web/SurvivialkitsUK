@@ -2,6 +2,10 @@
 import Wordmark from './Wordmark.astro';
 import { site } from '../data/site';
 import { AMAZON_DISCLOSURE } from './catalogue/catalogueView';
+import { siteTracking } from '../lib/tracking/config';
+
+// WEB-ADS-4: the no-tracking line goes only in the build that turns tags on.
+const tracking = siteTracking().enabled;
 ---
 
 <footer class="site-footer">
@@ -39,7 +43,13 @@ import { AMAZON_DISCLOSURE } from './catalogue/catalogueView';
     </div>
     <div class="site-footer__legal">
       <p class="amazon-disclosure" data-testid="amazon-disclosure">{AMAZON_DISCLOSURE}</p>
-      <p>© {new Date().getFullYear()} {site.name}. No third-party tracking scripts on this launch build.</p>
+      {
+        tracking ? (
+          <p>© {new Date().getFullYear()} {site.name}. <a href="/privacy/#cookies" data-consent-open>Cookie settings</a></p>
+        ) : (
+          <p>© {new Date().getFullYear()} {site.name}. No third-party tracking scripts on this launch build.</p>
+        )
+      }
     </div>
   </div>
 </footer>
