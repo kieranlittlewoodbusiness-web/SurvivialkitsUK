@@ -74,13 +74,13 @@ Canonical URLs, Open Graph, sitemap and `robots.txt` read `siteUrl` from `src/da
    - optional `gearCategories` to link to the matching sections of the 72-hour compare page
 3. Keep copy calm and practical. Prefer official guidance; do not invent urgency.
 4. Run `npm run check` and open `/scenarios/your-slug`.
-5. Commit, push, and deploy via Cloudflare Pages.
+5. Commit, push, and deploy by Direct Upload of the locally built `dist` (see `docs/ops/pages-headers.md`).
 
 Drafts: set `draft: true` to exclude from listings, routes and the published collection helpers.
 
 ## How product links work
 
-Product buttons appear only on `/compare/72-hour-emergency-kits/`, and only in production builds. Each button's URL is `link_url` from the offer contract in `src/lib/offers` (Backend-owned), built by `resolveAffiliateLink` from the product's ASIN and the `AMAZON_ASSOCIATES_UK_TAG` environment variable. Only products with `verification: "verified"` and an exact model match are shown. There are no hand-pasted retailer URLs. Gear and scenario pages show criteria and link to the matching compare-page section.
+Product buttons appear only in production builds: on `/compare/72-hour-emergency-kits/`, and on the homepage as one top pick per category (that category's first-ranked verified product). Each button's URL is `link_url` from the offer contract in `src/lib/offers` (Backend-owned), built by `resolveAffiliateLink` from the product's ASIN and the `AMAZON_ASSOCIATES_UK_TAG` environment variable. Only products with `verification: "verified"` and an exact model match are shown. There are no hand-pasted retailer URLs. Gear and scenario pages show criteria and link to the matching compare-page section.
 
 The Amazon Associates disclosure is a single footer line on every page: "As an Amazon Associate I earn from qualifying purchases."
 
@@ -115,7 +115,7 @@ BUILD_BRIEF.md
 
 - Mobile-first CSS; keyboard menu with Escape to close; visible `:focus-visible`
 - Print stylesheet hides header/footer, toolbars and `.no-print`
-- Fonts (Barlow Condensed 700 and Inter 400/600) are self-hosted from @fontsource in `public/fonts`, OFL 1.1. Tracking scripts load only when `SITE_ENV=production` and at least one `PUBLIC_*` ID are set at build time, and only after the visitor consents. With no IDs (the current production setup) there are no third-party scripts.
+- Fonts (Barlow Condensed 700 and Inter 400/600) are self-hosted from @fontsource in `public/fonts`, OFL 1.1. Tracking scripts load only when `SITE_ENV=production` and at least one `PUBLIC_*` ID is set at build time, and only after the visitor consents. With no IDs (the current production setup) there are no third-party scripts.
 
 ## What you still need to supply
 
@@ -138,3 +138,9 @@ BUILD_BRIEF.md
 4. Clear or rewrite the claims behind any `reviewFlags` (internal notes, not rendered)
 5. Optional licensed photography for the hero
 6. Re-verify government source URLs on publish day
+
+## Rollback
+
+To revert production, use [Cloudflare Pages rollbacks](https://developers.cloudflare.com/pages/configuration/rollbacks/): in the Pages project open **Deployments**, pick a previous successful **production** deployment from the list (preview deployments are not valid targets), open its actions menu and choose **Rollback to this deployment**. The production deployment changes immediately.
+
+Alternatively, check out a known-good commit, export the same `SITE_ENV` and IDs in the build shell as that release (see item 1 under [What you still need to supply](#what-you-still-need-to-supply)), run `npm run build`, and Direct Upload the new `dist`.
