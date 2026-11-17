@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
 import { standardPageNodes } from '../lib/seo/jsonld';
 import { siteTracking } from '../lib/tracking/config';
-import { cookieRows } from '../lib/tracking/cookies';
+import { cookieRows, privacyLines } from '../lib/tracking/cookies';
 
 // WEB-ADS-4: with tracking off (no IDs, previews) this page renders exactly as before.
 const tracking = siteTracking();
@@ -15,6 +15,7 @@ const description = tracking.enabled
 const canonicalPath = '/privacy/';
 const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Privacy' });
 const rows = cookieRows(tracking);
+const lines = privacyLines(tracking);
 ---
 
 <BaseLayout
@@ -88,14 +89,8 @@ const rows = cookieRows(tracking);
                 </tbody>
               </table>
             </div>
-            <p>
-              We use optional analytics and advertising cookies only with your consent, which you can withdraw at any
-              time through Cookie settings. If you email us, we use what you send to reply to you.
-            </p>
-            <p>
-              Google and Meta may process this data outside the UK, including in the United States, under their own
-              safeguards.
-            </p>
+            <p>{lines.consent}</p>
+            <p>{lines.transfers}</p>
           </>
         ) : (
           <>

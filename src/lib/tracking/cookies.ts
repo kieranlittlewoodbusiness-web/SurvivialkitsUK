@@ -50,3 +50,16 @@ export function advertisingDescription(t: Pick<TrackingConfig, 'adsId' | 'pixelI
   const subject = t.adsId && t.pixelId ? 'Google Ads and the Meta Pixel measure' : t.adsId ? 'Google Ads measures' : 'The Meta Pixel measures';
   return `${subject} whether our adverts lead to visits and clicks to Amazon.`;
 }
+
+/**
+ * Lawful-basis and transfers lines on /privacy/ (copy review 17 Nov). With every tool configured
+ * these are exactly the approved sentences; otherwise only the category and provider names change.
+ */
+export function privacyLines(t: Pick<TrackingConfig, 'ga4Id' | 'adsId' | 'pixelId' | 'analytics' | 'advertising'>) {
+  const categories = [t.analytics && 'analytics', t.advertising && 'advertising'].filter(Boolean).join(' and ');
+  const providers = [...new Set(cookieRows(t).map((r) => r.recipient))].join(' and ');
+  return {
+    consent: `We use optional ${categories} cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.`,
+    transfers: `${providers} may process this data outside the UK, including in the United States, under their own safeguards.`,
+  };
+}
