@@ -266,6 +266,19 @@ function uksTracking(w, cfg) {
       else if (act === 'reject') choose({ analytics: false, advertising: false });
       else if (act === 'manage') setManage(panel ? panel.hidden : false);
     });
+    // QA: Escape never grants anything. Manage opened from the first layer: close the panel, focus
+    // Manage. Reopened from Cookie settings: close the banner, focus the opener; the stored choice
+    // stays. First layer: hide for this page view only, store nothing (it shows again next page).
+    box.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' && e.key !== 'Esc') return;
+      if (panel && !panel.hidden && !opener) {
+        setManage(false);
+        var mb = q('[data-consent="manage"]');
+        if (mb && mb.focus) mb.focus();
+        return;
+      }
+      hide();
+    });
     if (panel) {
       panel.addEventListener('submit', function (e) {
         e.preventDefault();
