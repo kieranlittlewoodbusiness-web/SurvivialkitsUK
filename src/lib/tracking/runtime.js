@@ -137,7 +137,12 @@ function uksTracking(w, cfg) {
     }
     if (prev.analytics && !state.analytics) deleteCookies(/^(_ga|_ga_.+|_gid|_gat.*)$/);
     if (prev.advertising && !state.advertising) deleteCookies(/^(_gcl_.+|_gac_.+|_fbp|_fbc)$/);
+    // CR M2: a downgrade (granted -> denied) reloads the page after the denied update and cookie
+    // clean-up, so no gtag.js or fbevents.js stays loaded; the stored choice then loads only what is
+    // still granted. The visitor never has to reload themselves.
+    if ((prev.analytics && !state.analytics) || (prev.advertising && !state.advertising)) api.reload();
   }
+  api.reload = function () { w.location.reload(); };
 
   function read() {
     try {
