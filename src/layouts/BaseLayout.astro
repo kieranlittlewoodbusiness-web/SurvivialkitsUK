@@ -3,6 +3,8 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import JsonLd from '../components/JsonLd.astro';
+import TrackingHead from '../components/tracking/TrackingHead.astro';
+import ConsentBanner from '../components/tracking/ConsentBanner.astro';
 import { site } from '../data/site';
 import type { JsonLdNode } from '../lib/seo/jsonld';
 
@@ -41,10 +43,12 @@ const {
       noindex={noindex}
       ogType={ogType}
     />
+    <TrackingHead />
     {jsonLd && <JsonLd nodes={jsonLd} />}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <ConsentBanner />
     <div class="site-shell">
       <Header />
       <main id="main">

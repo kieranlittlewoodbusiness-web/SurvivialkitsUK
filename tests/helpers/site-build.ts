@@ -23,7 +23,10 @@ export interface SiteBuild {
   cleanup: () => void;
 }
 
-export function buildSiteCopy(prefix: string, opts: { tz?: string; mutate?: (dir: string) => void } = {}): SiteBuild {
+export function buildSiteCopy(
+  prefix: string,
+  opts: { tz?: string; mutate?: (dir: string) => void; env?: Record<string, string> } = {},
+): SiteBuild {
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   for (const entry of COPY) fs.cpSync(path.join(ROOT, entry), path.join(tmp, entry), { recursive: true });
   const modules = path.join(tmp, 'node_modules');
@@ -35,7 +38,11 @@ export function buildSiteCopy(prefix: string, opts: { tz?: string; mutate?: (dir
   opts.mutate?.(tmp);
   const dist = path.join(tmp, 'dist');
   const env: NodeJS.ProcessEnv = { ...process.env, TZ: opts.tz ?? 'UTC' };
-  for (const k of ['SITE_ENV', 'AMAZON_ASSOCIATES_UK_TAG', 'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL']) delete env[k];
+  const scrub = ['SITE_ENV', 'AMAZON_ASSOCIATES_UK_TAG', 'CF_PAGES', 'CF_PAGES_BRANCH', 'CF_PAGES_URL'];
+  // WEB-ADS: tracking IDs never leak in from the shell; tests pass them explicitly via opts.env.
+  scrub.push('PUBLIC_GA4_ID', 'PUBLIC_GOOGLE_ADS_ID', 'PUBLIC_META_PIXEL_ID');
+  for (const k of scrub) delete env[k];
+  Object.assign(env, opts.env);
   const result = spawnSync(path.join(ROOT, 'node_modules/.bin/astro'), ['build', '--outDir', dist], {
     cwd: tmp,
     env,

@@ -2,13 +2,22 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { site } from '../data/site';
 import { standardPageNodes } from '../lib/seo/jsonld';
+import { siteTracking } from '../lib/tracking/config';
+import { cookieRows, privacyLines } from '../lib/tracking/cookies';
 
+// WEB-ADS-4: with tracking off (no IDs, previews) this page renders exactly as before.
+const tracking = siteTracking();
 const title = 'Privacy notice';
 const heading = 'Privacy';
-const description =
-  'Privacy notice for UK Survival Kits: no third-party analytics or tracking scripts, what arrives if you email us, and how hosting logs are used.';
+const lines = privacyLines(tracking);
+const description = tracking.enabled
+  ? lines.description
+  : 'Privacy notice for UK Survival Kits: no third-party analytics or tracking scripts, what arrives if you email us, and how hosting logs are used.';
 const canonicalPath = '/privacy/';
 const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Privacy' });
+const rows = cookieRows(tracking);
+// QA: 'Cookie settings' in the Cookies section reopens the consent panel, like the footer link.
+const [consentBefore, consentAfter] = lines.consent.split('Cookie settings');
 ---
 
 <BaseLayout
@@ -21,22 +30,76 @@ const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: '
     <div class="wrap wrap--narrow prose">
       <p class="eyebrow">Privacy</p>
       <h1>{heading}</h1>
-      <p>
-        {site.name} is published as a static site. This launch build does not include third-party
-        analytics, advertising pixels or social tracking scripts.
-      </p>
+      {
+        tracking.enabled ? (
+          <p>
+            {site.name} is published as a static site. {lines.intro}
+          </p>
+        ) : (
+          <p>
+            {site.name} is published as a static site. This launch build does not include third-party
+            analytics, advertising pixels or social tracking scripts.
+          </p>
+        )
+      }
       <h2>What we collect</h2>
       <p>
         If you email us, we receive the information you send (such as your address and message) so
         we can reply. Hosting providers such as Cloudflare may process standard server logs (IP
         address, user agent, timestamps) to operate the service.
       </p>
-      <h2>Cookies</h2>
-      <p>
-        This launch build does not set non-essential cookies for analytics. If Cloudflare or the
-        browser sets strictly necessary cookies for security or network services, those are outside
-        our editorial control. We will update this page if we add optional cookies later.
-      </p>
+      {
+        tracking.enabled ? (
+          <>
+            <h2 id="cookies">Cookies</h2>
+            <p>{lines.choices}</p>
+            <p>
+              To change or withdraw your choice, use <a href="/privacy/#cookies" data-consent-open>Cookie settings</a> at the bottom of any page. Withdrawing stops these
+              tools sending anything further straight away, and we delete their cookies on this site where your browser
+              allows it.
+            </p>
+            <p>
+              We keep your choice in your browser's local storage, with the date you made it, so we do not ask on every
+              page. We ask again after 12 months. If Cloudflare or the browser sets strictly necessary cookies for
+              security or network services, those are outside our editorial control.
+            </p>
+            <div class="cookie-table">
+              <table>
+                <caption>Optional cookies on this site</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Tool</th>
+                    <th scope="col">Purpose</th>
+                    <th scope="col">Cookies and how long they last</th>
+                    <th scope="col">Who receives the data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr>
+                      <th scope="row">{r.tool}</th>
+                      <td data-label="Purpose">{r.purpose}</td>
+                      <td data-label="Cookies and how long they last">{r.cookies}</td>
+                      <td data-label="Who receives the data">{r.recipient}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p>{consentBefore}<a href="/privacy/#cookies" data-consent-open>Cookie settings</a>{consentAfter}</p>
+            <p>{lines.transfers}</p>
+          </>
+        ) : (
+          <>
+            <h2>Cookies</h2>
+            <p>
+              This launch build does not set non-essential cookies for analytics. If Cloudflare or the
+              browser sets strictly necessary cookies for security or network services, those are outside
+              our editorial control. We will update this page if we add optional cookies later.
+            </p>
+          </>
+        )
+      }
       <h2>Affiliate links</h2>
       <p>
         Clicking an affiliate link takes you to a retailer who may set their own cookies and process
@@ -44,6 +107,7 @@ const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: '
         <a href="/affiliate-disclosure/">affiliate disclosure</a>.
       </p>
       <h2>Contact</h2>
+      {tracking.enabled && <p>{site.name} is the controller of the personal data described on this page.</p>}
       <p>
         Privacy questions: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
       </p>
