@@ -9,13 +9,13 @@ import { cookieRows, privacyLines } from '../lib/tracking/cookies';
 const tracking = siteTracking();
 const title = 'Privacy notice';
 const heading = 'Privacy';
+const lines = privacyLines(tracking);
 const description = tracking.enabled
-  ? 'Privacy notice for UK Survival Kits: optional analytics and advertising cookies, what arrives if you email us, and how to change your cookie choices.'
+  ? lines.description
   : 'Privacy notice for UK Survival Kits: no third-party analytics or tracking scripts, what arrives if you email us, and how hosting logs are used.';
 const canonicalPath = '/privacy/';
 const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Privacy' });
 const rows = cookieRows(tracking);
-const lines = privacyLines(tracking);
 ---
 
 <BaseLayout
@@ -31,9 +31,7 @@ const lines = privacyLines(tracking);
       {
         tracking.enabled ? (
           <p>
-            {site.name} is published as a static site. With your permission, we use the analytics and advertising
-            tools listed under Cookies below. They stay off until you choose to turn them on, and you can change your
-            mind at any time.
+            {site.name} is published as a static site. {lines.intro}
           </p>
         ) : (
           <p>
@@ -52,10 +50,7 @@ const lines = privacyLines(tracking);
         tracking.enabled ? (
           <>
             <h2 id="cookies">Cookies</h2>
-            <p>
-              Optional cookies are off until you choose them in the cookie banner. Reject all keeps them off. Accept all
-              turns on every tool in the table. Manage lets you choose analytics and advertising separately.
-            </p>
+            <p>{lines.choices}</p>
             <p>
               To change or withdraw your choice, use Cookie settings at the bottom of any page. Withdrawing stops these
               tools sending anything further straight away, and we delete their cookies on this site where your browser

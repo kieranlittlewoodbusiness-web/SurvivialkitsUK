@@ -52,13 +52,19 @@ export function advertisingDescription(t: Pick<TrackingConfig, 'adsId' | 'pixelI
 }
 
 /**
- * Lawful-basis and transfers lines on /privacy/ (copy review 17 Nov). With every tool configured
- * these are exactly the approved sentences; otherwise only the category and provider names change.
+ * Tool-dependent /privacy/ copy (copy review 17 Nov; CR M1; PM K55 13:53). With both categories
+ * and both providers configured these are exactly the approved sentences; otherwise only the
+ * category and provider names change, and the Manage sentence is dropped when there is only one
+ * category to choose.
  */
 export function privacyLines(t: Pick<TrackingConfig, 'ga4Id' | 'adsId' | 'pixelId' | 'analytics' | 'advertising'>) {
   const categories = [t.analytics && 'analytics', t.advertising && 'advertising'].filter(Boolean).join(' and ');
   const providers = [...new Set(cookieRows(t).map((r) => r.recipient))].join(' and ');
+  const both = t.analytics && t.advertising;
   return {
+    description: `Privacy notice for UK Survival Kits: optional ${categories} cookies, what arrives if you email us, and how to change your cookie choices.`,
+    intro: `With your permission, we use the ${categories} tools listed under Cookies below. They stay off until you choose to turn them on, and you can change your mind at any time.`,
+    choices: `Optional cookies are off until you choose them in the cookie banner. Reject all keeps them off. Accept all turns on every tool in the table.${both ? ' Manage lets you choose analytics and advertising separately.' : ''}`,
     consent: `We use optional ${categories} cookies only with your consent, which you can withdraw at any time through Cookie settings. If you email us, we use what you send to reply to you.`,
     transfers: `${providers} may process this data outside the UK, including in the United States, under their own safeguards.`,
   };
