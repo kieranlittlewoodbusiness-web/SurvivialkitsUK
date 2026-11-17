@@ -1,0 +1,42 @@
+---
+/**
+ * WEB-ADS-1: banner styles, consent defaults + tag runtime, first thing in <head> after the meta tags.
+ * Renders nothing unless tracking is enabled (IDs set, production, not a preview), so the
+ * default build is unchanged. The runtime sets gtag consent defaults (all denied) before
+ * anything else and only requests gtag.js / fbevents.js after the visitor opts in.
+ */
+import runtime from '../../lib/tracking/runtime.js?raw';
+import { runtimeConfig, siteTracking } from '../../lib/tracking/config';
+
+const t = siteTracking();
+const code = t.enabled
+  ? runtime
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith('//'))
+      .join('\n') + `\nwindow.uksConsent=uksTracking(window,${JSON.stringify(runtimeConfig(t))});`
+  : '';
+const css = `
+.consent{position:fixed;inset:auto 0 0 0;z-index:900;max-height:85vh;overflow-y:auto;overscroll-behavior:contain;
+background:var(--surface);color:var(--ink);border-top:1px solid var(--line-strong);box-shadow:var(--shadow-2);
+padding:var(--s-5) max(var(--s-5),env(safe-area-inset-right,0px)) calc(var(--s-5) + env(safe-area-inset-bottom,0px)) max(var(--s-5),env(safe-area-inset-left,0px))}
+.consent[hidden],.consent [hidden]{display:none}
+.consent__inner{max-width:60rem;margin:0 auto;display:grid;gap:var(--s-3)}
+.consent h2{font-size:var(--step-1);margin:0;line-height:1.25}
+.consent h2:focus{outline:none}
+.consent h2:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.consent p{margin:0;font-size:var(--step--1);max-width:none}
+.consent__actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:var(--s-2)}
+.consent__actions .btn,.consent__save{width:100%}
+.consent fieldset{border:1px solid var(--line);border-radius:var(--r-sm);margin:0;padding:var(--s-3) var(--s-4);display:grid;gap:var(--s-3)}
+.consent legend{font-weight:600;padding:0 var(--s-1)}
+.consent label{display:grid;grid-template-columns:auto 1fr;gap:var(--s-1) var(--s-3);align-items:start;cursor:pointer}
+.consent input[type=checkbox]{width:24px;height:24px;margin:0;accent-color:var(--accent)}
+.consent__name{font-weight:600}
+.consent__desc{grid-column:2;font-size:var(--step--1);color:var(--ink-2)}
+@media (min-width:768px){.consent__actions{grid-template-columns:repeat(3,minmax(10rem,max-content))}.consent__save{width:auto;justify-self:start}}
+`;
+---
+
+{t.enabled && <style is:inline set:html={css} />}
+{t.enabled && <script is:inline set:html={code} />}

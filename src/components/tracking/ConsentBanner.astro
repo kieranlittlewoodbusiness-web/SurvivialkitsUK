@@ -1,0 +1,57 @@
+---
+/**
+ * WEB-ADS-1: in-page consent banner (no external CMP). Rendered only when tracking is enabled and
+ * hidden until the runtime decides to show it, so it never shifts layout: it is a fixed bottom sheet
+ * that does not block reading. Accept all / Reject all / Manage share one button style.
+ * Copy needs Kieran's OK before tracking is switched on (see the PR body).
+ */
+import { siteTracking } from '../../lib/tracking/config';
+
+const t = siteTracking();
+const adTools = t.adsId && t.pixelId ? 'Google Ads and the Meta Pixel' : t.adsId ? 'Google Ads' : 'The Meta Pixel';
+const intro =
+  t.analytics && t.advertising
+    ? 'We would like to use optional cookies to count visits (analytics) and to measure our adverts (advertising).'
+    : t.analytics
+      ? 'We would like to use optional analytics cookies to count visits and see which guides help.'
+      : 'We would like to use optional advertising cookies to measure our adverts.';
+---
+
+{
+  t.enabled && (
+    <section id="uksk-consent" class="consent" aria-labelledby="uksk-consent-title" hidden>
+      <div class="consent__inner">
+        <h2 id="uksk-consent-title" tabindex="-1" data-consent-title>Cookies on UK Survival Kits</h2>
+        <p>
+          {intro} They stay off unless you accept them. You can change your choice at any time from Cookie settings at the
+          bottom of every page. <a href="/privacy/#cookies">Read our privacy notice</a>.
+        </p>
+        <div class="consent__actions">
+          <button type="button" class="btn btn--secondary" data-consent="accept">Accept all</button>
+          <button type="button" class="btn btn--secondary" data-consent="reject">Reject all</button>
+          <button type="button" class="btn btn--secondary" data-consent="manage" aria-expanded="false" aria-controls="uksk-consent-manage">Manage</button>
+        </div>
+        <form id="uksk-consent-manage" hidden>
+          <fieldset>
+            <legend>Optional cookies</legend>
+            {t.analytics && (
+              <label>
+                <input type="checkbox" name="analytics" />
+                <span class="consent__name">Analytics</span>
+                <span class="consent__desc">Google Analytics counts visits and which pages and Amazon links people use, so we can improve the guides.</span>
+              </label>
+            )}
+            {t.advertising && (
+              <label>
+                <input type="checkbox" name="advertising" />
+                <span class="consent__name">Advertising</span>
+                <span class="consent__desc">{adTools} measure whether our adverts lead to visits and clicks to Amazon.</span>
+              </label>
+            )}
+          </fieldset>
+          <button type="submit" class="btn btn--secondary consent__save">Save choices</button>
+        </form>
+      </div>
+    </section>
+  )
+}
