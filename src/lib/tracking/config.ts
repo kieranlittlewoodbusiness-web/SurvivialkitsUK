@@ -1,25 +1,28 @@
 /**
  * WEB-ADS-1..4: the one place that reads the tracking IDs.
  *
- * The IDs come from build-time env (Cloudflare Pages project variables):
+ * The IDs come from the build environment (the shell that runs `astro build`):
  *   PUBLIC_GA4_ID          Google Analytics 4 measurement ID, e.g. G-ABC123DEF4
  *   PUBLIC_GOOGLE_ADS_ID   Google Ads tag ID, e.g. AW-123456789
  *   PUBLIC_META_PIXEL_ID   Meta Pixel ID (digits only)
  *
- * Tracking is enabled only when at least one ID is set AND the build is a production build that is
- * not a preview (see isPreviewBuild). With no IDs, nothing renders: no consent banner, no
- * "Cookie settings" link, no tag code, and the footer/privacy/contact copy stays as it is today, so
- * the default build is byte-identical to the pre-tracking site. A malformed ID fails the build
- * rather than shipping a broken tag. The runtime adds a second gate: *.pages.dev never loads tags.
+ * Tracking is enabled only when ALL of these hold (fail-closed, the same rule as affiliate links in
+ * isProductionLinkBuild):
+ *   - at least one ID is set;
+ *   - SITE_ENV is exactly 'production';
+ *   - it is not a preview (isPreviewBuild: SITE_ENV=preview, or a Cloudflare branch build);
+ *   - it is `astro build` (import.meta.env.PROD), never the dev server.
+ * With no IDs, nothing renders: no consent banner, no "Cookie settings" link, no tag code, and the
+ * footer/privacy/contact copy stays as it is today, so the default build is byte-identical to the
+ * pre-tracking site. A malformed ID fails the build rather than shipping a broken tag. The runtime
+ * adds a second gate: *.pages.dev never loads tags.
  *
- * Notes (CR nits):
- * - IDs are read from process.env only, so a local .env file does NOT enable tracking; set them as
- *   Cloudflare Pages build variables (or export them in the shell).
- * - "Production" means `astro build` (import.meta.env.PROD), not SITE_ENV=production: a local
- *   `npm run build` with IDs exported does enable tags. SITE_ENV=production is not required, so
- *   adding IDs to the Pages project cannot silently do nothing if SITE_ENV is unset there.
+ * Deploys: production goes out by Direct Upload of a locally built dist (docs/ops/pages-headers.md),
+ * so Cloudflare dashboard variables are NOT applied to the build. SITE_ENV=production and the
+ * PUBLIC_* IDs must be exported in the shell that builds the dist. IDs are read from process.env
+ * only; a local .env file does not enable tracking.
  */
-import { isPreviewBuild } from '../../data/site';
+import { isPreviewBuild, siteEnv } from '../../data/site';
 
 type Env = Record<string, string | undefined>;
 
@@ -46,7 +49,7 @@ function readId(env: Env, name: IdVar): string | null {
   const raw = (env[name] ?? '').trim();
   if (raw === '') return null;
   if (!FORMATS[name].test(raw)) {
-    throw new Error(`${name} has an unexpected format. Check the value in the Cloudflare Pages settings or leave it unset.`);
+    throw new Error(`${name} has an unexpected format. Check the value in the build environment or leave it unset.`);
   }
   return raw;
 }
@@ -56,6 +59,7 @@ const OFF: TrackingConfig = { enabled: false, ga4Id: null, adsId: null, pixelId:
 /**
  * @param env build env (defaults to process.env)
  * @param opts.production true for `astro build` (import.meta.env.PROD); dev servers never load tags.
+ * Requires SITE_ENV=production as well (see the header).
  */
 export function trackingConfig(env: Env = process.env, opts: { production?: boolean } = {}): TrackingConfig {
   // Validate every ID first so a typo fails the build even on preview branches.
@@ -63,7 +67,7 @@ export function trackingConfig(env: Env = process.env, opts: { production?: bool
   const adsId = readId(env, 'PUBLIC_GOOGLE_ADS_ID');
   const pixelId = readId(env, 'PUBLIC_META_PIXEL_ID');
   if (!ga4Id && !adsId && !pixelId) return OFF;
-  if (opts.production === false || isPreviewBuild(env)) return OFF;
+  if (opts.production === false || siteEnv(env) !== 'production' || isPreviewBuild(env)) return OFF;
   return { enabled: true, ga4Id, adsId, pixelId, analytics: !!ga4Id, advertising: !!(adsId || pixelId) };
 }
 
