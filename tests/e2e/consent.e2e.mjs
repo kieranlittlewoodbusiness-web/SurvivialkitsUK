@@ -183,6 +183,39 @@ try {
     await ctx.close();
   }
 
+  // 3b. QA: Escape never grants anything; privacy 'Cookie settings' reopens the panel.
+  {
+    const { ctx, page, hits, trackCookies } = await fresh();
+    await page.goto(ORIGIN + PAGE);
+    await page.focus('[data-consent="manage"]');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Space'); // tick Analytics, not saved
+    await page.keyboard.press('Escape');
+    check('Escape on Manage: panel closes, banner stays, focus on Manage',
+      !(await page.locator('#uksk-consent-manage').isVisible()) && (await page.locator('#uksk-consent').isVisible()) &&
+      (await page.evaluate(() => document.activeElement?.getAttribute('data-consent'))) === 'manage');
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(400);
+    check('Escape on first layer: banner hidden, focus #main', !(await page.locator('#uksk-consent').isVisible()) && (await page.evaluate(() => document.activeElement?.id)) === 'main');
+    check('Escape: nothing stored, nothing granted, no tag requests, no cookies',
+      (await page.evaluate(() => localStorage.getItem('uksk-consent'))) === null &&
+      (await page.evaluate(() => (window.dataLayer || []).length)) === 1 && hits.length === 0 && (await trackCookies()).length === 0);
+    await page.goto(ORIGIN + '/privacy/');
+    await page.waitForTimeout(300);
+    check('Escape: banner shows again on the next page', await page.locator('#uksk-consent').isVisible());
+    await page.click('[data-consent="reject"]');
+    const inText = page.locator('main a[data-consent-open]');
+    check('privacy Cookies section has 2 "Cookie settings" controls with that accessible name', (await inText.count()) === 2 && (await page.getByRole('link', { name: 'Cookie settings', exact: true }).count()) === 3);
+    await inText.first().click();
+    check('privacy in-text Cookie settings reopens the panel, focus on its heading', (await page.locator('#uksk-consent-manage').isVisible()) && (await page.evaluate(() => document.activeElement?.id)) === 'uksk-consent-title');
+    await page.keyboard.press('Escape');
+    check('Escape after Cookie settings: banner closes, focus back to the link, stored Reject unchanged',
+      !(await page.locator('#uksk-consent').isVisible()) && (await page.evaluate(() => document.activeElement?.closest('main') !== null && document.activeElement?.hasAttribute('data-consent-open'))) &&
+      JSON.parse(await page.evaluate(() => localStorage.getItem('uksk-consent'))).analytics === false && hits.length === 0);
+    await ctx.close();
+  }
+
   // 4. Analytics only.
   {
     const { ctx, page, hits } = await fresh();
