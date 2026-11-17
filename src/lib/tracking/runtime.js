@@ -113,6 +113,45 @@ function uksTracking(w, cfg) {
   }
   api.choose = choose;
 
+  function affiliateParams(a) {
+    var u;
+    try { u = new URL(a.href); } catch (e) { return null; }
+    var m = /\/dp\/([A-Z0-9]{10})(?:[/?#]|$)/.exec(u.pathname + '/');
+    var catEl = a.closest('[data-category]');
+    var placement = a.getAttribute('data-placement') ||
+      (a.closest('.pcard, .pick') ? 'card' : a.closest('table') ? 'table' : 'inline');
+    return {
+      link_domain: u.hostname,
+      asin: a.getAttribute('data-asin') || (m ? m[1] : ''),
+      product_category: (catEl && catEl.getAttribute('data-category')) || '',
+      placement: placement,
+      page_path: w.location.pathname,
+    };
+  }
+  api.affiliateParams = affiliateParams;
+
+  function onClick(e) {
+    if (e.type === 'click' ? e.button !== 0 : e.button !== 1) return;
+    var t = e.target;
+    var a = t && t.closest ? t.closest('a[rel~="sponsored"][href*="amazon."]') : null;
+    if (!a) return;
+    var targets = [];
+    if (cfg.ga4 && state.analytics) targets.push(cfg.ga4);
+    if (cfg.ads && state.advertising) targets.push(cfg.ads);
+    if (!targets.length) return;
+    var p = affiliateParams(a);
+    if (!p) return;
+    if (targets.length) {
+      gtag('event', 'affiliate_click', {
+        link_domain: p.link_domain, asin: p.asin, product_category: p.product_category,
+        placement: p.placement, page_path: p.page_path, send_to: targets, transport_type: 'beacon',
+      });
+    }
+  }
+  // Capture phase, passive: never delays or cancels navigation. Enter on a link fires 'click'.
+  d.addEventListener('click', onClick, { capture: true, passive: true });
+  d.addEventListener('auxclick', onClick, { capture: true, passive: true });
+
   // Returning visitor: apply the stored choice straight away (still before any tag loads).
   var stored = read();
   if (stored) apply(stored);
