@@ -16,6 +16,8 @@ const description = tracking.enabled
 const canonicalPath = '/privacy/';
 const jsonLd = standardPageNodes({ canonicalPath, heading, description, crumb: 'Privacy' });
 const rows = cookieRows(tracking);
+// QA: 'Cookie settings' in the Cookies section reopens the consent panel, like the footer link.
+const [consentBefore, consentAfter] = lines.consent.split('Cookie settings');
 ---
 
 <BaseLayout
@@ -52,7 +54,7 @@ const rows = cookieRows(tracking);
             <h2 id="cookies">Cookies</h2>
             <p>{lines.choices}</p>
             <p>
-              To change or withdraw your choice, use Cookie settings at the bottom of any page. Withdrawing stops these
+              To change or withdraw your choice, use <a href="/privacy/#cookies" data-consent-open>Cookie settings</a> at the bottom of any page. Withdrawing stops these
               tools sending anything further straight away, and we delete their cookies on this site where your browser
               allows it.
             </p>
@@ -84,7 +86,7 @@ const rows = cookieRows(tracking);
                 </tbody>
               </table>
             </div>
-            <p>{lines.consent}</p>
+            <p>{consentBefore}<a href="/privacy/#cookies" data-consent-open>Cookie settings</a>{consentAfter}</p>
             <p>{lines.transfers}</p>
           </>
         ) : (
